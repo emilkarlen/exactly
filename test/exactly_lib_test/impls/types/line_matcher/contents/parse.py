@@ -12,7 +12,7 @@ from exactly_lib_test.impls.types.line_matcher.test_resources import models
 from exactly_lib_test.impls.types.line_matcher.test_resources import parse_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation, arrangement_wo_tcds
-from exactly_lib_test.impls.types.matcher.test_resources.assertion_applier import MatcherThatAppliesValueAssertion
+from exactly_lib_test.impls.types.matcher.test_resources import matcher_w_init_action
 from exactly_lib_test.impls.types.matcher.test_resources.matchers import ConstantMatcherWithCustomTrace, T
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as sm_args2
 from exactly_lib_test.impls.types.string_matcher.test_resources import validation_cases
@@ -185,12 +185,12 @@ class TestModelOfAppliedStringMatcherShouldBeLineModelContents(unittest.TestCase
         matching_result = True
         string_matcher = StringMatcherSymbolContext.of_primitive(
             'STRING_MATCHER',
-            MatcherThatAppliesValueAssertion(
+            matcher_w_init_action.matcher_that_applies_assertion(
                 self,
                 assertion=asrt.equals(line_contents),
                 get_actual=get_string_matcher_model_as_single_string,
                 message_builder=asrt.MessageBuilder.new('string-matcher-model'),
-                matching_result=matching_result,
+                result=matching_result,
             ),
         )
         # ACT & ASSERT #

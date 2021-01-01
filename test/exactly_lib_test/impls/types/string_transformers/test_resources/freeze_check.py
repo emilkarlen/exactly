@@ -6,7 +6,7 @@ from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import AssertionResolvingEnvironment
-from exactly_lib_test.test_resources.recording import SequenceRecorder
+from exactly_lib_test.test_resources.recording import SequenceRecordingMedia
 from exactly_lib_test.test_resources.value_assertions import sequence_assertions as asrt_seq
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
@@ -24,7 +24,7 @@ def check(put: unittest.TestCase,
           message_builder: asrt.MessageBuilder = asrt.new_message_builder(),
           source_model_contents: str = '1\n2\n3\n',
           ):
-    source_model_invocations_recorder = _new_recorder()
+    source_model_invocations_recorder = _new_recording_media()
 
     source_model = string_sources.of_string(source_model_contents,
                                             tmp_file_space,
@@ -100,8 +100,8 @@ def _invoke_every_contents_method(string_source: StringSource):
         method_case.value(contents)
 
 
-def _new_recorder() -> SequenceRecorder[StringSourceMethod]:
-    return SequenceRecorder()
+def _new_recording_media() -> SequenceRecordingMedia[StringSourceMethod]:
+    return SequenceRecordingMedia()
 
 
 class SourceModelMethodInvocationsAssertion(

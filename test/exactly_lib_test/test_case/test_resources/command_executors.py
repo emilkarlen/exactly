@@ -1,5 +1,5 @@
 import unittest
-from typing import Optional
+from typing import Optional, Any, Callable
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.command_executor import CommandExecutor
@@ -8,6 +8,23 @@ from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.test_resources.recording import MaxNumberOfTimesChecker
+
+
+class CommandExecutorWInitialAction(CommandExecutor):
+    def __init__(self,
+                 delegated: CommandExecutor,
+                 initial_action: Callable[[Command, ProcessExecutionSettings], Any],
+                 ):
+        self._initial_action = initial_action
+        self._delegated = delegated
+
+    def execute(self,
+                command: Command,
+                settings: ProcessExecutionSettings,
+                files: StdFiles,
+                ) -> int:
+        self._initial_action(command, settings)
+        return self._delegated.execute(command, settings, files)
 
 
 class CommandExecutorThatRecordsArguments(CommandExecutor):

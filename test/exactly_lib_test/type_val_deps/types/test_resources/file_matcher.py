@@ -8,7 +8,7 @@ from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib_test.impls.types.file_matcher.test_resources import argument_building as args
 from exactly_lib_test.impls.types.file_matcher.test_resources.argument_building import FileMatcherArg
-from exactly_lib_test.impls.types.matcher.test_resources import matchers
+from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -50,8 +50,9 @@ class FileMatcherSymbolValueContext(MatcherSymbolValueContext[FileMatcherModel])
     def of_primitive(primitive: FileMatcher,
                      definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                      ) -> 'FileMatcherSymbolValueContext':
-        return FileMatcherSymbolValueContext.of_sdv(matchers.sdv_from_primitive_value(primitive),
-                                                    definition_source)
+        return FileMatcherSymbolValueContext.of_sdv(
+            sdv_ddv.sdv_from_primitive_value(primitive),
+            definition_source)
 
     @staticmethod
     def of_primitive_constant(result: bool,

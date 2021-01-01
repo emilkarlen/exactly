@@ -8,7 +8,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_wo_tcds, \
     PrimAndExeExpectation
-from exactly_lib_test.impls.types.matcher.test_resources import matchers
+from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.impls.types.test_resources.pre_or_post_sds_value_validator import constant_validator
@@ -117,7 +117,7 @@ def _successful_matcher_with_validation(the_validation: ValidationActual) -> Fil
     def get_matcher(symbols: SymbolTable, tcds: TestCaseDs) -> FileMatcher:
         return constant.MatcherWithConstantResult(True)
 
-    return matchers.sdv_from_parts(
+    return sdv_ddv.sdv_from_parts(
         references=(),
         validator=constant_validator(the_validation),
         matcher=get_matcher

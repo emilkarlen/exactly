@@ -10,6 +10,7 @@ from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_chec
 from exactly_lib_test.impls.types.file_matcher.contents_of_dir.test_resources import invalid_model
 from exactly_lib_test.impls.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.impls.types.matcher.test_resources import matchers
+from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangementPostAct
 from exactly_lib_test.tcfs.test_resources.path_arguments import PathArgument, RelOptPathArgument
@@ -50,7 +51,7 @@ class _HelperBase(ABC):
 
 
 class HardErrorDueToInvalidPathArgumentHelper(_HelperBase):
-    UNCONDITIONALLY_CONSTANT_TRUE = matchers.sdv_from_bool(True)
+    UNCONDITIONALLY_CONSTANT_TRUE = sdv_ddv.sdv_from_bool(True)
 
     def symbols(self) -> SymbolTable:
         return FilesMatcherSymbolContext.of_primitive_constant(self.name_of_referenced_symbol,

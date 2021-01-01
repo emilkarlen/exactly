@@ -12,6 +12,7 @@ from exactly_lib.impls.types.expression.parser import GrammarParsers
 from exactly_lib.impls.types.line_matcher.impl import line_number
 from exactly_lib.impls.types.line_matcher.impl.contents import parse as contents_parse, doc as contents_doc
 from exactly_lib.impls.types.matcher import standard_expression_grammar
+from exactly_lib.impls.types.matcher.impls import combinator_matchers
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.type_val_deps.types.line_matcher import LineMatcherSdv
 from exactly_lib.type_val_prims.matcher.line_matcher import FIRST_LINE_NUMBER_DESCRIPTION
@@ -83,6 +84,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
                               _LineNumberSyntaxDescription())
         ),
     ),
+    model_freezer=combinator_matchers.no_op_freezer,
 )
 
 _PARSERS_FOR_MUST_BE_ON_CURRENT_LINE = ep.parsers_for_must_be_on_current_line(GRAMMAR)

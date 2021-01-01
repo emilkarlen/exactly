@@ -19,6 +19,7 @@ def new_grammar(concept: grammar.Concept,
                 model: NameWithGenderWithFormatting,
                 value_type: ValueType,
                 simple_expressions: Sequence[NameAndValue[grammar.Primitive[MatcherSdv[MODEL]]]],
+                model_freezer: Callable[[MODEL], MODEL],
                 description: Callable[[], SectionContents] = SectionContents.empty
                 ) -> grammar.Grammar[MatcherSdv[MODEL]]:
     tp = TextParser({
@@ -29,6 +30,12 @@ def new_grammar(concept: grammar.Concept,
 
     def mk_reference(symbol_name: str) -> MatcherSdv[MODEL]:
         return symbol_reference.MatcherReferenceSdv(symbol_name, value_type)
+
+    def mk_conjunction(operands: Sequence[MODEL]) -> MODEL:
+        return combinator_sdvs.Conjunction(operands, model_freezer)
+
+    def mk_disjunction(operands: Sequence[MODEL]) -> MODEL:
+        return combinator_sdvs.Disjunction(operands, model_freezer)
 
     return grammar.Grammar(
         concept,
@@ -48,7 +55,7 @@ def new_grammar(concept: grammar.Concept,
             (
                 NameAndValue(
                     logic.OR_OPERATOR_NAME,
-                    grammar.InfixOperator(combinator_sdvs.Disjunction,
+                    grammar.InfixOperator(mk_disjunction,
                                           InfixOperatorDescriptionFromFunctions(
                                               tp.fnap__fun(_OR_SED_DESCRIPTION),
                                               operand_evaluation__lazy__left_to_right=True,
@@ -58,7 +65,7 @@ def new_grammar(concept: grammar.Concept,
             (
                 NameAndValue(
                     logic.AND_OPERATOR_NAME,
-                    grammar.InfixOperator(combinator_sdvs.Conjunction,
+                    grammar.InfixOperator(mk_conjunction,
                                           InfixOperatorDescriptionFromFunctions(
                                               tp.fnap__fun(_AND_SED_DESCRIPTION),
                                               operand_evaluation__lazy__left_to_right=True,

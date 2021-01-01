@@ -15,7 +15,7 @@ from exactly_lib.impls.types.file_matcher.impl.file_type import FileMatcherType
 from exactly_lib.impls.types.file_matcher.impl.run_program import parse as parse_run
 from exactly_lib.impls.types.file_matcher.impl.run_program.doc import RunSyntaxDescription
 from exactly_lib.impls.types.matcher import standard_expression_grammar
-from exactly_lib.impls.types.matcher.impls import sdv_components
+from exactly_lib.impls.types.matcher.impls import sdv_components, combinator_matchers
 from exactly_lib.impls.types.string_matcher import parse_string_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.value_type import ValueType
@@ -186,6 +186,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
             )
         ),
     ),
+    model_freezer=combinator_matchers.no_op_freezer,
 )
 
 _PARSERS_FOR_MUST_BE_ON_CURRENT_LINE = ep.parsers_for_must_be_on_current_line(GRAMMAR)

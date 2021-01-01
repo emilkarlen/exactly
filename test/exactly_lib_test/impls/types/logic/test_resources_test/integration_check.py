@@ -33,6 +33,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Pars
     Expectation, TcdsArrangement, Arrangement, arrangement_wo_tcds, arrangement_w_tcds, prim_asrt__constant, \
     adv_asrt__constant
 from exactly_lib_test.impls.types.matcher.test_resources import matchers
+from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
 from exactly_lib_test.impls.types.matcher.test_resources.integration_check import constant_model
 from exactly_lib_test.impls.types.matcher.test_resources.integration_check import \
     is_expectation_of_execution_result_of
@@ -225,7 +226,7 @@ class TestSymbolReferences(TestCaseBase):
 
         self._check_raises_test_error__single_and_multi(
             _constant_line_matcher_type_parser_of_matcher_sdv(
-                matchers.sdv_from_primitive_value(references=symbol_usages_of_matcher)
+                sdv_ddv.sdv_from_primitive_value(references=symbol_usages_of_matcher)
             ),
             Expectation(
                 ParseExpectation(
@@ -297,7 +298,7 @@ class TestDefault(TestCaseBase):
     def test_expect_no_symbol_usages(self):
         self._check_raises_test_error__single_and_multi(
             _constant_line_matcher_type_parser_of_matcher_sdv(
-                matchers.sdv_from_primitive_value(
+                sdv_ddv.sdv_from_primitive_value(
                     references=[data_symbol_utils.symbol_reference('symbol_name')])
             ),
             is_expectation_of_execution_result_of(True),
@@ -306,8 +307,8 @@ class TestDefault(TestCaseBase):
     def test_expect_pre_validation_succeeds(self):
         self._check_raises_test_error__single_and_multi(
             _constant_line_matcher_type_parser_of_matcher_ddv(
-                matchers.MatcherDdvOfConstantMatcherTestImpl(
-                    matchers.MatcherWithConstantResult(True),
+                sdv_ddv.MatcherDdvOfConstantMatcherTestImpl(
+                    constant.MatcherWithConstantResult(True),
                     ConstantDdvValidator(
                         pre_sds_result=rend_comb.ConstantSequenceR(
                             [])))
@@ -318,8 +319,8 @@ class TestDefault(TestCaseBase):
     def test_expect_post_validation_succeeds(self):
         self._check_raises_test_error__single_and_multi(
             _constant_line_matcher_type_parser_of_matcher_ddv(
-                matchers.MatcherDdvOfConstantMatcherTestImpl(
-                    matchers.MatcherWithConstantResult(True),
+                sdv_ddv.MatcherDdvOfConstantMatcherTestImpl(
+                    constant.MatcherWithConstantResult(True),
                     ConstantDdvValidator(
                         post_sds_result=rend_comb.ConstantSequenceR([])))
             ),
@@ -328,7 +329,7 @@ class TestDefault(TestCaseBase):
 
     def test_expects_no_hard_error(self):
         parser_that_gives_value_that_causes_hard_error = _constant_line_matcher_type_parser_of_matcher_sdv(
-            matchers.sdv_from_primitive_value(MatcherThatReportsHardError())
+            sdv_ddv.sdv_from_primitive_value(MatcherThatReportsHardError())
         )
         self._check_raises_test_error__single_and_multi(
             parser_that_gives_value_that_causes_hard_error,
@@ -338,7 +339,7 @@ class TestDefault(TestCaseBase):
     def test_expect_match_is_true(self):
         self._check_raises_test_error__single_and_multi(
             _constant_line_matcher_type_parser_of_matcher_sdv(
-                matchers.sdv_from_primitive_value(matchers.MatcherWithConstantResult(False))
+                sdv_ddv.sdv_from_primitive_value(constant.MatcherWithConstantResult(False))
             ),
             is_expectation_of_execution_result_of(True),
         )
@@ -376,7 +377,7 @@ class TestFailingCommonProperties(TestCaseBase):
         matcher_result_value = True
         for check_application_result_with_tcds in [False, True]:
             parser = _constant_line_matcher_type_parser_of_matcher_sdv(
-                matchers.sdv_from_primitive_value(matchers.MatcherWithConstantResult(matcher_result_value))
+                sdv_ddv.sdv_from_primitive_value(constant.MatcherWithConstantResult(matcher_result_value))
             )
             checker = sut.IntegrationChecker(
                 parser,
@@ -464,13 +465,13 @@ class TestFailingExpectations(TestCaseBase):
 class TestPopulateDirectoriesAndCwd(TestCaseBase):
     def test_tcds_SHOULD_not_exist_WHEN_flag_for_not_creating_tcds_is_given(self):
         def make_primitive(tcds: TestCaseDs) -> MatcherWTrace[int]:
-            return matchers.MatcherWithConstantResult(True)
+            return constant.MatcherWithConstantResult(True)
 
         self._check___single_and_multi(
             utils.single_line_arguments(),
             ARBITRARY_MODEL,
             _constant_line_matcher_type_parser_of_matcher_ddv(
-                matchers.MatcherDdvFromPartsTestImpl(
+                sdv_ddv.MatcherDdvFromPartsTestImpl(
                     make_primitive,
                     ValidatorThatAssertsThatTcdsDirsDoesNotDenoteExistingDirectories(self),
                 )
@@ -487,7 +488,7 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
             utils.single_line_arguments(),
             ARBITRARY_MODEL,
             _constant_line_matcher_type_parser_of_matcher_ddv(
-                matchers.MatcherDdvFromPartsTestImpl(
+                sdv_ddv.MatcherDdvFromPartsTestImpl(
                     make_primitive,
                     ValidatorThatAssertsThatCwdIsIsActDirAtPostSdsValidation(self),
                 )
@@ -586,7 +587,7 @@ class MatcherSdvThatAssertsThatSymbolsAreAsExpected(Generic[MODEL], MatcherSdv[M
     def resolve(self, symbols: SymbolTable) -> MatcherDdv[int]:
         self._expectation.apply_with_message(self._put, symbols, 'symbols given to resolve')
 
-        return matchers.ddv_of_unconditionally_matching_matcher()
+        return sdv_ddv.ddv_of_unconditionally_matching_matcher()
 
 
 class _ConstantParserOfSingleTokenExpression(ParserFromTokenParserBase[MatcherSdv[int]]):
@@ -604,12 +605,14 @@ def _constant_line_matcher_type_parser_of_matcher_sdv(matcher: MatcherSdv[int]) 
 
 
 def _constant_line_matcher_type_parser_of_matcher_ddv(matcher: MatcherDdv[int]) -> Parser[MatcherSdv[int]]:
-    return _ConstantParserOfSingleTokenExpression(matchers.MatcherSdvOfConstantDdvTestImpl(matcher))
+    return _ConstantParserOfSingleTokenExpression(
+        sdv_ddv.MatcherSdvOfConstantDdvTestImpl(matcher))
 
 
 def _constant_line_matcher_type_parser_of_matcher(matcher: MatcherWTrace[int]
                                                   ) -> Parser[MatcherSdv[int]]:
-    return _ConstantParserOfSingleTokenExpression(matchers.sdv_from_primitive_value(matcher))
+    return _ConstantParserOfSingleTokenExpression(
+        sdv_ddv.sdv_from_primitive_value(matcher))
 
 
 ARBITRARY_MODEL = 0
@@ -617,10 +620,10 @@ ARBITRARY_MODEL_CONSTRUCTOR = constant_model(ARBITRARY_MODEL)
 
 PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION = \
     _constant_line_matcher_type_parser_of_matcher_sdv(
-        matchers.sdv_from_primitive_value()
+        sdv_ddv.sdv_from_primitive_value()
     )
 
-_MATCHER_THAT_MATCHES = matchers.sdv_from_primitive_value()
+_MATCHER_THAT_MATCHES = sdv_ddv.sdv_from_primitive_value()
 
 
 def dir_is_empty(tcds_dir: RelOptionType) -> ValueAssertion[TestCaseDs]:

@@ -106,6 +106,9 @@ Asserts that {checked_file} from {program_type:a/q} satisfies {contents_matcher}
 {contents_matcher} must appear on a separate line.
 
 
+The {program_type} is executed once (regardless of {contents_matcher}).
+
+
 {The_program_type_must_terminate}
 """
 

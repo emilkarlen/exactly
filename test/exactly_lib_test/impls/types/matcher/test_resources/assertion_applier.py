@@ -1,6 +1,6 @@
 import unittest
 from abc import ABC, abstractmethod
-from typing import Callable, TypeVar, Generic, Optional
+from typing import TypeVar, Generic, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.impls.types.matcher.impls.sdv_components import MatcherSdvFromParts
@@ -12,13 +12,11 @@ from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
-from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
-from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
-from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
-from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.impls.types.matcher.test_resources.matchers import MatcherDdvFromParts2TestImpl
+from exactly_lib_test.impls.types.matcher.test_resources import matcher_w_init_action
+from exactly_lib_test.impls.types.matcher.test_resources import matchers
+from exactly_lib_test.impls.types.matcher.test_resources.sdv_ddv import MatcherDdvFromParts2TestImpl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder
 
@@ -30,8 +28,10 @@ MODEL = TypeVar('MODEL')
 
 class ApplicationAssertionSetup(Generic[MODEL, ACTUAL], ABC):
     @abstractmethod
-    def get_assertion(self, symbols: SymbolTable, tcds: TestCaseDs, env: ApplicationEnvironment) -> ValueAssertion[
-        ACTUAL]:
+    def get_assertion(self, symbols: SymbolTable,
+                      tcds: TestCaseDs,
+                      env: ApplicationEnvironment,
+                      ) -> ValueAssertion[ACTUAL]:
         pass
 
     @abstractmethod
@@ -92,19 +92,20 @@ def matcher(put: unittest.TestCase,
     def make_ddv(symbols: SymbolTable) -> MatcherDdv[MODEL]:
         def make_adv(tcds: TestCaseDs) -> MatcherAdv[MODEL]:
             def make_matcher(environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
-                return MatcherThatAppliesValueAssertion(
+                return matcher_w_init_action.matcher_that_applies_assertion(
                     put,
                     application_assertion.get_assertion(symbols, tcds, environment),
                     application_assertion.get_actual,
                     message_builder,
                     matching_result,
+                    matchers.STRUCTURE_FOR_TEST,
                 )
 
             return MatcherAdvFromFunction(make_matcher)
 
         return MatcherDdvFromParts2TestImpl(
             make_adv,
-            MatcherThatAppliesValueAssertion.STRUCTURE,
+            matchers.STRUCTURE_FOR_TEST,
             ValidatorThatAppliesValueAssertions(put, validation_assertion, message_builder)
         )
 
@@ -141,46 +142,3 @@ class ValidatorThatAppliesValueAssertions(Generic[ACTUAL_PRE_SDS, ACTUAL_POST_SD
         )
 
         return None
-
-
-class MatcherThatAppliesValueAssertion(Generic[MODEL, ACTUAL], MatcherWTrace[MODEL]):
-    NAME = 'MatcherThatAppliesValueAssertion'
-    STRUCTURE = renderers.header_only(NAME)
-
-    def __init__(self,
-                 put: unittest.TestCase,
-                 assertion: ValueAssertion[ACTUAL],
-                 get_actual: Callable[[MODEL], ACTUAL],
-                 message_builder: MessageBuilder,
-                 matching_result: bool,
-                 ):
-        self.put = put
-        self.assertion = assertion
-        self.get_actual = get_actual
-        self.message_builder = message_builder
-        self.matching_result = matching_result
-
-    @property
-    def name(self) -> str:
-        return str(type(self))
-
-    def structure(self) -> StructureRenderer:
-        return self.STRUCTURE
-
-    def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
-        self._apply_assertion(model)
-        return self._matching_result()
-
-    def _apply_assertion(self, model: FilesMatcherModel):
-        actual = self.get_actual(model)
-        self.assertion.apply(
-            self.put,
-            actual,
-            self.message_builder.for_sub_component('application'),
-        )
-
-    def _matching_result(self) -> MatchingResult:
-        return MatchingResult(self.matching_result,
-                              renderers.Constant(
-                                  tree.Node.empty(self.name, self.matching_result)
-                              ))

@@ -3,7 +3,7 @@ from typing import Sequence
 from exactly_lib.impls.types.matcher.impls import constant
 from exactly_lib.impls.types.matcher.impls import sdv_components
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.types.matcher.test_resources import matchers
+from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
 from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.impls.types.test_resources.pre_or_post_sds_validator import constant_ddv_validator
 from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions, ValidationActual
@@ -19,7 +19,7 @@ class ValidationCase:
         self._symbol_context = StringMatcherSymbolContext.of_sdv(
             'string_matcher_symbol',
             sdv_components.MatcherSdvFromConstantDdv(
-                matchers.MatcherDdvOfConstantMatcherTestImpl(
+                sdv_ddv.MatcherDdvOfConstantMatcherTestImpl(
                     constant.MatcherWithConstantResult(True),
                     validator=constant_ddv_validator(actual)
 

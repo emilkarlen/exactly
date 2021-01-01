@@ -5,6 +5,7 @@ from typing import Sequence
 
 from exactly_lib.impls.file_properties import FileType
 from exactly_lib.impls.types.condition import comparators
+from exactly_lib.impls.types.matcher.impls import combinator_matchers
 from exactly_lib.impls.types.matcher.impls import sdv_components, combinator_sdvs
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -29,7 +30,7 @@ from exactly_lib_test.impls.types.files_matcher.test_resources.symbol_context im
 from exactly_lib_test.impls.types.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
     PrimAndExeExpectation, Expectation, arrangement_w_tcds, ExecutionExpectation
-from exactly_lib_test.impls.types.matcher.test_resources import assertion_applier
+from exactly_lib_test.impls.types.matcher.test_resources import matcher_w_init_action
 from exactly_lib_test.impls.types.matcher.test_resources.integration_check import EXECUTION_IS_PASS
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_confs, matcher_assertions
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
@@ -73,7 +74,8 @@ def _name_starts_with__and_hard_error_if_applied_to_non_directory(name: str,
             sdv_components.matcher_sdv_from_constant_primitive(
                 _HardErrorIfAppliedToNonDirectory()
             ),
-        ]
+        ],
+            combinator_matchers.no_op_freezer,
         )
     )
 
@@ -774,7 +776,7 @@ def test_fails_if_applied(put: unittest.TestCase) -> FileMatcherSymbolContext:
     return FileMatcherSymbolContext.of_sdv(
         'test_fails_if_applied',
         sdv_components.matcher_sdv_from_constant_primitive(
-            assertion_applier.MatcherThatAppliesValueAssertion(
+            matcher_w_init_action.matcher_that_applies_assertion(
                 put,
                 asrt.fail('must not be applied'),
                 lambda x: x,

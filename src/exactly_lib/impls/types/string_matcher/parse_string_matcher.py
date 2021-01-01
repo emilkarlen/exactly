@@ -20,6 +20,7 @@ from exactly_lib.impls.types.string_transformer import parse_string_transformer
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
@@ -114,6 +115,11 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.Primitive[StringMatch
     return ret_val
 
 
+def _model_freezer(model: StringSource) -> StringSource:
+    model.freeze()
+    return model
+
+
 GRAMMAR = standard_expression_grammar.new_grammar(
     concept=grammar.Concept(
         name=types.STRING_MATCHER_TYPE_INFO.name,
@@ -123,6 +129,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
     model=matcher_model.STRING_MATCHER_MODEL,
     value_type=ValueType.STRING_MATCHER,
     simple_expressions=_simple_expressions(),
+    model_freezer=_model_freezer,
 )
 
 _PARSERS_FOR_MUST_BE_ON_CURRENT_LINE = ep.parsers_for_must_be_on_current_line(GRAMMAR)

@@ -15,6 +15,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, PrimAndExeExpectation
 from exactly_lib_test.impls.types.matcher.test_resources import matchers
+from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
 from exactly_lib_test.impls.types.matcher.test_resources.std_expr.configuration import MODEL, MatcherConfiguration
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.test_resources.pre_or_post_sds_value_validator import constant_validator
@@ -105,7 +106,7 @@ class AssertionsHelper(Generic[MODEL]):
 
     def sdv_with_validation(self, validation: ValidationActual) -> MatcherSdv[MODEL]:
         validator = constant_validator(validation)
-        return matchers.sdv_from_bool(
+        return sdv_ddv.sdv_from_bool(
             True,
             (),
             validator,

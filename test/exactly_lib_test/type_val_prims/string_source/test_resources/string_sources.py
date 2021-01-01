@@ -8,7 +8,7 @@ from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBeUsed
-from exactly_lib_test.test_resources.recording import SequenceRecorder
+from exactly_lib_test.test_resources.recording import SequenceRecordingMedia
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source, \
     contents_assertions as asrt_str_src_contents
 from exactly_lib_test.type_val_prims.string_source.test_resources import string_source_contents
@@ -131,24 +131,24 @@ class StringSourceMethod(enum.IntEnum):
 class StringSourceThatRecordsMethodInvocations(DelegatingStringSource):
     def __init__(self,
                  checked: StringSource,
-                 method_invocation_recorder: SequenceRecorder[StringSourceMethod],
+                 method_invocation_recordings: SequenceRecordingMedia[StringSourceMethod],
                  ):
         super().__init__(checked)
-        self.method_invocation_recorder = method_invocation_recorder
+        self.method_invocation_recordings = method_invocation_recordings
 
     def freeze(self):
-        self.method_invocation_recorder.record(StringSourceMethod.FREEZE)
+        self.method_invocation_recordings.record(StringSourceMethod.FREEZE)
         super().freeze()
 
     def contents(self) -> StringSourceContents:
         return StringSourceContentsThatRecordsMethodInvocations(self._target.contents(),
-                                                                self.method_invocation_recorder)
+                                                                self.method_invocation_recordings)
 
 
 class StringSourceContentsThatRecordsMethodInvocations(DelegatingStringSourceContents):
     def __init__(self,
                  checked: StringSourceContents,
-                 method_invocation_recorder: SequenceRecorder[StringSourceMethod],
+                 method_invocation_recorder: SequenceRecordingMedia[StringSourceMethod],
                  ):
         super().__init__(checked)
         self.method_invocation_recorder = method_invocation_recorder

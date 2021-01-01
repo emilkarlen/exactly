@@ -13,7 +13,7 @@ from exactly_lib.impls.types.files_matcher.impl import emptiness, num_files, qua
     sub_set_selection, prune
 from exactly_lib.impls.types.files_matcher.impl.matches import matches_non_full, matches_full
 from exactly_lib.impls.types.matcher import standard_expression_grammar
-from exactly_lib.impls.types.matcher.impls import parse_quantified_matcher
+from exactly_lib.impls.types.matcher.impls import parse_quantified_matcher, combinator_matchers
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
@@ -104,6 +104,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
     model=matcher_model.FILES_MATCHER_MODEL,
     value_type=ValueType.FILES_MATCHER,
     simple_expressions=_simple_expressions(),
+    model_freezer=combinator_matchers.no_op_freezer,
 )
 
 _PARSERS_FOR_MUST_BE_ON_CURRENT_LINE = ep.parsers_for_must_be_on_current_line(GRAMMAR)

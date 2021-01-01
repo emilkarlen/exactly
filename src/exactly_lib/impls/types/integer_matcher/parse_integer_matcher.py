@@ -10,7 +10,7 @@ from exactly_lib.impls.types.expression import parser as ep
 from exactly_lib.impls.types.expression.parser import GrammarParsers
 from exactly_lib.impls.types.integer import parse_integer
 from exactly_lib.impls.types.matcher import standard_expression_grammar
-from exactly_lib.impls.types.matcher.impls import comparison_matcher
+from exactly_lib.impls.types.matcher.impls import comparison_matcher, combinator_matchers
 from exactly_lib.impls.types.matcher.impls.comparison_matcher import ComparisonMatcherSdv
 from exactly_lib.impls.types.matcher.impls.operand_object import ObjectSdvOfOperandSdv
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
@@ -90,6 +90,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
         )
         for operator in comparators.ALL_OPERATORS
     ],
+    model_freezer=combinator_matchers.no_op_freezer,
 )
 
 _PARSERS_FOR_MUST_BE_ON_CURRENT_LINE = ep.parsers_for_must_be_on_current_line(GRAMMAR)

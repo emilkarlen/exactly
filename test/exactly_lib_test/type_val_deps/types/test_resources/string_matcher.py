@@ -9,7 +9,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidat
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
-from exactly_lib_test.impls.types.matcher.test_resources import matchers
+from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as args
 from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_building2 import StringMatcherArg
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -25,8 +25,8 @@ def string_matcher_sdv_constant_test_impl(resolved_value: StringMatcher,
                                           references: Sequence[SymbolReference] = (),
                                           validator: DdvValidator = ddv_validation.ConstantDdvValidator(),
                                           ) -> StringMatcherSdv:
-    return matchers.MatcherSdvOfConstantDdvTestImpl(
-        matchers.MatcherDdvOfConstantMatcherTestImpl(
+    return sdv_ddv.MatcherSdvOfConstantDdvTestImpl(
+        sdv_ddv.MatcherDdvOfConstantMatcherTestImpl(
             resolved_value,
             validator,
         ),
@@ -68,8 +68,9 @@ class StringMatcherSymbolValueContext(MatcherSymbolValueContext[StringSource]):
     def of_primitive(primitive: StringMatcher,
                      definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                      ) -> 'StringMatcherSymbolValueContext':
-        return StringMatcherSymbolValueContext.of_sdv(matchers.sdv_from_primitive_value(primitive),
-                                                      definition_source)
+        return StringMatcherSymbolValueContext.of_sdv(
+            sdv_ddv.sdv_from_primitive_value(primitive),
+            definition_source)
 
     @staticmethod
     def of_primitive_constant(result: bool,

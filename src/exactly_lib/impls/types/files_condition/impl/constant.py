@@ -227,7 +227,8 @@ class _DdvHelper:
             return None
         if len(matchers) == 1:
             return matchers[0]
-        return combinator_matchers.ConjunctionDdv(matchers)
+        return combinator_matchers.ConjunctionDdv(matchers,
+                                                  combinator_matchers.no_op_freezer)
 
     def validator_validator_of_files(self) -> DdvValidator:
         validators = []

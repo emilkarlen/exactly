@@ -5,41 +5,30 @@ from typing import List, Sequence, Tuple, Mapping, Optional
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_prims.files_condition import FilesCondition
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel, FileMatcher
-from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.types.file_matcher.test_resources.file_matchers import FileMatcherTestImplBase
 from exactly_lib_test.impls.types.files_condition.test_resources import primitive_assertions as asrt_primitive
-from exactly_lib_test.impls.types.matcher.test_resources import matchers
+from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
+from exactly_lib_test.impls.types.matcher.test_resources.matcher_w_init_action import MatcherWInitialAction, \
+    IntSequence, IntSequenceRegistry
+from exactly_lib_test.test_resources.recording import SequenceRecordingMedia
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, T, MessageBuilder, \
     ValueAssertion
 from exactly_lib_test.type_val_prims.matcher.test_resources import matching_result
 
 
-class IntSequence:
-    def __init__(self, first: int):
-        self._next = first
-
-    def next(self) -> int:
-        self._next += 1
-        return self._next - 1
-
-
-class ConstantMatcherThatRegistersApplication(FileMatcherTestImplBase):
+class ConstantMatcherThatRegistersApplication(MatcherWInitialAction[FileMatcherModel]):
     def __init__(self,
                  name_for_err_msgs: str,
                  result: bool,
                  sequence_to_register_from: IntSequence,
                  ):
-        super().__init__()
+        self.media = SequenceRecordingMedia()
+        registry = IntSequenceRegistry(sequence_to_register_from, self.media)
+        super().__init__(registry.action,
+                         matching_result.of(result),
+                         )
         self.name_for_err_msgs = name_for_err_msgs
-        self._result = result
-        self._sequence = sequence_to_register_from
-        self.registrations = []
-
-    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
-        self.registrations.append(self._sequence.next())
-        return matching_result.of(self._result)
 
 
 class ApplicationSequenceFrom1Builder:
@@ -74,8 +63,8 @@ class ApplicationSequenceFrom1Builder:
 
     @staticmethod
     def _sdv(primitive: FileMatcher) -> FileMatcherSdv:
-        return matchers.MatcherSdvOfConstantDdvTestImpl(
-            matchers.MatcherDdvOfConstantMatcherTestImpl(primitive)
+        return sdv_ddv.MatcherSdvOfConstantDdvTestImpl(
+            sdv_ddv.MatcherDdvOfConstantMatcherTestImpl(primitive)
         )
 
 
@@ -91,7 +80,7 @@ class MatcherApplicationSequenceAssertion(ValueAssertionBase[T]):
         for matcher, expected in self._matchers_and_expected_s:
             asrt.equals(expected).apply_with_message(
                 put,
-                matcher.registrations,
+                matcher.media.recordings,
                 message_builder.apply(matcher.name_for_err_msgs)
             )
 

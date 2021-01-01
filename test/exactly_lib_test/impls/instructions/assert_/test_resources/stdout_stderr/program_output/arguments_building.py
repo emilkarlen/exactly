@@ -8,7 +8,7 @@ from exactly_lib_test.test_resources.strings import WithToString
 
 
 def from_program(program: ArgumentElements,
-                 contents_matcher: List,
+                 contents_matcher: List[WithToString],
                  transformation: Optional[WithToString] = None) -> ArgumentElements:
     following_lines = [list(contents_matcher)]
     if transformation is not None:

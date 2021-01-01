@@ -11,7 +11,7 @@ from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine, Lin
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib_test.impls.types.line_matcher.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.line_matcher.test_resources.arguments_building import LineMatcherArg
-from exactly_lib_test.impls.types.matcher.test_resources import matchers
+from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -37,19 +37,19 @@ def is_reference_to_line_matcher(symbol_name: str) -> ValueAssertion[SymbolRefer
 
 
 def successful_matcher_with_validation(validator: DdvValidator) -> LineMatcherSdv:
-    return matchers.sdv_from_primitive_value(
-        matchers.MatcherWithConstantResult(True),
+    return sdv_ddv.sdv_from_primitive_value(
+        constant.MatcherWithConstantResult(True),
         (),
         validator,
     )
 
 
 def sdv_from_primitive_value(
-        primitive_value: MatcherWTrace[LineMatcherLine] = matchers.MatcherWithConstantResult(True),
+        primitive_value: MatcherWTrace[LineMatcherLine] = constant.MatcherWithConstantResult(True),
         references: Sequence[SymbolReference] = (),
         validator: DdvValidator = constant_success_validator(),
 ) -> LineMatcherSdv:
-    return matchers.sdv_from_primitive_value(
+    return sdv_ddv.sdv_from_primitive_value(
         primitive_value,
         references,
         validator,
@@ -80,8 +80,9 @@ class LineMatcherSymbolValueContext(MatcherSymbolValueContext[LineMatcherLine]):
     def of_primitive(primitive: LineMatcher,
                      definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                      ) -> 'LineMatcherSymbolValueContext':
-        return LineMatcherSymbolValueContext.of_sdv(matchers.sdv_from_primitive_value(primitive),
-                                                    definition_source)
+        return LineMatcherSymbolValueContext.of_sdv(
+            sdv_ddv.sdv_from_primitive_value(primitive),
+            definition_source)
 
     @staticmethod
     def of_primitive_constant(result: bool,

@@ -37,16 +37,36 @@ class MaxNumberOfTimesChecker:
         )
 
 
+class Counter:
+    def __init__(self, initial_value: int = 0):
+        self.value = initial_value
+
+    def increase(self, *args):
+        self.value += 1
+
+
 T = TypeVar('T')
 
 
-class SequenceRecorder(Generic[T]):
+class SequenceRecordingMedia(Generic[T]):
     def __init__(self):
         self._recordings = []
 
-    def record(self, method: T):
-        self._recordings.append(method)
+    def record(self, value: T):
+        self._recordings.append(value)
 
     @property
     def recordings(self) -> List[T]:
         return self._recordings
+
+
+class ConstantRecorder(Generic[T]):
+    def __init__(self,
+                 value_to_record: T,
+                 recorder: SequenceRecordingMedia[T],
+                 ):
+        self.recorder = recorder
+        self.value_to_record = value_to_record
+
+    def action(self, *args):
+        self.recorder.record(self.value_to_record)

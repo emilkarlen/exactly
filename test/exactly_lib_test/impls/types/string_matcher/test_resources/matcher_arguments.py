@@ -1,7 +1,7 @@
 from typing import List
 
-import exactly_lib.definitions.primitives.file_or_dir_contents
 from exactly_lib.definitions import logic
+from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.impls.types.string_matcher import matcher_options
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_resources.strings import WithToString
@@ -20,7 +20,7 @@ def matcher_for_expectation_type(expectation_type: ExpectationType,
 
 
 def emptiness_matcher() -> List[WithToString]:
-    return [exactly_lib.definitions.primitives.file_or_dir_contents.EMPTINESS_CHECK_ARGUMENT]
+    return [file_or_dir_contents.EMPTINESS_CHECK_ARGUMENT]
 
 
 def equals_matcher(expected) -> List[WithToString]:
