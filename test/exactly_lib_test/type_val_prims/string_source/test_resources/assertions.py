@@ -4,6 +4,7 @@ from typing import Sequence
 from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
+from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib_test.test_case.test_resources.hard_error_assertion import RaisesHardErrorAsLastAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder, \
@@ -35,6 +36,7 @@ class StringSourceThatThatChecksLines(StringSourceTestImplBase):
                  put: unittest.TestCase,
                  checked: StringSource,
                  ):
+        super().__init__()
         self._put = put
         self._checked = checked
 
@@ -50,9 +52,11 @@ class StringSourceThatThatChecksLines(StringSourceTestImplBase):
 
 def matches__str(contents: ValueAssertion[str],
                  may_depend_on_external_resources: ValueAssertion[bool],
+                 structure: ValueAssertion[NodeRenderer]
+                 = asrt_trace_rendering.matches_node_renderer(),
                  ) -> ValueAssertion[StringSource]:
     return asrt.and_([
-        has_valid_structure_description(),
+        has_structure_description(structure),
         contents_matches(
             asrt.and_([
                 asrt_str_src_contents.WithLinesCheck(
@@ -65,9 +69,11 @@ def matches__str(contents: ValueAssertion[str],
 
 
 def matches__lines__check_just_as_lines(lines: Sequence[str],
+                                        structure: ValueAssertion[NodeRenderer]
+                                        = asrt_trace_rendering.matches_node_renderer(),
                                         ) -> ValueAssertion[StringSource]:
     return asrt.and_([
-        has_valid_structure_description(),
+        has_structure_description(structure),
         contents_matches(
             asrt_str_src_contents.WithLinesCheck(
                 asrt.sub_component(
@@ -81,9 +87,11 @@ def matches__lines__check_just_as_lines(lines: Sequence[str],
 
 
 def contents_raises_hard_error(may_depend_on_external_resources: ValueAssertion[bool],
+                               structure: ValueAssertion[NodeRenderer]
+                               = asrt_trace_rendering.matches_node_renderer(),
                                ) -> ValueAssertion[StringSource]:
     return asrt.and_([
-        has_valid_structure_description(),
+        has_structure_description(structure),
         contents_matches(
             asrt.and_(
                 [asrt_str_src_contents.external_dependencies(may_depend_on_external_resources)] +
@@ -100,9 +108,11 @@ def contents_raises_hard_error(may_depend_on_external_resources: ValueAssertion[
     ])
 
 
-def contents_and_ext_dep_raises_hard_error() -> ValueAssertion[StringSource]:
+def contents_and_ext_dep_raises_hard_error(structure: ValueAssertion[NodeRenderer]
+                                           = asrt_trace_rendering.matches_node_renderer(),
+                                           ) -> ValueAssertion[StringSource]:
     return asrt.and_([
-        has_valid_structure_description(),
+        has_structure_description(structure),
         contents_matches(
             asrt.and_(
                 [asrt_str_src_contents.ext_dependencies_raises_hard_error()]
@@ -120,12 +130,16 @@ def contents_and_ext_dep_raises_hard_error() -> ValueAssertion[StringSource]:
     ])
 
 
-def has_valid_structure_description() -> ValueAssertion[StringSource]:
+def has_structure_description(expectation: ValueAssertion[NodeRenderer]) -> ValueAssertion[StringSource]:
     return asrt.sub_component(
         'structure',
         properties_access.get_structure,
-        asrt_trace_rendering.matches_node_renderer(),
+        expectation,
     )
+
+
+def has_valid_structure_description() -> ValueAssertion[StringSource]:
+    return has_structure_description(asrt_trace_rendering.matches_node_renderer())
 
 
 def contents_matches(expectation: ValueAssertion[StringSourceContents]) -> ValueAssertion[StringSource]:

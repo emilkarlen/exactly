@@ -267,6 +267,7 @@ class _SourceConstructorForStringWhoSFreezeRaisesHardError(SourceConstructorWApp
 
 class _StringSourceWhoSFreezeRaisesHardError(StringSourceTestImplBase):
     def __init__(self):
+        super().__init__()
         self._contents = string_source_contents.ContentsThatRaisesHardErrorException()
 
     def contents(self) -> StringSourceContents:

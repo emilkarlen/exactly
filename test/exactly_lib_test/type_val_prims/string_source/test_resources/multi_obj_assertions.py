@@ -7,6 +7,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
+from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -16,6 +17,7 @@ from exactly_lib_test.type_val_prims.string_source.test_resources import content
 from exactly_lib_test.type_val_prims.string_source.test_resources import properties_access
 from exactly_lib_test.type_val_prims.string_source.test_resources.contents_assertions import Expectation
 from exactly_lib_test.type_val_prims.string_source.test_resources.properties_access import ContentsAsStrGetter
+from exactly_lib_test.util.description_tree.test_resources import rendering_assertions as asrt_trace_rendering
 
 
 class SourceConstructor(ABC):
@@ -53,7 +55,10 @@ class ExpectationOnUnFrozenAndFrozen:
                  un_frozen: Expectation,
                  frozen_may_depend_on_external_resources: ValueAssertion[StringSourceContents]
                  = asrt_str_src_contents.external_dependencies(asrt.is_instance(bool)),
+                 structure: ValueAssertion[NodeRenderer]
+                 = asrt_trace_rendering.matches_node_renderer(),
                  ):
+        self.structure = structure
         self.un_frozen = un_frozen
         self.frozen_may_depend_on_external_resources = frozen_may_depend_on_external_resources
 
@@ -61,20 +66,26 @@ class ExpectationOnUnFrozenAndFrozen:
     def equals(contents: str,
                may_depend_on_external_resources: ValueAssertion[bool],
                frozen_may_depend_on_external_resources: ValueAssertion[bool],
+               structure: ValueAssertion[NodeRenderer]
+               = asrt_trace_rendering.matches_node_renderer(),
                ) -> 'ExpectationOnUnFrozenAndFrozen':
         return ExpectationOnUnFrozenAndFrozen(
             Expectation.equals(contents, may_depend_on_external_resources),
             asrt_str_src_contents.external_dependencies(frozen_may_depend_on_external_resources),
+            structure,
         )
 
     @staticmethod
     def hard_error(expected: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text(),
                    may_depend_on_external_resources: ValueAssertion[StringSourceContents]
                    = asrt_str_src_contents.external_dependencies(asrt.is_instance(bool)),
+                   structure: ValueAssertion[NodeRenderer]
+                   = asrt_trace_rendering.matches_node_renderer(),
                    ) -> 'ExpectationOnUnFrozenAndFrozen':
         return ExpectationOnUnFrozenAndFrozen(
             Expectation.hard_error(expected, may_depend_on_external_resources),
             asrt.anything_goes(),
+            structure,
         )
 
     @property
@@ -112,7 +123,10 @@ class _SourceWithContentsVariantsAssertion(asrt.ValueAssertionBase[SourceConstru
     def __init__(self,
                  expectation: Expectation,
                  contents_access_sequence_cases: Sequence[NameAndValue[List[NameAndValue[ContentsAsStrGetter]]]],
+                 structure: ValueAssertion[NodeRenderer]
+                 = asrt_trace_rendering.matches_node_renderer(),
                  ):
+        self.structure = structure
         self._expectation = expectation
         self._contents_access_sequence_cases = contents_access_sequence_cases
 
@@ -124,13 +138,13 @@ class _SourceWithContentsVariantsAssertion(asrt.ValueAssertionBase[SourceConstru
         self._non_contents_related(put, value, message_builder.for_sub_component('non-contents-related'))
         self._contents_related(put, value, message_builder.for_sub_component('contents-related'))
 
-    @staticmethod
-    def _non_contents_related(put: unittest.TestCase,
+    def _non_contents_related(self,
+                              put: unittest.TestCase,
                               constructor: SourceConstructor,
                               message_builder: MessageBuilder,
                               ):
         with constructor.new(put, message_builder) as string_source:
-            asrt_string_source.has_valid_structure_description().apply(put, string_source, message_builder)
+            asrt_string_source.has_structure_description(self.structure).apply(put, string_source, message_builder)
 
     def _contents_related(self,
                           put: unittest.TestCase,
@@ -225,7 +239,8 @@ class _SourceAssertionOnUnFrozenAndFrozen(asrt.ValueAssertionBase[SourceConstruc
                    message_builder: MessageBuilder,
                    ):
         assertion = _SourceWithContentsVariantsAssertion(self._expectation.un_frozen,
-                                                         self._contents_cases)
+                                                         self._contents_cases,
+                                                         self._expectation.structure)
         assertion.apply(put, source_constructor, message_builder.for_sub_component('un-frozen'))
 
     def _frozen(self,
@@ -234,7 +249,8 @@ class _SourceAssertionOnUnFrozenAndFrozen(asrt.ValueAssertionBase[SourceConstruc
                 message_builder: MessageBuilder,
                 ):
         assertion = _SourceWithContentsVariantsAssertion(self._expectation.frozen,
-                                                         self._contents_cases)
+                                                         self._contents_cases,
+                                                         self._expectation.structure)
         for num_freeze in range(1, 3):
             constructor_that_freezes = _SourceConstructorThatFreezes(message_builder, num_freeze,
                                                                      source_constructor)

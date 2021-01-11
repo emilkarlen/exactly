@@ -98,6 +98,7 @@ class _StringSourceWithContentsOnlyAccessibleAfterFreeze(StringSourceTestImplBas
                  is_frozen: bool,
                  contents: StringSourceContents,
                  ):
+        super().__init__()
         self._put = put
         self._is_frozen = is_frozen
         self._contents = contents

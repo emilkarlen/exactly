@@ -1,8 +1,9 @@
 import enum
 import unittest
 from pathlib import Path
-from typing import ContextManager, Iterator, Sequence, List, IO
+from typing import ContextManager, Iterator, Sequence, List, IO, Optional
 
+from exactly_lib.impls.types.string_source.source_from_contents import StringSourceStructureBuilderGetter
 from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
@@ -35,14 +36,19 @@ class StringSourceOfContents(StringSourceTestImplBase):
     def __init__(self,
                  before_freeze: StringSourceContents,
                  after_freeze: StringSourceContents,
+                 new_structure_builder: Optional[StringSourceStructureBuilderGetter] = None,
                  ):
+        super().__init__(new_structure_builder)
         self._contents = before_freeze
         self._after_freeze = after_freeze
 
     @staticmethod
-    def of_identical(before_and_after_freeze: StringSourceContents) -> StringSource:
+    def of_identical(before_and_after_freeze: StringSourceContents,
+                     new_structure_builder: Optional[StringSourceStructureBuilderGetter] = None,
+                     ) -> StringSource:
         return StringSourceOfContents(before_and_after_freeze,
-                                      before_and_after_freeze)
+                                      before_and_after_freeze,
+                                      new_structure_builder)
 
     def freeze(self):
         self._contents = self._after_freeze
@@ -62,10 +68,6 @@ def string_source_from_lines(lines: Sequence[str],
             may_depend_on_external_resources
         ),
     )
-
-
-def new_structure_builder() -> StringSourceStructureBuilder:
-    return StringSourceStructureBuilder('test resources impl', (), ())
 
 
 def of_lines__w_check_for_validity(

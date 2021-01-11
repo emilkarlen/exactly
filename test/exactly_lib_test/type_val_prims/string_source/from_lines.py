@@ -27,7 +27,7 @@ class TestTransformedStringSourceFromLines(unittest.TestCase):
         for transformation_may_depend_on_external_resources in [False, True]:
             with self.subTest(transformation_may_depend_on_external_resources=
                               transformation_may_depend_on_external_resources):
-                source_constructor = _ToUpperSourceConstructor(
+                source_constructor = _SourceConstructorOfTransFun(
                     _transformer_function,
                     [
                         '1st\n',
@@ -51,7 +51,7 @@ class TestTransformedStringSourceFromLines(unittest.TestCase):
                 )
 
 
-class _ToUpperSourceConstructor(SourceConstructorWAppEnvForTest):
+class _SourceConstructorOfTransFun(SourceConstructorWAppEnvForTest):
     def __init__(self,
                  transformation: sut.StringTransFun,
                  lines: Sequence[str],

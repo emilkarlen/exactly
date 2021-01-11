@@ -251,6 +251,57 @@ class StringSourceContentsFromLines(StringSourceContentsFromLinesBase):
         return self.__tmp_file_space
 
 
+class StringSourceContentsWCheckOfMaxNumAccessedLines(StringSourceContents):
+    def __init__(self,
+                 put: unittest.TestCase,
+                 checked: StringSourceContents,
+                 max_num_accessed_lines: int,
+                 ):
+        self._put = put
+        self._checked = checked
+        self._max_num_accessed_lines = max_num_accessed_lines
+
+    @property
+    def may_depend_on_external_resources(self) -> bool:
+        return self._checked.may_depend_on_external_resources
+
+    @property
+    def as_str(self) -> str:
+        with self.as_lines as lines:
+            return ''.join(lines)
+
+    @property
+    @contextmanager
+    def as_lines(self) -> ContextManager[Iterator[str]]:
+        with self._checked.as_lines as lines_of_checked:
+            yield self._lines_iter_w_num_access_check(lines_of_checked)
+
+    def write_to(self, output: IO):
+        with self.as_lines as lines:
+            output.writelines(lines)
+
+    @property
+    def as_file(self) -> Path:
+        ret_val = self.tmp_file_space.new_path('contents-w-num-accessed-lines-check')
+        with ret_val.open('w') as f:
+            with self.as_lines as lines:
+                f.writelines(lines)
+
+        return ret_val
+
+    @property
+    def tmp_file_space(self) -> DirFileSpace:
+        return self._checked.tmp_file_space
+
+    def _lines_iter_w_num_access_check(self, lines_of_checked: Iterator[str]) -> Iterator[str]:
+        current_line = 0
+        for line in lines_of_checked:
+            current_line += 1
+            self._put.assertLessEqual(current_line, self._max_num_accessed_lines,
+                                      'number of accessed lines')
+            yield line
+
+
 def of_lines__w_check_for_validity(
         put: unittest.TestCase,
         lines: Sequence[str],
