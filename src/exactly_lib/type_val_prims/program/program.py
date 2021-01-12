@@ -1,40 +1,45 @@
+from typing import Sequence, Optional
+
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
-from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims import string_transformer_descr
+from exactly_lib.type_val_prims.description.structure_building import StructureBuilder
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer, WithNodeDescription
 from exactly_lib.type_val_prims.program.command import Command
-from exactly_lib.type_val_prims.program.stdin import StdinData
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import NodeRenderer
-from exactly_lib.util.description_tree.tree import Node
 
 
 class Program(WithCachedNodeDescriptionBase):
     def __init__(self,
                  command: Command,
-                 stdin: StdinData,
-                 transformation: StringTransformer,
+                 stdin: Sequence[StringSource],
+                 transformation: Sequence[StringTransformer],
                  ):
         super().__init__()
         self._command = command
         self._stdin = stdin
         self._transformation = transformation
+        if isinstance(transformation, StringTransformer):
+            raise NotImplementedError('error terror')
 
     def _structure(self) -> StructureRenderer:
-        return _StructureRendererOfPrimitive(self._command,
-                                             self._transformation)
+        return program_structure_renderer(self._command.structure(),
+                                          self._transformation)
 
     @property
     def command(self) -> Command:
         return self._command
 
     @property
-    def stdin(self) -> StdinData:
+    def stdin(self) -> Sequence[StringSource]:
         return self._stdin
 
     @property
-    def transformation(self) -> StringTransformer:
+    def transformation(self) -> Sequence[StringTransformer]:
         return self._transformation
 
 
@@ -42,26 +47,24 @@ NAME = ' '.join((string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION,
                  syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name))
 
 
-class _StructureRendererOfPrimitive(NodeRenderer[None]):
+def program_structure_renderer(command: StructureBuilder,
+                               transformations: Sequence[WithNodeDescription],
+                               ) -> NodeRenderer[None]:
+    mb_transformation_node = _transformation_node(transformations)
+    if mb_transformation_node:
+        command.append_child(mb_transformation_node)
 
-    def __init__(self,
-                 command: Command,
-                 transformation: StringTransformer,
-                 ):
-        self._command = command
-        self._transformation = transformation
+    return command.as_render()
 
-    def render(self) -> Node[None]:
-        ret_val = self._command.structure()
-        if not self._transformation.is_identity_transformer:
-            ret_val.append_child(self._transformation_node())
 
-        return ret_val.as_render().render()
-
-    def _transformation_node(self) -> StructureRenderer:
+def _transformation_node(transformations: Sequence[WithNodeDescription]) -> Optional[StructureRenderer]:
+    if not transformations:
+        return None
+    else:
+        transformer = string_transformer_descr.sequence_of_unknown_num_operands(transformations)
         return renderers.NodeRendererFromParts(
             NAME,
             None,
             (),
-            (self._transformation.structure(),),
+            (transformer,),
         )

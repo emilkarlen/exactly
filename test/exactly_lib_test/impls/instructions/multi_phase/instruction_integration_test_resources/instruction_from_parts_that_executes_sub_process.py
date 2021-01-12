@@ -8,7 +8,6 @@ from exactly_lib.impls.instructions.multi_phase.utils import \
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.impls.types.program.command import command_sdvs
-from exactly_lib.impls.types.program.sdvs import accumulator
 from exactly_lib.impls.types.program.sdvs.command_program_sdv import ProgramSdvForCommand
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
@@ -20,6 +19,7 @@ from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPre
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.types.path import path_sdvs
+from exactly_lib.type_val_deps.types.program.sdv.accumulated_components import AccumulatedComponents
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util.str_.misc_formatting import lines_content
@@ -206,7 +206,7 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(P
         instruction_argument = parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         return ProgramSdvForCommand(
             test_command_sdvs.for_py_source_on_command_line(instruction_argument),
-            accumulator.empty())
+            AccumulatedComponents.empty())
 
 
 class _SetupParserForExecutingPythonSourceFileRelAct(ParserFromTokenParserBase[ProgramSdv]):
@@ -217,7 +217,7 @@ class _SetupParserForExecutingPythonSourceFileRelAct(ParserFromTokenParserBase[P
                 path_sdvs.of_rel_option_with_const_file_name(RelOptionType.REL_ACT,
                                                              instruction_argument)
             ),
-            accumulator.empty())
+            AccumulatedComponents.empty())
 
 
 class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(ParserFromTokenParserBase[ProgramSdv]):
@@ -229,7 +229,7 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(P
         argument_sdv = string_sdvs.str_constant(instruction_argument)
         return ProgramSdvForCommand(
             command_sdvs.for_shell(argument_sdv),
-            accumulator.empty())
+            AccumulatedComponents.empty())
 
 
 SCRIPT_THAT_EXISTS_WITH_STATUS_0 = 'import sys; sys.exit(0)'

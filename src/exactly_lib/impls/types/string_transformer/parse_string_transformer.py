@@ -3,7 +3,7 @@ from exactly_lib.impls.types.expression import grammar, parser as ep
 from exactly_lib.impls.types.expression.parser import GrammarParsers
 from exactly_lib.impls.types.string_transformer import names
 from exactly_lib.impls.types.string_transformer import sdvs
-from exactly_lib.impls.types.string_transformer.impl import replace, sequence, identity, case_converters, \
+from exactly_lib.impls.types.string_transformer.impl import replace, sequence_sdv, identity, case_converters, \
     tcds_paths_replacement, strip_space
 from exactly_lib.impls.types.string_transformer.impl.filter import parse as parse_filter
 from exactly_lib.impls.types.string_transformer.impl.run_program import parse as parse_run
@@ -76,8 +76,8 @@ GRAMMAR = grammar.Grammar(
         NameAndValue(
             names.SEQUENCE_OPERATOR_NAME,
             grammar.InfixOperator(
-                sequence.StringTransformerSequenceSdv,
-                sequence.SYNTAX_DESCRIPTION,
+                sequence_sdv.StringTransformerSequenceSdv,
+                sequence_sdv.SYNTAX_DESCRIPTION,
             )
         ),
     ]],

@@ -15,6 +15,14 @@ class ArgumentsSdv(ObjectWithSymbolReferences):
         self._arguments = arguments
         self._validators = validators
 
+    @staticmethod
+    def empty() -> 'ArgumentsSdv':
+        return ArgumentsSdv(list_sdvs.empty(), ())
+
+    @staticmethod
+    def new_without_validation(arguments: ListSdv) -> 'ArgumentsSdv':
+        return ArgumentsSdv(arguments, ())
+
     def new_accumulated(self, arguments_sdv: 'ArgumentsSdv') -> 'ArgumentsSdv':
         args = list_sdvs.concat([self._arguments, arguments_sdv.arguments_list])
         validators = tuple(self._validators) + tuple(arguments_sdv._validators)
@@ -35,7 +43,3 @@ class ArgumentsSdv(ObjectWithSymbolReferences):
             [vr(symbols)
              for vr in self._validators]
         )
-
-
-def new_without_validation(arguments: ListSdv) -> ArgumentsSdv:
-    return ArgumentsSdv(arguments, ())

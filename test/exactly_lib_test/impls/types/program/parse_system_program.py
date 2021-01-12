@@ -33,8 +33,6 @@ from exactly_lib_test.type_val_deps.dep_variants.test_resources.type_sdv_asserti
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command, \
     program_assertions as asrt_pgm_val
-from exactly_lib_test.type_val_prims.string_transformer.test_resources import \
-    string_transformer_assertions as asrt_line_transformer
 
 
 def suite() -> unittest.TestSuite:
@@ -185,8 +183,8 @@ def check_parsing_of_program(put: unittest.TestCase,
                     program=program_case.expected_resolved_value,
                     arguments=argument_case.expected_resolved_values(tcds)
                 ),
-                stdin=asrt_pgm_val.no_stdin(),
-                transformer=asrt_line_transformer.is_identity_transformer(True)
+                stdin=asrt_pgm_val.is_no_stdin(),
+                transformer=asrt_pgm_val.is_no_transformation(),
             )
 
         expectation = matches_sdv_of_program(

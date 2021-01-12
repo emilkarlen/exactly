@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.impls.types.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.type_val_deps.types.program.sdv.accumulated_components import AccumulatedComponents
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, \
     ExecutionExpectation, \
     MultiSourceExpectation, prim_asrt__constant
@@ -93,11 +94,12 @@ class TestWhenProgramHasTransformerThenResultShouldBeCompositionOfProgramAndTran
 
         to_upper_program = program_sdvs.interpret_py_source_file_that_must_exist(py_file_conf.path_sdv)
 
+        additional_components = AccumulatedComponents.of_transformation(
+            StringTransformerSdvConstant(string_transformers.duplicate_words())
+        )
         program_symbol = ProgramSymbolContext.of_sdv(
             'PROGRAM_WITH_OUTPUT_TRANSFORMATION',
-            to_upper_program.new_with_appended_transformations(
-                [StringTransformerSdvConstant(string_transformers.duplicate_words())]
-            )
+            to_upper_program.new_accumulated(additional_components)
         )
 
         input_model_lines = [

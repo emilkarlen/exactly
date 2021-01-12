@@ -5,13 +5,11 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Sequence, ContextManager
 
-from exactly_lib.impls.types.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.impls.types.string_transformer.impl.sources import transformed_by_program as sut
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.program.commands import Command
 from exactly_lib.type_val_prims.program.commands import CommandDriverForExecutableFile
 from exactly_lib.type_val_prims.program.program import Program
-from exactly_lib.type_val_prims.program.stdin import StdinData
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib_test.impls.types.string_source.test_resources.string_sources import source_from_lines_test_impl
@@ -195,7 +193,7 @@ class TestTransformedByProgramWTransformation(unittest.TestCase):
                 input_raw_lines,
                 ignore_exit_code=False,
                 exit_code=0,
-                transformation_of_program=additional_transformer
+                transformation_of_program=[additional_transformer]
             )
             expectation = multi_obj_assertions.ExpectationOnUnFrozenAndFrozen.equals(
                 expected,
@@ -229,7 +227,7 @@ class TestTransformedByProgramWTransformation(unittest.TestCase):
             input_raw_lines,
             ignore_exit_code=True,
             exit_code=1,
-            transformation_of_program=additional_transformer
+            transformation_of_program=[additional_transformer]
         )
 
         assertion = multi_obj_assertions.assertion_of_sequence_permutations(expectation)
@@ -249,7 +247,7 @@ class TestTransformedByProgramWTransformation(unittest.TestCase):
             ],
             ignore_exit_code=False,
             exit_code=1,
-            transformation_of_program=string_transformers.count_num_uppercase_characters()
+            transformation_of_program=[string_transformers.count_num_uppercase_characters()]
         )
         expectation = multi_obj_assertions.ExpectationOnUnFrozenAndFrozen.hard_error()
 
@@ -300,7 +298,7 @@ class _ToUpperProgramSourceConstructor(SourceConstructorWAppEnvForTest):
                  raw_lines: Sequence[str],
                  ignore_exit_code: bool,
                  exit_code: int,
-                 transformation_of_program: StringTransformer = IdentityStringTransformer()
+                 transformation_of_program: Sequence[StringTransformer] = ()
                  ):
         super().__init__()
         self.raw_lines = raw_lines
@@ -333,7 +331,7 @@ class _ToUpperProgramSourceConstructor(SourceConstructorWAppEnvForTest):
     def _to_upper_program(self, empty_tmp_dir: Path) -> Program:
         return Program(
             _to_upper_command(empty_tmp_dir, self.exit_code),
-            StdinData(()),
+            (),
             self.transformation_of_program,
         )
 

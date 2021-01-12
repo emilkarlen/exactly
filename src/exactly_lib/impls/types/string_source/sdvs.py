@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.impls.types.string_transformer import sequence_resolving_ddv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
@@ -61,8 +62,9 @@ class ProgramOutputStringSourceSdv(StringSourceSdv):
             program_ddv.command,
         )
         return (
-            ddvs.TransformedStringSourceDdv(command_source_ddv, program_ddv.transformation)
-            if program_ddv.has_transformations
+            ddvs.TransformedStringSourceDdv(command_source_ddv,
+                                            sequence_resolving_ddv.resolve(program_ddv.transformations))
+            if program_ddv.transformations
             else
             command_source_ddv
         )

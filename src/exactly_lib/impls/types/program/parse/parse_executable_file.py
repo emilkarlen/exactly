@@ -3,10 +3,10 @@ from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.impls.types.program.command import command_sdvs
 from exactly_lib.impls.types.program.parse import parse_arguments
 from exactly_lib.impls.types.program.parse import parse_executable_file_path
-from exactly_lib.impls.types.program.sdvs import accumulator
 from exactly_lib.impls.types.program.sdvs.command_program_sdv import ProgramSdvForCommand
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.type_val_deps.types.program.sdv.accumulated_components import AccumulatedComponents
 from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 
@@ -59,4 +59,4 @@ class _ParserOfProgram(ParserFromTokenParserBase[ProgramSdv]):
 
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramSdv:
         command_sdv = self._command_parser.parse_from_token_parser(parser)
-        return ProgramSdvForCommand(command_sdv, accumulator.empty())
+        return ProgramSdvForCommand(command_sdv, AccumulatedComponents.empty())

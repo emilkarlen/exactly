@@ -52,7 +52,7 @@ class _Parser(ParserFromTokenParserBase[ArgumentsSdv]):
         ]
 
     def parse_from_token_parser(self, token_parser: TokenParser) -> ArgumentsSdv:
-        arguments = arguments_sdvs.empty()
+        arguments = ArgumentsSdv.empty()
 
         while not token_parser.is_at_eol:
             following_arguments = self._parse_element(token_parser)
@@ -77,7 +77,7 @@ def _parse_rest_of_line_as_single_element(token_parser: TokenParser) -> Argument
     if not string.has_fragments:
         raise SingleInstructionInvalidArgumentException('Empty contents after ' +
                                                         syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER)
-    return arguments_sdvs.new_without_validation(list_sdvs.from_string(string))
+    return ArgumentsSdv.new_without_validation(list_sdvs.from_string(string))
 
 
 def _parse_existing_file(token_parser: TokenParser) -> ArgumentsSdv:
@@ -98,7 +98,7 @@ def _parse_existing_path(token_parser: TokenParser) -> ArgumentsSdv:
 def _parse_plain_list_element(parser: TokenParser) -> ArgumentsSdv:
     token = parser.consume_mandatory_token('Invalid list element')
     element = parse_list.element_of(token)
-    return arguments_sdvs.new_without_validation(list_sdvs.from_elements([element]))
+    return ArgumentsSdv.new_without_validation(list_sdvs.from_elements([element]))
 
 
 _PARSE = _Parser()

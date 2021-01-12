@@ -1,7 +1,6 @@
 import unittest
 from typing import List, Sequence
 
-from exactly_lib.impls.types.program.command import arguments_sdvs
 from exactly_lib.impls.types.program.parse import parse_with_reference_to_program as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -14,6 +13,7 @@ from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.path.path_ddvs import simple_of_rel_option
 from exactly_lib.type_val_deps.types.path.path_sdvs import constant
 from exactly_lib.type_val_deps.types.program.ddv.program import ProgramAdv
+from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.type_val_prims.program.program import Program
@@ -43,8 +43,6 @@ from exactly_lib_test.type_val_deps.types.test_resources import program as asrt_
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command, \
     program_assertions as asrt_pgm_val
-from exactly_lib_test.type_val_prims.string_transformer.test_resources import \
-    string_transformer_assertions as asrt_line_transformer
 
 
 def suite() -> unittest.TestSuite:
@@ -277,8 +275,8 @@ class TestResolving(unittest.TestCase):
                         executable_file=exe_path.value_of_any_dependency__d(tcds),
                         arguments=expected_arguments
                     ),
-                    stdin=asrt_pgm_val.no_stdin(),
-                    transformer=asrt_line_transformer.is_identity_transformer(True)
+                    stdin=asrt_pgm_val.is_no_stdin(),
+                    transformer=asrt_pgm_val.is_no_transformation(),
                 )
 
             def program_adv_assertion(tcds: TestCaseDs) -> ValueAssertion[ProgramAdv]:
@@ -293,7 +291,7 @@ class TestResolving(unittest.TestCase):
             return ResolvingCase('relativity=' + str(relativity),
                                  actual_sdv=program_sdvs.ref_to_exe_file(
                                      path_sdvs.constant(exe_path),
-                                     arguments_sdvs.new_without_validation(
+                                     ArgumentsSdv.new_without_validation(
                                          list_sdvs.from_str_constants(expected_arguments))),
                                  expected=asrt_dir_dep_val.matches_dir_dependent_value(program_adv_assertion))
 
@@ -311,8 +309,8 @@ class TestResolving(unittest.TestCase):
                     program=the_executable_program,
                     arguments=expected_arguments
                 ),
-                stdin=asrt_pgm_val.no_stdin(),
-                transformer=asrt_line_transformer.is_identity_transformer(True)
+                stdin=asrt_pgm_val.is_no_stdin(),
+                transformer=asrt_pgm_val.is_no_transformation(),
             )
 
         def program_adv_assertion(tcds: TestCaseDs) -> ValueAssertion[ProgramAdv]:
@@ -328,7 +326,7 @@ class TestResolving(unittest.TestCase):
             '',
             actual_sdv=program_sdvs.system_program(
                 string_sdvs.str_constant(the_executable_program),
-                arguments_sdvs.new_without_validation(
+                ArgumentsSdv.new_without_validation(
                     list_sdvs.from_str_constants(expected_arguments))),
             expected=asrt_dir_dep_val.matches_dir_dependent_value(program_adv_assertion)
         )

@@ -2,7 +2,6 @@ from typing import ContextManager
 
 from exactly_lib.impls.types.matcher.impls.run_program import sdv as run_pgm_sdv
 from exactly_lib.impls.types.matcher.impls.run_program.run_conf import RunConfiguration
-from exactly_lib.impls.types.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.program.program import Program
@@ -24,5 +23,5 @@ class _StringMatcherRunConfiguration(RunConfiguration[StringSource]):
         return Program(
             matcher_argument_program.command,
             matcher_argument_program.stdin,
-            IdentityStringTransformer(),
+            (),
         )

@@ -35,8 +35,7 @@ from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symb
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command, \
     program_assertions as asrt_pgm_val
-from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers, \
-    string_transformer_assertions as asrt_str_trans
+from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes
 
 
@@ -86,8 +85,8 @@ class TestWithoutExecution(unittest.TestCase):
                                         driver=command_case.expected_command(env),
                                         arguments=asrt.is_empty_sequence
                                     ),
-                                    stdin=asrt_pgm_val.no_stdin(),
-                                    transformer=asrt_str_trans.is_identity_transformer(True),
+                                    stdin=asrt_pgm_val.is_no_stdin(),
+                                    transformer=asrt_pgm_val.is_no_transformation(),
                                 )
                             )
                         )
@@ -144,8 +143,8 @@ class TestWithoutExecution(unittest.TestCase):
                                             driver=command_case.expected_command(env),
                                             arguments=expected_arguments
                                         ),
-                                        stdin=asrt_pgm_val.no_stdin(),
-                                        transformer=asrt_str_trans.is_identity_transformer(True),
+                                        stdin=asrt_pgm_val.is_no_stdin(),
+                                        transformer=asrt_pgm_val.is_no_transformation(),
                                     )
                                 )
                             )
@@ -190,8 +189,8 @@ class TestWithoutExecution(unittest.TestCase):
                                         driver=command_case.expected_command(env),
                                         arguments=asrt.is_empty_sequence
                                     ),
-                                    stdin=asrt_pgm_val.no_stdin(),
-                                    transformer=asrt.is_(transformer.primitive),
+                                    stdin=asrt_pgm_val.is_no_stdin(),
+                                    transformer=asrt.matches_singleton_sequence(asrt.is_(transformer.primitive)),
                                 )
                             )
                         )
@@ -241,8 +240,8 @@ class TestWithoutExecution(unittest.TestCase):
                                     driver=command_case.expected_command(env),
                                     arguments=asrt.is_empty_sequence
                                 ),
-                                stdin=asrt_pgm_val.no_stdin(),
-                                transformer=asrt.is_(transformer.primitive),
+                                stdin=asrt_pgm_val.is_no_stdin(),
+                                transformer=asrt.matches_singleton_sequence(asrt.is_(transformer.primitive)),
                             )
                         )
                     )

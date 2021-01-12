@@ -6,6 +6,7 @@ from exactly_lib.impls.types.program.parse import parse_executable_file, parse_s
     parse_shell_command, parse_with_reference_to_program
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.type_val_deps.types.program.sdv.accumulated_components import AccumulatedComponents
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.util import functional
@@ -43,8 +44,11 @@ class _Parser(ParserFromTokenParserBase[ProgramSdv]):
 
         optional_transformer = self._string_transformer_parser_function()(parser)
 
+        def new_w_additional_transformer(transformer: StringTransformerSdv) -> ProgramSdv:
+            return command_as_program.new_accumulated(AccumulatedComponents.of_transformation(transformer))
+
         return functional.reduce_optional(
-            lambda transformer: command_as_program.new_with_appended_transformations([transformer]),
+            new_w_additional_transformer,
             command_as_program,
             optional_transformer,
         )

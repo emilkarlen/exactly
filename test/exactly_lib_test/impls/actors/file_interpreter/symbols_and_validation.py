@@ -9,6 +9,7 @@ from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
+from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
 from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.str_.misc_formatting import lines_content
@@ -466,7 +467,7 @@ class TestArgumentsOfInterpreterAndActAreConcatenated(unittest.TestCase):
             ab.singleton(argument_to_act_file)
         ])
         interpreter_arguments_symbol = ListConstantSymbolContext('INTERPRETER_ARGS_LIST', ['1st', '2nd'])
-        interpreter_arguments = arguments_sdvs.new_without_validation(
+        interpreter_arguments = ArgumentsSdv.new_without_validation(
             interpreter_arguments_symbol.sdv
         )
         actor = sut.actor(

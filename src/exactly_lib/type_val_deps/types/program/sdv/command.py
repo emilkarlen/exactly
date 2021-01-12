@@ -1,7 +1,6 @@
 from abc import ABC
 from typing import Sequence, TypeVar, Generic
 
-from exactly_lib.impls.types.program.command import arguments_sdvs
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references, \
     SymbolDependentValue
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
@@ -45,7 +44,7 @@ class CommandSdv(NonAppEnvDepComponentSdv[CommandDdv]):
                           self._arguments.new_accumulated(additional_arguments))
 
     def new_with_additional_argument_list(self, additional_arguments: ListSdv) -> 'CommandSdv':
-        return self.new_with_additional_arguments(arguments_sdvs.new_without_validation(additional_arguments))
+        return self.new_with_additional_arguments(ArgumentsSdv.new_without_validation(additional_arguments))
 
     def resolve(self, symbols: SymbolTable) -> CommandDdv:
         return CommandDdv(self._driver.resolve(symbols),

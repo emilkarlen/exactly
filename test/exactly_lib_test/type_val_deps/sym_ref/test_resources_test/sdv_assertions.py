@@ -10,6 +10,7 @@ from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.program.ddv.program import ProgramDdv
+from exactly_lib.type_val_deps.types.program.sdv.accumulated_components import AccumulatedComponents
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string_.string_ddv import StringDdv
 from exactly_lib.type_val_deps.types.string_.strings_ddvs import ConstantFragmentDdv
@@ -177,9 +178,11 @@ class _PathSdvTestImpl(DataTypeSdv):
 
 
 class _ProgramResolverTestImpl(ProgramSdv):
-    def __init__(self,
-                 explicit_references: Sequence[SymbolReference] = ()):
+    def __init__(self, explicit_references: Sequence[SymbolReference] = ()):
         self.explicit_references = explicit_references
+
+    def new_accumulated(self, additional: AccumulatedComponents) -> '_ProgramResolverTestImpl':
+        return _ProgramResolverTestImpl(self.explicit_references)
 
     @property
     def references(self) -> Sequence[SymbolReference]:

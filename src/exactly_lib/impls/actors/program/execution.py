@@ -4,6 +4,7 @@ from typing import Optional
 
 from exactly_lib.impls.actors.util import std_files
 from exactly_lib.impls.types.string_source.factory import RootStringSourceFactory
+from exactly_lib.impls.types.string_transformer import sequence_resolving
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
@@ -11,6 +12,7 @@ from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
+from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.file_utils.std import StdFiles, StdOutputFiles
 from ..util.actor_from_parts import parts
 
@@ -47,11 +49,12 @@ class Executor(parts.Executor, ABC):
                                    program: Program,
                                    files: StdFiles,
                                    ) -> _ProgramExecutor:
+        transformation = sequence_resolving.resolve(program.transformation)
         return (
             _ExecutorWithoutTransformation(app_env, program.command, files)
-            if program.transformation.is_identity_transformer
+            if transformation.is_identity_transformer
             else
-            _ExecutorWithTransformation(app_env, program, files)
+            _ExecutorWithTransformation(app_env, program, transformation, files)
         )
 
     def _resolve_program(self,
@@ -95,11 +98,13 @@ class _ExecutorWithoutTransformation(_ProgramExecutor):
 class _ExecutorWithTransformation(_ProgramExecutor):
     def __init__(self,
                  app_env: ApplicationEnvironment,
-                 program_w_trans: Program,
+                 program: Program,
+                 resolved_transformer_for_program: StringTransformer,
                  atc_files: StdFiles,
                  ):
         self._app_env = app_env
-        self._program_w_trans = program_w_trans
+        self._program = program
+        self._resolved_transformer_for_program = resolved_transformer_for_program
         self._atc_files = atc_files
         self._string_source_factory = RootStringSourceFactory(app_env.tmp_files_space)
 
@@ -109,7 +114,7 @@ class _ExecutorWithTransformation(_ProgramExecutor):
         exit_code_from_command = self._execute_command_w_stdout_to_file(untransformed_stdout_path)
 
         transformer_input = self._string_source_factory.of_file__poorly_described(untransformed_stdout_path)
-        transformer_output = self._program_w_trans.transformation.transform(transformer_input)
+        transformer_output = self._resolved_transformer_for_program.transform(transformer_input)
 
         transformer_output.contents().write_to(self._atc_files.output.out)
 
@@ -125,7 +130,7 @@ class _ExecutorWithTransformation(_ProgramExecutor):
                 )
             )
             return self._app_env.os_services.command_executor.execute(
-                self._program_w_trans.command,
+                self._program.command,
                 self._app_env.process_execution_settings,
                 command_files,
             )

@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.impls.types.string_transformer.sdvs import StringTransformerSdvReference
+from exactly_lib.type_val_deps.types.program.sdv.accumulated_components import AccumulatedComponents
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
@@ -23,11 +24,12 @@ class ValidationCase:
                  string_transformer_case: str_trans_validation_cases.ValidationCase,
                  ):
         self._string_transformer_case = string_transformer_case
+        additional_components = AccumulatedComponents.of_transformation(
+            StringTransformerSdvReference(string_transformer_case.symbol_context.name)
+        )
         program_w_transformer = program_sdvs.system_program(
             string_sdvs.str_constant('system-program')
-        ).new_with_appended_transformations([
-            StringTransformerSdvReference(string_transformer_case.symbol_context.name)
-        ])
+        ).new_accumulated(additional_components)
 
         self._program_symbol_context = ProgramSymbolContext.of_sdv(
             symbol_name,

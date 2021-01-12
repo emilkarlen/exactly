@@ -2,7 +2,6 @@ from typing import ContextManager
 
 from exactly_lib.impls.types.file_matcher.impl.run_program.arguments_generator import ArgumentsGenerator
 from exactly_lib.impls.types.matcher.impls.run_program.run_conf import RunConfiguration
-from exactly_lib.impls.types.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel
 from exactly_lib.type_val_prims.program import command
 from exactly_lib.type_val_prims.program.program import Program
@@ -27,5 +26,5 @@ class FileMatcherRunConfiguration(RunConfiguration[FileMatcherModel]):
         return Program(
             command_for_model,
             matcher_argument_program.stdin,
-            IdentityStringTransformer(),
+            (),
         )

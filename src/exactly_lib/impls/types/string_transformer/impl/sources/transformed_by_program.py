@@ -2,6 +2,7 @@ from typing import IO
 
 from exactly_lib.impls.program_execution import command_processors
 from exactly_lib.impls.program_execution.command_processor import CommandProcessor
+from exactly_lib.impls.types.string_transformer import sequence_resolving
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.program.command import Command
@@ -43,11 +44,12 @@ def transformed_by_program(transformer: Program,
         ignore_exit_code,
         environment, source_model
     )
+    transformation_of_program = sequence_resolving.resolve(transformer.transformation)
     return (
         initial_transformation
-        if transformer.transformation.is_identity_transformer
+        if transformation_of_program.is_identity_transformer
         else
-        transformer.transformation.transform(initial_transformation)
+        transformation_of_program.transform(initial_transformation)
     )
 
 

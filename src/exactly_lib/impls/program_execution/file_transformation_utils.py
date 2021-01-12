@@ -2,6 +2,7 @@ import pathlib
 
 from exactly_lib.impls.exception import pfh_exception
 from exactly_lib.impls.file_creation import FileTransformerHelper
+from exactly_lib.impls.types.string_transformer import sequence_resolving
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
@@ -64,7 +65,8 @@ def make_transformed_file_from_output(pgm_output_dir: pathlib.Path,
     except HardErrorException as ex:
         raise pfh_exception.PfhHardErrorException(ex.error)
 
-    if program.transformation.is_identity_transformer:
+    resolved_transformer = sequence_resolving.resolve(program.transformation)
+    if resolved_transformer.is_identity_transformer:
         return ResultWithTransformation(result,
                                         result.files.base_name_of(transformed_output))
 
@@ -76,7 +78,7 @@ def make_transformed_file_from_output(pgm_output_dir: pathlib.Path,
     result_path = pgm_output_dir / base_name_of_path_of_transformed_output
     error_message = transformation_helper.transform_to_file(result.files.path_of_std(transformed_output),
                                                             result_path,
-                                                            program.transformation)
+                                                            resolved_transformer)
     if error_message is not None:
         raise pfh_exception.PfhHardErrorException(error_message)
 
