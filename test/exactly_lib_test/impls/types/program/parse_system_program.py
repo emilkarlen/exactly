@@ -1,35 +1,39 @@
 import unittest
-from typing import List, Callable
+from typing import List, Callable, TypeVar, Sequence
 
-from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.impls.types.program.parse import parse_system_program as sut
-from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
-    SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition, RelOptionType, \
     RelNonHdsOptionType, RelHdsOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.types.path import path_ddvs
-from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
-from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
-from exactly_lib_test.impls.types.program.test_resources import command_cmd_line_args as cmd_line_args
-from exactly_lib_test.impls.types.test_resources import arguments_building as ab
+from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.impls.types.logic.test_resources import integration_check
+from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import MultiSourceExpectation, \
+    AssertionResolvingEnvironment, arrangement_w_tcds, ExecutionExpectation, arrangement_wo_tcds
+from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc
+from exactly_lib_test.impls.types.program.test_resources import integration_check_applier
+from exactly_lib_test.impls.types.program.test_resources import integration_check_config
 from exactly_lib_test.impls.types.test_resources import relativity_options
-from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.impls.types.test_resources import validation
+from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions
+from exactly_lib_test.impls.types.test_resources.validation_of_path import FAILING_VALIDATION_ASSERTION_FOR_PARTITION
+from exactly_lib_test.section_document.element_parsers.test_resources.parsing import ParserAsLocationAwareParser
+from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import tcds_populators
-from exactly_lib_test.test_case.test_resources import validation_check
-from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.type_sdv_assertions import matches_sdv_of_program
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes__raw import \
+    RawSystemCommandLineAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentOfStringAbsStx, \
+    ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx, NonSymLinkFileType, ArgumentAbsStx
+from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringSymbolAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command, \
     program_assertions as asrt_pgm_val
@@ -37,42 +41,41 @@ from exactly_lib_test.type_val_prims.program.test_resources import command_asser
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestFailingParse),
-        unittest.makeSuite(TestSuccessfulParse),
-        unittest.makeSuite(TestValidationAfterSuccessfulParse),
+        TestFailingParse(),
+        TestSuccessfulParse(),
+        unittest.makeSuite(TestValidation),
     ])
 
 
 class TestFailingParse(unittest.TestCase):
-    def test(self):
+    def runTest(self):
         # ARRANGE #
         cases = [
             NameAndValue('empty source',
-                         ab.empty()
+                         RawSystemCommandLineAbsStx.of_str(''),
                          ),
             NameAndValue('invalid program name - broken syntax due to missing end quote',
-                         cmd_line_args.system_program_cmd_line(
+                         RawSystemCommandLineAbsStx.of_str(
                              QUOTE_CHAR_FOR_TYPE[QuoteType.SOFT] + 'valid_program_name'),
                          ),
             NameAndValue('invalid argument - broken syntax due to missing end quote',
-                         cmd_line_args.system_program_cmd_line('valid_program_name',
-                                                               [QUOTE_CHAR_FOR_TYPE[QuoteType.SOFT] + 'argument'])
+                         RawSystemCommandLineAbsStx.of_str(
+                             'valid_program_name',
+                             [ArgumentOfStringAbsStx.of_str(QUOTE_CHAR_FOR_TYPE[QuoteType.SOFT] + 'argument')])
                          ),
         ]
-        parser = sut.program_parser()
+        checker = parse_checker.Checker(ParserAsLocationAwareParser(sut.program_parser()))
         for case in cases:
-            source = parse_source_of(case.value)
-            with self.subTest(case.name):
-                # ASSERT #
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    # ACT #
-                    parser.parse(source)
+            checker.check_invalid_syntax__abs_stx(self, case.value)
+
+
+T = TypeVar('T')
 
 
 class ProgramNameCase:
     def __init__(self,
                  name: str,
-                 source_element,
+                 source_element: RawSystemCommandLineAbsStx,
                  expected_resolved_value: str,
                  expected_symbol_references: List[ValueAssertion[SymbolReference]]):
         self.name = name
@@ -84,19 +87,20 @@ class ProgramNameCase:
 class ArgumentsCase:
     def __init__(self,
                  name: str,
-                 source_elements: List,
+                 source_elements: Sequence[ArgumentAbsStx],
                  expected_resolved_values: Callable[[TestCaseDs], List[str]],
-                 expected_symbol_references: List[ValueAssertion[SymbolReference]]):
+                 expected_symbol_references: List[ValueAssertion[SymbolReference]],
+                 tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
+                 ):
         self.name = name
         self.source_elements = source_elements
         self.expected_resolved_values = expected_resolved_values
         self.expected_symbol_references = expected_symbol_references
+        self.tcds_contents = tcds_contents
 
 
 class TestSuccessfulParse(unittest.TestCase):
-    parser = sut.program_parser()
-
-    def test(self):
+    def runTest(self):
         # ARRANGE #
 
         program_name_string_symbol = StringConstantSymbolContext('PROGRAM_NAME_STRING_SYMBOL_NAME',
@@ -111,35 +115,50 @@ class TestSuccessfulParse(unittest.TestCase):
         ])
 
         file_name = 'a-file.txt'
-        default_relativity_of_existing_file = RelOptionType.REL_HDS_CASE
-        path = path_ddvs.of_rel_option(default_relativity_of_existing_file,
+        file_arg_relativity = relativity_options.conf_rel_any(RelOptionType.REL_HDS_CASE)
+        path = path_ddvs.of_rel_option(file_arg_relativity.relativity_option,
                                        path_ddvs.constant_path_part(file_name))
 
         argument_cases = [
-            ArgumentsCase('no arguments', source_elements=[], expected_resolved_values=lambda tcds: [],
-                          expected_symbol_references=[]),
-            ArgumentsCase('single constant argument', source_elements=['argument'],
-                          expected_resolved_values=lambda tcds: ['argument'], expected_symbol_references=[]),
+            ArgumentsCase('no arguments',
+                          source_elements=[],
+                          expected_resolved_values=lambda tcds: [],
+                          expected_symbol_references=[],
+                          ),
+            ArgumentsCase('single constant argument',
+                          source_elements=[ArgumentOfStringAbsStx.of_str('argument')],
+                          expected_resolved_values=lambda tcds: ['argument'],
+                          expected_symbol_references=[],
+                          ),
             ArgumentsCase('symbol reference and constant argument',
-                          source_elements=[ab.symbol_reference(argument_string_symbol.name), 'argument'],
+                          source_elements=[ArgumentOfSymbolReferenceAbsStx(argument_string_symbol.name),
+                                           ArgumentOfStringAbsStx.of_str('argument')],
                           expected_resolved_values=lambda tcds: [argument_string_symbol.str_value, 'argument'],
                           expected_symbol_references=[
                               argument_string_symbol.reference_assertion__any_data_type
                           ]),
             ArgumentsCase('existing file argument',
-                          source_elements=[ab.option(syntax_elements.EXISTING_FILE_OPTION_NAME), file_name],
+                          source_elements=[
+                              ArgumentOfExistingPathAbsStx(file_arg_relativity.path_abs_stx_of_name(file_name),
+                                                           NonSymLinkFileType.REGULAR)],
                           expected_resolved_values=lambda tcds: [str(path.value_of_any_dependency(tcds))],
-                          expected_symbol_references=[]),
+                          expected_symbol_references=[],
+                          tcds_contents=file_arg_relativity.populator_for_relativity_option_root(
+                              DirContents([File.empty(file_name)])
+                          )
+                          ),
         ]
 
         program_cases = [
             ProgramNameCase('string constant',
-                            source_element='the_program',
+                            source_element=RawSystemCommandLineAbsStx.of_str('the_program'),
                             expected_resolved_value='the_program',
                             expected_symbol_references=[]
                             ),
             ProgramNameCase('symbol reference',
-                            source_element=ab.symbol_reference(program_name_string_symbol.name),
+                            source_element=RawSystemCommandLineAbsStx(
+                                StringSymbolAbsStx(program_name_string_symbol.name)
+                            ),
                             expected_resolved_value=program_name_string_symbol.str_value,
                             expected_symbol_references=[
                                 program_name_string_symbol.reference_assertion__string_made_up_of_just_strings
@@ -158,59 +177,17 @@ class TestSuccessfulParse(unittest.TestCase):
                symbols: SymbolTable):
         with self.subTest(program=program_case.name,
                           arguments=argument_case.name):
-            check_parsing_of_program(self,
-                                     self.parser,
-                                     lambda first_line: ArgumentElements([first_line]),
-                                     program_case,
-                                     argument_case,
-                                     symbols)
-
-
-def check_parsing_of_program(put: unittest.TestCase,
-                             parser: Parser[ProgramSdv],
-                             mk_argument_elements: Callable[[ArgumentElementsRenderer], ArgumentElements],
-                             program_case: ProgramNameCase,
-                             argument_case: ArgumentsCase,
-                             symbols: SymbolTable):
-    with put.subTest(program=program_case.name,
-                     arguments=argument_case.name):
-        expected_references_assertion = asrt.matches_sequence(program_case.expected_symbol_references +
-                                                              argument_case.expected_symbol_references)
-
-        def expected_program(tcds: TestCaseDs) -> ValueAssertion[Program]:
-            return asrt_pgm_val.matches_program(
-                command=asrt_command.equals_system_program_command(
-                    program=program_case.expected_resolved_value,
-                    arguments=argument_case.expected_resolved_values(tcds)
-                ),
-                stdin=asrt_pgm_val.is_no_stdin(),
-                transformer=asrt_pgm_val.is_no_transformation(),
-            )
-
-        expectation = matches_sdv_of_program(
-            references=expected_references_assertion,
-            primitive_value=expected_program,
-            symbols=symbols
-        )
-
-        source = mk_argument_elements(cmd_line_args.system_program_cmd_line(program_case.source_element,
-                                                                            argument_case.source_elements)
-                                      ).as_remaining_source
-
-        # ACT #
-
-        actual = parser.parse(source)
-
-        # ASSERT #
-
-        expectation.apply_without_message(put, actual)
+            _check_parsing_of_program(self,
+                                      program_case,
+                                      argument_case,
+                                      symbols)
 
 
 class FileExistenceCase:
     def __init__(self, name: str):
         self.name = name
 
-    def expectation_for(self, step: DirectoryStructurePartition) -> validation_check.Expectation:
+    def expectation_for(self, step: DirectoryStructurePartition) -> ValidationAssertions:
         raise NotImplementedError('abstract method')
 
     def files_for_name(self, file_name: str) -> List[FileSystemElement]:
@@ -221,8 +198,8 @@ class FileDoExistCase(FileExistenceCase):
     def __init__(self):
         super().__init__('file do exist')
 
-    def expectation_for(self, step: DirectoryStructurePartition) -> validation_check.Expectation:
-        return validation_check.is_success()
+    def expectation_for(self, step: DirectoryStructurePartition) -> ValidationAssertions:
+        return validation.all_validations_passes()
 
     def files_for_name(self, file_name: str) -> List[FileSystemElement]:
         return [File.empty(file_name)]
@@ -232,8 +209,8 @@ class FileDoNotExistCase(FileExistenceCase):
     def __init__(self):
         super().__init__('file do NOT exist')
 
-    def expectation_for(self, step: DirectoryStructurePartition) -> validation_check.Expectation:
-        return validation_check.fails_on(step)
+    def expectation_for(self, step: DirectoryStructurePartition) -> ValidationAssertions:
+        return FAILING_VALIDATION_ASSERTION_FOR_PARTITION[step]
 
     def files_for_name(self, file_name: str) -> List[FileSystemElement]:
         return []
@@ -245,7 +222,7 @@ FILE_EXISTENCE_CASES = [
 ]
 
 
-class TestValidationAfterSuccessfulParse(unittest.TestCase):
+class TestValidation(unittest.TestCase):
     def test_with_reference_to_existing_file(self):
         referenced_file = 'referenced-file.txt'
 
@@ -255,61 +232,98 @@ class TestValidationAfterSuccessfulParse(unittest.TestCase):
         ]
         for file_existence_case in FILE_EXISTENCE_CASES:
             for relativity_conf in relativity_cases:
-                arguments = ab.sequence(['program_name',
-                                         ab.option(syntax_elements.EXISTING_FILE_OPTION_NAME),
-                                         relativity_conf.option_argument,
-                                         referenced_file]).as_str
-
-                source = remaining_source(arguments)
-
-                arrangement = validation_check.Arrangement(
-                    dir_contents=relativity_conf.populator_for_relativity_option_root(
-                        DirContents(file_existence_case.files_for_name(referenced_file))
-                    ))
-                expectation = file_existence_case.expectation_for(relativity_conf.directory_structure_partition)
+                source_syntax = RawSystemCommandLineAbsStx.of_str(
+                    'program_name',
+                    [ArgumentOfExistingPathAbsStx(relativity_conf.path_abs_stx_of_name(referenced_file))]
+                )
 
                 with self.subTest(relativity=relativity_conf.option_string,
                                   file_do_existence_case=file_existence_case.name):
-                    program_sdv = sut.program_parser().parse(source)
-                    program_ddv = program_sdv.resolve(empty_symbol_table())
-                    validation_check.check(
+                    # ACT & ASSERT #
+                    CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
                         self,
-                        program_ddv.validator,
-                        arrangement,
-                        expectation,
+                        equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc,
+                        source_syntax,
+                        arrangement_w_tcds(
+                            tcds_contents=relativity_conf.populator_for_relativity_option_root(
+                                DirContents(file_existence_case.files_for_name(referenced_file))
+                            )
+                        ),
+                        MultiSourceExpectation(
+                            execution=ExecutionExpectation(
+                                validation=file_existence_case.expectation_for(
+                                    relativity_conf.directory_structure_partition
+                                )
+                            )
+                        ),
                     )
 
     def test_without_reference_to_existing_file(self):
         # ARRANGE #
-        arguments = ab.sequence(['program_name',
-                                 'argument-that-is-not-a-file']).as_str
-
-        source = remaining_source(arguments)
-
-        arrangement = validation_check.Arrangement(
-            dir_contents=tcds_populators.empty()
+        abstract_syntax = RawSystemCommandLineAbsStx.of_str(
+            'program_name',
+            [ArgumentOfStringAbsStx.of_str('argument-that-is-not-a-file')]
+        )
+        # ACT & ASSERT #
+        CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+            self,
+            equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc,
+            abstract_syntax,
+            arrangement_wo_tcds(),
+            MultiSourceExpectation(
+                execution=ExecutionExpectation(
+                    validation=validation.all_validations_passes()
+                )
+            ),
         )
 
-        expectation = validation_check.is_success()
 
-        # ACT #
+def _check_parsing_of_program(put: unittest.TestCase,
+                              program_case: ProgramNameCase,
+                              argument_case: ArgumentsCase,
+                              symbols: SymbolTable):
+    # ARRANGE #
+    with put.subTest(program=program_case.name,
+                     arguments=argument_case.name):
+        expected_references_assertion = asrt.matches_sequence(program_case.expected_symbol_references +
+                                                              argument_case.expected_symbol_references)
 
-        program_sdv = sut.program_parser().parse(source)
-        program_ddv = program_sdv.resolve(empty_symbol_table())
+        def expected_program(env: AssertionResolvingEnvironment) -> ValueAssertion[Program]:
+            return asrt_pgm_val.matches_program(
+                command=asrt_command.equals_system_program_command(
+                    program=program_case.expected_resolved_value,
+                    arguments=argument_case.expected_resolved_values(env.tcds)
+                ),
+                stdin=asrt_pgm_val.is_no_stdin(),
+                transformer=asrt_pgm_val.is_no_transformation(),
+            )
 
-        # ASSERT #
+        expectation = MultiSourceExpectation(
+            symbol_references=expected_references_assertion,
+            primitive=expected_program,
+        )
+        source_abs_stx = program_case.source_element.new_w_additional_arguments(argument_case.source_elements)
 
-        validation_check.check(
-            self,
-            program_ddv.validator,
-            arrangement,
+        # ACT & ASSERT #
+        CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+            put,
+            equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc,
+            source_abs_stx,
+            arrangement_w_tcds(
+                symbols=symbols,
+                tcds_contents=argument_case.tcds_contents,
+            ),
             expectation,
         )
 
 
-def parse_source_of(single_line: ArgumentElementsRenderer) -> ParseSource:
-    return ArgumentElements([single_line]).as_remaining_source
-
+CHECKER_WO_EXECUTION = integration_check.IntegrationChecker(
+    sut.program_parser(),
+    integration_check_config.ProgramPropertiesConfiguration(
+        integration_check_applier.NullApplier(),
+    ),
+    True,
+)
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

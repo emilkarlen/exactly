@@ -16,7 +16,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arra
     ExecutionExpectation, Expectation
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__for_expression_parser
+    equivalent_source_variants__for_expression_parser
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess, \
@@ -110,7 +110,7 @@ class MatcherChecker:
                 etc = expectation_type_config__non_is_success(expectation_type_of_test_case)
                 instruction_arguments = make_instruction_arguments.apply(etc)
 
-                for source in equivalent_source_variants__with_source_check__for_expression_parser(
+                for source in equivalent_source_variants__for_expression_parser(
                         self.put,
                         Arguments(instruction_arguments)):
                     self._check_(

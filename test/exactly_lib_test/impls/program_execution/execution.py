@@ -9,17 +9,20 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arra
     ExecutionExpectation, Expectation
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args
-from exactly_lib_test.impls.types.program.test_resources import command_cmd_line_args as sym_ref_args
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.program.test_resources.assertions import assert_process_result_data
 from exactly_lib_test.impls.types.string_transformers.test_resources import test_transformers_setup
 from exactly_lib_test.impls.types.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_with_stdout_stderr_exit_code
+from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
+from exactly_lib_test.test_resources.source.layout import LayoutSpec
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
@@ -69,9 +72,9 @@ class TestSymbolReferenceProgram(unittest.TestCase):
                         sdv_of_referred_program
                     )
 
-                    source = parse_source_of(
-                        pgm_args.symbol_ref_command_line(sym_ref_args.sym_ref_cmd_line(
-                            program_that_executes_py_source.name)))
+                    source = parse_source_of__abs_stx(
+                        ProgramOfSymbolReferenceAbsStx(program_that_executes_py_source.name)
+                    )
 
                     symbols = program_that_executes_py_source.symbol_table
 
@@ -230,6 +233,10 @@ class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestC
 
 def parse_source_of(single_line: ArgumentElementsRenderer) -> ParseSource:
     return ArgumentElements([single_line]).as_remaining_source
+
+
+def parse_source_of__abs_stx(syntax: AbstractSyntax) -> ParseSource:
+    return remaining_source(syntax.tokenization().layout(LayoutSpec.of_default()))
 
 
 if __name__ == '__main__':

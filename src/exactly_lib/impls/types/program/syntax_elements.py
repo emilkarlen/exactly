@@ -1,4 +1,4 @@
-from exactly_lib.definitions.primitives import program
+from exactly_lib.definitions.primitives import program, string_transformer
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.impls.types.path import path_relativities
 from exactly_lib.util.cli_syntax.elements import argument
@@ -21,3 +21,7 @@ EXISTING_DIR_OPTION_NAME = a.OptionName(long_name='existing-dir')
 EXISTING_PATH_OPTION_NAME = a.OptionName(long_name='existing-path')
 
 ARGUMENT_SYNTAX_ELEMENT_NAME = a.Named('ARGUMENT')
+
+WITH_TRANSFORMED_CONTENTS_OPTION_NAME = string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME
+
+STDIN_OPTION_NAME = a.OptionName(long_name='stdin')

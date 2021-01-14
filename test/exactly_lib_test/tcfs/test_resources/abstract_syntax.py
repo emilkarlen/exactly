@@ -61,6 +61,10 @@ class PathStringAbsStx(PathAbsStx):
         return PathStringAbsStx(StringLiteralAbsStx(string))
 
     @staticmethod
+    def of_shlex_quoted(unquoted_path_str: str) -> 'PathStringAbsStx':
+        return PathStringAbsStx(StringLiteralAbsStx.of_shlex_quoted(unquoted_path_str))
+
+    @staticmethod
     def of_plain_components(components: Sequence[str]) -> 'PathStringAbsStx':
         return PathStringAbsStx.of_plain_str('/'.join(components))
 

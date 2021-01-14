@@ -1,8 +1,25 @@
-from typing import Sequence
+from typing import Sequence, Optional, Callable
 
 from exactly_lib_test.test_resources.source import token_sequences
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
+
+
+class OptionalAbsStx(AbstractSyntax):
+    def __init__(self,
+                 optional: Optional[AbstractSyntax],
+                 tokenizer: Callable[[TokenSequence], TokenSequence],
+                 ):
+        self._optional = optional
+        self._tokenizer = tokenizer
+
+    def tokenization(self) -> TokenSequence:
+        return (
+            TokenSequence.empty()
+            if self._optional is None
+            else
+            self._tokenizer(self._optional.tokenization())
+        )
 
 
 class OptionallyOnNewLine(AbstractSyntax):

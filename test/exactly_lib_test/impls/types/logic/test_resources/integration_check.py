@@ -25,9 +25,10 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arra
     ExecutionExpectation, PrimAndExeExpectation, Expectation, MultiSourceExpectation, AssertionResolvingEnvironment
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__for_expression_parser, \
-    equivalent_source_variants__with_source_check__for_expression_parser_2, \
-    equivalent_source_variants__with_source_check__for_full_line_expression_parser
+    equivalent_source_variants__for_expression_parser, \
+    equivalent_source_variants__for_expression_parser_2, \
+    equivalent_source_variants__with_source_check__for_full_line_expression_parser, \
+    equivalent_source_variants__for_expression_parser_3__nie, SourceStr2SourceVariants
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.tcfs.test_resources.ds_construction import tcds_with_act_as_curr_dir_3
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
@@ -134,6 +135,86 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
             layouts,
         )
 
+    def check__abs_stx__layout_and_source_variants_2(
+            self,
+            put: unittest.TestCase,
+            mk_source_variants: SourceStr2SourceVariants,
+            source: AbstractSyntax,
+            input_: INPUT,
+            arrangement: Arrangement,
+            expectation_: MultiSourceExpectation[PRIMITIVE, OUTPUT],
+            layouts: Sequence[NameAndValue[LayoutSpec]],
+    ):
+        tokens = source.tokenization()
+        for layout_case in layouts:
+            source_str = tokens.layout(layout_case.value)
+            for source_case in mk_source_variants(source_str):
+                with put.subTest(layout=layout_case.name,
+                                 source_variant=source_case.name):
+                    self._check__parse_source(
+                        put,
+                        source_case.source,
+                        input_,
+                        arrangement,
+                        source_case.expectation,
+                        expectation_,
+                    )
+
+    def check__abs_stx__std_layouts__mk_source_variants(
+            self,
+            put: unittest.TestCase,
+            mk_source_variants: SourceStr2SourceVariants,
+            source: AbstractSyntax,
+            input_: INPUT,
+            arrangement: Arrangement,
+            expectation_: MultiSourceExpectation[PRIMITIVE, OUTPUT],
+    ):
+        self.check__abs_stx__layout_and_source_variants_2(
+            put,
+            mk_source_variants,
+            source,
+            input_,
+            arrangement,
+            expectation_,
+            layout.STANDARD_LAYOUT_SPECS,
+        )
+
+    def check__abs_stx__std_layouts__mk_source_variants__wo_input(
+            self,
+            put: unittest.TestCase,
+            mk_source_variants: SourceStr2SourceVariants,
+            source: AbstractSyntax,
+            arrangement: Arrangement,
+            expectation_: MultiSourceExpectation[PRIMITIVE, OUTPUT],
+    ):
+        self.check__abs_stx__std_layouts__mk_source_variants(
+            put,
+            mk_source_variants,
+            source,
+            None,
+            arrangement,
+            expectation_,
+        )
+
+    def check__abs_stx__layout_and_source_variants_2__wo_input(
+            self,
+            put: unittest.TestCase,
+            source: AbstractSyntax,
+            arrangement: Arrangement,
+            expectation_: MultiSourceExpectation[PRIMITIVE, OUTPUT],
+            layouts: Sequence[NameAndValue[LayoutSpec]],
+            mk_source_variants: SourceStr2SourceVariants,
+    ):
+        self.check__abs_stx__layout_and_source_variants_2(
+            put,
+            source,
+            None,
+            arrangement,
+            expectation_,
+            layouts,
+            mk_source_variants,
+        )
+
     def check__abs_stx__std_layouts_and_source_variants(
             self,
             put: unittest.TestCase,
@@ -208,17 +289,16 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
             layouts: Sequence[NameAndValue[LayoutSpec]],
     ):
         for layout_case in layouts:
-            source_layout = source.layout(layout_case.value)
-            source_arguments = Arguments.of_preformatted(source_layout)
-            for source_case in equivalent_source_variants__with_source_check__for_expression_parser_2(source_arguments):
+            plain_source_str = source.layout(layout_case.value)
+            for source_case in equivalent_source_variants__for_expression_parser_3__nie(plain_source_str):
                 with put.subTest(layout=layout_case.name,
                                  source=source_case.name):
                     self._check__parse_source(
                         put,
-                        source_case.actual,
+                        source_case.input_value,
                         input_,
                         arrangement,
-                        source_case.expected,
+                        source_case.expected_value,
                         expectation_,
                     )
 
@@ -281,7 +361,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                  arrangement: Arrangement,
                                  expectation: Expectation[PRIMITIVE, OUTPUT],
                                  ):
-        for source in equivalent_source_variants__with_source_check__for_expression_parser(
+        for source in equivalent_source_variants__for_expression_parser(
                 put, arguments):
             self.check(put, source, input_, arrangement, expectation)
 
@@ -371,7 +451,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
             put,
             symbol_references,
             input_,
-            equivalent_source_variants__with_source_check__for_expression_parser_2(arguments),
+            equivalent_source_variants__for_expression_parser_2(arguments),
             execution,
         )
 

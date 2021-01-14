@@ -5,10 +5,10 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.parse.token import QuoteType, SOFT_QUOTE_CHAR
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import MultiSourceExpectation, \
     Expectation, ParseExpectation, arrangement_w_tcds
-from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntax as string_source_abs_stx
+from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check
 from exactly_lib_test.impls.types.string_source.test_resources import parse_check
-from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntax import StringSourceOfStringAbsStx
+from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.abstract_syntax_impls import OptionallyOnNewLine
 from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_rest

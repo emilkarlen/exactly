@@ -7,7 +7,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
     ExecutionExpectation, Expectation
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__for_expression_parser
+    equivalent_source_variants__for_expression_parser
 from exactly_lib_test.impls.types.string_matcher.test_resources import integration_check, arguments_building, \
     test_configuration
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
@@ -99,7 +99,7 @@ class TestCaseBase(unittest.TestCase):
                                                                   quantifier)
                 complete_instruction_arguments = test_configuration.arguments_for(args_variant)
 
-                for source in equivalent_source_variants__with_source_check__for_expression_parser(
+                for source in equivalent_source_variants__for_expression_parser(
                         self,
                         complete_instruction_arguments):
                     integration_check.CHECKER__PARSE_FULL.check(

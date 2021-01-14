@@ -2,7 +2,6 @@ import unittest
 from typing import List, Sequence
 
 from exactly_lib.impls.types.path.parse_relativity import reference_restrictions_for_path_symbol
-from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.impls.types.program.parse import parse_arguments as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -19,14 +18,9 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.impls.types.parse import parse_list as test_of_list
-from exactly_lib_test.impls.types.parse.test_resources import arguments_building as ab_utils
 from exactly_lib_test.impls.types.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants_for_consume_until_end_of_last_line
-from exactly_lib_test.impls.types.program.test_resources import program_arguments
-from exactly_lib_test.impls.types.program.test_resources.program_arguments import \
-    remaining_part_of_current_line_as_literal
-from exactly_lib_test.impls.types.test_resources import arguments_building as ab
+    equivalent_source_variants_for_consume_until_end_of_last_line_3
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opts
 from exactly_lib_test.impls.types.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -35,11 +29,15 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.test_case.test_resources import validation_check
 from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, File, Dir
+from exactly_lib_test.test_resources.source.layout import LayoutSpec
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
     is_any_data_type_reference_restrictions
 from exactly_lib_test.type_val_deps.data.test_resources.data_symbol_utils import symbol_reference
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentOfStringAbsStx, \
+    ArgumentOfSymbolReferenceAbsStx, ArgumentOfTextUntilEndOfLineAbsStx, ArgumentOfExistingPathAbsStx, \
+    NonSymLinkFileType, ArgumentAbsStx, ArgumentsAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 
 
@@ -77,11 +75,38 @@ class Case:
                  name: str,
                  source: str,
                  arrangement: Arrangement,
-                 expectation: Expectation):
+                 expectation: Expectation,
+                 ):
         self.name = name
         self.source = source
         self.arrangement = arrangement
         self.expectation = expectation
+
+    @staticmethod
+    def of(name: str,
+           source: ArgumentAbsStx,
+           arrangement: Arrangement,
+           expectation: Expectation,
+           ) -> 'Case':
+        return Case(
+            name,
+            source.tokenization().layout(LayoutSpec.of_default()),
+            arrangement,
+            expectation,
+        )
+
+    @staticmethod
+    def of_multi(name: str,
+                 source: Sequence[ArgumentAbsStx],
+                 arrangement: Arrangement,
+                 expectation: Expectation,
+                 ) -> 'Case':
+        return Case(
+            name,
+            ArgumentsAbsStx(source).tokenization().layout(LayoutSpec.of_default()),
+            arrangement,
+            expectation,
+        )
 
 
 class PathCase:
@@ -146,24 +171,26 @@ class TestSingleElement(unittest.TestCase):
 
         string_symbol = StringSymbolContext.of_arbitrary_value(symbol_name)
         cases = [
-            Case('plain string',
-                 plain_string,
-                 ARRANGEMENT__NEUTRAL,
-                 Expectation(
-                     elements=[list_sdvs.str_element(plain_string)],
-                     validators=asrt.is_empty_sequence,
-                     references=asrt.is_empty_sequence,
-                 )),
-            Case('symbol reference',
-                 symbol_reference_syntax_for_name(symbol_name),
-                 Arrangement(
-                     string_symbol.symbol_table
-                 ),
-                 Expectation(
-                     elements=[list_sdvs.symbol_element(symbol_reference(symbol_name))],
-                     validators=asrt.is_empty_sequence,
-                     references=asrt.matches_sequence([string_symbol.reference_assertion__any_data_type]),
-                 )),
+            Case.of('plain string',
+                    ArgumentOfStringAbsStx.of_str(plain_string),
+                    ARRANGEMENT__NEUTRAL,
+                    Expectation(
+                        elements=[list_sdvs.str_element(plain_string)],
+                        validators=asrt.is_empty_sequence,
+                        references=asrt.is_empty_sequence,
+                    )
+                    ),
+            Case.of('symbol reference',
+                    ArgumentOfSymbolReferenceAbsStx(symbol_name),
+                    Arrangement(
+                        string_symbol.symbol_table
+                    ),
+                    Expectation(
+                        elements=[list_sdvs.symbol_element(symbol_reference(symbol_name))],
+                        validators=asrt.is_empty_sequence,
+                        references=asrt.matches_sequence([string_symbol.reference_assertion__any_data_type]),
+                    )
+                    ),
         ]
         # ACT & ASSERT #
         _test_cases(self, cases)
@@ -174,47 +201,45 @@ class TestSingleElement(unittest.TestCase):
         str_with_space_and_invalid_token_syntax = 'before and after space, ' + SOFT_QUOTE_CHAR + 'after quote'
 
         cases = [
-            Case('string with one space after marker, and no space at EOL',
-                 remaining_part_of_current_line_as_literal(
-                     str_with_space_and_invalid_token_syntax
-                 ).as_str,
-                 ARRANGEMENT__NEUTRAL,
-                 Expectation(
-                     elements=[list_sdvs.str_element(str_with_space_and_invalid_token_syntax)],
-                     validators=asrt.is_empty_sequence,
-                     references=asrt.is_empty_sequence,
-                 )),
-            Case('with surrounding space',
-                 remaining_part_of_current_line_as_literal(
-                     '   ' + str_with_space_and_invalid_token_syntax + '  \t '
-                 ).as_str,
-                 ARRANGEMENT__NEUTRAL,
-                 Expectation(
-                     elements=[list_sdvs.str_element(str_with_space_and_invalid_token_syntax)],
-                     validators=asrt.is_empty_sequence,
-                     references=asrt.is_empty_sequence,
-                 )),
-            Case('with symbol reference',
-                 remaining_part_of_current_line_as_literal(
-                     ''.join(['before',
-                              symbol_reference_syntax_for_name(symbol_name),
-                              'after'])
-                 ).as_str,
-                 Arrangement(
-                     StringSymbolContext.of_arbitrary_value(symbol_name).symbol_table),
-                 Expectation(
-                     elements=[list_sdvs.string_element(string_sdvs.from_fragments([
-                         string_sdvs.str_fragment('before'),
-                         string_sdvs.symbol_fragment(symbol_reference(symbol_name)),
-                         string_sdvs.str_fragment('after'),
-                     ]))
-                     ],
-                     validators=asrt.is_empty_sequence,
-                     references=asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
-                         symbol_name,
-                         is_any_data_type_reference_restrictions())
-                     ]),
-                 )),
+            Case.of('string with one space after marker, and no space at EOL',
+                    ArgumentOfTextUntilEndOfLineAbsStx.of_str(str_with_space_and_invalid_token_syntax),
+                    ARRANGEMENT__NEUTRAL,
+                    Expectation(
+                        elements=[list_sdvs.str_element(str_with_space_and_invalid_token_syntax)],
+                        validators=asrt.is_empty_sequence,
+                        references=asrt.is_empty_sequence,
+                    )),
+            Case.of('with surrounding space',
+                    ArgumentOfTextUntilEndOfLineAbsStx.of_str(
+                        '   ' + str_with_space_and_invalid_token_syntax + '  \t '
+                    ),
+                    ARRANGEMENT__NEUTRAL,
+                    Expectation(
+                        elements=[list_sdvs.str_element(str_with_space_and_invalid_token_syntax)],
+                        validators=asrt.is_empty_sequence,
+                        references=asrt.is_empty_sequence,
+                    )),
+            Case.of('with symbol reference',
+                    ArgumentOfTextUntilEndOfLineAbsStx.of_str(
+                        ''.join(['before',
+                                 symbol_reference_syntax_for_name(symbol_name),
+                                 'after'])
+                    ),
+                    Arrangement(
+                        StringSymbolContext.of_arbitrary_value(symbol_name).symbol_table),
+                    Expectation(
+                        elements=[list_sdvs.string_element(string_sdvs.from_fragments([
+                            string_sdvs.str_fragment('before'),
+                            string_sdvs.symbol_fragment(symbol_reference(symbol_name)),
+                            string_sdvs.str_fragment('after'),
+                        ]))
+                        ],
+                        validators=asrt.is_empty_sequence,
+                        references=asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
+                            symbol_name,
+                            is_any_data_type_reference_restrictions())
+                        ]),
+                    )),
         ]
         # ACT & ASSERT #
         _test_cases(self, cases)
@@ -252,11 +277,12 @@ class TestSingleElement(unittest.TestCase):
                 rel_opt_conf = case.relativity_variant
                 assert isinstance(rel_opt_conf, RelativityOptionConfiguration)  # Type info for IDE
 
-                _case = Case(
+                _case = Case.of(
                     'default relativity SHOULD be CASE_HOME',
-                    program_arguments.existing_file(
-                        rel_opt_conf.path_argument_of_rel_name(plain_file_name)
-                    ).as_str,
+                    ArgumentOfExistingPathAbsStx(
+                        rel_opt_conf.path_abs_stx_of_name(plain_file_name),
+                        NonSymLinkFileType.REGULAR,
+                    ),
                     Arrangement(rel_opt_conf.symbols.in_arrangement()),
                     Expectation(
                         elements=[case.expected_list_element],
@@ -350,11 +376,12 @@ class TestSingleElement(unittest.TestCase):
                 rel_opt_conf = case.relativity_variant
                 assert isinstance(rel_opt_conf, RelativityOptionConfiguration)  # Type info for IDE
 
-                _case = Case(
+                _case = Case.of(
                     'default relativity SHOULD be CASE_HOME',
-                    program_arguments.existing_dir(
-                        rel_opt_conf.path_argument_of_rel_name(checked_file_name)
-                    ).as_str,
+                    ArgumentOfExistingPathAbsStx(
+                        rel_opt_conf.path_abs_stx_of_name(checked_file_name),
+                        NonSymLinkFileType.DIRECTORY,
+                    ),
                     Arrangement(rel_opt_conf.symbols.in_arrangement()),
                     Expectation(
                         elements=[case.expected_list_element],
@@ -463,11 +490,12 @@ class TestSingleElement(unittest.TestCase):
                 rel_opt_conf = case.relativity_variant
                 assert isinstance(rel_opt_conf, RelativityOptionConfiguration)  # Type info for IDE
 
-                _case = Case(
+                _case = Case.of(
                     'default relativity SHOULD be CASE_HOME',
-                    program_arguments.existing_path(
-                        rel_opt_conf.path_argument_of_rel_name(plain_file_name)
-                    ).as_str,
+                    ArgumentOfExistingPathAbsStx(
+                        rel_opt_conf.path_abs_stx_of_name(plain_file_name),
+                        None,
+                    ),
                     Arrangement(rel_opt_conf.symbols.in_arrangement()),
                     Expectation(
                         elements=[case.expected_list_element],
@@ -570,45 +598,46 @@ class TestMultipleElements(unittest.TestCase):
                                                                'after'])
 
         cases = [
-            Case('plain strings',
-                 ab.sequence([plain_string1,
-                              plain_string2]).as_str,
-                 ARRANGEMENT__NEUTRAL,
-                 Expectation(
-                     elements=[list_sdvs.str_element(plain_string1),
-                               list_sdvs.str_element(plain_string2)],
-                     validators=asrt.is_empty_sequence,
-                     references=asrt.is_empty_sequence,
-                 )),
-            Case('symbol reference + plain string + until-end-of-line',
-                 ab.sequence([ab.symbol_reference(symbol_name_1),
-                              plain_string1,
-                              syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
-                              remaining_part_of_current_line_with_sym_ref,
-                              ]).as_str,
-                 Arrangement(
-                     SymbolContext.symbol_table_of_contexts([
-                         StringSymbolContext.of_arbitrary_value(symbol_name_1),
-                         StringSymbolContext.of_arbitrary_value(symbol_name_2),
-                     ])
-                 ),
-                 Expectation(
-                     elements=[list_sdvs.symbol_element(symbol_reference(symbol_name_1)),
-                               list_sdvs.str_element(plain_string1),
-                               list_sdvs.string_element(string_sdvs.from_fragments([
-                                   string_sdvs.str_fragment('before'),
-                                   string_sdvs.symbol_fragment(symbol_reference(symbol_name_2)),
-                                   string_sdvs.str_fragment('after'),
-                               ]))
-                               ],
-                     validators=asrt.is_empty_sequence,
-                     references=asrt.matches_sequence([
-                         asrt_sym_ref.matches_reference_2(symbol_name_1,
-                                                          is_any_data_type_reference_restrictions()),
-                         asrt_sym_ref.matches_reference_2(symbol_name_2,
-                                                          is_any_data_type_reference_restrictions()),
-                     ]),
-                 )),
+            Case.of_multi(
+                'plain strings',
+                [ArgumentOfStringAbsStx.of_str(plain_string1),
+                 ArgumentOfStringAbsStx.of_str(plain_string2)],
+                ARRANGEMENT__NEUTRAL,
+                Expectation(
+                    elements=[list_sdvs.str_element(plain_string1),
+                              list_sdvs.str_element(plain_string2)],
+                    validators=asrt.is_empty_sequence,
+                    references=asrt.is_empty_sequence,
+                )),
+            Case.of_multi(
+                'symbol reference + plain string + until-end-of-line',
+                [ArgumentOfSymbolReferenceAbsStx(symbol_name_1),
+                 ArgumentOfStringAbsStx.of_str(plain_string1),
+                 ArgumentOfTextUntilEndOfLineAbsStx.of_str(remaining_part_of_current_line_with_sym_ref),
+                 ],
+                Arrangement(
+                    SymbolContext.symbol_table_of_contexts([
+                        StringSymbolContext.of_arbitrary_value(symbol_name_1),
+                        StringSymbolContext.of_arbitrary_value(symbol_name_2),
+                    ])
+                ),
+                Expectation(
+                    elements=[list_sdvs.symbol_element(symbol_reference(symbol_name_1)),
+                              list_sdvs.str_element(plain_string1),
+                              list_sdvs.string_element(string_sdvs.from_fragments([
+                                  string_sdvs.str_fragment('before'),
+                                  string_sdvs.symbol_fragment(symbol_reference(symbol_name_2)),
+                                  string_sdvs.str_fragment('after'),
+                              ]))
+                              ],
+                    validators=asrt.is_empty_sequence,
+                    references=asrt.matches_sequence([
+                        asrt_sym_ref.matches_reference_2(symbol_name_1,
+                                                         is_any_data_type_reference_restrictions()),
+                        asrt_sym_ref.matches_reference_2(symbol_name_2,
+                                                         is_any_data_type_reference_restrictions()),
+                    ]),
+                )),
         ]
         # ACT & ASSERT #
         _test_cases(self, cases)
@@ -624,24 +653,23 @@ def _test_case(put: unittest.TestCase, case: Case):
     parser = sut.parser()
     # ACT #
 
-    source_as_arguments = ab_utils.Arguments(case.source)
-    for parse_source, parse_source_assertion in equivalent_source_variants_for_consume_until_end_of_last_line(
-            source_as_arguments):
-        actual = parser.parse(parse_source)
+    for source_case in equivalent_source_variants_for_consume_until_end_of_last_line_3(case.source):
+        with put.subTest(source_case.name):
+            actual = parser.parse(source_case.input_value)
 
-        # ASSERT #
+            # ASSERT #
 
-        parse_source_assertion.apply_with_message(put, parse_source, 'parse source')
+            source_case.expected_value.apply_with_message(put, source_case.input_value, 'parse source')
 
-        expectation = case.expectation
-        test_of_list.check_elements(put,
-                                    expectation.elements,
-                                    actual.arguments_list)
+            expectation = case.expectation
+            test_of_list.check_elements(put,
+                                        expectation.elements,
+                                        actual.arguments_list)
 
-        expectation.references.apply_with_message(put, actual.references,
-                                                  'symbol references')
+            expectation.references.apply_with_message(put, actual.references,
+                                                      'symbol references')
 
-        actual_ddv = actual.resolve(case.arrangement.symbols)
-        expectation.validators.apply_with_message(put,
-                                                  actual_ddv.validators,
-                                                  'validators')
+            actual_ddv = actual.resolve(case.arrangement.symbols)
+            expectation.validators.apply_with_message(put,
+                                                      actual_ddv.validators,
+                                                      'validators')

@@ -6,7 +6,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expectation, ParseExpectation
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, MultiSourceExpectation, \
     ExecutionExpectation
-from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntax as string_source_abs_stx
+from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check, parse_check
 from exactly_lib_test.impls.types.string_transformers.test_resources import \
     validation_cases as str_trans_validation_cases

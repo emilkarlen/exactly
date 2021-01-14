@@ -8,6 +8,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parsing import LocationAwareParser
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse import token
+from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check__consume_last_line__abs_stx
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
@@ -41,6 +43,14 @@ class Checker(Generic[T]):
             parse_source = ParseSource(source.tokenization().layout(layout_case.value))
             with put.subTest(layout=layout_case.name):
                 self.check_invalid_arguments(put, parse_source)
+
+    def check_invalid_syntax__src_var_consume_last_line_abs_stx(self,
+                                                                put: unittest.TestCase,
+                                                                source: AbstractSyntax,
+                                                                ):
+        for case in equivalent_source_variants__with_source_check__consume_last_line__abs_stx(source):
+            with put.subTest(layout=case.name):
+                self.check_invalid_arguments(put, case.value.source)
 
     def check_invalid_syntax_cases_for_expected_valid_token(self,
                                                             put: unittest.TestCase,

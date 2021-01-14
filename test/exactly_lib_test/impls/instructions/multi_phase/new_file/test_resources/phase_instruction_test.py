@@ -12,7 +12,7 @@ from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_tes
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import abstract_syntax as instr_abs_stx
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line__abs_stx
-from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntax as string_source_abs_stx
+from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
 from exactly_lib_test.impls.types.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any, conf_rel_hds, \
@@ -33,7 +33,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
     equals_data_type_reference_restrictions
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import path_or_string_reference_restrictions
-from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntax as program_abs_stx
+from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as program_abs_stx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import abstract_syntax as str_trans_abs_stx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer__usage
@@ -212,14 +212,14 @@ class TestContentsFromOutputOfProgram_Successfully(TestCaseWithConfiguration):
 
         program_syntax = string_source_abs_stx.StringSourceOfProgramAbsStx(
             ProcOutputFile.STDOUT,
-            program_abs_stx.TransformedProgramAbsStx(
+            program_abs_stx.FullProgramAbsStx(
                 program_abs_stx.ProgramOfPythonInterpreterAbsStx.of_execute_python_src_string(
                     py_programs.single_line_pgm_that_prints_to(
                         ProcOutputFile.STDOUT,
                         text_printed_by_program
                     )
                 ),
-                to_upper_transformer.abs_stx_of_reference,
+                transformation=to_upper_transformer.abs_stx_of_reference,
             )
         )
         instruction_syntax = instr_abs_stx.with_explicit_contents(
@@ -277,11 +277,11 @@ class TestContentsFromOutputOfProgram_SuccessfullyWithIgnoredNonZeroExitCode(Tes
 
         program_string_source_syntax = string_source_abs_stx.StringSourceOfProgramAbsStx(
             ProcOutputFile.STDOUT,
-            program_abs_stx.TransformedProgramAbsStx(
+            program_abs_stx.FullProgramAbsStx(
                 program_abs_stx.ProgramOfPythonInterpreterAbsStx.of_execute_python_src_file(
                     py_src_file_rel_opt_conf.path_abs_stx_of_name(py_file.name)
                 ),
-                to_upper_transformer.abs_stx_of_reference,
+                transformation=to_upper_transformer.abs_stx_of_reference,
             ),
             ignore_exit_code=True,
         )

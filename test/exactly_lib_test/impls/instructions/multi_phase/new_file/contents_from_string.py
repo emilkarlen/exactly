@@ -18,8 +18,8 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.par
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import \
     IS_SUCCESS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
-from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntax as string_source_abs_stx
-from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntax import StringSourceOfStringAbsStx
+from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
+from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import abstract_syntax as path_abs_stx

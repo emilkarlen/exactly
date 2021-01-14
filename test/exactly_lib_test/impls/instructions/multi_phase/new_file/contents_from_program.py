@@ -22,7 +22,7 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.uti
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check as embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
-from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntax as string_source_abs_stx
+from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
 from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
@@ -38,9 +38,9 @@ from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions as f_asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntax as program_abs_stx
-from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import \
-    TransformableProgramAbsStxBuilder, ProgramOfShellCommandLineAbsStx, ProgramAbsStx, TransformableProgramAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as program_abs_stx
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import \
+    ProgramAbsStx, TransformableProgramAbsStxBuilder, ProgramOfShellCommandLineAbsStx, PgmAndArgsAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import abstract_syntax as str_trans_abs_stx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
@@ -78,14 +78,14 @@ class TestSymbolUsages(unittest.TestCase):
 
         transformed_program_output_contents_syntax = string_source_abs_stx.StringSourceOfProgramAbsStx(
             ProcOutputFile.STDOUT,
-            program_abs_stx.TransformedProgramAbsStx(
+            program_abs_stx.FullProgramAbsStx(
                 program_abs_stx.ProgramOfPythonInterpreterAbsStx.of_execute_python_src_string(
                     py_programs.single_line_pgm_that_prints_to(
                         ProcOutputFile.STDOUT,
                         text_printed_by_program.name__sym_ref_syntax
                     )
                 ),
-                to_upper_transformer.abs_stx_of_reference,
+                transformation=to_upper_transformer.abs_stx_of_reference,
             )
         )
         instruction_syntax = instr_abs_stx.with_explicit_contents(
@@ -120,7 +120,7 @@ class TestSymbolUsages(unittest.TestCase):
 class ProgramCase:
     def __init__(self,
                  name: str,
-                 source: TransformableProgramAbsStx,
+                 source: PgmAndArgsAbsStx,
                  expected_reference: List[ValueAssertion[SymbolReference]]):
         self.name = name
         self.source = source
@@ -461,9 +461,9 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(
 
 class TestFailDueInvalidSyntax(unittest.TestCase):
     def test_superfluous_arguments(self):
-        program_w_superfluous_argument = program_abs_stx.TransformedProgramAbsStx(
+        program_w_superfluous_argument = program_abs_stx.FullProgramAbsStx(
             program_abs_stx.ARBITRARY_TRANSFORMABLE_PROGRAM,
-            str_trans_abs_stx.StringTransformerCompositionAbsStx(
+            transformation=str_trans_abs_stx.StringTransformerCompositionAbsStx(
                 [
                     str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx('str_trans_sym_1'),
                     str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx('str_trans_sym_1'),

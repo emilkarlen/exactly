@@ -22,6 +22,8 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.tcfs.test_resources.tcds_populators import \
     TcdsPopulator
 from exactly_lib_test.test_resources.files.file_structure import File, executable_file, DirContents
+from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
+from exactly_lib_test.test_resources.source.layout import STANDARD_LAYOUT_SPECS
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -144,6 +146,20 @@ def check(put: unittest.TestCase,
             environment.tcds,
             expectation.validation_result,
         )
+
+
+def check__abs_stx(put: unittest.TestCase,
+                   instruction_argument: AbstractSyntax,
+                   arrangement: Arrangement,
+                   expectation: Expectation,
+                   ):
+    for layout_spec in STANDARD_LAYOUT_SPECS:
+        with put.subTest(layout=layout_spec.name):
+            check(put,
+                  instruction_argument.tokenization().layout(layout_spec.value),
+                  arrangement,
+                  expectation,
+                  )
 
 
 class CheckBase(unittest.TestCase):

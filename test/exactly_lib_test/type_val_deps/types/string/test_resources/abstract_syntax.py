@@ -1,3 +1,4 @@
+import shlex
 from abc import ABC
 from typing import Optional, Sequence
 
@@ -26,6 +27,10 @@ class StringLiteralAbsStx(NonHereDocStringAbsStx):
                  ):
         self.value = value
         self.quoting = quoting_
+
+    @staticmethod
+    def of_shlex_quoted(unquoted: str) -> 'StringLiteralAbsStx':
+        return StringLiteralAbsStx(shlex.quote(unquoted))
 
     def tokenization(self) -> TokenSequence:
         return TokenSequence.singleton(self._token())

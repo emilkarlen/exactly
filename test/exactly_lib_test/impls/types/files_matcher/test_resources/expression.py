@@ -11,7 +11,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arra
     ExecutionExpectation, Expectation
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__for_expression_parser
+    equivalent_source_variants__for_expression_parser
 from exactly_lib_test.impls.types.test_resources import validation as asrt_validation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
@@ -61,7 +61,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
         for condition_str in test_cases:
             with self.subTest(msg=condition_str):
                 instr_arg = self._conf().arguments_constructor.apply(condition_str)
-                for source in equivalent_source_variants__with_source_check__for_expression_parser(
+                for source in equivalent_source_variants__for_expression_parser(
                         self,
                         Arguments(instr_arg)):
                     self._check(
@@ -94,7 +94,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                 arguments = self._conf().arguments_constructor.apply(operand_arg_with_symbol_ref)
                 with self.subTest(argument=arguments,
                                   invalid_symbol_value=invalid_symbol_value):
-                    for source in equivalent_source_variants__with_source_check__for_expression_parser(
+                    for source in equivalent_source_variants__for_expression_parser(
                             self,
                             Arguments(arguments)):
                         self._check(

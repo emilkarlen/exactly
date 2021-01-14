@@ -255,7 +255,7 @@ class RelativityOptionConfiguration(ABC):
         return self._symbols_configuration
 
 
-class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguration, ABC):
+class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguration):
     def __init__(self,
                  relativity: RelOptionType,
                  cli_option: OptionStringConfiguration,
@@ -269,6 +269,10 @@ class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguratio
     @property
     def relativity(self) -> RelOptionType:
         return self._relativity
+
+    @property
+    def directory_structure_partition(self) -> DirectoryStructurePartition:
+        return path_relativity.RESOLVING_DEPENDENCY_OF[self.relativity]
 
     @property
     def is_rel_cwd(self) -> bool:

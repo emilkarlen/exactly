@@ -2,13 +2,14 @@ import os
 import pathlib
 import sys
 import unittest
-from typing import List, Sequence
+from typing import List, Sequence, Iterable
 
 from exactly_lib.type_val_prims.program.commands import CommandDriverForExecutableFile
 from exactly_lib.type_val_prims.program.commands import ProgramAndArguments, Command
 from exactly_lib.util.process_execution.execution_elements import Executable
 from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.files.executable_files import make_executable_by_os
+from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.type_val_deps.types.path.test_resources import described_path
 from exactly_lib_test.util.process_execution.test_resources import executables
 
@@ -51,7 +52,7 @@ def shell_command_line_for_interpreting(python_source_file,
     return '"{}" {}{}'.format(sys.executable, python_source_file, arguments_string)
 
 
-def command_line_for_arguments(arguments: iter) -> str:
+def command_line_for_arguments(arguments: Iterable[WithToString]) -> str:
     str_arguments = _str_elements(arguments)
     arguments_string = '' if not str_arguments else ' ' + ' '.join(str_arguments)
     return '"{}"{}'.format(sys.executable, arguments_string)
@@ -108,7 +109,7 @@ def file_name_of_interpreter() -> str:
     return pathlib.Path(sys.executable).name
 
 
-def _str_elements(elements: iter) -> list:
+def _str_elements(elements: Iterable[WithToString]) -> List[str]:
     return [str(x) for x in elements]
 
 

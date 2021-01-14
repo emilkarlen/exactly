@@ -3,7 +3,6 @@ import unittest
 from typing import Sequence, List
 
 from exactly_lib.definitions import path as path_texts
-from exactly_lib.definitions.path import REL_symbol_OPTION
 from exactly_lib.impls.types.path.parse_path import path_relativity_restriction
 from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.impls.types.program.command import command_sdvs
@@ -12,13 +11,13 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import StringRestriction
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
+from exactly_lib.util.parse.token import QuoteType
 from exactly_lib_test.impls.types.program.test_resources import parse_executable_file_path_cases as utils
 from exactly_lib_test.impls.types.program.test_resources.parse_executable_file_path_cases import \
     RelativityConfiguration, \
@@ -30,17 +29,26 @@ from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import tcds_populators as tcds_pop
+from exactly_lib_test.tcfs.test_resources.abstract_syntax import PathAbsStx, PathStringAbsStx, RelOptPathAbsStx, \
+    RelSymbolPathAbsStx
 from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.argument_renderer import CustomOptionArgument
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path
-from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
+from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
+from exactly_lib_test.test_resources.source.layout import LayoutSpec, STANDARD_LAYOUT_SPECS
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import \
+    ProgramOfExecutableFileCommandLineAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx, \
+    ArgumentOfStringAbsStx
+from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringLiteralAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
 
@@ -97,64 +105,93 @@ class Case:
         self.expectation = expectation
         self.source_after_parse = source_after_parse
 
+    @staticmethod
+    def of(name: str,
+           executable_file: PathAbsStx,
+           arguments: Sequence[ArgumentAbsStx],
+           expectation: ExpectationOnExeFile,
+           source_after_parse: ValueAssertion[ParseSource],
+           ) -> 'Case':
+        return Case(
+            name,
+            ProgramOfExecutableFileCommandLineAbsStx(
+                executable_file,
+                arguments
+            ).tokenization().layout(LayoutSpec.of_default()),
+            expectation,
+            source_after_parse,
+        )
+
 
 class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
     def test(self):
         cases = [
-            Case('absolute_path',
-                 source=string_formatting.file_name(sys.executable),
-                 expectation=
-                 ExpectationOnExeFile(
-                     path_ddv=path_ddvs.absolute_file_name(sys.executable),
-                     expected_symbol_references=[],
-                 ),
-                 source_after_parse=asrt_source.is_at_end_of_line(1),
-                 ),
-            Case('without_option',
-                 source='file arg2',
-                 expectation=
-                 ExpectationOnExeFile(
-                     path_ddv=path_of_default_relativity('file'),
-                     expected_symbol_references=[],
-                 ),
-                 source_after_parse=has_remaining_part_of_first_line('arg2'),
-                 ),
-            Case('relative_file_name_with_space',
-                 source='"the file"',
-                 expectation=
-                 ExpectationOnExeFile(
-                     path_ddv=path_of_default_relativity('the file'),
-                     expected_symbol_references=[],
-                 ),
-                 source_after_parse=asrt_source.is_at_end_of_line(1),
-                 ),
-            Case('relative_file_name_with_space_and_arguments',
-                 source='"the file" "an argument"',
-                 expectation=
-                 ExpectationOnExeFile(
-                     path_ddv=path_of_default_relativity('the file'),
-                     expected_symbol_references=[],
-                 ),
-                 source_after_parse=has_remaining_part_of_first_line('"an argument"'),
-                 ),
-            Case('option_without_tail',
-                 source='%s THE_FILE' % path_texts.REL_HDS_CASE_OPTION,
-                 expectation=
-                 ExpectationOnExeFile(
-                     path_ddv=path_of(RelOptionType.REL_HDS_CASE, 'THE_FILE'),
-                     expected_symbol_references=[],
-                 ),
-                 source_after_parse=asrt_source.is_at_end_of_line(1),
-                 ),
-            Case('option_with_tail',
-                 source='%s FILE tail' % path_texts.REL_CWD_OPTION,
-                 expectation=
-                 ExpectationOnExeFile(
-                     path_ddv=path_of(RelOptionType.REL_CWD, 'FILE'),
-                     expected_symbol_references=[],
-                 ),
-                 source_after_parse=has_remaining_part_of_first_line('tail'),
-                 ),
+            Case.of(
+                'absolute_path',
+                PathStringAbsStx(StringLiteralAbsStx.of_shlex_quoted(sys.executable)),
+                arguments=(),
+                expectation=
+                ExpectationOnExeFile(
+                    path_ddv=path_ddvs.absolute_file_name(sys.executable),
+                    expected_symbol_references=[],
+                ),
+                source_after_parse=asrt_source.is_at_end_of_line(1),
+            ),
+            Case.of(
+                'without_option',
+                PathStringAbsStx.of_plain_str('file'),
+                arguments=[ArgumentOfStringAbsStx.of_str('arg2')],
+                expectation=
+                ExpectationOnExeFile(
+                    path_ddv=path_of_default_relativity('file'),
+                    expected_symbol_references=[],
+                ),
+                source_after_parse=has_remaining_part_of_first_line('arg2'),
+            ),
+            Case.of(
+                'relative_file_name_with_space',
+                PathStringAbsStx(StringLiteralAbsStx('the file', QuoteType.SOFT)),
+                arguments=(),
+                expectation=
+                ExpectationOnExeFile(
+                    path_ddv=path_of_default_relativity('the file'),
+                    expected_symbol_references=[],
+                ),
+                source_after_parse=asrt_source.is_at_end_of_line(1),
+            ),
+            Case.of(
+                'relative_file_name_with_space_and_arguments',
+                PathStringAbsStx(StringLiteralAbsStx('the file', QuoteType.SOFT)),
+                arguments=[ArgumentOfStringAbsStx(StringLiteralAbsStx('an argument', QuoteType.SOFT))],
+                expectation=
+                ExpectationOnExeFile(
+                    path_ddv=path_of_default_relativity('the file'),
+                    expected_symbol_references=[],
+                ),
+                source_after_parse=has_remaining_part_of_first_line('"an argument"'),
+            ),
+            Case.of(
+                'option_without_tail',
+                RelOptPathAbsStx(RelOptionType.REL_HDS_CASE, 'THE_FILE'),
+                arguments=(),
+                expectation=
+                ExpectationOnExeFile(
+                    path_ddv=path_of(RelOptionType.REL_HDS_CASE, 'THE_FILE'),
+                    expected_symbol_references=[],
+                ),
+                source_after_parse=asrt_source.is_at_end_of_line(1),
+            ),
+            Case.of(
+                'option_with_tail',
+                RelOptPathAbsStx(RelOptionType.REL_CWD, 'FILE'),
+                arguments=[ArgumentOfStringAbsStx.of_str('tail')],
+                expectation=
+                ExpectationOnExeFile(
+                    path_ddv=path_of(RelOptionType.REL_CWD, 'FILE'),
+                    expected_symbol_references=[],
+                ),
+                source_after_parse=has_remaining_part_of_first_line('tail'),
+            ),
         ]
         for case in cases:
             with self.subTest(name=case.name):
@@ -173,32 +210,31 @@ class TestParseWithSymbols(unittest.TestCase):
             path_relativity_restriction(
                 syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF.options.accepted_relativity_variants
             ))
-        reference_of_path_string_symbol_as_path_component = SymbolReference(string_symbol.name,
-                                                                            ReferenceRestrictionsOnDirectAndIndirect(
-                                                                                direct=StringRestriction(),
-                                                                                indirect=StringRestriction()),
-                                                                            )
+        reference_of_path_string_symbol_as_path_component = SymbolReference(
+            string_symbol.name,
+            ReferenceRestrictionsOnDirectAndIndirect(
+                direct=StringRestriction(),
+                indirect=StringRestriction()),
+        )
         symbols = SymbolContext.symbol_table_of_contexts([
             file_symbol,
             string_symbol,
         ])
         cases = [
-            Case('symbol references in file',
-                 source='{rel_symbol_option} {file_symbol} {string_symbol}'.format(
-                     file_symbol=file_symbol.name,
-                     string_symbol=symbol_reference_syntax_for_name(string_symbol.name),
-                     rel_symbol_option=REL_symbol_OPTION,
-                 ),
-                 expectation=
-                 ExpectationOnExeFile(
-                     path_ddv=path_ddvs.stacked(file_symbol.ddv,
-                                                path_ddvs.constant_path_part(string_symbol.str_value)),
-                     expected_symbol_references=[reference_of_relativity_symbol,
-                                                 reference_of_path_string_symbol_as_path_component],
-                     symbol_for_value_checks=symbols,
-                 ),
-                 source_after_parse=asrt_source.is_at_end_of_line(1),
-                 ),
+            Case.of(
+                'symbol references in file',
+                RelSymbolPathAbsStx(file_symbol.name, string_symbol.name__sym_ref_syntax),
+                arguments=(),
+                expectation=
+                ExpectationOnExeFile(
+                    path_ddv=path_ddvs.stacked(file_symbol.ddv,
+                                               path_ddvs.constant_path_part(string_symbol.str_value)),
+                    expected_symbol_references=[reference_of_relativity_symbol,
+                                                reference_of_path_string_symbol_as_path_component],
+                    symbol_for_value_checks=symbols,
+                ),
+                source_after_parse=asrt_source.is_at_end_of_line(1),
+            ),
         ]
         for case in cases:
             with self.subTest(name=case.name):
@@ -250,32 +286,41 @@ class ExecutableTestBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectT
 
 class NoParenthesesAndNoFollowingArguments(ExecutableTestBase):
     def runTest(self):
-        instruction_argument = self._arg('{executable}')
-        utils.check(self,
-                    instruction_argument,
-                    utils.Arrangement(tcds_pop.empty()),
-                    utils.Expectation(
-                        path_ddv=self.configuration.path_ddv,
-                        expected_symbol_references=self.configuration.expected_symbol_references,
-                        source=asrt_source.is_at_end_of_line(1),
-                        validation_result=self.configuration.validation_result,
-                    ),
-                    )
+        instruction_argument = ProgramOfExecutableFileCommandLineAbsStx(
+            PathStringAbsStx.of_plain_str(self.configuration.executable)
+        )
+        utils.check__abs_stx(
+            self,
+            instruction_argument,
+            utils.Arrangement(tcds_pop.empty()),
+            utils.Expectation(
+                path_ddv=self.configuration.path_ddv,
+                expected_symbol_references=self.configuration.expected_symbol_references,
+                source=asrt_source.is_at_end_of_line(1),
+                validation_result=self.configuration.validation_result,
+            ),
+        )
 
 
 class NoParenthesesAndFollowingArguments(ExecutableTestBase):
     def runTest(self):
-        instruction_argument = self._arg('{executable} arg1 -arg2')
-        utils.check(self,
-                    instruction_argument,
-                    utils.Arrangement(tcds_pop.empty()),
-                    utils.Expectation(
-                        path_ddv=self.configuration.path_ddv,
-                        expected_symbol_references=self.configuration.expected_symbol_references,
-                        source=has_remaining_part_of_first_line('arg1 -arg2'),
-                        validation_result=self.configuration.validation_result,
-                    ),
-                    )
+        instruction_argument = ProgramOfExecutableFileCommandLineAbsStx(
+            PathStringAbsStx.of_plain_str(self.configuration.executable),
+            [ArgumentOfStringAbsStx.of_str('arg1'),
+             ArgumentOfStringAbsStx.of_str('-arg2'),
+             ],
+        )
+        utils.check__abs_stx(
+            self,
+            instruction_argument,
+            utils.Arrangement(tcds_pop.empty()),
+            utils.Expectation(
+                path_ddv=self.configuration.path_ddv,
+                expected_symbol_references=self.configuration.expected_symbol_references,
+                source=has_remaining_part_of_first_line__re('arg1[ \t]+-arg2'),
+                validation_result=self.configuration.validation_result,
+            ),
+        )
 
 
 def configurations() -> Sequence[RelativityConfiguration]:
@@ -290,9 +335,19 @@ def configurations() -> Sequence[RelativityConfiguration]:
     ]
 
 
+def _python_executable(arguments: Sequence[ArgumentAbsStx] = ()) -> ProgramOfExecutableFileCommandLineAbsStx:
+    return ProgramOfExecutableFileCommandLineAbsStx(
+        PathStringAbsStx.of_shlex_quoted(sys.executable),
+        arguments,
+    )
+
+
 class TestParseAbsolutePath(unittest.TestCase):
     def test_existing_file(self):
-        arguments_str = py_exe.command_line_for_arguments(['remaining', 'args'])
+        arguments = _python_executable(
+            [ArgumentOfStringAbsStx.of_str('remaining'),
+             ArgumentOfStringAbsStx.of_str('args')]
+        )
         expectation_on_exe_file = ExpectationOnExeFile(
             path_ddv=path_ddvs.absolute_file_name(sys.executable),
             expected_symbol_references=[],
@@ -301,15 +356,21 @@ class TestParseAbsolutePath(unittest.TestCase):
         validator_expectation = validation.Expectation(passes_pre_sds=True,
                                                        passes_post_sds=True)
 
-        self._check(arguments_str,
-                    expected_source_after_parse=has_remaining_part_of_first_line('remaining args'),
-                    expectation_on_exe_file=expectation_on_exe_file,
-                    validator_expectation=validator_expectation)
+        self._check__abs_stx(
+            arguments,
+            expected_source_after_parse=has_remaining_part_of_first_line__re('remaining[ \t]+args'),
+            expectation_on_exe_file=expectation_on_exe_file,
+            validator_expectation=validator_expectation,
+        )
 
     def test_non_existing_file(self):
         non_existing_file_path = non_existing_absolute_path('/this/file/is/assumed/to/not/exist')
         non_existing_file_path_str = str(non_existing_file_path)
-        arguments_str = '{} remaining args'.format(string_formatting.file_name(non_existing_file_path_str))
+        arguments = ProgramOfExecutableFileCommandLineAbsStx(
+            PathStringAbsStx.of_plain_str(non_existing_file_path_str),
+            [ArgumentOfStringAbsStx.of_str('remaining'),
+             ArgumentOfStringAbsStx.of_str('args')]
+        )
 
         expectation_on_exe_file = ExpectationOnExeFile(
             path_ddv=path_ddvs.absolute_file_name(non_existing_file_path_str),
@@ -318,10 +379,11 @@ class TestParseAbsolutePath(unittest.TestCase):
         validator_expectation = validation.Expectation(passes_pre_sds=False,
                                                        passes_post_sds=True)
 
-        self._check(arguments_str,
-                    expected_source_after_parse=has_remaining_part_of_first_line('remaining args'),
-                    expectation_on_exe_file=expectation_on_exe_file,
-                    validator_expectation=validator_expectation)
+        self._check__abs_stx(
+            arguments,
+            expected_source_after_parse=has_remaining_part_of_first_line__re('remaining[ \t]+args'),
+            expectation_on_exe_file=expectation_on_exe_file,
+            validator_expectation=validator_expectation)
 
     def _check(self,
                arguments_str: str,
@@ -341,6 +403,20 @@ class TestParseAbsolutePath(unittest.TestCase):
                                      ddv_validators.all_of(exe_file_command.resolve(environment.symbols).validators),
                                      environment.tcds,
                                      validator_expectation)
+
+    def _check__abs_stx(self,
+                        arguments: AbstractSyntax,
+                        expected_source_after_parse: ValueAssertion[ParseSource],
+                        expectation_on_exe_file: ExpectationOnExeFile,
+                        validator_expectation: validation.Expectation):
+        for layout_spec in STANDARD_LAYOUT_SPECS:
+            with self.subTest(layout_spec.name):
+                self._check(
+                    arguments.tokenization().layout(layout_spec.value),
+                    expected_source_after_parse,
+                    expectation_on_exe_file,
+                    validator_expectation,
+                )
 
 
 def _parse_and_check(put: unittest.TestCase,
@@ -369,6 +445,13 @@ def has_remaining_part_of_first_line(remaining_part: str) -> ValueAssertion[Pars
     return asrt_source.source_is_not_at_end(
         current_line_number=asrt.equals(1),
         remaining_part_of_current_line=asrt.equals(remaining_part),
+    )
+
+
+def has_remaining_part_of_first_line__re(remaining_part_reg_ex: str) -> ValueAssertion[ParseSource]:
+    return asrt_source.source_is_not_at_end(
+        current_line_number=asrt.equals(1),
+        remaining_part_of_current_line=asrt_str.matches_reg_ex(remaining_part_reg_ex),
     )
 
 
