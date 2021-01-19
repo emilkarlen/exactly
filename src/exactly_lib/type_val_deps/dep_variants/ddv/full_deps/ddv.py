@@ -21,7 +21,7 @@ class FullDepsDdv(Generic[PRIMITIVE],
                   ABC):
     @property
     def validator(self) -> DdvValidator:
-        return ddv_validation.constant_success_validator()
+        return ddv_validation.ConstantDdvValidator.new_success()
 
     @abstractmethod
     def description(self) -> LogicValueDescription:

@@ -20,7 +20,7 @@ class ConstantDdv(Generic[PRIMITIVE], FullDepsWithDetailsDescriptionDdv[PRIMITIV
 class DdvFromParts(Generic[PRIMITIVE], FullDepsWithDetailsDescriptionDdv[PRIMITIVE]):
     def __init__(self,
                  make_adv: Callable[[TestCaseDs], ApplicationEnvironmentDependentValue[PRIMITIVE]],
-                 validator: DdvValidator = ddv_validation.constant_success_validator(),
+                 validator: DdvValidator = ddv_validation.ConstantDdvValidator.new_success(),
                  describer: DetailsRenderer = details.empty(),
                  ):
         self._validator = validator

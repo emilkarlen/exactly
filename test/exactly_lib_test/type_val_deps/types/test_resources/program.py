@@ -1,5 +1,6 @@
 from typing import Optional
 
+from exactly_lib.impls.types.program.sdvs import program_symbol_sdv
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.symbol.value_type import ValueType
@@ -83,6 +84,10 @@ class ProgramSymbolContext(LogicTypeSymbolContext[ProgramSdv]):
     @property
     def value(self) -> ProgramSymbolValueContext:
         return self._value
+
+    @property
+    def reference_sdv(self) -> ProgramSdv:
+        return program_symbol_sdv.ProgramSdvForSymbolReference(self.name)
 
 
 ARBITRARY_SYMBOL_VALUE_CONTEXT = ProgramSymbolValueContext.of_sdv(arbitrary__without_symbol_references())

@@ -25,7 +25,7 @@ class ObjectDdv(Generic[T], MultiDependenciesDdv[T], ABC):
 
     @property
     def validator(self) -> DdvValidator:
-        return ddv_validation.constant_success_validator()
+        return ddv_validation.ConstantDdvValidator.new_success()
 
     @abstractmethod
     def value_of_any_dependency(self, tcds: TestCaseDs) -> T:

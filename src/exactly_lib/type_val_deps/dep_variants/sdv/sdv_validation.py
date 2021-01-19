@@ -180,7 +180,7 @@ DdvValidatorResolver = Callable[[SymbolTable], DdvValidator]
 
 
 def validator_resolver_of_constant_success(symbols: SymbolTable) -> DdvValidator:
-    return ddv_validation.constant_success_validator()
+    return ddv_validation.ConstantDdvValidator.new_success()
 
 
 class SdvValidatorFromDdvValidator(SdvValidator):

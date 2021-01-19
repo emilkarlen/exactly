@@ -143,6 +143,10 @@ def is_any_data_type_reference_restrictions() -> ValueAssertion[ReferenceRestric
     return equals_data_type_reference_restrictions(is_any_data_type())
 
 
+def is_reference_restrictions__to_type_convertible_to_string() -> ValueAssertion[ReferenceRestrictions]:
+    return equals_data_type_reference_restrictions(is_any_data_type())
+
+
 REFERENCES_ARE_UNRESTRICTED = matches_restrictions_on_direct_and_indirect(
     assertion_on_direct=asrt.is_instance(AnyDataTypeRestriction),
     assertion_on_every=asrt.ValueIsNone())

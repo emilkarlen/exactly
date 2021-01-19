@@ -3,13 +3,13 @@ from typing import Sequence, Iterable, Optional
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator, constant_success_validator
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator, ConstantDdvValidator
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import PreOrPostSdsValidatorPrimitive
 
 
 def all_of(validators: Sequence[DdvValidator]) -> DdvValidator:
     if len(validators) == 0:
-        return constant_success_validator()
+        return ConstantDdvValidator.new_success()
     elif len(validators) == 1:
         return validators[0]
     else:

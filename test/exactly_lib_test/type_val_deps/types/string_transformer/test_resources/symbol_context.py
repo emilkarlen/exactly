@@ -1,7 +1,7 @@
 from typing import Optional
 
+from exactly_lib.impls.types.string_transformer import sdvs
 from exactly_lib.impls.types.string_transformer.impl.identity import IdentityStringTransformer
-from exactly_lib.impls.types.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.value_type import ValueType
@@ -35,7 +35,7 @@ class StringTransformerSymbolValueContext(LogicSymbolValueContext[StringTransfor
     def of_primitive(primitive: StringTransformer,
                      definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                      ) -> 'StringTransformerSymbolValueContext':
-        return StringTransformerSymbolValueContext.of_sdv(StringTransformerSdvConstant(primitive),
+        return StringTransformerSymbolValueContext.of_sdv(sdvs.StringTransformerSdvConstant(primitive),
                                                           definition_source)
 
     @staticmethod
@@ -92,6 +92,10 @@ class StringTransformerSymbolContext(LogicTypeSymbolContext[StringTransformerSdv
             name,
             ARBITRARY_SYMBOL_VALUE_CONTEXT
         )
+
+    @property
+    def reference_sdv(self) -> StringTransformerSdv:
+        return sdvs.StringTransformerSdvReference(self.name)
 
     @property
     def value(self) -> StringTransformerSymbolValueContext:

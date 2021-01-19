@@ -1,6 +1,7 @@
 from typing import Optional
 
 from exactly_lib.impls.types.files_condition import files_conditions
+from exactly_lib.impls.types.files_condition.impl import reference
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.symbol.value_type import ValueType
@@ -86,6 +87,10 @@ class FilesConditionSymbolContext(LogicTypeSymbolContext[FilesConditionSdv]):
     @property
     def value(self) -> FilesConditionSymbolValueContext:
         return self._value
+
+    @property
+    def reference_sdv(self) -> FilesConditionSdv:
+        return reference.ReferenceSdv(self.name)
 
     @property
     def argument(self) -> FilesConditionArg:

@@ -1,7 +1,8 @@
 import unittest
 
-from exactly_lib_test.impls.types.program import parse_arguments, parse_executable_file_path, parse_program, \
-    parse_system_program, parse_with_reference_to_program
+from exactly_lib_test.impls.types.program import parse_arguments, parse_executable_file_path, parse_system_program, \
+    parse_with_reference_to_program
+from exactly_lib_test.impls.types.program.parse_program import z_package_suite as parse_program
 
 
 def suite() -> unittest.TestSuite:

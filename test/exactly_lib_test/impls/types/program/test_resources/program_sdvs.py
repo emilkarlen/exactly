@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.impls.types.program.command import command_sdvs
 from exactly_lib.impls.types.program.sdvs import command_program_sdv
 from exactly_lib.impls.types.program.sdvs.command_program_sdv import ProgramSdvForCommand
@@ -6,6 +8,8 @@ from exactly_lib.type_val_deps.types.program.sdv.accumulated_components import A
 from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv
+from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib_test.impls.types.test_resources import command_sdvs as test_command_sdvs
 from exactly_lib_test.type_val_deps.types.string.test_resources import string_sdvs
 
@@ -28,10 +32,25 @@ def ref_to_exe_file(exe_file: PathSdv,
 
 
 def system_program(program: StringSdv,
-                   arguments: ArgumentsSdv = ArgumentsSdv.empty()
+                   arguments: ArgumentsSdv = ArgumentsSdv.empty(),
+                   stdin: Sequence[StringSourceSdv] = (),
+                   transformations: Sequence[StringTransformerSdv] = (),
                    ) -> ProgramSdvForCommand:
+    return command_program_sdv.ProgramSdvForCommand(
+        command_sdvs.for_system_program(program, arguments),
+        AccumulatedComponents(
+            stdin,
+            arguments=ArgumentsSdv.empty(),
+            transformations=transformations,
+        )
+    )
+
+
+def shell_program(command_line: StringSdv,
+                  arguments: ArgumentsSdv = ArgumentsSdv.empty()
+                  ) -> ProgramSdvForCommand:
     return command_program_sdv.plain(
-        command_sdvs.for_system_program(program, arguments)
+        command_sdvs.for_shell(command_line, arguments)
     )
 
 

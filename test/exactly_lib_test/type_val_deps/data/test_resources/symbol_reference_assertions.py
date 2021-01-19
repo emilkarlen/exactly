@@ -92,6 +92,12 @@ def is_reference_to_data_type_symbol(symbol_name: str
                                is_any_data_type_reference_restrictions())
 
 
+def is_reference_restrictions__to_type_convertible_to_string(symbol_name: str
+                                                             ) -> ValueAssertion[SymbolReference]:
+    return matches_reference_2(symbol_name,
+                               is_any_data_type_reference_restrictions())
+
+
 def is_reference_to_string_made_up_of_just_strings(symbol_name: str) -> ValueAssertion[SymbolReference]:
     return matches_reference_2(
         symbol_name,

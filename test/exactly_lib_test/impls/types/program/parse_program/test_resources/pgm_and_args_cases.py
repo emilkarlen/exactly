@@ -11,6 +11,8 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Asse
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.tcfs.test_resources import tcds_populators
+from exactly_lib_test.tcfs.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions as asrt_path
@@ -28,6 +30,7 @@ class PgmAndArgsCase:
                  pgm_and_args: PgmAndArgsAbsStx,
                  expected_command_driver: Callable[[AssertionResolvingEnvironment], ValueAssertion[CommandDriver]],
                  symbols: Sequence[SymbolContext] = (),
+                 tcds: TcdsPopulator = tcds_populators.empty(),
                  mk_arrangement: Callable[[SymbolTable], Arrangement] =
                  lambda sym_tbl: arrangement_wo_tcds(symbols=sym_tbl),
                  ):
@@ -35,10 +38,43 @@ class PgmAndArgsCase:
         self.pgm_and_args = pgm_and_args
         self.symbols = symbols
         self.expected_command_driver = expected_command_driver
+        self.tcds = tcds
         self.mk_arrangement = mk_arrangement
 
+    @staticmethod
+    def wo_tcds(name: str,
+                pgm_and_args: PgmAndArgsAbsStx,
+                expected_command_driver: Callable[[AssertionResolvingEnvironment], ValueAssertion[CommandDriver]],
+                symbols: Sequence[SymbolContext] = (),
+                ) -> 'PgmAndArgsCase':
+        return PgmAndArgsCase(
+            name,
+            pgm_and_args,
+            expected_command_driver,
+            symbols,
+            tcds_populators.empty(),
+            lambda sym_tbl: arrangement_wo_tcds(symbols=sym_tbl)
+        )
 
-def cases__w_argument_list() -> List[PgmAndArgsCase]:
+    @staticmethod
+    def w_tcds(name: str,
+               pgm_and_args: PgmAndArgsAbsStx,
+               expected_command_driver: Callable[[AssertionResolvingEnvironment], ValueAssertion[CommandDriver]],
+               tcds: TcdsPopulator,
+               symbols: Sequence[SymbolContext] = (),
+               ) -> 'PgmAndArgsCase':
+        return PgmAndArgsCase(
+            name,
+            pgm_and_args,
+            expected_command_driver,
+            symbols,
+            tcds,
+            lambda sym_tbl: arrangement_w_tcds(symbols=sym_tbl,
+                                               tcds_contents=tcds)
+        )
+
+
+def cases__w_argument_list__excluding_program_reference() -> List[PgmAndArgsCase]:
     """Cases of pgm-and-arg:s that have a list of arguments."""
     executable_file = fs.executable_file('executable-file', '')
     exe_file_relativity = rel_opt.conf_rel_hds(RelHdsOptionType.REL_HDS_CASE)
@@ -47,11 +83,9 @@ def cases__w_argument_list() -> List[PgmAndArgsCase]:
                                                   )
 
     system_program = 'the-system-program'
-    system_program_sdv = program_sdvs.system_program(string_sdvs.str_constant(system_program))
-    system_program_symbol = ProgramSymbolContext.of_sdv('SYSTEM_PROGRAM_SYMBOL', system_program_sdv)
 
     return [
-        PgmAndArgsCase(
+        PgmAndArgsCase.w_tcds(
             'executable file',
             pgm_and_args=pgm_abs_stx.ProgramOfExecutableFileCommandLineAbsStx(
                 exe_file_relativity.named_file_conf(executable_file.name).abstract_syntax
@@ -60,14 +94,11 @@ def cases__w_argument_list() -> List[PgmAndArgsCase]:
                 asrt_command.matches_executable_file_command_driver(
                     asrt.equals(executable_file_ddv.value_of_any_dependency__d(env.tcds).primitive),
                 )),
-            mk_arrangement=lambda sym_tbl: arrangement_w_tcds(
-                symbols=sym_tbl,
-                hds_contents=exe_file_relativity.populator_for_relativity_option_root__hds(
-                    DirContents([executable_file])
-                )
+            tcds=exe_file_relativity.populator_for_relativity_option_root__hds(
+                DirContents([executable_file])
             )
         ),
-        PgmAndArgsCase(
+        PgmAndArgsCase.wo_tcds(
             '-python',
             pgm_and_args=pgm_abs_stx.ProgramOfPythonInterpreterAbsStx(()),
             expected_command_driver=prim_asrt__constant(
@@ -75,7 +106,7 @@ def cases__w_argument_list() -> List[PgmAndArgsCase]:
                     asrt_path.path_as_str(asrt.equals(sys.executable)),
                 )),
         ),
-        PgmAndArgsCase(
+        PgmAndArgsCase.wo_tcds(
             'system program',
             pgm_and_args=pgm_abs_stx.ProgramOfSystemCommandLineAbsStx(
                 StringLiteralAbsStx(system_program)
@@ -85,34 +116,52 @@ def cases__w_argument_list() -> List[PgmAndArgsCase]:
                     asrt.equals(system_program)
                 ))
         ),
-        PgmAndArgsCase(
-            'reference',
-            pgm_and_args=pgm_abs_stx.ProgramOfSymbolReferenceAbsStx(system_program_symbol.name),
-            symbols=[system_program_symbol],
-            expected_command_driver=prim_asrt__constant(
-                asrt_command.matches_system_program_command_driver(
-                    asrt.equals(system_program)
-                )),
-        ),
     ]
+
+
+def program_reference__w_argument_list() -> PgmAndArgsCase:
+    system_program = 'the-system-program'
+    system_program_sdv = program_sdvs.system_program(string_sdvs.str_constant(system_program))
+    system_program_symbol = ProgramSymbolContext.of_sdv('SYSTEM_PROGRAM_SYMBOL', system_program_sdv)
+
+    return PgmAndArgsCase.wo_tcds(
+        'reference to program w argument list',
+        pgm_and_args=pgm_abs_stx.ProgramOfSymbolReferenceAbsStx(system_program_symbol.name),
+        symbols=[system_program_symbol],
+        expected_command_driver=prim_asrt__constant(
+            asrt_command.matches_system_program_command_driver(
+                asrt.equals(system_program)
+            )),
+    )
 
 
 def cases__wo_argument_list() -> List[PgmAndArgsCase]:
     """Cases of pgm-and-arg:s that DO NOT have a list of arguments."""
+
+    return [shell()]
+
+
+def shell() -> PgmAndArgsCase:
     shell_command_line = 'the shell command line'
 
-    return [
-        PgmAndArgsCase(
-            'shell',
-            pgm_and_args=pgm_abs_stx.ProgramOfShellCommandLineAbsStx(
-                StringLiteralAbsStx(shell_command_line)
-            ),
-            expected_command_driver=prim_asrt__constant(
-                asrt_command.matches_shell_command_driver(asrt.equals(shell_command_line))
-            )
+    return PgmAndArgsCase.wo_tcds(
+        'shell',
+        pgm_and_args=pgm_abs_stx.ProgramOfShellCommandLineAbsStx(
+            StringLiteralAbsStx(shell_command_line)
         ),
-    ]
+        expected_command_driver=prim_asrt__constant(
+            asrt_command.matches_shell_command_driver(asrt.equals(shell_command_line))
+        )
+    )
 
 
-def cases_w_and_wo_argument_list() -> List[PgmAndArgsCase]:
-    return cases__w_argument_list() + cases__wo_argument_list()
+def cases__w_argument_list__including_program_reference() -> List[PgmAndArgsCase]:
+    return cases__w_argument_list__excluding_program_reference() + [program_reference__w_argument_list()]
+
+
+def cases_w_and_wo_argument_list__including_program_reference() -> List[PgmAndArgsCase]:
+    return cases__w_argument_list__including_program_reference() + [shell()]
+
+
+def cases_w_and_wo_argument_list__excluding_program_reference() -> List[PgmAndArgsCase]:
+    return cases__w_argument_list__excluding_program_reference() + [shell()]

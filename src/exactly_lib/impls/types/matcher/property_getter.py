@@ -31,7 +31,7 @@ class PropertyGetterAdv(Generic[MODEL, T], ABC):
 class PropertyGetterDdv(Generic[MODEL, T], WithNodeDescription, ABC):
     @property
     def validator(self) -> DdvValidator:
-        return ddv_validation.constant_success_validator()
+        return ddv_validation.ConstantDdvValidator.new_success()
 
     @abstractmethod
     def value_of_any_dependency(self, tcds: TestCaseDs) -> PropertyGetterAdv[MODEL, T]:

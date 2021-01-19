@@ -215,7 +215,7 @@ class _Instruction(AssertPhaseInstruction):
     def _validator(self, environment: InstructionEnvironmentForPreSdsStep
                    ) -> ddv_validation.DdvValidator:
         if self._file_matcher is None:
-            return ddv_validation.constant_success_validator()
+            return ddv_validation.ConstantDdvValidator.new_success()
         else:
             return self._file_matcher.resolve(environment.symbols).validator
 

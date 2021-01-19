@@ -735,6 +735,10 @@ class TestLogicSymbolContext(LogicTypeSymbolContext[FullDepsSdvForTest]):
     def value(self) -> TestLogicSymbolValueContext:
         return self._value
 
+    @property
+    def reference_sdv(self) -> FullDepsSdvForTest:
+        raise ValueError('cannot create a reference of test impl')
+
 
 def reference_to(symbol: SymbolContext, restrictions: ReferenceRestrictions) -> SymbolReference:
     return SymbolReference(symbol.name, restrictions)

@@ -24,7 +24,7 @@ from exactly_lib_test.type_val_deps.dep_variants.test_resources.application_envi
 def sdv_from_primitive_value(
         primitive_value: MatcherWTrace[MODEL] = MatcherWithConstantResult(True),
         references: Sequence[SymbolReference] = (),
-        validator: DdvValidator = ddv_validation.constant_success_validator(),
+        validator: DdvValidator = ddv_validation.ConstantDdvValidator.new_success(),
 ) -> MatcherSdv[MODEL]:
     return MatcherSdvOfConstantDdvTestImpl(
         MatcherDdvOfConstantMatcherTestImpl(primitive_value,
@@ -36,7 +36,7 @@ def sdv_from_primitive_value(
 def sdv_from_bool(
         unconditional_result: bool = True,
         references: Sequence[SymbolReference] = (),
-        validator: DdvValidator = ddv_validation.constant_success_validator(),
+        validator: DdvValidator = ddv_validation.ConstantDdvValidator.new_success(),
 ) -> MatcherSdv[MODEL]:
     return MatcherSdvOfConstantDdvTestImpl(
         MatcherDdvOfConstantMatcherTestImpl(MatcherWithConstantResult(unconditional_result),
@@ -77,7 +77,7 @@ def ddv_of_unconditionally_matching_matcher() -> MatcherDdv[MODEL]:
 class MatcherDdvOfConstantMatcherTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
     def __init__(self,
                  primitive_value: MatcherWTrace[MODEL],
-                 validator: DdvValidator = ddv_validation.constant_success_validator(),
+                 validator: DdvValidator = ddv_validation.ConstantDdvValidator.new_success(),
                  ):
         self._primitive_value = primitive_value
         self._validator = validator
@@ -118,7 +118,7 @@ class MatcherDdvFromPartsTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
 
     def __init__(self,
                  make_primitive: Callable[[TestCaseDs], MatcherWTrace[MODEL]],
-                 validator: DdvValidator = ddv_validation.constant_success_validator(),
+                 validator: DdvValidator = ddv_validation.ConstantDdvValidator.new_success(),
                  ):
         self._make_primitive = make_primitive
         self._validator = validator
@@ -144,7 +144,7 @@ class MatcherDdvFromParts2TestImpl(Generic[MODEL], MatcherDdv[MODEL]):
     def __init__(self,
                  make_adv: Callable[[TestCaseDs], MatcherAdv[MODEL]],
                  structure_renderer: StructureRenderer,
-                 validator: DdvValidator = ddv_validation.constant_success_validator(),
+                 validator: DdvValidator = ddv_validation.ConstantDdvValidator.new_success(),
                  ):
         self._make_adv = make_adv
         self._validator = validator

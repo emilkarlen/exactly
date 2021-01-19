@@ -196,6 +196,10 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
         return SymbolReference(self.name,
                                StringSymbolValueContext.reference_restriction__path_or_string(accepted_relativities))
 
+    def reference__path_or_string(self, accepted_relativities: PathRelativityVariants) -> SymbolReference:
+        return SymbolReference(self.name,
+                               StringSymbolValueContext.reference_restriction__path_or_string(accepted_relativities))
+
     @property
     def reference_assertion__string_made_up_of_just_strings(self) -> ValueAssertion[SymbolReference]:
         return StringSymbolValueContext.reference_assertion__string_made_up_of_just_strings(self.name)

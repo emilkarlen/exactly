@@ -76,6 +76,10 @@ class DataTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):
         return DataSymbolValueContext.reference_assertion__any_data_type(self.name)
 
     @property
+    def reference_assertion__convertible_to_string(self) -> ValueAssertion[SymbolReference]:
+        return DataSymbolValueContext.reference_assertion__any_data_type(self.name)
+
+    @property
     def usage_assertion__any_data_type(self) -> ValueAssertion[SymbolUsage]:
         return DataSymbolValueContext.usage_assertion__any_data_type(self.name)
 

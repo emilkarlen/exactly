@@ -4,7 +4,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator, \
-    constant_success_validator
+    ConstantDdvValidator
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerAdv, StringTransformerDdv
 from exactly_lib.type_val_deps.types.string_transformer.ddvs import StringTransformerConstantDdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
@@ -21,7 +21,7 @@ def arbitrary_sdv() -> StringTransformerSdv:
 class StringTransformerDdvTestImpl(StringTransformerDdv):
     def __init__(self,
                  primitive_value: StringTransformer,
-                 validator: DdvValidator = constant_success_validator(),
+                 validator: DdvValidator = ConstantDdvValidator.new_success(),
                  ):
         self._primitive_value = primitive_value
         self._validator = validator
@@ -78,7 +78,7 @@ class StringTransformerSdvConstantValueTestImpl(StringTransformerSdv):
 def string_transformer_from_primitive_value(
         primitive_value: StringTransformer = string_transformers.identity_test_impl(),
         references: Sequence[SymbolReference] = (),
-        validator: DdvValidator = constant_success_validator(),
+        validator: DdvValidator = ConstantDdvValidator.new_success(),
 ) -> StringTransformerSdv:
     return StringTransformerSdvConstantValueTestImpl(
         StringTransformerDdvTestImpl(

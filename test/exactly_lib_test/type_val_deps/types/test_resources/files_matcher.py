@@ -51,7 +51,7 @@ class FilesMatcherNumFilesTestImpl(FilesMatcherImplBase):
 class FilesMatcherDdvConstantTestImpl(FilesMatcherDdvImplBase):
     def __init__(self,
                  constant: FilesMatcherAdv,
-                 validator: DdvValidator = ddv_validation.constant_success_validator(),
+                 validator: DdvValidator = ddv_validation.ConstantDdvValidator.new_success(),
                  ):
         self._constant = constant
         self._validator = validator
@@ -71,7 +71,7 @@ def constant_ddv(matcher: FilesMatcher) -> FilesMatcherDdv:
 
 
 def value_with_result(result: bool,
-                      validator: DdvValidator = ddv_validation.constant_success_validator()) -> FilesMatcherDdv:
+                      validator: DdvValidator = ddv_validation.ConstantDdvValidator.new_success()) -> FilesMatcherDdv:
     return FilesMatcherDdvConstantTestImpl(
         advs.ConstantMatcherAdv(FilesMatcherTestImpl(result)),
         validator,

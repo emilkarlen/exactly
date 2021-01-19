@@ -48,13 +48,13 @@ class RawProgramOfSymbolReferenceAbsStx(AbstractSyntax):
                  arguments: Sequence[ArgumentAbsStx] = (),
                  ):
         self.symbol_name = symbol_name
-        self._arguments_sequence = arguments
+        self.arguments_sequence = arguments
         self._arguments = ArgumentsAbsStx(arguments)
 
     def new_w_additional_arguments(self, arguments: Sequence[ArgumentAbsStx]) -> 'RawProgramOfSymbolReferenceAbsStx':
         return RawProgramOfSymbolReferenceAbsStx(
             self.symbol_name,
-            tuple(self._arguments_sequence) + tuple(arguments),
+            tuple(self.arguments_sequence) + tuple(arguments),
         )
 
     def tokenization(self) -> TokenSequence:

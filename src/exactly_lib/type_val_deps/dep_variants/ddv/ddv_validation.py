@@ -51,12 +51,16 @@ class ConstantDdvValidator(DdvValidator):
     def new_success() -> DdvValidator:
         return ConstantDdvValidator(None, None)
 
+    @staticmethod
+    def of_pre_sds(result: Optional[TextRenderer]) -> DdvValidator:
+        return ConstantDdvValidator(result, None)
+
+    @staticmethod
+    def of_post_sds(result: Optional[TextRenderer]) -> DdvValidator:
+        return ConstantDdvValidator(None, result)
+
     def validate_pre_sds_if_applicable(self, hds: HomeDs) -> Optional[TextRenderer]:
         return self._pre_sds_result
 
     def validate_post_sds_if_applicable(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
         return self._post_sds_result
-
-
-def constant_success_validator() -> DdvValidator:
-    return ConstantDdvValidator(None, None)

@@ -14,7 +14,7 @@ class MatcherDdv(Generic[MODEL],
                  ABC):
     @property
     def validator(self) -> DdvValidator:
-        return ddv_validation.constant_success_validator()
+        return ddv_validation.ConstantDdvValidator.new_success()
 
     @abstractmethod
     def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:

@@ -21,3 +21,8 @@ class LogicTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):
     @abstractmethod
     def value(self) -> LogicSymbolValueContext[SDV_TYPE]:
         pass
+
+    @property
+    @abstractmethod
+    def reference_sdv(self) -> SDV_TYPE:
+        pass
