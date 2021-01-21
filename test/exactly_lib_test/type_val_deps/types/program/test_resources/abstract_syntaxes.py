@@ -30,7 +30,7 @@ class CustomPgmAndArgsAbsStx(PgmAndArgsAbsStx):
         return self._tokens
 
 
-class PgmAndArgsWArgumentsAbsStx(ProgramAbsStx):
+class PgmAndArgsWArgumentsAbsStx(PgmAndArgsAbsStx):
     def __init__(self,
                  pgm_and_args: PgmAndArgsAbsStx,
                  arguments: Sequence[ArgumentAbsStx],

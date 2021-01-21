@@ -1,0 +1,9 @@
+[setup]
+
+def program P = % stat non-existing
+                -stdin 'contents of stdin from symbol definition'
+
+file stdin-contents.txt
+
+run @ P
+    -stdin -file -rel-act stdin-contents.txt

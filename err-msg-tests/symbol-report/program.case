@@ -17,6 +17,12 @@ def program ACCUMULATED = @ TRANSFORMED "X Y" z
 def program ACCUMULATED_SHELL = @ SHELL "X Y" z
                                 -transformed-by filter line-num > 2
 
+def program STDIN = % system-cmd
+                      -stdin 'contents of stdin'
+
+def program STDIN__ACCUMULATED = @ STDIN
+                                 -stdin -file -rel-home stdin-contents.txt
+
 file py-output.txt = -stdout-from @ PYTHON_FILE
 
 [assert]

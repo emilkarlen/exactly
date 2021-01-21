@@ -15,9 +15,8 @@ from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPre
 from exactly_lib.util.process_execution.execution_elements import with_environ
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
-from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__consume_last_line
+    equivalent_source_variants__with_source_check__consume_last_line_2
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args, result_assertions
 from exactly_lib_test.impls.types.test_resources import arguments_building as args
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
@@ -25,7 +24,6 @@ from exactly_lib_test.section_document.test_resources.parse_source import single
 from exactly_lib_test.tcfs.test_resources import path_arguments
 from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.tcfs.test_resources.sds_populator import contents_in
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_1st_value_on_command_line
@@ -64,41 +62,26 @@ class ExecuteAction(TcdsAction):
         )
 
 
-class EmbryoTestCaseBase(unittest.TestCase):
-    def _check_single_line_arguments_with_source_variants(
-            self,
-            instruction_argument: str,
-            arrangement: ArrangementWithSds,
-            expectation: instruction_embryo_check.Expectation[ExecutionResultAndStderr],
-    ):
-        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
-            self._check(source, arrangement, expectation)
-
-    def _check(self,
-               source: ParseSource,
-               arrangement: ArrangementWithSds,
-               expectation: instruction_embryo_check.Expectation[ExecutionResultAndStderr],
-               ):
-        parser = sut.embryo_parser('instruction-name')
-        instruction_embryo_check.check(self, parser, source, arrangement, expectation)
-
-
 class TestCaseBase(tcds_test.TestCaseBase):
     def _check_single_line_arguments_with_source_variants(self,
                                                           instruction_argument: str,
                                                           arrangement: tcds_test.Arrangement,
                                                           expectation: tcds_test.Expectation):
-        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
-            embryo_parser = sut.embryo_parser('instruction-name')
-            instruction_embryo = embryo_parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
-            action = ExecuteAction(instruction_embryo)
-            self._check(action, arrangement, expectation)
+        for source_case in equivalent_source_variants__with_source_check__consume_last_line_2(
+                instruction_argument):
+            with self.subTest(source=source_case.source.source_string):
+                embryo_parser = sut.embryo_parser('instruction-name')
+                instruction_embryo = embryo_parser.parse(ARBITRARY_FS_LOCATION_INFO, source_case.source)
+                source_case.expectation.apply_with_message(self, source_case.source, 'source')
+                action = ExecuteAction(instruction_embryo)
+                self._check(action, arrangement, expectation)
 
     def _check_source(self,
                       source: ParseSource,
                       arrangement: tcds_test.Arrangement,
                       expectation: tcds_test.Expectation):
-        instruction_embryo = sut.embryo_parser('instruction-name').parse(source)
+        parser = sut.embryo_parser('instruction-name')
+        instruction_embryo = parser.parse(source)
         action = ExecuteAction(instruction_embryo)
         self._check(action, arrangement, expectation)
 

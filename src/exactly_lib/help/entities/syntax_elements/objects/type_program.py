@@ -10,7 +10,7 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts, syntax_elements, actors
 from exactly_lib.definitions.entity import types
-from exactly_lib.definitions.primitives import string_transformer
+from exactly_lib.definitions.primitives import string_transformer, program
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
@@ -23,6 +23,8 @@ from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
+
+_STDIN_ARGUMENT = a.Named('STDIN')
 
 
 class _Documentation(SyntaxElementDocumentation):
@@ -39,6 +41,8 @@ class _Documentation(SyntaxElementDocumentation):
             invokation_variant_from_args([
                 a.Single(a.Multiplicity.MANDATORY, self._pgm_and_args.element),
                 a.Single(a.Multiplicity.OPTIONAL,
+                         _STDIN_ARGUMENT),
+                a.Single(a.Multiplicity.OPTIONAL,
                          string_transformer.STRING_TRANSFORMATION_ARGUMENT),
             ]),
         ]
@@ -47,7 +51,7 @@ class _Documentation(SyntaxElementDocumentation):
         return self._pgm_and_args.syntax_element_definitions + self._global_sed_list()
 
     def _global_sed_list(self) -> List[SyntaxElementDescription]:
-        return [_transformation_sed()]
+        return [_stdin_sed(), _transformation_sed()]
 
     def see_also_targets(self) -> List[CrossReferenceId]:
         info_refs = cross_reference_id_list([
@@ -57,6 +61,7 @@ class _Documentation(SyntaxElementDocumentation):
             syntax_elements.STRING_SYNTAX_ELEMENT,
             syntax_elements.LIST_SYNTAX_ELEMENT,
             syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT,
+            syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT,
             concepts.SYMBOL_CONCEPT_INFO,
             types.PROGRAM_TYPE_INFO,
         ])
@@ -162,8 +167,29 @@ class _ProgramWithArgumentList(SyntaxElementDescriptionTree):
         )
 
 
+def _stdin_description_rest() -> List[ParagraphItem]:
+    ret_val = _TEXT_PARSER.fnap(_STDIN_DESCRIPTION)
+    ret_val += _TEXT_PARSER.fnap(_STDIN_TRANSFORMATION_POSITION)
+    return ret_val
+
+
+def _stdin_sed() -> SyntaxElementDescription:
+    return cli_argument_syntax_element_description(
+        _STDIN_ARGUMENT,
+        _stdin_description_rest(),
+        [
+            invokation_variant_from_args([
+                a.Single(a.Multiplicity.MANDATORY,
+                         a.Option(program.STDIN_OPTION_NAME,
+                                  argument=syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.singular_name))
+            ]),
+        ]
+    )
+
+
 def _transformation_description_rest() -> List[ParagraphItem]:
     ret_val = _TEXT_PARSER.fnap(_TRANSFORMATION_DESCRIPTION)
+    ret_val += _TEXT_PARSER.fnap(_STDIN_TRANSFORMATION_POSITION)
     ret_val += texts.type_expression_has_syntax_of_primitive([
         syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
     ])
@@ -185,6 +211,7 @@ EXECUTABLE_ARG = a.Named('EXECUTABLE')
 
 _TEXT_PARSER = TextParser({
     'program_type': types.PROGRAM_TYPE_INFO.name,
+    'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
     'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
     'hds': concepts.HDS_CONCEPT_INFO.name,
     'TRANSFORMATION': string_transformer.STRING_TRANSFORMATION_ARGUMENT.name,
@@ -199,6 +226,7 @@ _TEXT_PARSER = TextParser({
     'Note': headers.NOTE_LINE_HEADER,
     'program_actor': formatting.entity_(actors.COMMAND_LINE_ACTOR),
     'actor_concept': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
+    'stdin': misc_texts.STDIN,
 })
 
 DOCUMENTATION = _Documentation()
@@ -235,16 +263,25 @@ Arguments and transformations are appended to existing arguments and transformat
 of {SYMBOL_NAME}.
 """
 
+_STDIN_DESCRIPTION = """\
+Supplies {stdin} to the {program_type}.
+
+
+If the {program_type} is a reference to a PROGRAM {symbol},
+this {stdin} is appended to the {stdin} defined for the referenced {program_type}.
+"""
+
 _TRANSFORMATION_DESCRIPTION = """\
 Transforms the output from the program.
 
 
 Depending on the context, either stdout or stderr is transformed.
+"""
 
-
+_STDIN_TRANSFORMATION_POSITION = """\
 {Note} Must appear on a separate line.
 
-If not, it will be interpreted as a {ARGUMENT}.
+If not, it will be interpreted as arguments.
 """
 
 _DIFFERENT_RELATIVITIES_FOR_PROGRAM_ACTOR = """\

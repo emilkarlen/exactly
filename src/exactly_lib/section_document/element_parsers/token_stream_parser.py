@@ -423,15 +423,6 @@ class TokenParser:
         return return_value_if_no_match
 
     def consume_optional_option(self, option_name: OptionName) -> bool:
-        if self.token_stream.is_null:
-            return False
-        elif matches(option_name, self.token_stream.head.source_string):
-            self.token_stream.consume()
-            return True
-        else:
-            return False
-
-    def consume_optional_option(self, option_name: OptionName) -> bool:
         """
         :param option_name: Option to match
         :returns Whether the option was present (and consumed) or not.

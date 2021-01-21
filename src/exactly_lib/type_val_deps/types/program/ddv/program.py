@@ -41,7 +41,11 @@ class ProgramDdv(FullDepsWithNodeDescriptionDdv[Program]):
         self._command = command
         self._stdin = stdin
         self._transformations = transformations
-        self._validators = (list(command.validators) + [st.validator for st in transformations])
+        self._validators = (
+                list(command.validators)
+                + [st.validator for st in transformations]
+                + [ss.validator for ss in stdin]
+        )
 
     @property
     def command(self) -> CommandDdv:
@@ -61,6 +65,7 @@ class ProgramDdv(FullDepsWithNodeDescriptionDdv[Program]):
 
     def structure(self) -> StructureRenderer:
         return program.program_structure_renderer(self._command.structure(),
+                                                  self._stdin,
                                                   self._transformations)
 
     @property

@@ -1,0 +1,4 @@
+[setup]
+
+run % stat non-existing
+    -stdin 'contents of stdin'

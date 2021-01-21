@@ -54,7 +54,7 @@ class AccumulatedComponents(ObjectWithSymbolReferences):
         return references_from_objects_with_symbol_references(objects_with_refs)
 
     def resolve_stdin(self, symbols: SymbolTable) -> Sequence[StringSourceDdv]:
-        return [ss.resolve_value(symbols) for ss in self.stdin]
+        return [ss.resolve(symbols) for ss in self.stdin]
 
     def resolve_transformations(self, symbols: SymbolTable) -> Sequence[StringTransformerDdv]:
         return [st.resolve(symbols) for st in self.transformations]

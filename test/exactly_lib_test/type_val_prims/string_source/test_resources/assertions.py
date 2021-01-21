@@ -51,7 +51,7 @@ class StringSourceThatThatChecksLines(StringSourceTestImplBase):
 
 
 def matches__str(contents: ValueAssertion[str],
-                 may_depend_on_external_resources: ValueAssertion[bool],
+                 may_depend_on_external_resources: ValueAssertion[bool] = asrt.anything_goes(),
                  structure: ValueAssertion[NodeRenderer]
                  = asrt_trace_rendering.matches_node_renderer(),
                  ) -> ValueAssertion[StringSource]:

@@ -1,5 +1,7 @@
-from typing import Callable
+from typing import Optional
 
+from exactly_lib.definitions.primitives import program
+from exactly_lib.impls.types.parse.options import OptionalOptionWMandatoryArgumentParser
 from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.impls.types.program.parse import parse_executable_file, parse_system_program, \
@@ -8,8 +10,8 @@ from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.type_val_deps.types.program.sdv.accumulated_components import AccumulatedComponents
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
+from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
-from exactly_lib.util import functional
 
 
 def program_parser(must_be_on_current_line: bool = False,
@@ -25,7 +27,8 @@ class _Parser(ParserFromTokenParserBase[ProgramSdv]):
                  must_be_on_current_line: bool = False,
                  ):
         super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
-        self._string_transformer_parser_fun = None
+        self._string_transformer_parser = None
+        self._string_source_parser = None
         self._must_be_on_current_line = must_be_on_current_line
         self._parser_of_executable_file = parse_executable_file.parser_of_program(exe_file_relativity)
         self._program_variant_setups = {
@@ -42,25 +45,50 @@ class _Parser(ParserFromTokenParserBase[ProgramSdv]):
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramSdv:
         command_as_program = self._parse_command_and_arguments(parser)
 
-        optional_transformer = self._string_transformer_parser_function()(parser)
+        accumulated_components = AccumulatedComponents.empty()
+        accumulated_components = accumulated_components.new_accumulated(self._parse_stdin(parser))
+        accumulated_components = accumulated_components.new_accumulated(self._parse_transformation(parser))
 
-        def new_w_additional_transformer(transformer: StringTransformerSdv) -> ProgramSdv:
-            return command_as_program.new_accumulated(AccumulatedComponents.of_transformation(transformer))
+        return command_as_program.new_accumulated(accumulated_components)
 
-        return functional.reduce_optional(
-            new_w_additional_transformer,
-            command_as_program,
-            optional_transformer,
+    def _parse_stdin(self, parser: TokenParser) -> AccumulatedComponents:
+        optional_string_source = self._get_string_source_parser().parse_from_token_parser(parser)
+        return (
+            AccumulatedComponents.empty()
+            if optional_string_source is None
+            else
+            AccumulatedComponents.of_stdin((optional_string_source,))
         )
 
-    def _string_transformer_parser_function(self) -> Callable[[TokenParser], StringTransformerSdv]:
-        if self._string_transformer_parser_fun is None:
-            from exactly_lib.impls.types.string_transformer import parse_transformation_option
-            self._string_transformer_parser_fun = parse_transformation_option.parse_optional_option__optional
+    def _parse_transformation(self, parser: TokenParser) -> AccumulatedComponents:
+        optional_transformer = self._get_string_transformer_parser().parse_from_token_parser(parser)
+        return (
+            AccumulatedComponents.empty()
+            if optional_transformer is None
+            else
+            AccumulatedComponents.of_transformation(optional_transformer)
+        )
 
-        return self._string_transformer_parser_fun
+    def _get_string_transformer_parser(self) -> Parser[Optional[StringTransformerSdv]]:
+        if self._string_transformer_parser is None:
+            from exactly_lib.impls.types.string_transformer import parse_transformation_option
+            self._string_transformer_parser = parse_transformation_option.parser()
+
+        return self._string_transformer_parser
+
+    def _get_string_source_parser(self) -> Parser[Optional[StringSourceSdv]]:
+        if self._string_source_parser is None:
+            from exactly_lib.impls.types.string_source.parse import default_parser_for
+            self._string_source_parser = OptionalOptionWMandatoryArgumentParser(
+                program.STDIN_OPTION_NAME,
+                default_parser_for(phase_is_after_act=False),
+            )
+
+        return self._string_source_parser
 
     def _parse_command_and_arguments(self, parser: TokenParser) -> ProgramSdv:
-        return parser.parse_default_or_optional_command(self._parser_of_executable_file.parse_from_token_parser,
-                                                        self._program_variant_setups,
-                                                        self._must_be_on_current_line)
+        return parser.parse_default_or_optional_command(
+            self._parser_of_executable_file.parse_from_token_parser,
+            self._program_variant_setups,
+            self._must_be_on_current_line,
+        )

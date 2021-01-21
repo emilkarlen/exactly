@@ -14,6 +14,7 @@ def suite() -> unittest.TestSuite:
         TestReferenceToProgramWithInvalidSymbolName(),
         TestInvalidArguments(),
         TestInvalidTransformer(),
+        TestInvalidStdin(),
     ])
 
 
@@ -49,6 +50,19 @@ class TestInvalidTransformer(unittest.TestCase):
                                   transformer=transformer_case.name):
                     syntax = FullProgramAbsStx(program_case.pgm_and_args,
                                                transformation=transformer_case.value)
+                    # ACT & ASSERT #
+                    PARSE_CHECKER.check_invalid_syntax__abs_stx(self, syntax)
+
+
+class TestInvalidStdin(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        for program_case in pgm_and_args_cases.cases__w_argument_list__including_program_reference():
+            for transformer_case in invalid_syntax.stdin_cases():
+                with self.subTest(program=program_case.name,
+                                  transformer=transformer_case.name):
+                    syntax = FullProgramAbsStx(program_case.pgm_and_args,
+                                               stdin=transformer_case.value)
                     # ACT & ASSERT #
                     PARSE_CHECKER.check_invalid_syntax__abs_stx(self, syntax)
 

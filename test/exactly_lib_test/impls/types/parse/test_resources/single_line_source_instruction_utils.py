@@ -72,7 +72,7 @@ def equivalent_source_variants__with_source_check__consume_last_line(put: unitte
 
 def equivalent_source_variants__with_source_check__consume_last_line_2(
         instruction_argument: str,
-) -> List[Tuple[SourceCase]]:
+) -> List[SourceCase]:
     """
     Checks that the whole instruction_argument has been consumed,
     and that the parser is positioned at the beginning of the following line.
