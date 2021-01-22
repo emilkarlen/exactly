@@ -27,10 +27,16 @@ class OptionallyOnNewLine(AbstractSyntax):
         self._syntax = syntax
 
     def tokenization(self) -> TokenSequence:
-        return TokenSequence.concat([
-            TokenSequence.optional_new_line(),
-            self._syntax.tokenization(),
-        ])
+        element_tokens = self._syntax.tokenization()
+        return (
+            TokenSequence.empty()
+            if not element_tokens
+            else
+            TokenSequence.concat([
+                TokenSequence.optional_new_line(),
+                element_tokens,
+            ])
+        )
 
 
 class DelegateAbsStx(AbstractSyntax):

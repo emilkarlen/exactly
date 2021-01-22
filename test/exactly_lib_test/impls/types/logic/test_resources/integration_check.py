@@ -207,12 +207,12 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
     ):
         self.check__abs_stx__layout_and_source_variants_2(
             put,
+            mk_source_variants,
             source,
             None,
             arrangement,
             expectation_,
             layouts,
-            mk_source_variants,
         )
 
     def check__abs_stx__std_layouts_and_source_variants(

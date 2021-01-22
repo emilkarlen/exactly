@@ -1,0 +1,8 @@
+[cases]
+
+*.case
+
+[setup]
+
+including ../../../utils/stdin-check-defs.xly
+

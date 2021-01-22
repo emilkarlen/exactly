@@ -2,4 +2,4 @@
 
 [setup]
 
-including ../definitions.xly
+including ../common.xly

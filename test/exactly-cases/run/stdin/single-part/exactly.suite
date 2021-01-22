@@ -2,6 +2,6 @@
 
 [setup]
 
-including ../definitions.xly
+including ../common.xly
 
 def string STDIN_PART = 'the contents of stdin'

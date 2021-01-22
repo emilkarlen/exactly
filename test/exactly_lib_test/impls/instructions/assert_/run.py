@@ -6,7 +6,7 @@ from exactly_lib.impls.instructions.assert_ import run as sut
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib_test.impls.instructions.assert_.test_resources.configuration import AssertConfigurationBase
 from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.impls.instructions.multi_phase.run_program.test_resources.run_instruction_test import \
+from exactly_lib_test.impls.instructions.multi_phase.run_program.test_resources.instruction_test import \
     suite_for, Configuration
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

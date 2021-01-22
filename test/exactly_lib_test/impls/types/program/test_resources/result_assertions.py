@@ -12,14 +12,14 @@ def equals(exit_code: int,
         ExecutionResultAndStderr,
         [
             asrt.sub_component(
-                'exit_code',
-                ExecutionResultAndStderr.exit_code.fget,
-                asrt.equals(exit_code)
-            ),
-            asrt.sub_component(
                 'stderr',
                 ExecutionResultAndStderr.stderr_contents.fget,
                 asrt.equals(stderr_contents)
+            ),
+            asrt.sub_component(
+                'exit_code',
+                ExecutionResultAndStderr.exit_code.fget,
+                asrt.equals(exit_code)
             ),
         ]
     )

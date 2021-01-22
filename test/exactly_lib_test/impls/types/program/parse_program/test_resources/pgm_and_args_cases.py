@@ -2,7 +2,7 @@ import sys
 from typing import Callable, Sequence, List
 
 from exactly_lib.impls.types.string_source import sdvs as str_src_sdvs
-from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
@@ -79,6 +79,10 @@ class PgmAndArgsCase:
     @property
     def symbol_table(self) -> SymbolTable:
         return SymbolContext.symbol_table_of_contexts(self.symbols)
+
+    @property
+    def references_assertion(self) -> ValueAssertion[Sequence[SymbolReference]]:
+        return SymbolContext.references_assertion_of_contexts(self.symbols)
 
     @property
     def usages_assertion(self) -> ValueAssertion[Sequence[SymbolUsage]]:

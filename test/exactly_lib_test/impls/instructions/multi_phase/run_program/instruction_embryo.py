@@ -1,16 +1,13 @@
-import subprocess
+import sys
 import sys
 import unittest
 from typing import List
 
 from exactly_lib.definitions.path import REL_HDS_CASE_OPTION
 from exactly_lib.impls.instructions.multi_phase import run as sut
-from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.impls.types.path import path_relativities
 from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.util.parse.token import QuoteType
-from exactly_lib_test.impls.instructions.multi_phase.run_program.test_resources.stdin_setup import StdinCheckWithProgram
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
@@ -18,7 +15,8 @@ from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_
 from exactly_lib_test.impls.types.program.parse_program.test_resources import pgm_and_args_cases
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args, result_assertions
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
-from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
+from exactly_lib_test.impls.types.program.test_resources.stdin_test_setups import ConcatenationOfStdinTestSetup, \
+    SingleStdinPartTestSetup, NoStdinTestSetup, StdinCheckWithProgramWExitCode0ForSuccess
 from exactly_lib_test.impls.types.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.test_resources import relativity_options
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt, \
@@ -34,17 +32,13 @@ from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_con
 from exactly_lib_test.tcfs.test_resources.tcds_populators import \
     multiple, TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatChecksStdin
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_1st_value_on_command_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as pgm_abs_stx
-from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import FullProgramAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
     StringIntConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
-from exactly_lib_test.util.file_utils.test_resources.assertions import IsProcessExecutionFileWIthContents
 
 
 def suite() -> unittest.TestSuite:
@@ -56,7 +50,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestValidationAndSymbolUsagesOfSource),
         unittest.makeSuite(TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine),
         unittest.makeSuite(TestStdinIsGivenToCommandExecutor),
-        TestStdinWithExecution(),
+        TestNonEmptyStdinViaExecution(),
     ])
 
 
@@ -489,11 +483,7 @@ class TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine(unittest.TestC
 class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
     def test_stdin_is_devnull_WHEN_program_do_not_define_stdin(self):
         # ARRANGE #
-        command_executor = CommandExecutorThatChecksStdin(
-            self,
-            asrt.equals(subprocess.DEVNULL),
-        )
-        os_services = os_services_access.new_for_cmd_exe(command_executor)
+        test_setup = NoStdinTestSetup(self, exit_code=0)
 
         for pgm_and_args_case in pgm_and_args_cases.cases_w_and_wo_argument_list__including_program_reference():
             with self.subTest(pgm_and_args_case.name):
@@ -502,96 +492,67 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
                     self,
                     pgm_and_args_case.pgm_and_args,
                     ArrangementWithSds(
-                        os_services=os_services,
+                        os_services=test_setup.os_services_w_stdin_check,
                         symbols=pgm_and_args_case.symbol_table,
                         tcds_contents=pgm_and_args_case.tcds,
                     ),
                     Expectation(
                         symbol_usages=pgm_and_args_case.usages_assertion,
-                        main_result=result_assertions.equals(command_executor.exit_code, None)),
+                        main_result=result_assertions.equals(test_setup.exit_code, None)),
                 )
 
     def test_stdin_is_contents_of_string_source_WHEN_program_defines_single_stdin(self):
         # ARRANGE #
-        string_source_contents = 'the contents of the string source'
-        command_executor = CommandExecutorThatChecksStdin(
-            self,
-            IsProcessExecutionFileWIthContents(string_source_contents),
-        )
-        os_services = os_services_access.new_for_cmd_exe(command_executor)
+        test_setup = SingleStdinPartTestSetup(self, exit_code=0)
 
         for pgm_and_args_case in pgm_and_args_cases.cases_w_and_wo_argument_list__including_program_reference():
-            program_w_stdin = FullProgramAbsStx(
-                pgm_and_args_case.pgm_and_args,
-                stdin=StringSourceOfStringAbsStx.of_str(string_source_contents, QuoteType.HARD),
-            )
             with self.subTest(pgm_and_args_case.name):
                 # ACT & ASSERT #
                 EXECUTION_CHECKER.check__abs_stx__std_layouts_and_source_variants(
                     self,
-                    program_w_stdin,
+                    test_setup.program_w_stdin_syntax(pgm_and_args_case.pgm_and_args),
                     ArrangementWithSds(
-                        os_services=os_services,
+                        os_services=test_setup.os_services_w_stdin_check,
                         symbols=pgm_and_args_case.symbol_table,
                         tcds_contents=pgm_and_args_case.tcds,
                     ),
                     Expectation(
                         symbol_usages=pgm_and_args_case.usages_assertion,
-                        main_result=result_assertions.equals(command_executor.exit_code, None)),
+                        main_result=result_assertions.equals(test_setup.exit_code, None)),
                 )
 
     def test_stdin_is_concatenation_of_string_sources_WHEN_program_defines_multiple_stdin(self):
         # ARRANGE #
-        str_src_contents__of_referenced_program = 'the contents of the string source of the referenced program\n'
-        str_src_contents__of_argument = 'the contents of the string source of the argument\n'
-        concatenated_string_sources_contents = ''.join([str_src_contents__of_referenced_program,
-                                                        str_src_contents__of_argument])
-
-        program_sdv_w_stdin = pgm_and_args_cases.program_sdv_w_stdin__wo_sym_refs(
-            str_src_contents__of_referenced_program
-        )
-        program_w_stdin_symbol = ProgramSymbolContext.of_sdv('REFERENCED_PROGRAM',
-                                                             program_sdv_w_stdin)
-
-        command_executor = CommandExecutorThatChecksStdin(
-            self,
-            IsProcessExecutionFileWIthContents(concatenated_string_sources_contents),
-        )
-        os_services = os_services_access.new_for_cmd_exe(command_executor)
-
-        program_w_stdin = FullProgramAbsStx(
-            pgm_abs_stx.ProgramOfSymbolReferenceAbsStx(program_w_stdin_symbol.name),
-            stdin=StringSourceOfStringAbsStx.of_str(str_src_contents__of_argument, QuoteType.HARD),
-        )
+        test_setup = ConcatenationOfStdinTestSetup(self)
         # ACT & ASSERT #
         EXECUTION_CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
-            program_w_stdin,
+            test_setup.program_w_stdin_syntax,
             ArrangementWithSds(
-                os_services=os_services,
-                symbols=program_w_stdin_symbol.symbol_table,
+                os_services=test_setup.os_services_w_stdin_check,
+                symbols=test_setup.program_symbol.symbol_table,
             ),
             Expectation(
-                symbol_usages=program_w_stdin_symbol.usages_assertion,
-                main_result=result_assertions.equals(command_executor.exit_code, None)),
+                symbol_usages=test_setup.program_symbol.usages_assertion,
+                main_result=result_assertions.equals(test_setup.exit_code, None)),
         )
 
 
-class TestStdinWithExecution(unittest.TestCase):
+class TestNonEmptyStdinViaExecution(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        string_source_contents = 'the contents of the string source'
-        setup = StdinCheckWithProgram()
+        test_setup = StdinCheckWithProgramWExitCode0ForSuccess()
         # ACT & ASSERT #
         EXECUTION_CHECKER.check__abs_stx(
             self,
-            setup.syntax_for_stdin_contents(string_source_contents),
+            test_setup.program_that_checks_stdin__syntax('the contents of stdin'),
             ArrangementWithSds(
-                tcds_contents=setup.tcds_contents,
+                tcds_contents=test_setup.tcds_contents,
             ),
             Expectation(
                 main_result=result_assertions.equals(
-                    setup.exit_code_of_successful_application, None)
+                    test_setup.exit_code_of_successful_application, None
+                )
             ),
         )
 

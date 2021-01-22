@@ -28,7 +28,7 @@ class TestStdinShouldBeEmpty(unittest.TestCase):
         model_contents = '\n'.join(('the', 'contents', 'of', 'the', 'model'))
 
         py_file = File(
-            'stdin-parse_check.py',
+            'stdin-check.py',
             py_programs.pgm_that_exists_with_zero_exit_code_iff_stdin_is_not_expected(
                 model_contents
             )

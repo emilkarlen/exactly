@@ -1,0 +1,6 @@
+[assert]
+
+def string STDIN_PART = 'the contents of stdin'
+
+exists . : run @ EXIT_W_0_IFF_STDIN_EQUALS_1ST_ARGUMENT @[STDIN_PART]@
+               -stdin @[STDIN_PART]@

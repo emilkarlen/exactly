@@ -1,65 +1,125 @@
 import unittest
 
-from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib_test.impls.types.file_matcher.test_resources import argument_building as args
+from exactly_lib_test.impls.types.file_matcher.test_resources import abstract_syntaxes
 from exactly_lib_test.impls.types.file_matcher.test_resources import integration_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
-    ExecutionExpectation, Expectation
-from exactly_lib_test.impls.types.matcher.test_resources.run_program import py_programs, \
-    assertions as asrt_run
-from exactly_lib_test.impls.types.program.test_resources import arguments_building as program_args
-from exactly_lib_test.impls.types.program.test_resources import program_sdvs
-from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
-from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.test_resources.files.file_structure import File, DirContents
-from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
+    ExecutionExpectation, Expectation, MultiSourceExpectation
+from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__for_expr_parse__s__nsc
+from exactly_lib_test.impls.types.program.parse_program.test_resources import pgm_and_args_cases
+from exactly_lib_test.impls.types.program.test_resources.stdin_test_setups import ConcatenationOfStdinTestSetup, \
+    SingleStdinPartTestSetup, NoStdinTestSetup, StdinCheckWithProgramWExitCode0ForSuccess
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        TestStdinShouldBeEmpty()
+        unittest.makeSuite(TestStdinIsGivenToCommandExecutor),
+        TestNonEmptyStdinViaExecution(),
     ])
 
 
-class TestStdinShouldBeEmpty(unittest.TestCase):
-    def runTest(self):
+class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
+    def test_stdin_is_devnull_WHEN_program_do_not_define_stdin(self):
         # ARRANGE #
+        test_setup = NoStdinTestSetup(self, exit_code=0)
 
-        py_file = File('stdin-parse_check.py',
-                       py_programs.pgm_that_exists_with_zero_exit_code_iff_stdin_is_not_expected(''))
-
-        py_file_rel_opt_conf = rel_opt.conf_rel_any(RelOptionType.REL_TMP)
-        py_file_conf = py_file_rel_opt_conf.named_file_conf(py_file.name)
-
-        program_symbol = ProgramSymbolContext.of_sdv(
-            'PROGRAM_THAT_EXECUTES_PY_FILE',
-            program_sdvs.interpret_py_source_file_that_must_exist(py_file_conf.path_sdv)
-        )
-
-        # ACT && ASSERT #
-
-        integration_check.CHECKER__PARSE_FULL.check(
-            self,
-            args.RunProgram(
-                program_args.symbol_ref_command_elements(
-                    program_symbol.name,
-                    arguments=[],
+        for pgm_and_args_case in pgm_and_args_cases.cases_w_and_wo_argument_list__including_program_reference():
+            with self.subTest(pgm_and_args_case.name):
+                # ACT & ASSERT #
+                integration_check.CHECKER__PARSE_FULL.check__abs_stx(
+                    self,
+                    abstract_syntaxes.RunProgramAbsStx(
+                        pgm_and_args_case.pgm_and_args,
+                        abstract_syntaxes.PathArgumentPositionLast()
+                    ),
+                    integration_check.ARBITRARY_MODEL,
+                    arrangement_w_tcds(
+                        symbols=pgm_and_args_case.symbol_table,
+                        process_execution=test_setup.proc_exe_env__w_stdin_check,
+                        tcds_contents=pgm_and_args_case.tcds,
+                    ),
+                    Expectation(
+                        ParseExpectation(
+                            symbol_references=pgm_and_args_case.references_assertion,
+                        ),
+                        execution=ExecutionExpectation(
+                            main_result=asrt_matching_result.matches_value(True)
+                        ),
+                    )
                 )
-            ).as_remaining_source,
+
+    def test_stdin_is_contents_of_string_source_WHEN_program_defines_single_stdin(self):
+        # ARRANGE #
+        test_setup = SingleStdinPartTestSetup(self, exit_code=0)
+
+        for pgm_and_args_case in pgm_and_args_cases.cases_w_and_wo_argument_list__including_program_reference():
+            with self.subTest(pgm_and_args_case.name):
+                # ACT & ASSERT #
+                integration_check.CHECKER__PARSE_FULL.check__abs_stx__std_layouts__mk_source_variants(
+                    self,
+                    equivalent_source_variants__for_expr_parse__s__nsc,
+                    abstract_syntaxes.RunProgramAbsStx(
+                        test_setup.program_w_stdin_syntax(pgm_and_args_case.pgm_and_args),
+                        abstract_syntaxes.PathArgumentPositionLast()
+                    ),
+                    integration_check.ARBITRARY_MODEL,
+                    arrangement_w_tcds(
+                        symbols=pgm_and_args_case.symbol_table,
+                        process_execution=test_setup.proc_exe_env__w_stdin_check,
+                        tcds_contents=pgm_and_args_case.tcds,
+                    ),
+                    MultiSourceExpectation(
+                        symbol_references=pgm_and_args_case.references_assertion,
+                        execution=ExecutionExpectation(
+                            main_result=asrt_matching_result.matches_value(True)
+                        ),
+                    ),
+                )
+
+    def test_stdin_is_concatenation_of_string_sources_WHEN_program_defines_multiple_stdin(self):
+        # ARRANGE #
+        test_setup = ConcatenationOfStdinTestSetup(self, exit_code=0)
+        # ACT & ASSERT #
+        integration_check.CHECKER__PARSE_FULL.check__abs_stx__std_layouts__mk_source_variants(
+            self,
+            equivalent_source_variants__for_expr_parse__s__nsc,
+            abstract_syntaxes.RunProgramAbsStx(
+                test_setup.program_w_stdin_syntax,
+                abstract_syntaxes.PathArgumentPositionLast()
+            ),
             integration_check.ARBITRARY_MODEL,
             arrangement_w_tcds(
-                tcds_contents=py_file_rel_opt_conf.populator_for_relativity_option_root(
-                    DirContents([py_file])
+                symbols=test_setup.program_symbol.symbol_table,
+                process_execution=test_setup.proc_exe_env__w_stdin_check,
+            ),
+            MultiSourceExpectation(
+                symbol_references=test_setup.program_symbol.references_assertion,
+                execution=ExecutionExpectation(
+                    main_result=asrt_matching_result.matches_value(True)
                 ),
-                symbols=program_symbol.symbol_table,
+            ),
+        )
+
+
+class TestNonEmptyStdinViaExecution(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        test_setup = StdinCheckWithProgramWExitCode0ForSuccess()
+        # ACT & ASSERT #
+        integration_check.CHECKER__PARSE_FULL.check__abs_stx(
+            self,
+            abstract_syntaxes.RunProgramAbsStx(
+                test_setup.program_that_checks_stdin__syntax('the contents of stdin'),
+                abstract_syntaxes.PathArgumentPositionLast()
+            ),
+            integration_check.ARBITRARY_MODEL,
+            arrangement_w_tcds(
+                tcds_contents=test_setup.tcds_contents,
             ),
             Expectation(
-                ParseExpectation(
-                    source=asrt_source.is_at_end_of_line(1),
-                    symbol_references=program_symbol.references_assertion,
+                execution=ExecutionExpectation(
+                    main_result=asrt_matching_result.matches_value(True)
                 ),
-                ExecutionExpectation(
-                    main_result=asrt_run.is_result_for_py_interpreter(py_programs.EXIT_CODE_FOR_SUCCESS)
-                )
             ),
         )

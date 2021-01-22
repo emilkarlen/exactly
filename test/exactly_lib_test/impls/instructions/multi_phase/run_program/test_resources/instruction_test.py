@@ -1,6 +1,7 @@
 import unittest
 from typing import Sequence
 
+import exactly_lib_test.impls.types.program.test_resources.stdin_test_setups
 from exactly_lib.definitions.primitives import program as program_primitives
 from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -12,7 +13,6 @@ from exactly_lib.tcfs.path_relativity import RelSdsOptionType
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
-from exactly_lib_test.impls.instructions.multi_phase.run_program.test_resources import stdin_setup
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.test_resources import arguments_building as args
@@ -211,8 +211,8 @@ class TestSuccessAndSymbolUsages(TestCaseBase):
 
 class TestStdin(TestCaseBase):
     def runTest(self):
-        setup = stdin_setup.StdinCheckWithProgram()
-        argument_syntax = setup.syntax_for_stdin_contents('the contents of stdin')
+        setup = exactly_lib_test.impls.types.program.test_resources.stdin_test_setups.StdinCheckWithProgramWExitCode0ForSuccess()
+        argument_syntax = setup.program_that_checks_stdin__syntax('the contents of stdin')
         self.conf.run_test(
             self,
             remaining_source_of_abs_stx(argument_syntax),

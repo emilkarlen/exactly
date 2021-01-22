@@ -1,1 +1,7 @@
+[cases]
+
 *.case
+
+[suites]
+
+stdin

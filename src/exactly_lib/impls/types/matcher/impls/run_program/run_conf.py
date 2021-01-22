@@ -1,15 +1,15 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, ContextManager
+from typing import TypeVar, Generic, List
 
 from exactly_lib.type_val_prims.program.program import Program
-from exactly_lib.util.file_utils.std import ProcessExecutionFile
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 
 MODEL = TypeVar('MODEL')
 
 
 class RunConfiguration(Generic[MODEL], ABC):
     @abstractmethod
-    def stdin(self, model: MODEL) -> ContextManager[ProcessExecutionFile]:
+    def additional_stdin(self, model: MODEL) -> List[StringSource]:
         pass
 
     @abstractmethod

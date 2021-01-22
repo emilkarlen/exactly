@@ -4,7 +4,7 @@ from typing import Sequence
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.impls.instructions.setup import run as sut
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib_test.impls.instructions.multi_phase.run_program.test_resources.run_instruction_test import \
+from exactly_lib_test.impls.instructions.multi_phase.run_program.test_resources.instruction_test import \
     suite_for, \
     Configuration
 from exactly_lib_test.impls.instructions.setup.test_resources.configuration import SetupConfigurationBase
