@@ -2,6 +2,8 @@ import shlex
 from typing import Dict, Any, List, Sequence
 
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
+from exactly_lib_test.test_resources.source.layout import LayoutSpec
 from exactly_lib_test.test_resources.string_formatting import StringFormatter
 
 
@@ -34,6 +36,12 @@ def remaining_source_string(pre_formatted: str) -> ParseSource:
     ret_val.consume_part_of_current_line(len(previous_content))
 
     return ret_val
+
+
+def remaining_source_of_abs_stx(syntax: AbstractSyntax) -> ParseSource:
+    return remaining_source_string(
+        syntax.tokenization().layout(LayoutSpec.of_default())
+    )
 
 
 def remaining_source_lines(lines: List[str]) -> ParseSource:

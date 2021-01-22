@@ -1,0 +1,12 @@
+*.case
+
+[setup]
+
+including ../definitions.xly
+
+def string STDIN_PART_1 = 'the contents of stdin, part 1'
+def string STDIN_PART_2 = 'the contents of stdin, part 2'
+def string EXPECTED_STDIN = @[STDIN_PART_1]@@[STDIN_PART_2]@
+
+def program ACT_AND_CHECK = @ EXIT_W_0_IFF_STDIN_EQUALS_1ST_ARGUMENT
+  -stdin @[STDIN_PART_1]@

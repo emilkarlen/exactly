@@ -1,0 +1,5 @@
+def path _PY_SRC_FILE = -rel-here exit-w-0-iff-stdin-equals-1st-argument.py
+
+def program EXIT_W_0_IFF_STDIN_EQUALS_1ST_ARGUMENT =
+
+    -python -existing-file @[_PY_SRC_FILE]@

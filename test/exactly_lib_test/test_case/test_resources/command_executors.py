@@ -5,9 +5,10 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.command_executor import CommandExecutor
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.type_val_prims.program.command import Command
-from exactly_lib.util.file_utils.std import StdFiles
+from exactly_lib.util.file_utils.std import StdFiles, ProcessExecutionFile
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.test_resources.recording import MaxNumberOfTimesChecker
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class CommandExecutorWInitialAction(CommandExecutor):
@@ -96,3 +97,24 @@ class CommandExecutorThatRaisesHardError(CommandExecutor):
                 files: StdFiles,
                 ) -> int:
         raise HardErrorException(self.err_msg)
+
+
+class CommandExecutorThatChecksStdin(CommandExecutor):
+    def __init__(self,
+                 put: unittest.TestCase,
+                 expectation: ValueAssertion[ProcessExecutionFile],
+                 exit_code: int = 0,
+                 ):
+        self._put = put
+        self._expectation = expectation
+        self.exit_code = exit_code
+
+    def execute(self,
+                command: Command,
+                settings: ProcessExecutionSettings,
+                files: StdFiles,
+                ) -> int:
+        self._expectation.apply_with_message(self._put,
+                                             files.stdin,
+                                             'stdin given to command executor')
+        return self.exit_code

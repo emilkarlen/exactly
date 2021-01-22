@@ -1,9 +1,5 @@
 [suites]
 
-actors
-
-file
-
 program
 
 string-transformer
@@ -24,9 +20,14 @@ dir-contents
 
 expr-syntax
 
-exists
-
 suites
 
 misc
 
+exists
+
+actors
+
+file
+
+run

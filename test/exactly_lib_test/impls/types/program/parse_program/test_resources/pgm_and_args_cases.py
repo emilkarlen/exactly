@@ -1,8 +1,11 @@
 import sys
 from typing import Callable, Sequence, List
 
+from exactly_lib.impls.types.string_source import sdvs as str_src_sdvs
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.type_val_deps.types.path import path_ddvs
+from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.type_val_prims.program.command import CommandDriver
 from exactly_lib.util.symbol_table import SymbolTable
@@ -73,6 +76,14 @@ class PgmAndArgsCase:
                                                tcds_contents=tcds)
         )
 
+    @property
+    def symbol_table(self) -> SymbolTable:
+        return SymbolContext.symbol_table_of_contexts(self.symbols)
+
+    @property
+    def usages_assertion(self) -> ValueAssertion[Sequence[SymbolUsage]]:
+        return SymbolContext.usages_assertion_of_contexts(self.symbols)
+
 
 def cases__w_argument_list__excluding_program_reference() -> List[PgmAndArgsCase]:
     """Cases of pgm-and-arg:s that have a list of arguments."""
@@ -132,6 +143,15 @@ def program_reference__w_argument_list() -> PgmAndArgsCase:
             asrt_command.matches_system_program_command_driver(
                 asrt.equals(system_program)
             )),
+    )
+
+
+def program_sdv_w_stdin__wo_sym_refs(contents_of_stdin: str) -> ProgramSdv:
+    return program_sdvs.system_program(
+        string_sdvs.str_constant('the-system-program'),
+        stdin=[str_src_sdvs.ConstantStringStringSourceSdv(
+            string_sdvs.str_constant(contents_of_stdin)
+        )],
     )
 
 

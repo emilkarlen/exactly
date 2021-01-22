@@ -1,22 +1,26 @@
 import unittest
+from typing import Sequence
 
 from exactly_lib.definitions.primitives import program as program_primitives
 from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.tcfs.path_relativity import RelSdsOptionType
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
+from exactly_lib_test.impls.instructions.multi_phase.run_program.test_resources import stdin_setup
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.test_resources import relativity_options
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
+from exactly_lib_test.section_document.test_resources.parse_source import single_line_source, \
+    remaining_source_of_abs_stx
 from exactly_lib_test.tcfs.test_resources import path_arguments
 from exactly_lib_test.tcfs.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_resources import argument_renderer as arg_r
@@ -32,13 +36,15 @@ from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramS
 class Configuration(ConfigurationBase):
     def expect_failure_because_specified_file_under_sds_is_missing(
             self,
-            symbol_usages: ValueAssertion = asrt.is_empty_sequence):
+            symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+    ):
         raise NotImplementedError()
 
 
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
     return suite_for_cases(conf,
                            [
+                               TestInvalidSyntaxSuperfluousArguments,
                                TestZeroExitCode,
                                TestNonZeroExitCode,
                                TestNonZeroExitCodeAndIgnoredExitCode,
@@ -49,7 +55,7 @@ def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
                                TestSuccessfulValidation,
                                TestFailingValidationOfRelSymbol,
                                TestSuccessAndSymbolUsages,
-                               TestInvalidSyntaxSuperfluousArguments,
+                               TestStdin,
                            ])
 
 
@@ -200,6 +206,20 @@ class TestSuccessAndSymbolUsages(TestCaseBase):
             self.conf.expect_success(
                 symbol_usages=relativity_option.symbols.usages_expectation(),
             ),
+        )
+
+
+class TestStdin(TestCaseBase):
+    def runTest(self):
+        setup = stdin_setup.StdinCheckWithProgram()
+        argument_syntax = setup.syntax_for_stdin_contents('the contents of stdin')
+        self.conf.run_test(
+            self,
+            remaining_source_of_abs_stx(argument_syntax),
+            self.conf.arrangement(
+                tcds_contents=setup.tcds_contents
+            ),
+            self.conf.expect_success(),
         )
 
 

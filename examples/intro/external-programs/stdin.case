@@ -1,0 +1,22 @@
+[setup]
+
+run my-program-that-reads-stdin
+    -stdin <<EOF
+the contents of stdin
+of program
+in setup phase
+EOF
+
+run my-program-that-reads-stdin
+    -stdin
+      -stdout-from
+        -python -c :> print('output that becomes stdin')
+
+[assert]
+
+run my-program-that-reads-stdin
+    -stdin <<EOF
+the contents of stdin
+of program
+in assert phase
+EOF

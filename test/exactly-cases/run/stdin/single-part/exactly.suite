@@ -1,0 +1,7 @@
+*.case
+
+[setup]
+
+including ../definitions.xly
+
+def string STDIN_PART = 'the contents of stdin'

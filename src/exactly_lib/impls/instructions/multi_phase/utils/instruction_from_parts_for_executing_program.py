@@ -11,6 +11,7 @@ from exactly_lib.impls.instructions.multi_phase.utils.instruction_parts import I
 from exactly_lib.impls.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.impls.program_execution.command_processor import CommandProcessor
 from exactly_lib.impls.types.program import top_lvl_error_msg_rendering
+from exactly_lib.impls.types.string_source import as_stdin as str_src_as_stdin
 from exactly_lib.section_document.element_parsers import misc_utils
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -22,7 +23,8 @@ from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
-from exactly_lib.util.process_execution import file_ctx_managers, process_output_files
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
+from exactly_lib.util.process_execution import process_output_files
 from exactly_lib.util.process_execution.executors import read_stderr_on_error
 from exactly_lib.util.process_execution.executors.read_stderr_on_error import ResultWithFiles
 from exactly_lib.util.process_execution.process_output_files import FileNames
@@ -95,6 +97,8 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
         command_processor = self._command_processor(
             os_services,
             storage_dir,
+            program.stdin,
+            environment.mem_buff_size,
         )
 
         result = command_processor.process(
@@ -112,11 +116,13 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
     @staticmethod
     def _command_processor(os_services: OsServices,
                            storage_dir: pathlib.Path,
+                           stdin: Sequence[StringSource],
+                           mem_buff_size: int,
                            ) -> CommandProcessor[ResultWithFiles]:
         return read_stderr_on_error.ProcessorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(
             os_services.command_executor,
             storage_dir,
-            file_ctx_managers.dev_null(),
+            str_src_as_stdin.of_sequence(stdin, mem_buff_size),
             std_err_contents.STD_ERR_TEXT_READER,
         )
 
@@ -132,7 +138,8 @@ class ResultTranslator(MainStepResultTranslator[ExecutionResultAndStderr]):
 class InstructionEmbryoParser(InstructionEmbryoParserWoFileSystemLocationInfo[ExecutionResultAndStderr]):
     def __init__(self,
                  instruction_name: str,
-                 program_parser: Parser[ProgramSdv]):
+                 program_parser: Parser[ProgramSdv],
+                 ):
         self.instruction_name = instruction_name
         self.program_parser = program_parser
 

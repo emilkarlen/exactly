@@ -4,12 +4,14 @@ from typing import Sequence
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.impls.types.string_source import defs
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib.util.parse.token import QuoteType
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
 from exactly_lib_test.tcfs.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.test_resources.source import token_sequences
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramAbsStx
+from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntax as str_abs_stx
 from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringAbsStx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
     StringTransformerAbsStx
@@ -41,6 +43,12 @@ class TransformedStringSourceAbsStx(StringSourceAbsStx):
 class StringSourceOfStringAbsStx(StringSourceAbsStx):
     def __init__(self, string: StringAbsStx):
         self.string = string
+
+    @staticmethod
+    def of_str(s: str, quoting: QuoteType) -> StringSourceAbsStx:
+        return StringSourceOfStringAbsStx(
+            str_abs_stx.StringLiteralAbsStx(s, quoting)
+        )
 
     def tokenization(self) -> TokenSequence:
         return self.string.tokenization()

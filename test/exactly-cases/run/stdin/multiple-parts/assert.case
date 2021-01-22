@@ -1,0 +1,4 @@
+[assert]
+
+run @ ACT_AND_CHECK @[EXPECTED_STDIN]@
+  -stdin @[STDIN_PART_2]@
