@@ -60,6 +60,7 @@ class ProgramOutputStringSourceSdv(StringSourceSdv):
             self._ignore_exit_code,
             self._output_channel_to_capture,
             program_ddv.command,
+            program_ddv.stdin,
         )
         return (
             ddvs.TransformedStringSourceDdv(command_source_ddv,

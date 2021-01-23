@@ -34,6 +34,7 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
     def description_rest(self) -> Sequence[ParagraphItem]:
         tp = TextParser({
             'program': types.PROGRAM_TYPE_INFO.name,
+            'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
             'stdin': misc_texts.STDIN,
             'stdout': misc_texts.STDOUT,
         })
@@ -50,4 +51,7 @@ _PROGRAM_PARSER = parse_program.program_parser(
 
 _DESCRIPTION_REST = """\
 Runs {program:a}, with input and output via {stdin} and {stdout}.
+
+
+If {PROGRAM} defines {stdin}, then the string to transform is appended to that {stdin}.
 """

@@ -90,3 +90,13 @@ def stdin_node_renderer(string_sources: Sequence[WithNodeDescription]) -> Option
             (),
             (string_source,),
         )
+
+
+def command_w_stdin_renderer(command: StructureBuilder,
+                             stdin: Sequence[WithNodeDescription],
+                             ) -> StructureRenderer:
+    mb_stdin = stdin_node_renderer(stdin)
+    if mb_stdin:
+        command.append_child(mb_stdin)
+
+    return command.build()

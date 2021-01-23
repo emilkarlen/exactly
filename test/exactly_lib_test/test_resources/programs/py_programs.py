@@ -2,6 +2,18 @@ from typing import Dict, Mapping
 
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
+PY_SYS_OUTPUT_FILES = {
+    ProcOutputFile.STDOUT: 'stdout',
+    ProcOutputFile.STDERR: 'stderr',
+}
+
+
+def copy_stdin_to(output: ProcOutputFile) -> str:
+    return """\
+import sys
+sys.{file}.writelines(sys.stdin.readlines())
+""".format(file=PY_SYS_OUTPUT_FILES[output])
+
 
 def py_pgm_that_copies_stdin_to_stdout() -> str:
     return """\

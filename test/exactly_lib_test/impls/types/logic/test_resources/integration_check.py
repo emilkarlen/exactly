@@ -10,6 +10,7 @@ import unittest
 from contextlib import contextmanager
 from typing import Sequence, Generic, ContextManager, Callable, TypeVar
 
+from exactly_lib.common.report_rendering import print
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
@@ -823,7 +824,9 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                           message_builder: asrt.MessageBuilder,
                           ) -> _ValueAssertionApplier:
         if self.execution.is_hard_error is None:
-            self.put.fail(message_builder.apply('Unexpected HARD_ERROR'))
+            err_msg_str = print.print_to_str(result.error.render_sequence())
+            self.put.fail(message_builder.apply('Unexpected HARD_ERROR:\n') +
+                          err_msg_str)
         else:
             return _ValueAssertionApplier(
                 self.execution.is_hard_error,

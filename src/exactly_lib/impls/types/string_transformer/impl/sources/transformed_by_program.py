@@ -1,11 +1,10 @@
-from typing import IO, Sequence
+from typing import IO
 
 from exactly_lib.impls.program_execution import command_processors
 from exactly_lib.impls.program_execution.command_processor import CommandProcessor
 from exactly_lib.impls.types.string_transformer import sequence_resolving
+from exactly_lib.impls.types.utils.command_w_stdin import CommandWStdin
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
-from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
-from exactly_lib.type_val_prims.program import program
 from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
@@ -17,33 +16,23 @@ from exactly_lib.util.process_execution.executors.store_result_in_files import E
 from . import transformed_string_sources
 
 
-def transformed_by_command(transformer: Command,
-                           command_stdin: Sequence[StringSource],
+def transformed_by_command(transformer: CommandWStdin,
                            ignore_exit_code: bool,
                            environment: ApplicationEnvironment,
                            model: StringSource,
                            ) -> StringSource:
-    def _structure_of_command() -> StructureRenderer:
-        builder = transformer.structure()
-
-        mb_stdin = program.stdin_node_renderer(command_stdin)
-        if mb_stdin:
-            builder.append_child(mb_stdin)
-
-        return builder.build()
-
     model_w_stdin = concat.string_source_of_non_empty_sequence(
-        list(command_stdin) + [model],
+        list(transformer.stdin) + [model],
         environment.mem_buff_size,
     )
     return transformed_string_sources.transformed_string_source_from_writer(
         _TransformationWriter(
             environment,
             ignore_exit_code,
-            transformer,
+            transformer.command,
         ).write,
         model_w_stdin,
-        _structure_of_command,
+        transformer.structure,
         environment.mem_buff_size,
     )
 
@@ -54,8 +43,7 @@ def transformed_by_program(transformer: Program,
                            model: StringSource,
                            ) -> StringSource:
     initial_transformation = transformed_by_command(
-        transformer.command,
-        transformer.stdin,
+        CommandWStdin(transformer.command, transformer.stdin),
         ignore_exit_code,
         environment,
         model

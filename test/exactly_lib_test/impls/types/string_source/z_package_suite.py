@@ -1,7 +1,8 @@
 import unittest
 
-from exactly_lib_test.impls.types.string_source import source_from_lines_base, source_of_file, command_output, \
-    cached_frozen, constant_str
+from exactly_lib_test.impls.types.string_source import source_from_lines_base, source_of_file, cached_frozen, \
+    constant_str
+from exactly_lib_test.impls.types.string_source.command_output import z_package_suite as command_output
 from exactly_lib_test.impls.types.string_source.parse import z_package_suite as parse
 
 

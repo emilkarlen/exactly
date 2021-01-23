@@ -1,7 +1,8 @@
 import unittest
 
-from exactly_lib_test.impls.types.string_source.parse import contents_from_string, contents_from_file, \
-    contents_from_program
+from exactly_lib_test.impls.types.string_source.parse import contents_from_string, contents_from_file
+from exactly_lib_test.impls.types.string_source.parse.contents_from_program import \
+    z_package_suite as contents_from_program
 
 
 def suite() -> unittest.TestSuite:

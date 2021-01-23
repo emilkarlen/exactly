@@ -1,0 +1,30 @@
+[setup]
+
+
+def string S1 = 'a 1st string'
+def string S2 = 'a 2nd string'
+
+def program OUTPUT_NOTHING = @ COPY_STDIN_2_STDOUT
+
+def program OUTPUT_S1 = @ OUTPUT_NOTHING
+                          -stdin @[S1]@
+
+def program OUTPUT_S1_S2 = @ OUTPUT_S1
+                             -stdin @[S2]@
+
+
+file s0.txt = -stdout-from @ OUTPUT_NOTHING
+
+file s1.txt = -stdout-from @ OUTPUT_S1
+
+file s2.txt = -stdout-from @ OUTPUT_S1_S2
+
+
+[assert]
+
+
+contents s0.txt empty
+
+contents s1.txt equals @[S1]@
+
+contents s2.txt equals @[S1]@@[S2]@

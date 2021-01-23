@@ -1,6 +1,9 @@
+from typing import Sequence
+
 from exactly_lib.impls import file_properties
 from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.impls.types.path import path_check
+from exactly_lib.impls.types.utils.command_w_stdin import CommandWStdin
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
@@ -13,6 +16,8 @@ from exactly_lib.type_val_deps.types.program.ddv.command import CommandDdv
 from exactly_lib.type_val_deps.types.string_.string_ddv import StringDdv
 from exactly_lib.type_val_deps.types.string_source.ddv import StringSourceDdv
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerDdv
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.program import program
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
@@ -73,18 +78,26 @@ class CommandOutputStringSourceDdv(StringSourceDdv):
                  ignore_exit_code: bool,
                  output_channel_to_capture: ProcOutputFile,
                  command: CommandDdv,
+                 command_stdin: Sequence[StringSourceDdv],
                  ):
         self._structure_header = structure_header
         self._ignore_exit_code = ignore_exit_code
         self._output_channel_to_capture = output_channel_to_capture
         self._command = command
+        self._command_stdin = command_stdin
 
     def new_structure_builder(self) -> StringSourceStructureBuilder:
         return cmd_string_source.ConstructorOfStructureBuilder(
             self._structure_header,
             self._ignore_exit_code,
-            self._command.structure().build(),
+            self._structure_of_command(),
         ).new_structure_builder()
+
+    def _structure_of_command(self) -> StructureRenderer:
+        return program.command_w_stdin_renderer(
+            self._command.structure(),
+            self._command_stdin,
+        )
 
     @property
     def validator(self) -> DdvValidator:
@@ -93,11 +106,15 @@ class CommandOutputStringSourceDdv(StringSourceDdv):
     def value_of_any_dependency(self, tcds: TestCaseDs) -> ApplicationEnvironmentDependentValue[PRIMITIVE]:
         def make_primitive(environment: ApplicationEnvironment) -> StringSource:
             command = self._command.value_of_any_dependency(tcds)
+            command_stdin = [
+                ss.value_of_any_dependency(tcds).primitive(environment)
+                for ss in self._command_stdin
+            ]
             return cmd_string_source.string_source(
                 self._structure_header,
                 self._ignore_exit_code,
                 self._output_channel_to_capture,
-                command,
+                CommandWStdin(command, command_stdin),
                 environment.process_execution_settings,
                 environment.os_services.command_executor,
                 environment.mem_buff_size,

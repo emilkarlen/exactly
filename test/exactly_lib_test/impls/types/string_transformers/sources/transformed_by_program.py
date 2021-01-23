@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Sequence, ContextManager
 
 from exactly_lib.impls.types.string_transformer.impl.sources import transformed_by_program as sut
+from exactly_lib.impls.types.utils.command_w_stdin import CommandWStdin
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.program.commands import Command
 from exactly_lib.type_val_prims.program.commands import CommandDriverForExecutableFile
@@ -286,8 +287,7 @@ class _ToUpperCommandSourceConstructor(SourceConstructorWAppEnvForTest):
             )
 
             yield sut.transformed_by_command(
-                _to_upper_command(tmp_dir_path, self.exit_code),
-                (),
+                CommandWStdin(_to_upper_command(tmp_dir_path, self.exit_code), ()),
                 self.ignore_exit_code,
                 app_env,
                 source_model,

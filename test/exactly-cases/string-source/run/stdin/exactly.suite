@@ -4,8 +4,6 @@
 
 [setup]
 
-including ../../../utils/stdin-check-defs.xly
-
 including ../../../utils/copy-stdin-programs.xly
 
 def string MODEL_CONTENTS = 'the contents of the model'

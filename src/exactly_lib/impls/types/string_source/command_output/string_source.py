@@ -1,12 +1,12 @@
 from exactly_lib.common.err_msg import std_err_contents
-from exactly_lib.definitions.primitives import program
+from exactly_lib.definitions.primitives import program as program_primitives
 from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.impls.types.string_source.cached_frozen import StringSourceWithCachedFrozen
 from exactly_lib.impls.types.string_source.contents import contents_via_write_to
 from exactly_lib.impls.types.string_source.contents.contents_via_file import ContentsViaFile
+from exactly_lib.impls.types.utils.command_w_stdin import CommandWStdin
 from exactly_lib.test_case.command_executor import CommandExecutor
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
-from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
@@ -19,7 +19,7 @@ from exactly_lib.util.process_execution.process_output_files import ProcOutputFi
 def string_source(structure_header: str,
                   ignore_exit_code: bool,
                   output_channel_to_capture: ProcOutputFile,
-                  command: Command,
+                  command: CommandWStdin,
                   proc_exe_settings: ProcessExecutionSettings,
                   command_executor: CommandExecutor,
                   mem_buff_size: int,
@@ -28,7 +28,7 @@ def string_source(structure_header: str,
     constructor_of_structure_builder = ConstructorOfStructureBuilder(
         structure_header,
         ignore_exit_code,
-        command.structure_renderer(),
+        command.structure(),
     )
     contents = _contents(
         ignore_exit_code,
@@ -59,7 +59,7 @@ class ConstructorOfStructureBuilder:
     def new_structure_builder(self) -> StringSourceStructureBuilder:
         return StringSourceStructureBuilder(
             self._structure_header,
-            (custom_details.optional_option(program.WITH_IGNORED_EXIT_CODE_OPTION_NAME,
+            (custom_details.optional_option(program_primitives.WITH_IGNORED_EXIT_CODE_OPTION_NAME,
                                             self._ignore_exit_code),),
             (self._command,),
         )
@@ -68,7 +68,7 @@ class ConstructorOfStructureBuilder:
 def _contents(
         ignore_exit_code: bool,
         output_channel_to_capture: ProcOutputFile,
-        command: Command,
+        command: CommandWStdin,
         proc_exe_settings: ProcessExecutionSettings,
         command_executor: CommandExecutor,
         tmp_file_space: DirFileSpace,
@@ -100,7 +100,7 @@ def _contents(
 
 def _writer(ignore_exit_code: bool,
             output_channel_to_capture: ProcOutputFile,
-            command: Command,
+            command: CommandWStdin,
             proc_exe_settings: ProcessExecutionSettings,
             command_executor: CommandExecutor,
             ) -> contents_via_write_to.Writer:

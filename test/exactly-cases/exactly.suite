@@ -6,6 +6,8 @@ string-transformer
 
 string-matcher
 
+string-source
+
 integer-matcher
 
 line-matcher

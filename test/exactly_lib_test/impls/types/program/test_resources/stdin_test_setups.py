@@ -1,6 +1,7 @@
 import subprocess
 import unittest
 from abc import ABC
+from typing import List
 
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.impls.types.string_source import sdvs as str_src_sdvs
@@ -10,14 +11,17 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util.parse.token import QuoteType
+from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as str_src_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatChecksStdin
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
+from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import PgmAndArgsAbsStx, \
     ProgramOfSymbolReferenceAbsStx
@@ -195,3 +199,19 @@ else:
     @property
     def exit_code_of_successful_application(self) -> int:
         return 0
+
+
+class StdinCheckViaCopyToOutputFileTestSetup:
+    def __init__(self, output_file: ProcOutputFile):
+        self.output_file = output_file
+        self._copy_program_symbol = ProgramSymbolContext.of_sdv(
+            'COPY_STDIN',
+            program_sdvs.for_py_source_on_command_line(py_programs.copy_stdin_to(output_file))
+        )
+
+    def program_that_copies_stdin_syntax(self) -> PgmAndArgsAbsStx:
+        return ProgramOfSymbolReferenceAbsStx(self._copy_program_symbol.name)
+
+    @property
+    def symbols(self) -> List[SymbolContext]:
+        return [self._copy_program_symbol]

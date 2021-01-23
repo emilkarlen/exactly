@@ -1,0 +1,5 @@
+def path _UTILS_DIR = -rel-here .
+
+def program COPY_STDIN_2_STDOUT = -python -existing-file -rel _UTILS_DIR copy-stdin-2-stdout.py
+def program COPY_STDIN_2_STDERR = -python -existing-file -rel _UTILS_DIR copy-stdin-2-stderr.py
+
