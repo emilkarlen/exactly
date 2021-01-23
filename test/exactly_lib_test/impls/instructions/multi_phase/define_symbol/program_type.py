@@ -9,6 +9,8 @@ from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resource
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
+from exactly_lib_test.impls.types.string_transformers.test_resources.abstract_syntaxes import \
+    symbol_reference_followed_by_superfluous_string_on_same_line
 from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -16,10 +18,9 @@ from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import \
-    ProgramOfSymbolReferenceAbsStx, FullProgramAbsStx, CustomPgmAndArgsAbsStx
-from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
-    symbol_reference_followed_by_superfluous_string_on_same_line
+    FullProgramAbsStx, CustomPgmAndArgsAbsStx
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources.program_assertions import \
     matches_py_source_on_cmd_line_program

@@ -22,7 +22,6 @@ from exactly_lib_test.impls.types.string_source.test_resources import abstract_s
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.tcfs.test_resources import abstract_syntax as path_abs_stx
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly, dir_contains_exactly
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -33,8 +32,9 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt, value_assertion as asrt
 from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_rest
+from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntax as string_abs_stx
+from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntaxes as str_abs_stx
 from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
@@ -51,7 +51,7 @@ def suite() -> unittest.TestSuite:
 class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
     def test_contents_from_string__w_dst_relativity_variants(self):
         # ARRANGE #
-        string_value = string_abs_stx.StringLiteralAbsStx('the_string_value')
+        string_value = str_abs_stx.StringLiteralAbsStx('the_string_value')
         expected_file = fs.File('a-file-name.txt', string_value.value)
         for phase_is_after_act in [False, True]:
             checker = integration_check.checker(phase_is_after_act)
@@ -81,7 +81,7 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
 
     def test_contents_from_here_doc(self):
         # ARRANGE #
-        string_value = string_abs_stx.StringHereDocAbsStx('single line in here doc\n')
+        string_value = str_abs_stx.StringHereDocAbsStx('single line in here doc\n')
         expected_file = fs.File('a-file-name.txt', string_value.value)
         rel_opt_conf = ARBITRARY_ALLOWED_DST_FILE_RELATIVITY
         dst_path = rel_opt_conf.path_abs_stx_of_name(expected_file.name)
@@ -117,7 +117,7 @@ class TestSymbolReferences(unittest.TestCase):
                                                              RelOptionType.REL_ACT,
                                                              'dst-file.txt',
                                                              ACCEPTED_DST_RELATIVITY_VARIANTS)
-        string_value = string_abs_stx.StringHereDocAbsStx('single line in here doc\n')
+        string_value = str_abs_stx.StringHereDocAbsStx('single line in here doc\n')
         instruction_syntax = instr_abs_stx.with_explicit_contents(
             dst_path_symbol.abs_stx_of_reference,
             string_source_abs_stx.StringSourceOfStringAbsStx(string_value),
@@ -149,7 +149,7 @@ class TestSymbolReferences(unittest.TestCase):
 
         def symbol_ref_syntax_2_contents_arguments(syntax: str) -> StringAbsStx:
             string_value = string_value_template.format(symbol=syntax)
-            return string_abs_stx.StringLiteralAbsStx(string_value, QuoteType.SOFT)
+            return str_abs_stx.StringLiteralAbsStx(string_value, QuoteType.SOFT)
 
         self._test_symbol_reference_in_dst_file_and_contents(symbol_ref_syntax_2_contents_arguments,
                                                              symbol_value_2_expected_contents)
@@ -161,7 +161,7 @@ class TestSymbolReferences(unittest.TestCase):
             return here_doc_line_template.format(symbol=symbol_value) + '\n'
 
         def symbol_ref_syntax_2_contents_arguments(syntax: str) -> StringAbsStx:
-            return string_abs_stx.StringHereDocAbsStx.of_lines__wo_new_lines([
+            return str_abs_stx.StringHereDocAbsStx.of_lines__wo_new_lines([
                 here_doc_line_template.format(symbol=syntax)
             ])
 
@@ -227,17 +227,17 @@ class TestFailingParse(unittest.TestCase):
             NameAndValue(
                 'here doc',
                 string_source_abs_stx.StringSourceOfStringAbsStx(
-                    string_abs_stx.StringHereDocAbsStx('contents line\n'))
+                    str_abs_stx.StringHereDocAbsStx('contents line\n'))
             ),
             NameAndValue(
                 'raw string',
                 string_source_abs_stx.StringSourceOfStringAbsStx(
-                    string_abs_stx.StringLiteralAbsStx('raw_string_argument'))
+                    str_abs_stx.StringLiteralAbsStx('raw_string_argument'))
             ),
             NameAndValue(
                 'quoted string',
                 string_source_abs_stx.StringSourceOfStringAbsStx(
-                    string_abs_stx.StringLiteralAbsStx('quoted string argument', QuoteType.SOFT))
+                    str_abs_stx.StringLiteralAbsStx('quoted string argument', QuoteType.SOFT))
             ),
         ]
         for relativity in DISALLOWED_DST_RELATIVITIES:
@@ -266,7 +266,7 @@ class TestFailingParse(unittest.TestCase):
         # ARRANGE #
         valid_instruction_syntax = instr_abs_stx.with_explicit_contents(
             path_abs_stx.DefaultRelPathAbsStx('file-name'),
-            string_source_abs_stx.StringSourceOfStringAbsStx(string_abs_stx.StringLiteralAbsStx('string')),
+            string_source_abs_stx.StringSourceOfStringAbsStx(str_abs_stx.StringLiteralAbsStx('string')),
         )
         invalid_instruction_syntax = custom_abs_stx.SequenceAbstractSyntax([
             valid_instruction_syntax,
@@ -284,7 +284,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(
                 'contents of here doc',
                 ExplicitContentsVariantAbsStx(
                     string_source_abs_stx.StringSourceOfStringAbsStx(
-                        string_abs_stx.StringHereDocAbsStx('contents\n')
+                        str_abs_stx.StringHereDocAbsStx('contents\n')
                     )
                 )
             ),
@@ -292,7 +292,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(
                 'contents of string',
                 ExplicitContentsVariantAbsStx(
                     string_source_abs_stx.StringSourceOfStringAbsStx(
-                        string_abs_stx.StringLiteralAbsStx('contents')
+                        str_abs_stx.StringLiteralAbsStx('contents')
                     )
                 )
             ),

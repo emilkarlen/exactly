@@ -28,11 +28,13 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
     is_reference_restrictions__to_type_convertible_to_string
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import PgmAndArgsWArgumentsAbsStx, \
-    ProgramOfSymbolReferenceAbsStx, ProgramOfShellCommandLineAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentOfStringAbsStx, \
-    ArgumentAbsStx, ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringLiteralAbsStx
+    ProgramOfShellCommandLineAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
+    ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx
+from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringLiteralAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command, \

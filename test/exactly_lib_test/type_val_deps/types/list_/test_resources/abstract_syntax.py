@@ -5,7 +5,7 @@ from exactly_lib.util.parse.token import QuoteType
 from exactly_lib_test.symbol.test_resources import token_sequences as symbol_tok_seq
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
-from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntax as string_abs_stx
+from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntaxes as str_abs_stx
 from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import NonHereDocStringAbsStx
 
 
@@ -53,7 +53,7 @@ class ListAbsStx(AbstractSyntax):
     def singleton_string__str(element: str,
                               quoting: Optional[QuoteType] = None,
                               ) -> 'ListAbsStx':
-        return ListAbsStx.singleton_string(string_abs_stx.StringLiteralAbsStx(element, quoting))
+        return ListAbsStx.singleton_string(str_abs_stx.StringLiteralAbsStx(element, quoting))
 
     def tokenization(self) -> TokenSequence:
         return TokenSequence.concat([

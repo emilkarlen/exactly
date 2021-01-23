@@ -18,7 +18,6 @@ from exactly_lib_test.impls.types.test_resources.path_arg_with_relativity import
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any, conf_rel_hds, \
     conf_rel_non_hds
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.tcfs.test_resources import abstract_syntax as path_abs_stx
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly
 from exactly_lib_test.test_resources.files import file_structure as fs
@@ -32,6 +31,8 @@ from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
     equals_data_type_reference_restrictions
+from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
+from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import path_or_string_reference_restrictions
 from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as program_abs_stx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import abstract_syntax as str_trans_abs_stx
@@ -77,11 +78,11 @@ class TestSymbolUsages(TestCaseWithConfiguration):
 
         transformed_file_syntax = string_source_abs_stx.TransformedStringSourceAbsStx(
             string_source_abs_stx.StringSourceOfFileAbsStx(
-                path_abs_stx.PathSymbolReferenceAbsStx(src_file_symbol.name)),
+                PathSymbolReferenceAbsStx(src_file_symbol.name)),
             str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx(to_upper_transformer.name)
         )
         instruction_syntax = instr_abs_stx.with_explicit_contents(
-            path_abs_stx.PathSymbolReferenceAbsStx(dst_file_symbol.name),
+            PathSymbolReferenceAbsStx(dst_file_symbol.name),
             transformed_file_syntax,
         )
 

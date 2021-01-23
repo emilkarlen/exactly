@@ -11,11 +11,11 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arra
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check
+from exactly_lib_test.impls.types.string_transformers.test_resources import abstract_syntaxes as str_trans_abs_stx
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
 from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.tcfs.test_resources import abstract_syntax as path_abs_stx
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.source.abstract_syntax_impls import OptionallyOnNewLine
@@ -24,11 +24,15 @@ from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as program_abs_stx
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import PgmAndArgsAbsStx, \
+    ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import \
-    ProgramAbsStx, TransformableProgramAbsStxBuilder, PgmAndArgsAbsStx
+    ProgramAbsStx, TransformableProgramAbsStxBuilder
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import abstract_syntax as str_trans_abs_stx
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
+    StringTransformerSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext, \
@@ -166,7 +170,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(unittest.TestCase)
                 ),
                 ProgramCase(
                     'symbol reference program',
-                    program_abs_stx.ProgramOfSymbolReferenceAbsStx(program_that_executes_py_source_symbol.name),
+                    ProgramOfSymbolReferenceAbsStx(program_that_executes_py_source_symbol.name),
                     [program_that_executes_py_source_symbol.reference_assertion],
                 ),
             ]
@@ -303,9 +307,9 @@ class TestNonZeroExitCode(unittest.TestCase):
         output_from_program = 'the output from the program'
         transformer = TO_UPPER_TRANSFORMER_SYMBOL
 
-        sym_ref_program = program_abs_stx.ProgramOfSymbolReferenceAbsStx('PROGRAM_SYMBOL_NAME')
+        sym_ref_program = ProgramOfSymbolReferenceAbsStx('PROGRAM_SYMBOL_NAME')
         program_builder = program_abs_stx.TransformableProgramAbsStxBuilder(
-            program_abs_stx.ProgramOfSymbolReferenceAbsStx(sym_ref_program.symbol_name)
+            ProgramOfSymbolReferenceAbsStx(sym_ref_program.symbol_name)
         )
         output_cases = [
             OutputFileCase(
@@ -411,9 +415,9 @@ class TestNonZeroExitCode(unittest.TestCase):
         }
         transformer = TO_UPPER_TRANSFORMER_SYMBOL
 
-        sym_ref_program = program_abs_stx.ProgramOfSymbolReferenceAbsStx('PROGRAM_SYMBOL_NAME')
+        sym_ref_program = ProgramOfSymbolReferenceAbsStx('PROGRAM_SYMBOL_NAME')
         program_builder = program_abs_stx.TransformableProgramAbsStxBuilder(
-            program_abs_stx.ProgramOfSymbolReferenceAbsStx(sym_ref_program.symbol_name)
+            ProgramOfSymbolReferenceAbsStx(sym_ref_program.symbol_name)
         )
         program_cases = [
             ProgramAndSymbolsCase(
@@ -506,12 +510,12 @@ class TestSyntax(unittest.TestCase):
 
         output_from_program = 'untransformed output from the program'
 
-        sym_ref_program_syntax = program_abs_stx.ProgramOfSymbolReferenceAbsStx('PROGRAM_THAT_EXECUTES_PY_FILE')
+        sym_ref_program_syntax = ProgramOfSymbolReferenceAbsStx('PROGRAM_THAT_EXECUTES_PY_FILE')
 
-        str_trans__unused = str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx('UNUSED_TRANSFORMER')
+        str_trans__unused = StringTransformerSymbolReferenceAbsStx('UNUSED_TRANSFORMER')
 
         program_w_complex_str_trans_wo_parentheses = program_abs_stx.FullProgramAbsStx(
-            program_abs_stx.ProgramOfSymbolReferenceAbsStx(sym_ref_program_syntax.symbol_name),
+            ProgramOfSymbolReferenceAbsStx(sym_ref_program_syntax.symbol_name),
             transformation=str_trans_abs_stx.StringTransformerCompositionAbsStx(
                 [
                     TO_UPPER_TRANSFORMER_SYMBOL.abs_stx_of_reference,

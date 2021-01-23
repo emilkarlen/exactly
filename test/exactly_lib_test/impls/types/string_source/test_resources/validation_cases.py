@@ -10,7 +10,7 @@ from exactly_lib_test.impls.types.string_source.test_resources import abstract_s
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
 from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions
-from exactly_lib_test.tcfs.test_resources import abstract_syntax as path_abs_stx
+from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 
 
 class ValidationCase:

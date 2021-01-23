@@ -32,8 +32,9 @@ from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSynta
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentOfStringAbsStx, \
-    ArgumentAbsStx, ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
+    ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources import program as asrt_pgm
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext

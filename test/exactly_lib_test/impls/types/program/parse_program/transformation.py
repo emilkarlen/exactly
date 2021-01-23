@@ -11,16 +11,16 @@ from exactly_lib_test.impls.types.program.parse_program.test_resources import pg
 from exactly_lib_test.impls.types.program.parse_program.test_resources.integration_checker import CHECKER_WO_EXECUTION
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_transformers.test_resources import validation_cases
+from exactly_lib_test.impls.types.string_transformers.test_resources.abstract_syntaxes import \
+    StringTransformerCompositionAbsStx, CustomStringTransformerAbsStx
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.layout import LayoutSpec
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import FullProgramAbsStx, \
-    ProgramOfSymbolReferenceAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentOfStringAbsStx
-from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
-    StringTransformerCompositionAbsStx, CustomStringTransformerAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import FullProgramAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerPrimitiveSymbolContext, StringTransformerSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext

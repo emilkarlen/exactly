@@ -5,11 +5,11 @@ from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSynta
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 
 
-class StringTransformerAbsStx(AbstractSyntax, ABC):
+class StringMatcherAbsStx(AbstractSyntax, ABC):
     pass
 
 
-class StringTransformerSymbolReferenceAbsStx(StringTransformerAbsStx):
+class StringMatcherSymbolReferenceAbsStx(StringMatcherAbsStx):
     def __init__(self, symbol_name: str):
         self.symbol_name = symbol_name
 

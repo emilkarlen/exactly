@@ -21,7 +21,6 @@ from exactly_lib.type_val_deps.types.path.path_sdv_impls import path_rel_symbol
 from exactly_lib.type_val_deps.types.path.path_sdv_impls.constant import PathConstantSdv
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
-from exactly_lib_test.tcfs.test_resources.abstract_syntax import PathSymbolReferenceAbsStx
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_context import DataSymbolValueContext, \
@@ -29,6 +28,7 @@ from exactly_lib_test.type_val_deps.data.test_resources.symbol_context import Da
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.concrete_restrictions import \
     string_made_up_of_just_strings_reference_restrictions
 from exactly_lib_test.type_val_deps.types.path.test_resources import sdv_assertions
+from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathSymbolReferenceAbsStx
 
 
 def path_reference_restrictions(accepted_relativities: PathRelativityVariants

@@ -20,10 +20,10 @@ from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntax i
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import FullProgramAbsStx, \
-    ProgramOfSymbolReferenceAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentOfStringAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntax as str_abs_stc
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import FullProgramAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx
+from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntaxes as str_abs_stx
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 from exactly_lib_test.type_val_prims.program.test_resources import program_assertions as asrt_pgm_val
@@ -42,7 +42,7 @@ class TestSuccessfulParsing(unittest.TestCase):
         # ARRANGE #
         str_src_contents = 'the_str_src_contents'
         stdin_syntax = str_src_abs_stx.StringSourceOfStringAbsStx(
-            str_abs_stc.StringLiteralAbsStx(str_src_contents)
+            str_abs_stx.StringLiteralAbsStx(str_src_contents)
         )
 
         for pgm_and_args_case in pgm_and_args_cases.cases_w_and_wo_argument_list__including_program_reference():
@@ -88,7 +88,7 @@ class TestSuccessfulParsing(unittest.TestCase):
         str_src_contents__of_argument = 'the_str_src_contents__of_argument'
         str_src_contents__of_referenced_pgm = 'the_str_src_contents__of_program'
         stdin_argument_syntax = str_src_abs_stx.StringSourceOfStringAbsStx(
-            str_abs_stc.StringLiteralAbsStx(str_src_contents__of_argument)
+            str_abs_stx.StringLiteralAbsStx(str_src_contents__of_argument)
         )
         stdin_sdv__of_referenced = str_src_sdvs.ConstantStringStringSourceSdv(
             string_sdvs.str_constant(str_src_contents__of_referenced_pgm)
@@ -206,7 +206,7 @@ class TestValidation(unittest.TestCase):
             string_sdvs.str_constant('str_src_contents')
         )
         valid_stdin_syntax = str_src_abs_stx.StringSourceOfStringAbsStx(
-            str_abs_stc.StringLiteralAbsStx('str_src_contents')
+            str_abs_stx.StringLiteralAbsStx('str_src_contents')
         )
 
         referenced_program__system_program = 'the-system-program'

@@ -2,8 +2,9 @@ from typing import Sequence
 
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx, ArgumentsAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntax as string_abs_stx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentsAbsStx
+from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntaxes as str_abs_stx
 from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import NonHereDocStringAbsStx
 
 
@@ -23,7 +24,7 @@ class RawSystemCommandLineAbsStx(AbstractSyntax):
                arguments: Sequence[ArgumentAbsStx] = (),
                ) -> 'RawSystemCommandLineAbsStx':
         return RawSystemCommandLineAbsStx(
-            string_abs_stx.StringLiteralAbsStx(system_command),
+            str_abs_stx.StringLiteralAbsStx(system_command),
             arguments,
         )
 

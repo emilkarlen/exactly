@@ -9,7 +9,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arra
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check, parse_check
 from exactly_lib_test.impls.types.string_transformers.test_resources import \
-    validation_cases as str_trans_validation_cases
+    validation_cases as str_trans_validation_cases, abstract_syntaxes as str_trans_abs_stx
 from exactly_lib_test.impls.types.test_resources import validation as asrt_validation
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_hds, conf_rel_any
 from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions
@@ -22,7 +22,8 @@ from exactly_lib_test.test_resources.source.layout import LayoutSpec
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import abstract_syntax as str_trans_abs_stx
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
+    StringTransformerSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
@@ -191,7 +192,7 @@ class TestValidation(unittest.TestCase):
         file_string_source_syntax = string_source_abs_stx.StringSourceOfFileAbsStx(
             src_file_rel_conf.path_abs_stx_of_name(self.src_file_name)
         )
-        str_trans_syntax = str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx(
+        str_trans_syntax = StringTransformerSymbolReferenceAbsStx(
             'INVALID_STRING_TRANSFORMER'
         )
         transformed_string_source_syntax = string_source_abs_stx.TransformedStringSourceAbsStx(
@@ -281,7 +282,7 @@ class TestSyntax(unittest.TestCase):
             string_transformers.to_uppercase(),
         )
 
-        str_trans__unused = str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx('UNUSED_TRANSFORMER')
+        str_trans__unused = StringTransformerSymbolReferenceAbsStx('UNUSED_TRANSFORMER')
         transformation_w_infix_op = str_trans_abs_stx.StringTransformerCompositionAbsStx(
             [
                 to_upper_transformer.abs_stx_of_reference,

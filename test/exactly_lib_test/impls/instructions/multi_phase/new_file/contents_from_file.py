@@ -21,11 +21,11 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.uti
     IS_FAILURE_OF_VALIDATION, IS_FAILURE, IS_SUCCESS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
+from exactly_lib_test.impls.types.string_transformers.test_resources import abstract_syntaxes as str_trans_abs_stx
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_hds, every_conf_rel_hds, \
     conf_rel_non_hds, conf_rel_any, RelativityOptionConfigurationForRelNonHds, RelativityOptionConfiguration, \
     conf_rel_sds
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.tcfs.test_resources import abstract_syntax as path_abs_stx
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, File, Dir
@@ -34,8 +34,10 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import abstract_syntax as str_trans_abs_stx
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
+    StringTransformerSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer__usage
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
@@ -94,7 +96,7 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
             )
             transformed_file_contents = string_source_abs_stx.TransformedStringSourceAbsStx(
                 string_source_abs_stx.StringSourceOfFileAbsStx(src_file_symbol.abs_stx_of_reference),
-                str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx(to_upper_transformer.name)
+                StringTransformerSymbolReferenceAbsStx(to_upper_transformer.name)
             )
             instruction_syntax = instr_abs_stx.with_explicit_contents(
                 dst_file_symbol.abs_stx_of_reference,
@@ -274,8 +276,8 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
         # ARRANGE #
         transformation_w_infix_op = str_trans_abs_stx.StringTransformerCompositionAbsStx(
             [
-                str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx('str_trans_1'),
-                str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx('str_trans_2'),
+                StringTransformerSymbolReferenceAbsStx('str_trans_1'),
+                StringTransformerSymbolReferenceAbsStx('str_trans_2'),
             ],
             within_parens=False,
             allow_elements_on_separate_lines=False,

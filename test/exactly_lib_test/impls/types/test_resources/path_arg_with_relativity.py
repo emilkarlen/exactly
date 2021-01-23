@@ -1,6 +1,6 @@
 from exactly_lib_test.impls.types.test_resources.relativity_options import RelativityOptionConfiguration
-from exactly_lib_test.tcfs.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
+from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 
 
 class PathArgumentWithRelativity:

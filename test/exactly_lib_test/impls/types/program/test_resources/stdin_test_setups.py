@@ -19,10 +19,11 @@ from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecut
 from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatChecksStdin
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as pgm_abs_stx
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import PgmAndArgsAbsStx, \
+    ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import FullProgramAbsStx, \
-    PgmAndArgsAbsStx, ProgramOfPythonInterpreterAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentOfStringAbsStx
+    ProgramOfPythonInterpreterAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.util.file_utils.test_resources.assertions import IsProcessExecutionFileWIthContents
 
@@ -126,7 +127,7 @@ class MultipleStdinOfProgramTestSetup(NonEmptyStdinTestSetupBase):
     @property
     def program_w_stdin_syntax(self) -> FullProgramAbsStx:
         return self._program_w_stdin_syntax(
-            pgm_abs_stx.ProgramOfSymbolReferenceAbsStx(self.program_w_stdin_symbol.name),
+            ProgramOfSymbolReferenceAbsStx(self.program_w_stdin_symbol.name),
             self.STR_SRC_CONTENTS__OF_ARGUMENT,
         )
 

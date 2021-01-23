@@ -29,8 +29,6 @@ from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import tcds_populators as tcds_pop
-from exactly_lib_test.tcfs.test_resources.abstract_syntax import PathAbsStx, PathStringAbsStx, RelOptPathAbsStx, \
-    RelSymbolPathAbsStx
 from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.argument_renderer import CustomOptionArgument
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path
@@ -43,12 +41,16 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
+from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import PathStringAbsStx, \
+    RelOptPathAbsStx, \
+    RelSymbolPathAbsStx
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import \
     ProgramOfExecutableFileCommandLineAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx, \
-    ArgumentOfStringAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringLiteralAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx
+from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringLiteralAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
 

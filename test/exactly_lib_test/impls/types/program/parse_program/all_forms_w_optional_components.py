@@ -14,8 +14,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import FullProgramAbsStx, \
     PgmAndArgsWArgumentsAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentOfStringAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntax as str_abs_stc
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx
+from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntaxes as str_abs_stx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerPrimitiveSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
@@ -37,7 +37,7 @@ class TestPgmAndArgs(unittest.TestCase):
         arguments = ['arg']
         str_src_contents = 'the_str_src_contents'
         stdin_syntax = str_src_abs_stx.StringSourceOfStringAbsStx(
-            str_abs_stc.StringLiteralAbsStx(str_src_contents)
+            str_abs_stx.StringLiteralAbsStx(str_src_contents)
         )
         transformer_symbol = StringTransformerPrimitiveSymbolContext(
             'TRANSFORMER',
@@ -94,7 +94,7 @@ class TestShellCommandLine(unittest.TestCase):
         # ARRANGE #
         str_src_contents = 'the_str_src_contents'
         stdin_syntax = str_src_abs_stx.StringSourceOfStringAbsStx(
-            str_abs_stc.StringLiteralAbsStx(str_src_contents)
+            str_abs_stx.StringLiteralAbsStx(str_src_contents)
         )
         transformer_symbol = StringTransformerPrimitiveSymbolContext(
             'TRANSFORMER',

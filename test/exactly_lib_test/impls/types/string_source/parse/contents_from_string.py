@@ -12,7 +12,7 @@ from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.abstract_syntax_impls import OptionallyOnNewLine
 from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_rest
-from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntax as string_abs_stx
+from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntaxes as str_abs_stx
 from exactly_lib_test.type_val_deps.types.string.test_resources import here_doc
 from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
@@ -30,7 +30,7 @@ def suite() -> unittest.TestSuite:
 class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
     def test_string(self):
         # ARRANGE #
-        string_value = string_abs_stx.StringLiteralAbsStx('the_string_value')
+        string_value = str_abs_stx.StringLiteralAbsStx('the_string_value')
         string_source_syntax = string_source_abs_stx.StringSourceOfStringAbsStx(string_value)
         # ACT & ASSERT #
         CHECKER.check__abs_stx__wo_input__std_layouts_and_source_variants(
@@ -47,8 +47,8 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
 
     def test_string__here_doc_start_within_quoted(self):
         # ARRANGE #
-        string_value = string_abs_stx.StringLiteralAbsStx(here_doc.here_doc_start_token('MARKER'),
-                                                          quoting_=QuoteType.SOFT)
+        string_value = str_abs_stx.StringLiteralAbsStx(here_doc.here_doc_start_token('MARKER'),
+                                                       quoting_=QuoteType.SOFT)
         string_source_syntax = string_source_abs_stx.StringSourceOfStringAbsStx(string_value)
         # ACT & ASSERT #
         CHECKER.check__abs_stx__wo_input__std_layouts_and_source_variants(
@@ -65,7 +65,7 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
 
     def test_here_doc(self):
         # ARRANGE #
-        string_value = string_abs_stx.StringHereDocAbsStx('single line in here doc\n')
+        string_value = str_abs_stx.StringHereDocAbsStx('single line in here doc\n')
         string_source_syntax = string_source_abs_stx.StringSourceOfStringAbsStx(string_value)
         CHECKER.check__abs_stx__wo_input__std_layouts_and_source_variants__full_line_parse(
             self,
@@ -89,7 +89,7 @@ class TestSymbolReferences(unittest.TestCase):
         )
 
         string_source_syntax = StringSourceOfStringAbsStx(
-            string_abs_stx.StringSymbolAbsStx(contents_symbol.name)
+            str_abs_stx.StringSymbolAbsStx(contents_symbol.name)
         )
 
         CHECKER.check__abs_stx(
@@ -117,7 +117,7 @@ class TestSymbolReferences(unittest.TestCase):
 
         def symbol_ref_syntax_2_contents_arguments(syntax: str) -> StringAbsStx:
             string_value = string_value_template.format(symbol=syntax)
-            return string_abs_stx.StringLiteralAbsStx(string_value, QuoteType.SOFT)
+            return str_abs_stx.StringLiteralAbsStx(string_value, QuoteType.SOFT)
 
         self._test_symbol_reference_in_contents(symbol_ref_syntax_2_contents_arguments,
                                                 symbol_value_2_expected_contents)
@@ -129,7 +129,7 @@ class TestSymbolReferences(unittest.TestCase):
             return here_doc_line_template.format(symbol=symbol_value) + '\n'
 
         def symbol_ref_syntax_2_contents_arguments(syntax: str) -> StringAbsStx:
-            return string_abs_stx.StringHereDocAbsStx.of_lines__wo_new_lines([
+            return str_abs_stx.StringHereDocAbsStx.of_lines__wo_new_lines([
                 here_doc_line_template.format(symbol=syntax)
             ])
 
@@ -179,7 +179,7 @@ class TestSymbolReferences(unittest.TestCase):
 class TestInvalidSyntax(unittest.TestCase):
     def test_fail_when_missing_end_quote(self):
         # ARRANGE #
-        string_w_missing_end_quote = string_abs_stx.StringLiteralAbsStx(SOFT_QUOTE_CHAR + 'contents')
+        string_w_missing_end_quote = str_abs_stx.StringLiteralAbsStx(SOFT_QUOTE_CHAR + 'contents')
         # ACT & ASSERT #
         parse_check.checker().check_invalid_syntax__abs_stx(
             self,

@@ -21,8 +21,9 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions as asrt_path
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as pgm_abs_stx
-from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import PgmAndArgsAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringLiteralAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import PgmAndArgsAbsStx, \
+    ProgramOfSymbolReferenceAbsStx
+from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringLiteralAbsStx
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 
@@ -141,7 +142,7 @@ def program_reference__w_argument_list() -> PgmAndArgsCase:
 
     return PgmAndArgsCase.wo_tcds(
         'reference to program w argument list',
-        pgm_and_args=pgm_abs_stx.ProgramOfSymbolReferenceAbsStx(system_program_symbol.name),
+        pgm_and_args=ProgramOfSymbolReferenceAbsStx(system_program_symbol.name),
         symbols=[system_program_symbol],
         expected_command_driver=prim_asrt__constant(
             asrt_command.matches_system_program_command_driver(

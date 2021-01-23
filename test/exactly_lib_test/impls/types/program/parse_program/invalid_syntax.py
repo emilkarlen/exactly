@@ -5,8 +5,9 @@ from exactly_lib_test.impls.types.program.parse_program.test_resources import pg
 from exactly_lib_test.impls.types.program.test_resources import invalid_syntax
 from exactly_lib_test.section_document.element_parsers.test_resources.parsing import ParserAsLocationAwareParser
 from exactly_lib_test.section_document.test_resources import parse_checker
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import \
-    ProgramOfSymbolReferenceAbsStx, PgmAndArgsWArgumentsAbsStx, FullProgramAbsStx
+    PgmAndArgsWArgumentsAbsStx, FullProgramAbsStx
 
 
 def suite() -> unittest.TestSuite:

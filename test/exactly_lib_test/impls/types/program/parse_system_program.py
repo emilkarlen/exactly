@@ -31,9 +31,10 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes__raw import \
     RawSystemCommandLineAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentOfStringAbsStx, \
-    ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx, NonSymLinkFileType, ArgumentAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringSymbolAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
+    ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx, NonSymLinkFileType
+from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringSymbolAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command, \
     program_assertions as asrt_pgm_val

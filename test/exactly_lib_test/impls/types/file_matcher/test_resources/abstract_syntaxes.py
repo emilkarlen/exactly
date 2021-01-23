@@ -1,11 +1,11 @@
 from abc import ABC
 
 from exactly_lib.definitions.primitives import file_matcher
-from exactly_lib_test.impls.types.file_matcher.test_resources.abstract_syntax import FileMatcherAbsStx
 from exactly_lib_test.test_resources.source import abstract_syntax_impls as abstract_syntaxes
 from exactly_lib_test.test_resources.source import token_sequences
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.abstract_syntax import FileMatcherAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramAbsStx
 
 

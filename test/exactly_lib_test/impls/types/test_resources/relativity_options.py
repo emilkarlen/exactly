@@ -19,11 +19,9 @@ from exactly_lib.type_val_deps.types.path.path_part_ddvs import PathPartDdvAsFix
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.tcfs.test_resources import abstract_syntax as path_abs_stx
 from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.tcfs.test_resources import non_hds_populator
 from exactly_lib_test.tcfs.test_resources import path_arguments as path_args, sds_populator
-from exactly_lib_test.tcfs.test_resources.abstract_syntax import RelativityAbsStx, PathWConstNameAbsStx
 from exactly_lib_test.tcfs.test_resources.dir_populator import HdsPopulator
 from exactly_lib_test.tcfs.test_resources.non_hds_populator import NonHdsPopulator
 from exactly_lib_test.tcfs.test_resources.path_arguments import PathArgument
@@ -40,6 +38,9 @@ from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_ass
     equals_path_relativity_restriction
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
     matches_symbol_reference_with_restriction_on_direct_target
+from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
+from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import RelativityAbsStx, \
+    PathWConstNameAbsStx
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext
 
 

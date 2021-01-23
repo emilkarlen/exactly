@@ -5,13 +5,15 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QUOTE_CHAR_FOR_TYPE, QuoteType
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
+from exactly_lib_test.impls.types.string_transformers.test_resources.abstract_syntaxes import \
+    CustomStringTransformerAbsStx
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME, A_VALID_SYMBOL_NAME, \
     NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentOfStringAbsStx, \
-    ArgumentAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntax as string_abs_stx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx
+from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntaxes as str_abs_stx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
-    StringTransformerAbsStx, CustomStringTransformerAbsStx
+    StringTransformerAbsStx
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str, surrounded_by_soft_quotes_str
 
 
@@ -65,7 +67,7 @@ def stdin_cases() -> Sequence[NameAndValue[StringSourceAbsStx]]:
         NameAndValue(
             'string with missing end quote',
             StringSourceOfStringAbsStx(
-                string_abs_stx.StringLiteralAbsStx(
+                str_abs_stx.StringLiteralAbsStx(
                     QUOTE_CHAR_FOR_TYPE[QuoteType.SOFT] + 'after quote'
                 )
             )

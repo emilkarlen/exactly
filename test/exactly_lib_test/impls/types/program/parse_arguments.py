@@ -35,9 +35,10 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
     is_any_data_type_reference_restrictions
 from exactly_lib_test.type_val_deps.data.test_resources.data_symbol_utils import symbol_reference
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentOfStringAbsStx, \
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
     ArgumentOfSymbolReferenceAbsStx, ArgumentOfTextUntilEndOfLineAbsStx, ArgumentOfExistingPathAbsStx, \
-    NonSymLinkFileType, ArgumentAbsStx, ArgumentsAbsStx
+    NonSymLinkFileType, ArgumentsAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 
 

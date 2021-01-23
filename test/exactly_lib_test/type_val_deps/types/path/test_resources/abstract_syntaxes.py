@@ -5,13 +5,14 @@ from exactly_lib.definitions import path as path_texts
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.util.parse.token import QuoteType
-from exactly_lib_test.symbol.test_resources import token_sequences as symbol_tok_seq
 from exactly_lib_test.test_resources.source import token_sequences
 from exactly_lib_test.test_resources.source import tokens
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
-from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntax as str_abs_stx
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringAbsStx, StringLiteralAbsStx
+from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
+from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntaxes as str_abs_stx
+from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringAbsStx
+from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringLiteralAbsStx
 
 
 class RelativityAbsStx(AbstractSyntax, ABC):
@@ -48,10 +49,6 @@ class OptionRelativityAbsStx(RelativityAbsStx):
         )
 
 
-class PathAbsStx(AbstractSyntax, ABC):
-    pass
-
-
 class PathStringAbsStx(PathAbsStx):
     def __init__(self, string: StringLiteralAbsStx):
         self.string = string
@@ -70,14 +67,6 @@ class PathStringAbsStx(PathAbsStx):
 
     def tokenization(self) -> TokenSequence:
         return self.string.tokenization()
-
-
-class PathSymbolReferenceAbsStx(PathAbsStx):
-    def __init__(self, symbol_name: str):
-        self.symbol_name = symbol_name
-
-    def tokenization(self) -> TokenSequence:
-        return symbol_tok_seq.SymbolReferenceAsReferenceSyntax(self.symbol_name)
 
 
 class PathWRelativityAbsStx(PathAbsStx, ABC):

@@ -2,9 +2,9 @@ from abc import ABC
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
-from exactly_lib_test.tcfs.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
+from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 
 
 class ContentsVariantAbsStx(AbstractSyntax, ABC):
