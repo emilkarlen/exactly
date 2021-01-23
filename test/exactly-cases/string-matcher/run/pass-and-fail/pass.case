@@ -1,0 +1,4 @@
+[assert]
+
+contents checked-file.txt
+         run -python -c :> exit(0)

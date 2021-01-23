@@ -1,0 +1,8 @@
+[conf]
+
+status = FAIL
+
+[assert]
+
+contents checked-file.txt
+         run @ EXIT_W_0_IFF_STDIN_EQUALS_1ST_ARGUMENT 'unexpected'

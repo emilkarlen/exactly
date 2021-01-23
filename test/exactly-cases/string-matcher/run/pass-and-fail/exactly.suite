@@ -1,0 +1,11 @@
+[cases]
+
+*.case
+
+[setup]
+
+including ../../../utils/stdin-check-defs.xly
+
+def string MODEL_CONTENTS = 'the contents of the model'
+
+file checked-file.txt = @[MODEL_CONTENTS]@

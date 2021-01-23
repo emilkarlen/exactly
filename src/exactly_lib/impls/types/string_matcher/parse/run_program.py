@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.definitions import misc_texts, matcher_model
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.types.matcher.impls.run_program import documentation
 from exactly_lib.impls.types.program.parse import parse_program
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -22,6 +23,7 @@ class SyntaxDescription(documentation.SyntaxDescriptionBase):
         from exactly_lib.util.textformat.textformat_parser import TextParser
         tp = TextParser({
             'MODEL': matcher_model.STRING_MATCHER_MODEL,
+            'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
             'stdin': misc_texts.STDIN,
         })
         return help_texts.run_program_matcher_description(
@@ -35,4 +37,7 @@ _PROGRAM_PARSER = parse_program.program_parser(
 
 _EXE_ENV_DESCRIPTION = """\
 The {MODEL} to match is given as {stdin}.
+
+If {PROGRAM} defines {stdin},
+then the {MODEL} to match is appended to that {stdin}.
 """

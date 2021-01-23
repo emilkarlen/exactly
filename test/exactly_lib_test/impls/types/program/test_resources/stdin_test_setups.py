@@ -84,16 +84,17 @@ class NonEmptyStdinTestSetupBase(StdinTestSetupBase, ABC):
         )
 
 
-class SingleStdinPartTestSetup(NonEmptyStdinTestSetupBase):
+class SingleStdinOfProgramTestSetup(NonEmptyStdinTestSetupBase):
     STRING_SOURCE_CONTENTS = 'the contents of the string source'
 
     def __init__(self,
                  put: unittest.TestCase,
                  exit_code: int = 0,
+                 additional_stdin: str = ''
                  ):
         super().__init__(put,
                          exit_code,
-                         self.STRING_SOURCE_CONTENTS)
+                         self.STRING_SOURCE_CONTENTS + additional_stdin)
 
     def program_w_stdin_syntax(self, pgm_and_args: PgmAndArgsAbsStx) -> FullProgramAbsStx:
         return self._program_w_stdin_syntax(
@@ -102,7 +103,7 @@ class SingleStdinPartTestSetup(NonEmptyStdinTestSetupBase):
         )
 
 
-class ConcatenationOfStdinTestSetup(NonEmptyStdinTestSetupBase):
+class MultipleStdinOfProgramTestSetup(NonEmptyStdinTestSetupBase):
     STR_SRC_CONTENTS__OF_REFERENCED_PROGRAM = 'the contents of the string source of the referenced program\n'
     STR_SRC_CONTENTS__OF_ARGUMENT = 'the contents of the string source of the argument\n'
     CONCATENATED_STRING_SOURCES_CONTENTS = ''.join([STR_SRC_CONTENTS__OF_REFERENCED_PROGRAM,
@@ -111,8 +112,10 @@ class ConcatenationOfStdinTestSetup(NonEmptyStdinTestSetupBase):
     def __init__(self,
                  put: unittest.TestCase,
                  exit_code: int = 0,
+                 additional_stdin: str = ''
                  ):
-        super().__init__(put, exit_code, self.CONCATENATED_STRING_SOURCES_CONTENTS)
+        super().__init__(put, exit_code,
+                         self.CONCATENATED_STRING_SOURCES_CONTENTS + additional_stdin)
 
         self.program_w_stdin_symbol = ProgramSymbolContext.of_sdv(
             'REFERENCED_PROGRAM',
@@ -163,15 +166,20 @@ else:
   sys.exit(1)
 """
 
-    def program_that_checks_stdin__syntax(self, stdin: str) -> FullProgramAbsStx:
-        expected_contents_arg_syntax = ArgumentOfStringAbsStx.of_str(stdin, QuoteType.HARD)
+    def program_that_checks_stdin__syntax(self,
+                                          program_stdin: str,
+                                          additional_expected_stdin: str = '',
+                                          ) -> FullProgramAbsStx:
+        expected_contents_arg_syntax = ArgumentOfStringAbsStx.of_str(
+            program_stdin + additional_expected_stdin, QuoteType.HARD
+        )
         checker_pgm_syntax = ProgramOfPythonInterpreterAbsStx.of_execute_python_src_file(
             self._SRC_FILE_REL_CONF.path_abs_stx_of_name(self._CHECKER_PROGRAM_FILE_NAME),
             [expected_contents_arg_syntax],
         )
         return FullProgramAbsStx(
             checker_pgm_syntax,
-            stdin=StringSourceOfStringAbsStx.of_str(stdin, QuoteType.HARD)
+            stdin=StringSourceOfStringAbsStx.of_str(program_stdin, QuoteType.HARD)
         )
 
     @property

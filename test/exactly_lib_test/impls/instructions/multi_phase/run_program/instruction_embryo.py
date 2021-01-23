@@ -15,8 +15,8 @@ from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_
 from exactly_lib_test.impls.types.program.parse_program.test_resources import pgm_and_args_cases
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args, result_assertions
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
-from exactly_lib_test.impls.types.program.test_resources.stdin_test_setups import ConcatenationOfStdinTestSetup, \
-    SingleStdinPartTestSetup, NoStdinTestSetup, StdinCheckWithProgramWExitCode0ForSuccess
+from exactly_lib_test.impls.types.program.test_resources.stdin_test_setups import MultipleStdinOfProgramTestSetup, \
+    SingleStdinOfProgramTestSetup, NoStdinTestSetup, StdinCheckWithProgramWExitCode0ForSuccess
 from exactly_lib_test.impls.types.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.test_resources import relativity_options
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt, \
@@ -503,7 +503,7 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
 
     def test_stdin_is_contents_of_string_source_WHEN_program_defines_single_stdin(self):
         # ARRANGE #
-        test_setup = SingleStdinPartTestSetup(self, exit_code=0)
+        test_setup = SingleStdinOfProgramTestSetup(self, exit_code=0)
 
         for pgm_and_args_case in pgm_and_args_cases.cases_w_and_wo_argument_list__including_program_reference():
             with self.subTest(pgm_and_args_case.name):
@@ -523,7 +523,7 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
 
     def test_stdin_is_concatenation_of_string_sources_WHEN_program_defines_multiple_stdin(self):
         # ARRANGE #
-        test_setup = ConcatenationOfStdinTestSetup(self)
+        test_setup = MultipleStdinOfProgramTestSetup(self)
         # ACT & ASSERT #
         EXECUTION_CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
