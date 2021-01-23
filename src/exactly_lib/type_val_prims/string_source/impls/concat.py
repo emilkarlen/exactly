@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from typing import Sequence, ContextManager, Iterator, IO
+from typing import Sequence, ContextManager, Iterator, IO, Optional
 
 from exactly_lib.definitions.primitives import string_source as _primitive_defs
 from exactly_lib.impls.types.string_source import cached_frozen
@@ -8,6 +8,24 @@ from exactly_lib.impls.types.string_source.contents.contents_with_cached_path im
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
+
+
+def string_source_of_mb_empty_sequence(parts: Sequence[StringSource],
+                                       mem_buff_size: int) -> Optional[StringSource]:
+    if not parts:
+        return None
+    elif len(parts) == 1:
+        return parts[0]
+    else:
+        return string_source(parts, mem_buff_size)
+
+
+def string_source_of_non_empty_sequence(parts: Sequence[StringSource],
+                                        mem_buff_size: int) -> StringSource:
+    if len(parts) == 1:
+        return parts[0]
+    else:
+        return string_source(parts, mem_buff_size)
 
 
 def string_source(parts: Sequence[StringSource],

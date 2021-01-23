@@ -287,6 +287,7 @@ class _ToUpperCommandSourceConstructor(SourceConstructorWAppEnvForTest):
 
             yield sut.transformed_by_command(
                 _to_upper_command(tmp_dir_path, self.exit_code),
+                (),
                 self.ignore_exit_code,
                 app_env,
                 source_model,

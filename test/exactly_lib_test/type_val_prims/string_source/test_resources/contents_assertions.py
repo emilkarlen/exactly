@@ -127,7 +127,7 @@ def matches__lines(lines: ValueAssertion[Sequence[str]],
 
 
 def matches__str(contents: ValueAssertion[str],
-                 may_depend_on_external_resources: ValueAssertion[bool],
+                 may_depend_on_external_resources: ValueAssertion[bool] = asrt.anything_goes(),
                  ) -> ValueAssertion[StringSourceContents]:
     return asrt.and_([
         external_dependencies(may_depend_on_external_resources),

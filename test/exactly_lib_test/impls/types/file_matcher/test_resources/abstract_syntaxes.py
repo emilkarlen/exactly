@@ -45,6 +45,7 @@ class RunProgramAbsStx(FileMatcherAbsStx):
     def tokenization(self) -> TokenSequence:
         return TokenSequence.concat([
             TokenSequence.singleton(file_matcher.PROGRAM_MATCHER_NAME),
+            TokenSequence.optional_new_line(),
             abstract_syntaxes.OptionallyOnNewLine(self._path_argument_position).tokenization(),
             self._program.tokenization(),
         ])

@@ -11,5 +11,6 @@ class RunProgramAbsStx(StringMatcherAbsStx):
     def tokenization(self) -> TokenSequence:
         return TokenSequence.concat([
             TokenSequence.singleton(matcher.RUN_PROGRAM),
+            TokenSequence.optional_new_line(),
             self._program.tokenization(),
         ])

@@ -4,7 +4,7 @@ from typing import Iterator, Sequence, ContextManager
 
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
-from exactly_lib.type_val_prims.impls import transformed_string_sources as sut
+from exactly_lib.type_val_prims.string_source.impls import transformed_string_sources as sut
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.description_tree import renderers
 from exactly_lib_test.impls.types.string_source.test_resources.string_sources import source_from_lines_test_impl

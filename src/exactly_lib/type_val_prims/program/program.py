@@ -56,7 +56,7 @@ def program_structure_renderer(command: StructureBuilder,
                                stdin: Sequence[WithNodeDescription],
                                transformations: Sequence[WithNodeDescription],
                                ) -> NodeRenderer[None]:
-    mb_stdin_node = _stdin_node(stdin)
+    mb_stdin_node = stdin_node_renderer(stdin)
     if mb_stdin_node:
         command.append_child(mb_stdin_node)
     mb_transformation_node = _transformation_node(transformations)
@@ -79,7 +79,7 @@ def _transformation_node(transformations: Sequence[WithNodeDescription]) -> Opti
         )
 
 
-def _stdin_node(string_sources: Sequence[WithNodeDescription]) -> Optional[StructureRenderer]:
+def stdin_node_renderer(string_sources: Sequence[WithNodeDescription]) -> Optional[StructureRenderer]:
     if not string_sources:
         return None
     else:

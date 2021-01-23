@@ -2,9 +2,9 @@ import itertools
 from typing import Callable, Sequence, Iterator
 
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
-from exactly_lib.type_val_prims.impls import transformed_string_sources
-from exactly_lib.type_val_prims.impls.transformed_string_sources import StringTransFun
 from exactly_lib.type_val_prims.matcher import line_matcher
+from exactly_lib.type_val_prims.string_source.impls import transformed_string_sources
+from exactly_lib.type_val_prims.string_source.impls.transformed_string_sources import StringTransFun
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.description_tree import renderers

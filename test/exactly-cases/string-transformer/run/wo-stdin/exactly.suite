@@ -1,0 +1,12 @@
+[cases]
+
+*.case
+
+[setup]
+
+including ../../../utils/stdin-check-defs.xly
+
+def string MODEL_CONTENTS       = 'the contents of the model'
+def program COPY_STDIN_2_STDOUT = -python -existing-file copy-stdin-2-stdout.py
+
+file checked-file.txt = @[MODEL_CONTENTS]@

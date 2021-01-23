@@ -1,0 +1,9 @@
+[assert]
+
+def string STDIN_PART = 'the contents of stdin'
+
+contents checked-file.txt
+         -transformed-by
+           run @ EXIT_W_0_IFF_STDIN_EQUALS_1ST_ARGUMENT @[STDIN_PART]@@[MODEL_CONTENTS]@
+                 -stdin @[STDIN_PART]@
+         empty
