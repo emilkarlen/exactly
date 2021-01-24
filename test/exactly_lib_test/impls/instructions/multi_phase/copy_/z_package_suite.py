@@ -13,7 +13,7 @@ from exactly_lib_test.impls.instructions.multi_phase.copy_.test_resources import
 from exactly_lib_test.impls.instructions.multi_phase.copy_.test_resources import case_definitions, defs
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, \
-    expectation
+    expectation, MultiSourceExpectation
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.impls.types.test_resources.relativity_options import RelativityOptionConfigurationRelHds, \
@@ -126,7 +126,7 @@ class TestValidationErrorScenarios(unittest.TestCase):
                         ArrangementWithSds(
                             symbols=relativity_option.symbols.in_arrangement(),
                         ),
-                        expectation(
+                        MultiSourceExpectation(
                             validation=ValidationAssertions.pre_sds_fails__w_any_msg(),
                             symbol_usages=relativity_option.symbols.usages_expectation(),
                         ),
@@ -353,7 +353,7 @@ class TestSuccessfulScenariosWithExplicitDestination(unittest.TestCase):
                         sds_contents=sds_populator_before_main,
                         symbols=symbols_in_arrangement,
                     ),
-                    Expectation(
+                    MultiSourceExpectation(
                         symbol_usages=expected_symbol_usages,
                         main_result=asrt.is_none,
                         main_side_effects_on_sds=sds_contents_check.non_hds_dir_contains_exactly(
@@ -388,7 +388,7 @@ class TestSuccessfulScenariosWithExplicitDestination(unittest.TestCase):
                             DirContents(act_dir_contents)
                         ),
                     ),
-                    expectation(
+                    MultiSourceExpectation(
                         main_side_effects_on_sds=sds_contents_check.cwd_contains_exactly(
                             DirContents(act_dir_contents_after))
                     ),
@@ -424,7 +424,7 @@ class TestSuccessfulScenariosWithExplicitDestination(unittest.TestCase):
                             cwd_dir_contents_before
                         ),
                     ),
-                    expectation(
+                    MultiSourceExpectation(
                         main_side_effects_on_sds=sds_contents_check.cwd_contains_exactly(
                             cwd_dir_contents_after)
                     ),

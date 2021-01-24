@@ -159,7 +159,7 @@ class TestParse(unittest.TestCase):
                                     DirContents([Dir.empty(case.expected_value)])
                                 )
                             ),
-                            embryo_check.Expectation(
+                            embryo_check.MultiSourceExpectation(
                                 side_effects_on_tcds=CwdAssertion(
                                     relativity,
                                     case.expected_value,

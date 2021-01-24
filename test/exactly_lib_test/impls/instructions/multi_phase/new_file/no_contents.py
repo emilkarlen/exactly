@@ -17,7 +17,8 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.par
     check_invalid_syntax, check_invalid_syntax__abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import \
     IS_SUCCESS
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
+    MultiSourceExpectation
 from exactly_lib_test.impls.types.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
@@ -87,7 +88,7 @@ class TestSuccessfulScenariosWithNoContents(unittest.TestCase):
                         ArrangementWithSds(
                             pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                         ),
-                        Expectation(
+                        MultiSourceExpectation(
                             main_result=IS_SUCCESS,
                             side_effects_on_hds=f_asrt.dir_is_empty(),
                             symbol_usages=asrt.is_empty_sequence,
@@ -117,7 +118,7 @@ class TestSuccessfulScenariosWithNoContents(unittest.TestCase):
                         ArrangementWithSds(
                             pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                         ),
-                        Expectation(
+                        MultiSourceExpectation(
                             main_result=IS_SUCCESS,
                             side_effects_on_hds=f_asrt.dir_is_empty(),
                             symbol_usages=asrt.is_empty_sequence,
@@ -148,7 +149,7 @@ class TestSuccessfulScenariosWithNoContents(unittest.TestCase):
                                 fs.DirContents([Dir.empty(sub_dir_name)])
                             )
                         ),
-                        Expectation(
+                        MultiSourceExpectation(
                             main_result=IS_SUCCESS,
                             side_effects_on_hds=f_asrt.dir_is_empty(),
                             symbol_usages=asrt.is_empty_sequence,

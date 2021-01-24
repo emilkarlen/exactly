@@ -20,7 +20,8 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.def
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import \
     IS_FAILURE, IS_SUCCESS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check as embryo_check
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
+    MultiSourceExpectation
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
@@ -110,7 +111,7 @@ class TestSymbolUsages(unittest.TestCase):
             ArrangementWithSds(
                 symbols=symbols,
             ),
-            Expectation(
+            MultiSourceExpectation(
                 main_result=IS_SUCCESS,
                 symbol_usages=asrt.matches_sequence([
                     dst_file_symbol.reference_assertion__path_or_string,
@@ -227,7 +228,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(unittest.TestCase)
                         ArrangementWithSds(
                             symbols=symbols,
                         ),
-                        Expectation(
+                        MultiSourceExpectation(
                             main_result=IS_SUCCESS,
                             side_effects_on_hds=f_asrt.dir_is_empty(),
                             symbol_usages=asrt.matches_sequence(expected_symbol_references),
@@ -244,12 +245,12 @@ class TestFailingValidation(unittest.TestCase):
             NArrEx(
                 'pre SDS validation failure SHOULD cause validation error',
                 RelOptionType.REL_HDS_CASE,
-                embryo_check.expectation(validation=ValidationAssertions.pre_sds_fails__w_any_msg()),
+                embryo_check.MultiSourceExpectation(validation=ValidationAssertions.pre_sds_fails__w_any_msg()),
             ),
             NArrEx(
                 'post SDS validation failure SHOULD cause main error',
                 RelOptionType.REL_ACT,
-                embryo_check.expectation(main_result=IS_FAILURE),
+                embryo_check.MultiSourceExpectation(main_result=IS_FAILURE),
             ),
         ]
         for case in cases:
@@ -303,7 +304,7 @@ class TestUnableToExecute(unittest.TestCase):
                         ArrangementWithSds(
                             symbols=symbols,
                         ),
-                        Expectation(
+                        MultiSourceExpectation(
                             symbol_usages=asrt.anything_goes(),
                             main_result=IS_FAILURE,
                         )
@@ -409,7 +410,7 @@ class TestNonZeroExitCode(unittest.TestCase):
                                         DirContents([py_file])
                                     )
                                 ),
-                                Expectation(
+                                MultiSourceExpectation(
                                     symbol_usages=SymbolContext.usages_assertion_of_contexts(symbol_contexts),
                                     main_result=main_result,
                                     main_side_effects_on_sds=dst_file_rel_conf.assert_root_dir_contains_exactly(

@@ -17,7 +17,8 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.par
     check_invalid_syntax__abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import \
     IS_SUCCESS
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, \
+    MultiSourceExpectation
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any
@@ -70,7 +71,7 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
                         ArrangementWithSds(
                             pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                         ),
-                        Expectation(
+                        MultiSourceExpectation(
                             main_result=IS_SUCCESS,
                             side_effects_on_hds=f_asrt.dir_is_empty(),
                             symbol_usages=asrt.is_empty_sequence,
@@ -99,7 +100,7 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
                     ArrangementWithSds(
                         pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                     ),
-                    Expectation(
+                    MultiSourceExpectation(
                         main_result=IS_SUCCESS,
                         side_effects_on_hds=f_asrt.dir_is_empty(),
                         symbol_usages=asrt.is_empty_sequence,

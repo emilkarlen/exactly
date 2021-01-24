@@ -88,7 +88,7 @@ class TestParse(unittest.TestCase):
                     self,
                     case.input_value,
                     ArrangementWithSds(),
-                    embryo_check.Expectation(
+                    embryo_check.MultiSourceExpectation(
                         main_result=asrt.is_none,
                         side_effects_on_tcds=asrt_tcds_contents.dir_contains_exactly(
                             sut.RELATIVITY_VARIANTS.options.default_option,
@@ -107,7 +107,7 @@ class TestParse(unittest.TestCase):
                     self,
                     path_argument.as_str,
                     ArrangementWithSds(),
-                    embryo_check.Expectation(
+                    embryo_check.MultiSourceExpectation(
                         main_result=asrt.is_none,
                         side_effects_on_tcds=asrt_tcds_contents.dir_contains_exactly(
                             path_argument.relativity_option,

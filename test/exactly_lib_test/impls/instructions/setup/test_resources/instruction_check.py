@@ -3,6 +3,7 @@ import unittest
 from typing import Sequence
 
 from exactly_lib.execution import phase_step
+from exactly_lib.impls.instructions.setup import stdin as sut
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -19,12 +20,17 @@ from exactly_lib.test_case.result import sh, svh
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__consume_last_line__s__nsc
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_populators, \
     tcds_populators, sds_populator
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
+from exactly_lib_test.test_resources.source import layout
+from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction, tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -101,14 +107,59 @@ class Expectation:
                  = asrt.anything_goes(),
                  ):
         self.pre_validation_result = pre_validation_result
+        self.post_validation_result = post_validation_result
         self.main_result = main_result
         self.main_side_effects_on_sds = main_side_effects_on_sds
-        self.post_validation_result = post_validation_result
         self.settings_builder = settings_builder
         self.main_side_effects_on_tcds = main_side_effects_on_tcds
         self.source = source
         self.symbol_usages = symbol_usages
         self.symbols_after_main = symbols_after_main
+
+
+class MultiSourceExpectation:
+    """
+    Expectation on properties of the execution of an instruction.
+
+    Default settings: successful steps execution and NO symbol usages.
+    """
+
+    def __init__(self,
+                 validation: ValidationExpectationSvh
+                 = ValidationExpectationSvh.passes(),
+                 main_result: ValueAssertion[sh.SuccessOrHardError]
+                 = sh_assertions.is_success(),
+                 symbols_after_parse: ValueAssertion[Sequence[SymbolUsage]]
+                 = asrt.is_empty_sequence,
+                 main_side_effects_on_sds: ValueAssertion[SandboxDs]
+                 = asrt.anything_goes(),
+                 main_side_effects_on_tcds: ValueAssertion[TestCaseDs]
+                 = asrt.anything_goes(),
+                 settings_builder: ValueAssertion[SettingsBuilderAssertionModel]
+                 = asrt.anything_goes(),
+                 symbols_after_main: ValueAssertion[Sequence[SymbolUsage]]
+                 = asrt.anything_goes(),
+                 ):
+        self.validation = validation
+        self.main_result = main_result
+        self.settings_builder = settings_builder
+        self.main_side_effects_on_sds = main_side_effects_on_sds
+        self.main_side_effects_on_tcds = main_side_effects_on_tcds
+        self.symbols_after_parse = symbols_after_parse
+        self.symbols_after_main = symbols_after_main
+
+    def as_expectation_w_source(self, source: ValueAssertion[ParseSource] = asrt.anything_goes()) -> Expectation:
+        return Expectation(
+            self.validation.pre_sds,
+            self.main_result,
+            self.validation.post_sds,
+            self.symbols_after_parse,
+            self.main_side_effects_on_sds,
+            self.main_side_effects_on_tcds,
+            self.settings_builder,
+            source,
+            self.symbols_after_main,
+        )
 
 
 is_success = Expectation
@@ -129,6 +180,40 @@ def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expectation: Expectation):
     Executor(put, arrangement, expectation).execute(parser, source)
+
+
+class Checker:
+    def __init__(self, parser: InstructionParser):
+        self._parser = parser
+
+    def check(self,
+              put: unittest.TestCase,
+              source: ParseSource,
+              arrangement: Arrangement,
+              expectation: Expectation,
+              ):
+        Executor(put, arrangement, expectation).execute(self._parser, source)
+
+    def check_multi_source__abs_stx(self,
+                                    put: unittest.TestCase,
+                                    source: AbstractSyntax,
+                                    arrangement: Arrangement,
+                                    expectation: MultiSourceExpectation,
+                                    ):
+        tokens = source.tokenization()
+        for layout_case in layout.STANDARD_LAYOUT_SPECS:
+            source_str = tokens.layout(layout_case.value)
+            for source_case in equivalent_source_variants__consume_last_line__s__nsc(source_str):
+                with put.subTest(layout=layout_case.name,
+                                 source_variant=source_case.name):
+                    self.check(put,
+                               source_case.source,
+                               arrangement,
+                               expectation.as_expectation_w_source(source_case.expectation),
+                               )
+
+
+CHECKER = Checker(sut.Parser())
 
 
 class Executor:

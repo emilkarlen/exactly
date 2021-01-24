@@ -89,6 +89,48 @@ class Expectation(Generic[T]):
         self.instruction_application_environment = assertion_on_instruction_environment
 
 
+class MultiSourceExpectation(Generic[T]):
+    def __init__(self,
+                 validation: ValidationAssertions = ValidationAssertions.all_passes(),
+                 main_result: ValueAssertion[T] = asrt.anything_goes(),
+                 main_raises_hard_error: bool = False,
+                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                 symbols_after_main: ValueAssertion[SymbolTable] = asrt.anything_goes(),
+                 main_side_effects_on_sds: ValueAssertion[SandboxDs] = asrt.anything_goes(),
+                 side_effects_on_tcds: ValueAssertion[TestCaseDs] = asrt.anything_goes(),
+                 side_effects_on_hds: ValueAssertion[pathlib.Path] = asrt.anything_goes(),
+                 main_side_effect_on_environment_variables: ValueAssertion[Dict[str, str]] = asrt.anything_goes(),
+                 instruction_environment:
+                 ValueAssertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
+                 ):
+        self.validation = validation
+        self.main_result = main_result
+        self.main_raises_hard_error = main_raises_hard_error
+        self.main_side_effects_on_sds = main_side_effects_on_sds
+        self.side_effects_on_tcds = side_effects_on_tcds
+        self.side_effects_on_hds = side_effects_on_hds
+        self.symbol_usages = symbol_usages
+        self.symbols_after_main = symbols_after_main
+        self.main_side_effect_on_environment_variables = main_side_effect_on_environment_variables
+        self.instruction_application_environment = instruction_environment
+
+    def as_w_source(self, source: ValueAssertion[ParseSource]) -> Expectation:
+        return Expectation(
+            self.validation.pre_sds,
+            self.validation.post_sds,
+            self.main_result,
+            self.main_raises_hard_error,
+            self.symbol_usages,
+            self.symbols_after_main,
+            self.main_side_effects_on_sds,
+            self.side_effects_on_tcds,
+            self.side_effects_on_hds,
+            source,
+            self.main_side_effect_on_environment_variables,
+            self.instruction_application_environment,
+        )
+
+
 def expectation(validation: ValidationAssertions = validation_utils.ValidationAssertions.all_passes(),
                 main_result: ValueAssertion[T] = asrt.anything_goes(),
                 main_raises_hard_error: bool = False,
@@ -165,7 +207,7 @@ class Checker(Generic[T]):
             put: unittest.TestCase,
             source: AbstractSyntax,
             arrangement: ArrangementWithSds,
-            expectation_: Expectation[T],
+            expectation_: MultiSourceExpectation[T],
     ):
         self.check__abs_stx__layout_and_source_variants(
             put,
@@ -180,7 +222,7 @@ class Checker(Generic[T]):
             put: unittest.TestCase,
             source: AbstractSyntax,
             arrangement: ArrangementWithSds,
-            expectation_: Expectation[T],
+            expectation_: MultiSourceExpectation[T],
             layouts: Sequence[NameAndValue[LayoutSpec]],
     ):
         self.check__token_sequence__layout_and_source_variants(
@@ -206,7 +248,7 @@ class Checker(Generic[T]):
             put: unittest.TestCase,
             source: TokenSequence,
             arrangement: ArrangementWithSds,
-            expectation_: Expectation[T],
+            expectation_: MultiSourceExpectation[T],
             layouts: Sequence[NameAndValue[LayoutSpec]],
     ):
         for layout_ in layouts:
@@ -218,11 +260,12 @@ class Checker(Generic[T]):
                                  put: unittest.TestCase,
                                  source: str,
                                  arrangement: ArrangementWithSds,
-                                 expectation: Expectation,
+                                 expectation: MultiSourceExpectation,
                                  ):
         for parse_source, source_asrt in equivalent_source_variants__with_source_check__consume_last_line_2(source):
             with put.subTest(remaining_source=parse_source.remaining_source):
-                Executor(put, arrangement, expectation, source_asrt).execute(self.parser, parse_source)
+                executor = Executor(put, arrangement, expectation.as_w_source(source_asrt), source_asrt)
+                executor.execute(self.parser, parse_source)
 
 
 class Executor(Generic[T]):

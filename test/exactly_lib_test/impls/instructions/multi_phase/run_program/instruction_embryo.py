@@ -10,8 +10,9 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
-from exactly_lib_test.impls.test_resources.validation import validation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, \
+    MultiSourceExpectation
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.program.parse_program.test_resources import pgm_and_args_cases
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args, result_assertions
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
@@ -92,7 +93,7 @@ class TestValidationAndSymbolUsagesOfExecute(unittest.TestCase):
                 executable_file=EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0.file_name,
             )
 
-            expectation = embryo_check.Expectation(
+            expectation = embryo_check.MultiSourceExpectation(
                 symbol_usages=asrt.matches_sequence(relativity_option_conf.symbols.usage_expectation_assertions()),
             )
 
@@ -162,7 +163,7 @@ class TestValidationAndSymbolUsagesOfInterpret(unittest.TestCase):
                     source_file=source_file.file_name,
                 )
 
-                expectation = embryo_check.Expectation(
+                expectation = embryo_check.MultiSourceExpectation(
                     symbol_usages=asrt.matches_sequence(roc_executable_file.symbols.usage_expectation_assertions() +
                                                         roc_source_file.symbols.usage_expectation_assertions()),
                 )
@@ -310,7 +311,7 @@ class TestProgramViaSymbolReference(unittest.TestCase):
                 ),
                 symbols=self.symbols
             ),
-            instruction_embryo_check.Expectation(
+            instruction_embryo_check.MultiSourceExpectation(
                 main_result=result_assertions.equals(0, None),
                 symbol_usages=asrt.matches_sequence([
                     self.program_that_executes_py_pgm_symbol.reference_assertion
@@ -333,7 +334,7 @@ class TestProgramViaSymbolReference(unittest.TestCase):
                 ),
                 symbols=self.symbols
             ),
-            instruction_embryo_check.Expectation(
+            instruction_embryo_check.MultiSourceExpectation(
                 main_result=result_assertions.equals(exit_code,
                                                      self.output_to_stderr),
                 symbol_usages=asrt.matches_sequence([
@@ -352,7 +353,7 @@ class TestValidationAndSymbolUsagesOfSource(unittest.TestCase):
                 source_option=syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
             )
 
-            expectation = embryo_check.Expectation(
+            expectation = embryo_check.MultiSourceExpectation(
                 symbol_usages=asrt.matches_sequence(relativity_option_conf.symbols.usage_expectation_assertions()),
             )
 
@@ -428,22 +429,22 @@ class TestValidationAndSymbolUsagesOfSource(unittest.TestCase):
 
 
 def _expect_validation_error_and_symbol_usages_of(relativity_option_conf: rel_opt_conf.RelativityOptionConfiguration
-                                                  ) -> embryo_check.Expectation:
+                                                  ) -> embryo_check.MultiSourceExpectation:
     return _expect_validation_error_and_symbol_usages(relativity_option_conf,
                                                       relativity_option_conf.symbols.usage_expectation_assertions())
 
 
 def _expect_validation_error_and_symbol_usages(relativity_option_conf: rel_opt_conf.RelativityOptionConfiguration,
-                                               expected_symbol_usage: list) -> embryo_check.Expectation:
+                                               expected_symbol_usage: list) -> embryo_check.MultiSourceExpectation:
     expected_symbol_usages_assertion = asrt.matches_sequence(expected_symbol_usage)
     if relativity_option_conf.exists_pre_sds:
-        return embryo_check.Expectation(
-            validation_pre_sds=IS_VALIDATION_ERROR,
+        return embryo_check.MultiSourceExpectation(
+            validation=ValidationAssertions.pre_sds_fails__w_any_msg(),
             symbol_usages=expected_symbol_usages_assertion,
         )
     else:
-        return embryo_check.Expectation(
-            validation_post_sds=IS_VALIDATION_ERROR,
+        return embryo_check.MultiSourceExpectation(
+            validation=ValidationAssertions.post_sds_fails__w_any_msg(),
             symbol_usages=expected_symbol_usages_assertion,
         )
 
@@ -454,14 +455,14 @@ class TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine(unittest.TestC
             self,
             pgm_args.interpret_py_source_line('exit(0)').as_str,
             ArrangementWithSds(),
-            Expectation(main_result=result_assertions.equals(0, None)))
+            MultiSourceExpectation(main_result=result_assertions.equals(0, None)))
 
     def test_check_non_zero_exit_code(self):
         EXECUTION_CHECKER.check__w_source_variants(
             self,
             pgm_args.interpret_py_source_line('exit(1)').as_str,
             ArrangementWithSds(),
-            Expectation(main_result=result_assertions.equals(1, '')))
+            MultiSourceExpectation(main_result=result_assertions.equals(1, '')))
 
     def test_check_non_zero_exit_code_with_output_to_stderr(self):
         python_program = 'import sys; sys.stderr.write("on stderr"); exit(2)'
@@ -469,14 +470,14 @@ class TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine(unittest.TestC
             self,
             pgm_args.interpret_py_source_line(python_program).as_str,
             ArrangementWithSds(),
-            Expectation(main_result=result_assertions.equals(2, 'on stderr')))
+            MultiSourceExpectation(main_result=result_assertions.equals(2, 'on stderr')))
 
     def test_non_existing_executable(self):
         EXECUTION_CHECKER.check__w_source_variants(
             self,
             '/not/an/executable/program',
             ArrangementWithSds(),
-            Expectation(validation_pre_sds=IS_VALIDATION_ERROR))
+            MultiSourceExpectation(validation=ValidationAssertions.pre_sds_fails__w_any_msg()))
 
 
 class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
@@ -495,7 +496,7 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
                         symbols=pgm_and_args_case.symbol_table,
                         tcds_contents=pgm_and_args_case.tcds,
                     ),
-                    Expectation(
+                    MultiSourceExpectation(
                         symbol_usages=pgm_and_args_case.usages_assertion,
                         main_result=result_assertions.equals(test_setup.exit_code, None)),
                 )
@@ -515,7 +516,7 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
                         symbols=pgm_and_args_case.symbol_table,
                         tcds_contents=pgm_and_args_case.tcds,
                     ),
-                    Expectation(
+                    MultiSourceExpectation(
                         symbol_usages=pgm_and_args_case.usages_assertion,
                         main_result=result_assertions.equals(test_setup.exit_code, None)),
                 )
@@ -531,7 +532,7 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
                 os_services=test_setup.os_services_w_stdin_check,
                 symbols=test_setup.program_symbol.symbol_table,
             ),
-            Expectation(
+            MultiSourceExpectation(
                 symbol_usages=test_setup.program_symbol.usages_assertion,
                 main_result=result_assertions.equals(test_setup.exit_code, None)),
         )
@@ -554,9 +555,6 @@ class TestNonEmptyStdinViaExecution(unittest.TestCase):
                 )
             ),
         )
-
-
-IS_VALIDATION_ERROR = validation.is_arbitrary_validation_failure()
 
 
 def relativity_options_of_symbol(symbol_name: str) -> List[RelativityOptionConfigurationForRelOptionType]:

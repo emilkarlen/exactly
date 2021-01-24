@@ -18,8 +18,10 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.def
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.parse_check import \
     check_invalid_syntax__abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import Step, \
-    IS_FAILURE_OF_VALIDATION, IS_FAILURE, IS_SUCCESS
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
+    IS_FAILURE, IS_SUCCESS
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
+    MultiSourceExpectation
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_transformers.test_resources import abstract_syntaxes as str_trans_abs_stx
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_hds, every_conf_rel_hds, \
@@ -118,7 +120,7 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                         hds_contents=src_file_rel_conf.populator_for_relativity_option_root__hds(
                             DirContents([src_file]))
                     ),
-                    Expectation(
+                    MultiSourceExpectation(
                         main_result=IS_SUCCESS,
                         symbol_usages=asrt.matches_sequence([
                             dst_file_symbol.reference_assertion__path_or_string,
@@ -212,7 +214,7 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                                 tcds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
                                     DirContents([src_file]))
                             ),
-                            Expectation(
+                            MultiSourceExpectation(
                                 main_result=IS_SUCCESS,
                                 symbol_usages=asrt.is_empty_sequence,
                                 main_side_effects_on_sds=expected_non_hds_contents,
@@ -265,7 +267,7 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                             DirContents([src_file])),
                         symbols=symbols,
                     ),
-                    Expectation(
+                    MultiSourceExpectation(
                         main_result=IS_SUCCESS,
                         main_side_effects_on_sds=expected_non_hds_contents,
                         symbol_usages=to_upper_transformer.usages_assertion,
@@ -297,15 +299,15 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
         check_invalid_syntax__abs_stx(self, instruction_syntax)
 
     @staticmethod
-    def _expect_failure_in(step_of_expected_failure: Step) -> Expectation:
+    def _expect_failure_in(step_of_expected_failure: Step) -> MultiSourceExpectation:
         symbol_usages_expectation = asrt.is_sequence_of(asrt.is_instance(SymbolReference))
 
         if step_of_expected_failure is Step.VALIDATE_PRE_SDS:
-            return Expectation(validation_pre_sds=IS_FAILURE_OF_VALIDATION,
-                               symbol_usages=symbol_usages_expectation)
+            return MultiSourceExpectation(validation=ValidationAssertions.pre_sds_fails__w_any_msg(),
+                                          symbol_usages=symbol_usages_expectation)
         else:
-            return Expectation(main_result=IS_FAILURE,
-                               symbol_usages=symbol_usages_expectation)
+            return MultiSourceExpectation(main_result=IS_FAILURE,
+                                          symbol_usages=symbol_usages_expectation)
 
     def _check_of_invalid_src_file(
             self,

@@ -196,7 +196,7 @@ class TestArgumentsShouldBeValidated(unittest.TestCase):
                         )
                     ).as_str,
                     ArrangementWithSds(),
-                    embryo_check.expectation(
+                    embryo_check.MultiSourceExpectation(
                         validation=case.value[1],
                     ),
                 )
@@ -216,7 +216,7 @@ class TestHardErrorFromExecution(unittest.TestCase):
                     )
                 ),
             ),
-            embryo_check.expectation(
+            embryo_check.MultiSourceExpectation(
                 main_raises_hard_error=True
             ),
         )
@@ -236,7 +236,7 @@ class TestNonZeroExitCodeFromExecution(unittest.TestCase):
             ArrangementWithSds(
                 os_services=os_services_access.new_for_cmd_exe(executor),
             ),
-            embryo_check.expectation(
+            embryo_check.MultiSourceExpectation(
                 main_result=result_assertions.equals(executor.constant_return_value,
                                                      executor.string_to_write_to_stderr),
             ),
@@ -309,7 +309,7 @@ def check_successful_execution(put: unittest.TestCase,
             os_services=os_services_access.new_for_cmd_exe(executor_that_records_arguments),
             symbols=symbols,
         ),
-        embryo_check.expectation(
+        embryo_check.MultiSourceExpectation(
             symbol_usages=symbol_usages,
             side_effects_on_tcds=ExecutedCommandAssertion(
                 executor_that_records_arguments,

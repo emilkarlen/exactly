@@ -7,7 +7,8 @@ from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resource
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
     INSTRUCTION_CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
+    MultiSourceExpectation
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_transformers.test_resources.abstract_syntaxes import \
     symbol_reference_followed_by_superfluous_string_on_same_line
@@ -65,7 +66,7 @@ class TestSuccessfulDefinitionOfProgramWoArguments(unittest.TestCase):
                 primitive_value=matches_py_source_on_cmd_line_program(python_source),
                 symbols=symbols
             ))
-        expectation = Expectation(
+        expectation = MultiSourceExpectation(
             symbol_usages=asrt.matches_sequence([
                 asrt_sym_usage.matches_definition(
                     name=asrt.equals(name_of_defined_symbol),

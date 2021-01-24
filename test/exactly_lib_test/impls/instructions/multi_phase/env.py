@@ -13,7 +13,6 @@ from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source4
-from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -98,7 +97,7 @@ class TestSet(unittest.TestCase):
                     environ={}
                 )
             ),
-            embryo_check.Expectation(
+            embryo_check.MultiSourceExpectation(
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     {
@@ -121,7 +120,7 @@ class TestSet(unittest.TestCase):
                     environ={}
                 )
             ),
-            embryo_check.Expectation(
+            embryo_check.MultiSourceExpectation(
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     {
@@ -176,7 +175,7 @@ class TestSet(unittest.TestCase):
                             environ=environ__before
                         )
                     ),
-                    embryo_check.Expectation(
+                    embryo_check.MultiSourceExpectation(
                         main_result=asrt.is_none,
                         main_side_effect_on_environment_variables=expectation
                     )
@@ -210,7 +209,7 @@ class TestSet(unittest.TestCase):
                             environ=environ__before
                         )
                     ),
-                    embryo_check.Expectation(
+                    embryo_check.MultiSourceExpectation(
                         main_result=asrt.is_none,
                         main_side_effect_on_environment_variables=asrt.equals(
                             environ__after)
@@ -240,7 +239,7 @@ class TestSet(unittest.TestCase):
                     environ=environ__before
                 )
             ),
-            embryo_check.Expectation(
+            embryo_check.MultiSourceExpectation(
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     environ__after
@@ -284,14 +283,12 @@ class TestSet(unittest.TestCase):
                 process_execution_settings=
                 execution_elements.with_environ_copy({}),
             ),
-            embryo_check.Expectation(
+            embryo_check.MultiSourceExpectation(
                 main_side_effect_on_environment_variables=asrt.equals(expected_environ_after_main),
                 symbol_usages=asrt.matches_sequence([
                     my_symbol.usage_assertion__any_data_type,
                     your_symbol.usage_assertion__any_data_type,
                 ]),
-                source=assert_source(current_line_number=asrt.equals(2),
-                                     column_index=asrt.equals(0)),
             ),
         )
 
@@ -326,7 +323,7 @@ class TestSet(unittest.TestCase):
                 process_execution_settings=
                 execution_elements.with_environ_copy({}),
             ),
-            embryo_check.Expectation(
+            embryo_check.MultiSourceExpectation(
                 main_side_effect_on_environment_variables=asrt.equals(expected_environ_after_main),
                 symbol_usages=asrt.matches_sequence([]),
             ),
@@ -360,7 +357,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
                 execution_elements.with_environ_copy(environ__before),
             ),
             expectation=
-            embryo_check.Expectation(
+            embryo_check.MultiSourceExpectation(
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),
             )
         )
@@ -413,7 +410,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
                 execution_elements.with_environ_copy(environ__before),
             ),
             expectation=
-            embryo_check.Expectation(
+            embryo_check.MultiSourceExpectation(
                 main_side_effect_on_environment_variables=asrt.equals(expected_environ__after),
             )
         )
@@ -440,7 +437,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
                     }
                 )
             ),
-            embryo_check.Expectation(
+            embryo_check.MultiSourceExpectation(
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     {
@@ -467,7 +464,7 @@ class TestUnset(unittest.TestCase):
                 process_execution_settings=
                 execution_elements.with_environ_copy(environ__before),
             ),
-            embryo_check.Expectation(
+            embryo_check.MultiSourceExpectation(
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),
             )
         )
@@ -486,7 +483,7 @@ class TestUnset(unittest.TestCase):
                 process_execution_settings=
                 execution_elements.with_environ_copy(environ__before),
             ),
-            embryo_check.Expectation(
+            embryo_check.MultiSourceExpectation(
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),
             )
         )
@@ -533,7 +530,7 @@ class TestUnset(unittest.TestCase):
                             environ=environ__before
                         )
                     ),
-                    embryo_check.Expectation(
+                    embryo_check.MultiSourceExpectation(
                         main_result=asrt.is_none,
                         main_side_effect_on_environment_variables=expectation
                     )
