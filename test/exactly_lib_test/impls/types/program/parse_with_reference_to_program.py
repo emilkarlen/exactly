@@ -7,6 +7,8 @@ from exactly_lib.type_val_deps.types.path.path_ddvs import simple_of_rel_option
 from exactly_lib.type_val_deps.types.path.path_sdvs import constant
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.impls.test_resources.validation.validation_of_path import \
+    FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.impls.types.logic.test_resources import integration_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import MultiSourceExpectation, \
     arrangement_w_tcds, ExecutionExpectation
@@ -20,7 +22,6 @@ from exactly_lib_test.impls.types.program.test_resources.arguments_accumulation 
     TestExecutorBase, SymbolReferencesTestExecutor, ValidationOfAccumulatedArgumentsExecutor, \
     ValidationOfSdvArgumentsExecutor
 from exactly_lib_test.impls.types.test_resources import relativity_options
-from exactly_lib_test.impls.types.test_resources.validation_of_path import FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.section_document.element_parsers.test_resources.parsing import ParserAsLocationAwareParser
 from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext

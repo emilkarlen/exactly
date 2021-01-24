@@ -13,7 +13,7 @@ from exactly_lib_test.impls.actors.test_resources.action_to_check import suite_f
 from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation, \
     check_execution, PostSdsExpectation
 from exactly_lib_test.impls.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
-from exactly_lib_test.impls.types.test_resources.validation import pre_sds_validation_fails__svh
+from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.files import file_structure as fs
@@ -59,7 +59,7 @@ class TestValidationErrorPreSds(unittest.TestCase):
         ]
         arrangement = Arrangement()
         expectation = Expectation(
-            validation=pre_sds_validation_fails__svh()
+            validation=ValidationExpectationSvh.fails__pre_sds()
         )
         check_execution(self,
                         sut.actor(),
@@ -77,7 +77,7 @@ class TestValidationErrorPreSds(unittest.TestCase):
                 fs.DirContents([File.empty(executable_file_name)]))
         )
         expectation = Expectation(
-            validation=pre_sds_validation_fails__svh()
+            validation=ValidationExpectationSvh.fails__pre_sds()
         )
         check_execution(self,
                         sut.actor(),

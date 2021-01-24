@@ -15,7 +15,7 @@ from exactly_lib_test.impls.actors.program.test_resources import ConfigurationWi
 from exactly_lib_test.impls.actors.test_resources import integration_check
 from exactly_lib_test.impls.actors.test_resources.action_to_check import suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation
-from exactly_lib_test.impls.actors.test_resources.validation_pre_or_post_sds import VALIDATION_CASES
+from exactly_lib_test.impls.actors.test_resources.validation_cases import VALIDATION_CASES
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.tcfs.test_resources import hds_populators

@@ -10,7 +10,7 @@ from exactly_lib_test.impls.actors.test_resources.action_to_check import Configu
 from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation
 from exactly_lib_test.impls.actors.test_resources.test_validation_for_single_line_source import \
     TestCaseForConfigurationForValidation
-from exactly_lib_test.impls.actors.test_resources.validation_pre_or_post_sds import VALIDATION_CASES
+from exactly_lib_test.impls.actors.test_resources.validation_cases import VALIDATION_CASES
 from exactly_lib_test.impls.types.test_resources import relativity_options
 from exactly_lib_test.tcfs.test_resources.hds_populators import contents_in
 from exactly_lib_test.tcfs.test_resources.hds_utils import home_directory_structure

@@ -5,6 +5,8 @@ from exactly_lib.type_val_deps.types.program.sdv.accumulated_components import A
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_wo_tcds, \
     PrimAndExeExpectation
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
@@ -12,7 +14,6 @@ from exactly_lib_test.impls.types.program.test_resources import arguments_buildi
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_transformers.test_resources import \
     validation_cases as str_trans_validation_cases
-from exactly_lib_test.impls.types.test_resources.validation import ValidationExpectationSvh, ValidationAssertions
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext

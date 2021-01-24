@@ -2,6 +2,7 @@ import unittest
 from typing import Sequence
 
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.impls.test_resources.validation import validation
 from exactly_lib_test.impls.types.file_matcher.contents_of_dir.test_resources.case_executor import \
     ExecutorOfCaseGenerator
 from exactly_lib_test.impls.types.file_matcher.contents_of_dir.test_resources.case_generator import \
@@ -10,7 +11,6 @@ from exactly_lib_test.impls.types.file_matcher.test_resources import argument_bu
 from exactly_lib_test.impls.types.file_matcher.test_resources import integration_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
     ExecutionExpectation, PrimAndExeExpectation, Expectation
-from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

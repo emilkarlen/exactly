@@ -6,9 +6,9 @@ from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path.path_sdv_impls import constant
 from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.impls.test_resources.validation import validation
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes
-from exactly_lib_test.impls.types.test_resources import validation
-from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
 

@@ -1,5 +1,4 @@
 import sys
-import sys
 import unittest
 from typing import List
 
@@ -12,6 +11,7 @@ from exactly_lib_test.impls.instructions.multi_phase.test_resources import instr
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
+from exactly_lib_test.impls.test_resources.validation import validation
 from exactly_lib_test.impls.types.program.parse_program.test_resources import pgm_and_args_cases
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args, result_assertions
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
@@ -21,7 +21,6 @@ from exactly_lib_test.impls.types.test_resources import arguments_building as ar
 from exactly_lib_test.impls.types.test_resources import relativity_options
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt, \
     relativity_options as rel_opt_conf
-from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.impls.types.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelOptionType
 from exactly_lib_test.section_document.test_resources import parse_checker

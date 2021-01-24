@@ -17,6 +17,9 @@ from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
+from exactly_lib_test.impls.test_resources.validation import validation
+from exactly_lib_test.impls.test_resources.validation.validation_of_path import \
+    FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.impls.types.logic.test_resources import integration_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import AssertionResolvingEnvironment, Expectation, \
     ParseExpectation, MultiSourceExpectation, arrangement_wo_tcds, arrangement_w_tcds, ExecutionExpectation
@@ -25,8 +28,6 @@ from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instru
 from exactly_lib_test.impls.types.program.test_resources import command_driver_sdv_cases, program_sdvs
 from exactly_lib_test.impls.types.program.test_resources.command_driver_sdv_cases import CommandDriverSdvCase
 from exactly_lib_test.impls.types.test_resources import relativity_options
-from exactly_lib_test.impls.types.test_resources import validation
-from exactly_lib_test.impls.types.test_resources.validation_of_path import FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -332,7 +333,7 @@ class ValidationOfSdvArgumentsExecutor(TestExecutorBase, ABC):
                 primitive=asrt.anything_goes(),
                 execution=ExecutionExpectation(
                     validation=
-                    validation.pre_sds_validation_fails__w_any_msg(),
+                    validation.ValidationAssertions.pre_sds_fails__w_any_msg(),
                 )
             ),
         )

@@ -1,6 +1,5 @@
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib_test.impls.types.test_resources import validation
-from exactly_lib_test.impls.types.test_resources.validation import ValidationExpectationSvh
+from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 
 
 class ValidationCase:
@@ -18,11 +17,11 @@ VALIDATION_CASES = [
     ValidationCase(
         'pre sds',
         RelOptionType.REL_HDS_CASE,
-        validation.pre_sds_validation_fails__svh(),
+        ValidationExpectationSvh.fails__pre_sds(),
     ),
     ValidationCase(
         'post sds',
         RelOptionType.REL_ACT,
-        validation.post_sds_validation_hard_error__svh(),
+        ValidationExpectationSvh.hard_error__post_sds(),
     ),
 ]

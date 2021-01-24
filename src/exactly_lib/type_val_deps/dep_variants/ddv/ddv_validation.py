@@ -29,16 +29,6 @@ class DdvValidator:
         """
         raise NotImplementedError()
 
-    def validate_pre_or_post_sds(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
-        """
-        Validates the object using either pre- or post- SDS.
-        :return: Error message iff validation failed.
-        """
-        error_message = self.validate_pre_sds_if_applicable(tcds.hds)
-        if error_message is not None:
-            return error_message
-        return self.validate_post_sds_if_applicable(tcds)
-
 
 class ConstantDdvValidator(DdvValidator):
     def __init__(self,

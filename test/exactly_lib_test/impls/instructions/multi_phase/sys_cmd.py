@@ -18,11 +18,11 @@ from exactly_lib_test.impls.instructions.configuration.actor.test_resources impo
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.sys_cmd import command_line
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.impls.types.program.test_resources import result_assertions, program_arguments
 from exactly_lib_test.impls.types.test_resources import arguments_building as ab
-from exactly_lib_test.impls.types.test_resources import validation as validation_utils
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -174,14 +174,14 @@ class TestArgumentsShouldBeValidated(unittest.TestCase):
                 'pre sds',
                 (
                     RelOptionType.REL_HDS_CASE,
-                    validation_utils.pre_sds_validation_fails__w_any_msg(),
+                    ValidationAssertions.pre_sds_fails__w_any_msg(),
                 ),
             ),
             NameAndValue(
                 'post sds',
                 (
                     RelOptionType.REL_ACT,
-                    validation_utils.post_sds_validation_fails__w_any_msg(),
+                    ValidationAssertions.post_sds_fails__w_any_msg(),
                 ),
             ),
         ]

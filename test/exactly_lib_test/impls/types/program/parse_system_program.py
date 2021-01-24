@@ -11,6 +11,10 @@ from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.impls.test_resources.validation import validation
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.impls.test_resources.validation.validation_of_path import \
+    FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.impls.types.logic.test_resources import integration_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import MultiSourceExpectation, \
     AssertionResolvingEnvironment, arrangement_w_tcds, ExecutionExpectation, arrangement_wo_tcds
@@ -19,9 +23,6 @@ from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instru
 from exactly_lib_test.impls.types.program.test_resources import integration_check_applier
 from exactly_lib_test.impls.types.program.test_resources import integration_check_config
 from exactly_lib_test.impls.types.test_resources import relativity_options
-from exactly_lib_test.impls.types.test_resources import validation
-from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions
-from exactly_lib_test.impls.types.test_resources.validation_of_path import FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.section_document.element_parsers.test_resources.parsing import ParserAsLocationAwareParser
 from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
@@ -200,7 +201,7 @@ class FileDoExistCase(FileExistenceCase):
         super().__init__('file do exist')
 
     def expectation_for(self, step: DirectoryStructurePartition) -> ValidationAssertions:
-        return validation.all_validations_passes()
+        return validation.ValidationAssertions.all_passes()
 
     def files_for_name(self, file_name: str) -> List[FileSystemElement]:
         return [File.empty(file_name)]
@@ -273,7 +274,7 @@ class TestValidation(unittest.TestCase):
             arrangement_wo_tcds(),
             MultiSourceExpectation(
                 execution=ExecutionExpectation(
-                    validation=validation.all_validations_passes()
+                    validation=validation.ValidationAssertions.all_passes()
                 )
             ),
         )

@@ -1,11 +1,11 @@
 import unittest
 
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expectation, \
     ParseExpectation, ExecutionExpectation, arrangement_wo_tcds
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_building as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
-from exactly_lib_test.impls.types.test_resources.validation import pre_sds_validation_fails__w_any_msg
 
 
 def suite() -> unittest.TestSuite:
@@ -34,7 +34,7 @@ class TestEveryRangeShouldBeValidated(unittest.TestCase):
                         ParseExpectation(
                         ),
                         ExecutionExpectation(
-                            validation=pre_sds_validation_fails__w_any_msg(),
+                            validation=ValidationAssertions.pre_sds_fails__w_any_msg(),
                         ),
                     )
                 )

@@ -12,13 +12,13 @@ from exactly_lib.util.description_tree import details
 from exactly_lib.util.interval.w_inversion.interval import IntIntervalWInversion
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
+from exactly_lib_test.impls.test_resources.validation import validation
 from exactly_lib_test.impls.types.integer_matcher.test_resources import parse_check, integration_check
 from exactly_lib_test.impls.types.interval.test_resources import with_interval as asrt_w_interval
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expectation, prim_asrt__constant
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
     ExecutionExpectation
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
-from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -289,7 +289,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                             symbol_references=case.references,
                         ),
                         ExecutionExpectation(
-                            validation=validation.pre_sds_validation_fails__w_any_msg(),
+                            validation=validation.ValidationAssertions.pre_sds_fails__w_any_msg(),
                         ),
                     )
                 )

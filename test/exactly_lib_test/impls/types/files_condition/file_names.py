@@ -4,12 +4,12 @@ from typing import Mapping, Optional
 
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.files_condition.test_resources import primitive_assertions as asrt_primitive
 from exactly_lib_test.impls.types.files_condition.test_resources.integration_check import CHECKER
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation, prim_asrt__constant
-from exactly_lib_test.impls.types.test_resources.validation import pre_sds_validation_fails__w_any_msg
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.test_resources.symbols_setup import SymbolsArrEx
@@ -96,7 +96,7 @@ class TestInvalidFileNamesShouldCauseValidationError(unittest.TestCase):
                             symbol_references=case.symbols.expected_references_assertion
                         ),
                         ExecutionExpectation(
-                            validation=pre_sds_validation_fails__w_any_msg()
+                            validation=ValidationAssertions.pre_sds_fails__w_any_msg()
                         )
                     )
                 )

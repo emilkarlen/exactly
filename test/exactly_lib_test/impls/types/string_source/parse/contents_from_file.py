@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelOptionType, PathRelativityVariants
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expectation, ParseExpectation
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, MultiSourceExpectation, \
     ExecutionExpectation
@@ -10,9 +11,7 @@ from exactly_lib_test.impls.types.string_source.test_resources import abstract_s
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check, parse_check
 from exactly_lib_test.impls.types.string_transformers.test_resources import \
     validation_cases as str_trans_validation_cases, abstract_syntaxes as str_trans_abs_stx
-from exactly_lib_test.impls.types.test_resources import validation as asrt_validation
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_hds, conf_rel_any
-from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.files import file_structure as fs
@@ -177,11 +176,11 @@ class TestValidation(unittest.TestCase):
 
     def test_validation_pre_sds_SHOULD_fail_WHEN_source_is_not_an_existing_file_rel_hds(self):
         self._check_of_invalid_src_file(RelOptionType.REL_HDS_CASE,
-                                        asrt_validation.pre_sds_validation_fails__w_any_msg())
+                                        ValidationAssertions.pre_sds_fails__w_any_msg())
 
     def test_main_SHOULD_fail_WHEN_source_is_not_an_existing_file_rel_non_hds(self):
         self._check_of_invalid_src_file(RelOptionType.REL_ACT,
-                                        asrt_validation.post_sds_validation_fails__w_any_msg())
+                                        ValidationAssertions.post_sds_fails__w_any_msg())
 
     def test_transformer_SHOULD_be_validated(self):
         src_file_rel_conf = conf_rel_any(RelOptionType.REL_HDS_CASE)

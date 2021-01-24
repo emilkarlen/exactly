@@ -14,12 +14,12 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.impls.test_resources.validation import validation
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments, here_document
 from exactly_lib_test.impls.types.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.impls.types.regex.test_resources.assertions import matches_regex_sdv, \
     is_reference_to_valid_regex_string_part
-from exactly_lib_test.impls.types.test_resources import validation
-from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions, all_validations_passes
 from exactly_lib_test.section_document.element_parsers.test_resources.parsing \
     import remaining_source, remaining_source_lines
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
@@ -57,7 +57,7 @@ class Expectation:
     def __init__(self,
                  pattern: ValueAssertion[Pattern] = asrt.anything_goes(),
                  token_stream: ValueAssertion[TokenStream] = asrt.anything_goes(),
-                 validation: ValidationAssertions = all_validations_passes(),
+                 validation: ValidationAssertions = ValidationAssertions.all_passes(),
                  references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                  ):
         self.pattern = pattern
@@ -97,7 +97,7 @@ def option_case_for_ignore_case(expectation: ValueAssertion[Pattern]) -> OptionC
 class ExpectationExceptPattern:
     def __init__(self,
                  references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
-                 validation: ValidationAssertions = all_validations_passes(),
+                 validation: ValidationAssertions = ValidationAssertions.all_passes(),
                  ):
         self.references = references
         self.validation = validation
@@ -186,7 +186,7 @@ class TestValidRegex(unittest.TestCase):
                    Arrangement(),
                    source_cases,
                    ExpectationExceptPattern(
-                       validation=all_validations_passes()
+                       validation=ValidationAssertions.all_passes()
                    ),
                    option_cases,
                    )
@@ -244,7 +244,7 @@ class TestValidRegex(unittest.TestCase):
                    Arrangement(),
                    source_cases,
                    ExpectationExceptPattern(
-                       validation=all_validations_passes()
+                       validation=ValidationAssertions.all_passes()
                    ),
                    option_cases,
                    )
@@ -302,7 +302,7 @@ class TestValidRegex(unittest.TestCase):
             references=asrt.matches_sequence([
                 is_reference_to_valid_regex_string_part(star_string_symbol.name),
             ]),
-            validation=all_validations_passes(),
+            validation=ValidationAssertions.all_passes(),
         )
 
         # ACT & ASSERT #
@@ -359,7 +359,7 @@ class TestValidRegex(unittest.TestCase):
             references=asrt.matches_sequence([
                 is_reference_to_valid_regex_string_part(star_string_symbol.name),
             ]),
-            validation=all_validations_passes(),
+            validation=ValidationAssertions.all_passes(),
         )
 
         # ACT & ASSERT #
@@ -397,7 +397,7 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
                    Arrangement(),
                    source_cases,
                    ExpectationExceptPattern(
-                       validation=validation.pre_sds_validation_fails__w_any_msg(),
+                       validation=validation.ValidationAssertions.pre_sds_fails__w_any_msg(),
                    ),
                    option_cases,
                    )
@@ -432,7 +432,7 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
             references=asrt.matches_sequence([
                 is_reference_to_valid_regex_string_part(self.STAR_STRING_SYMBOL.name),
             ]),
-            validation=validation.pre_sds_validation_fails__w_any_msg(),
+            validation=validation.ValidationAssertions.pre_sds_fails__w_any_msg(),
         )
 
         # ACT & ASSERT #
@@ -473,7 +473,7 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
                 is_reference_to_valid_regex_string_part(self.STAR_STRING_SYMBOL.name),
                 is_reference_to_valid_regex_string_part(self.STAR_STRING_SYMBOL.name),
             ]),
-            validation=validation.pre_sds_validation_fails__w_any_msg(),
+            validation=validation.ValidationAssertions.pre_sds_fails__w_any_msg(),
         )
 
         # ACT & ASSERT #
@@ -498,7 +498,7 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
                 is_reference_to_valid_regex_string_part(self.STAR_STRING_SYMBOL.name),
                 is_reference_to_valid_regex_string_part(path_symbol_name),
             ]),
-            validation=validation.post_sds_validation_fails__w_any_msg(),
+            validation=ValidationAssertions.post_sds_fails__w_any_msg(),
             token_stream=assert_token_stream(is_null=asrt.is_true),
         )
 

@@ -10,11 +10,10 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import ConstantDd
 from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependencies
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.impls.test_resources.validation import validation as asrt_validation
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.regex.test_resources import assertions as sut
 from exactly_lib_test.impls.types.regex.test_resources.regex_ddvs import RegexSdvConstantTestImpl
-from exactly_lib_test.impls.types.test_resources import validation as asrt_validation
-from exactly_lib_test.impls.types.test_resources.validation import pre_sds_validation_fails, \
-    post_sds_validation_fails
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -228,7 +227,7 @@ class TestMatchesRegexResolver(unittest.TestCase):
 
         assertion_to_check = sut.matches_regex_sdv(
             dir_dependencies=DirDependencies.NONE,
-            validation=pre_sds_validation_fails(),
+            validation=ValidationAssertions.pre_sds_fails(),
             primitive_value=check_of_primitive_value_fails_expectedly,
         )
 
@@ -247,7 +246,7 @@ class TestMatchesRegexResolver(unittest.TestCase):
 
         assertion_to_check = sut.matches_regex_sdv(
             dir_dependencies=DirDependencies.NONE,
-            validation=post_sds_validation_fails(),
+            validation=ValidationAssertions.post_sds_fails(),
             primitive_value=check_of_primitive_value_fails_expectedly,
         )
 

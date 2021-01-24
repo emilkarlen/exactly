@@ -151,9 +151,6 @@ class _RangeValidator(DdvValidator):
     def validate_post_sds_if_applicable(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
         return None
 
-    def validate_pre_or_post_sds(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
-        return self.validate_pre_sds_if_applicable(tcds.hds)
-
 
 class _RangeParser:
     def __init__(self, range_expr_str: str):

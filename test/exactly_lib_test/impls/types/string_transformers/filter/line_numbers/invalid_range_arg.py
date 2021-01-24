@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.integer.test_resources.validation_cases import \
     failing_integer_validation_cases, IntegerValidationCase
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expectation, \
@@ -11,7 +12,6 @@ from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_r
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_building as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.impls.types.string_transformers.test_resources import parse_check
-from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 
@@ -88,7 +88,7 @@ class TestValidationPreSdsShouldFailWhenRangeExprHasNotExpectedParts(unittest.Te
                             symbol_references=range_expr_symbol.references_assertion,
                         ),
                         ExecutionExpectation(
-                            validation=validation.pre_sds_validation_fails__w_any_msg(),
+                            validation=ValidationAssertions.pre_sds_fails__w_any_msg(),
                         ),
                     )
                 )

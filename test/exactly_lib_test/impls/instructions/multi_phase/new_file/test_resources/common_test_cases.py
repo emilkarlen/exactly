@@ -11,7 +11,7 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abs
     ContentsVariantAbsStx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import IS_FAILURE
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import expectation
-from exactly_lib_test.impls.types.test_resources import validation as validation_utils
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_non_hds
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.tcfs.test_resources.dir_populator import TcdsPopulator
@@ -113,7 +113,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(unittest.TestCas
                             symbols=symbols,
                         ),
                         expectation(
-                            validation=validation_utils.pre_sds_validation_fails__w_any_msg(),
+                            validation=ValidationAssertions.pre_sds_fails__w_any_msg(),
                             symbol_usages=asrt.anything_goes(),
                         )
                     )

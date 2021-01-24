@@ -1,10 +1,9 @@
 from typing import Sequence
 
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.impls.test_resources.validation import ddv_validators, validation
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions, ValidationActual
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax
-from exactly_lib_test.impls.types.test_resources import validation
-from exactly_lib_test.impls.types.test_resources.pre_or_post_sds_value_validator import constant_validator
-from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions, ValidationActual
 from exactly_lib_test.type_val_deps.types.test_resources.line_matcher import LineMatcherSymbolContext, \
     sdv_from_primitive_value
 
@@ -18,7 +17,7 @@ class ValidationCase:
         self._symbol_context = LineMatcherSymbolContext.of_sdv(
             'line_matcher_symbol',
             sdv_from_primitive_value(
-                validator=constant_validator(actual)
+                validator=ddv_validators.constant(actual)
             )
         )
 

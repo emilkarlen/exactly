@@ -8,6 +8,8 @@ from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType
+from exactly_lib_test.impls.test_resources.validation.validation_of_path import \
+    FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.impls.types.logic.test_resources import integration_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import MultiSourceExpectation, arrangement_w_tcds, \
     ExecutionExpectation, AssertionResolvingEnvironment, arrangement_wo_tcds
@@ -20,7 +22,6 @@ from exactly_lib_test.impls.types.program.test_resources.arguments_accumulation 
     TestExecutorBase, SymbolReferencesTestExecutor, ValidationOfAccumulatedArgumentsExecutor, \
     ValidationOfSdvArgumentsExecutor
 from exactly_lib_test.impls.types.test_resources import relativity_options
-from exactly_lib_test.impls.types.test_resources.validation_of_path import FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

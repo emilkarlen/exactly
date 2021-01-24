@@ -8,6 +8,8 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import ConstantDdvValidator
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
+from exactly_lib_test.impls.test_resources.validation import validation as asrt_validation
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.line_matcher.test_resources import arguments_building as lm_args
 from exactly_lib_test.impls.types.line_matcher.test_resources import models as line_matcher_models
 from exactly_lib_test.impls.types.line_matcher.test_resources.arguments_building import NOT_A_LINE_MATCHER
@@ -23,7 +25,6 @@ from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_buildi
 from exactly_lib_test.impls.types.string_matcher.test_resources.test_configuration import \
     TestCaseBase
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
-from exactly_lib_test.impls.types.test_resources import validation as asrt_validation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -92,7 +93,7 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
                         symbol_references=asserted_symbol_references,
                     ),
                     ExecutionExpectation(
-                        validation=asrt_validation.pre_sds_validation_fails(asrt.equals(failure_message)),
+                        validation=ValidationAssertions.pre_sds_fails(asrt.equals(failure_message)),
                     ),
                 ),
                 actual=ConstantDdvValidator(
@@ -106,7 +107,7 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
                         symbol_references=asserted_symbol_references,
                     ),
                     ExecutionExpectation(
-                        validation=asrt_validation.post_sds_validation_fails__w_any_msg(),
+                        validation=ValidationAssertions.post_sds_fails__w_any_msg(),
                     ),
                 ),
                 actual=ConstantDdvValidator(

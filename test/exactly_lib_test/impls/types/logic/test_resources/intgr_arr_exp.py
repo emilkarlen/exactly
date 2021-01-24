@@ -7,7 +7,7 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
-from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions, all_validations_passes
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.tcfs.test_resources import tcds_populators, hds_populators, non_hds_populator
 from exactly_lib_test.tcfs.test_resources.ds_action import PlainTcdsAction
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
@@ -86,7 +86,7 @@ class ParseExpectation:
 class ExecutionExpectation(Generic[OUTPUT]):
     def __init__(
             self,
-            validation: ValidationAssertions = all_validations_passes(),
+            validation: ValidationAssertions = ValidationAssertions.all_passes(),
             main_result: ValueAssertion[OUTPUT] = asrt.anything_goes(),
             is_hard_error: Optional[ValueAssertion[TextRenderer]] = None,
     ):
@@ -149,7 +149,7 @@ class PrimAndExeExpectation(Generic[PRIMITIVE, OUTPUT]):
 
     @staticmethod
     def of_exe(
-            validation: ValidationAssertions = all_validations_passes(),
+            validation: ValidationAssertions = ValidationAssertions.all_passes(),
             main_result: ValueAssertion[OUTPUT] = asrt.anything_goes(),
             is_hard_error: Optional[ValueAssertion[TextRenderer]] = None,
     ) -> 'PrimAndExeExpectation[PRIMITIVE, OUTPUT]':

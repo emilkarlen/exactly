@@ -4,6 +4,7 @@ from exactly_lib.impls.types.string_matcher import matcher_options, parse_string
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.util.str_.misc_formatting import lines_content
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
     ParseExpectation, ExecutionExpectation, Expectation
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements, \
@@ -19,7 +20,6 @@ from exactly_lib_test.impls.types.string_transformers.test_resources.validation_
     failing_validation_cases
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
-from exactly_lib_test.impls.types.test_resources.validation import pre_sds_validation_fails__w_any_msg
 from exactly_lib_test.section_document.test_resources import parse_source_assertions  as asrt_source
 
 
@@ -81,7 +81,7 @@ class ValidationShouldFailPreWhenHardCodedRegexIsInvalid(tc.TestWithNegationArgu
                         Arrangement(),
                         Expectation(
                             execution=ExecutionExpectation(
-                                validation=pre_sds_validation_fails__w_any_msg()
+                                validation=ValidationAssertions.pre_sds_fails__w_any_msg()
                             ),
                         )
                     )

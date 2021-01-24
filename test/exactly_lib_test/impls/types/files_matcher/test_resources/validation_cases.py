@@ -1,13 +1,12 @@
 from typing import Sequence
 
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.impls.test_resources.validation import ddv_validators, validation
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationActual, ValidationAssertions
 from exactly_lib_test.impls.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, \
     PrimAndExeExpectation
 from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
-from exactly_lib_test.impls.types.test_resources import pre_or_post_sds_value_validator
-from exactly_lib_test.impls.types.test_resources import validation
-from exactly_lib_test.impls.types.test_resources.validation import ValidationActual, ValidationAssertions
 from exactly_lib_test.test_resources.test_utils import NExArr
 
 
@@ -22,7 +21,7 @@ class ValidationCase:
             symbol_name,
             sdv_ddv.sdv_from_bool(
                 True,
-                validator=pre_or_post_sds_value_validator.constant_validator(actual),
+                validator=ddv_validators.constant(actual),
             ),
         )
 

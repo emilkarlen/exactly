@@ -6,6 +6,7 @@ from exactly_lib.type_val_prims.files_condition import FilesCondition
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.name_and_value import NameAndValue, NavBuilder
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.file_matcher.test_resources import argument_building as fm_args, validation_cases
 from exactly_lib_test.impls.types.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.files_condition.test_resources import primitive_assertions as asrt_primitive
@@ -15,7 +16,6 @@ from exactly_lib_test.impls.types.files_condition.test_resources.integration_che
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_wo_tcds, \
     ParseExpectation, ExecutionExpectation, PrimAndExeExpectation, Expectation
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import prim_asrt__constant
-from exactly_lib_test.impls.types.test_resources.validation import pre_sds_validation_fails__w_any_msg
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.test_utils import NExArr, NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -73,7 +73,7 @@ class TestValidationErrorShouldBeDetected(unittest.TestCase):
                     )
                 ),
                 ExecutionExpectation(
-                    validation=pre_sds_validation_fails__w_any_msg()
+                    validation=ValidationAssertions.pre_sds_fails__w_any_msg()
                 )
             )
         )

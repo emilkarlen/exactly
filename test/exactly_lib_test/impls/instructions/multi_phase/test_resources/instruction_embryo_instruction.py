@@ -6,7 +6,7 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
-from exactly_lib_test.impls.types.test_resources.pre_or_post_sds_validator import SdvValidatorThat
+from exactly_lib_test.impls.test_resources.validation.sdv_validators import SdvValidatorThat
 from exactly_lib_test.test_resources.actions import do_return, action_of, do_nothing
 
 

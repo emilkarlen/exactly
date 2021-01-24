@@ -28,6 +28,7 @@ from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.logic.test_resources import integration_check as sut
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import ParseExpectation, ExecutionExpectation, \
     Expectation, TcdsArrangement, Arrangement, arrangement_wo_tcds, arrangement_w_tcds, prim_asrt__constant, \
@@ -43,7 +44,6 @@ from exactly_lib_test.impls.types.matcher.test_resources.matchers import Matcher
     MatcherTestImplBase
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.test_resources import matcher_assertions
-from exactly_lib_test.impls.types.test_resources import validation as asrt_validation
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_contents_check, \
     hds_populators
@@ -418,7 +418,7 @@ class TestFailingExpectations(TestCaseBase):
             ConstantParser(_MATCHER_THAT_MATCHES),
             Expectation(
                 execution=ExecutionExpectation(
-                    validation=asrt_validation.pre_sds_validation_fails(),
+                    validation=ValidationAssertions.pre_sds_fails(),
                 ),
             )
         )
@@ -428,7 +428,7 @@ class TestFailingExpectations(TestCaseBase):
             ConstantParser(_MATCHER_THAT_MATCHES),
             Expectation(
                 execution=ExecutionExpectation(
-                    validation=asrt_validation.post_sds_validation_fails(),
+                    validation=ValidationAssertions.post_sds_fails(),
                 ),
             )
         )

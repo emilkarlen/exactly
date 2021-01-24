@@ -6,12 +6,12 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.impls.test_resources.validation import validation
 from exactly_lib_test.impls.types.file_matcher.test_resources.argument_building import FileMatcherArg
 from exactly_lib_test.impls.types.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.impls.types.files_matcher.test_resources.arguments_building import FilesMatcherArg, \
     SymbolReference
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement
-from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer

@@ -5,6 +5,7 @@ from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
+from exactly_lib_test.impls.test_resources.validation import validation as asrt_validation
 from exactly_lib_test.impls.types.files_matcher.test_resources import integration_check
 from exactly_lib_test.impls.types.files_matcher.test_resources import model
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
@@ -12,7 +13,6 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arra
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__for_expression_parser
-from exactly_lib_test.impls.types.test_resources import validation as asrt_validation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
@@ -72,7 +72,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                                 symbol_references=asrt.is_empty_sequence,
                             ),
                             ExecutionExpectation(
-                                validation=asrt_validation.pre_sds_validation_fails__w_any_msg(),
+                                validation=asrt_validation.ValidationAssertions.pre_sds_fails__w_any_msg(),
                             ),
                         ),
                     )
@@ -109,7 +109,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                                     ]),
                                 ),
                                 ExecutionExpectation(
-                                    validation=asrt_validation.pre_sds_validation_fails__w_any_msg(),
+                                    validation=asrt_validation.ValidationAssertions.pre_sds_fails__w_any_msg(),
                                 ),
                             ),
                         )

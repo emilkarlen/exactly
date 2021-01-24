@@ -13,8 +13,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table, symbol_table_from_none_or_value
-from exactly_lib_test.impls.types.test_resources import pre_or_post_sds_validator as validator_util
-from exactly_lib_test.impls.types.test_resources import validation
+from exactly_lib_test.impls.test_resources.validation import ddv_assertions, validation
 from exactly_lib_test.impls.types.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
@@ -140,12 +139,11 @@ def check(put: unittest.TestCase,
             tcds_contents=arrangement.tcds_populator) as environment:
         os.mkdir('act-cwd')
         os.chdir('act-cwd')
-        validator_util.check_ddv(
-            put,
-            ddv_validators.all_of(exe_file_as_command.resolve(environment.symbols).validators),
-            environment.tcds,
-            expectation.validation_result,
-        )
+        actual_validator = ddv_validators.all_of(exe_file_as_command.resolve(environment.symbols).validators)
+
+        assertion = ddv_assertions.DdvValidationAssertion.of_expectation(expectation.validation_result,
+                                                                         environment.tcds)
+        assertion.apply_with_message(put, actual_validator, 'validation')
 
 
 def check__abs_stx(put: unittest.TestCase,
@@ -187,22 +185,27 @@ class CheckBase(unittest.TestCase):
                                   actual: PathSdv,
                                   environment: PathResolvingEnvironmentPreOrPostSds):
         path_as_exe_file_cmd = command_sdvs.for_executable_file(actual)
-        validator_util.check_ddv(self,
-                                 ddv_validators.all_of(path_as_exe_file_cmd.resolve(environment.symbols).validators),
-                                 environment.tcds,
-                                 validation.expect_passes_all_validations())
+        actual_validator = ddv_validators.all_of(path_as_exe_file_cmd.resolve(environment.symbols).validators)
+
+        assertion = ddv_assertions.DdvValidationAssertion.of_expectation(validation.Expectation.passes_all(),
+                                                                         environment.tcds)
+        assertion.apply_with_message(self, actual_validator, 'validation')
 
     def _assert_does_not_pass_validation(self,
                                          actual: PathSdv,
                                          environment: PathResolvingEnvironmentPreOrPostSds):
         path_as_exe_file_cmd = command_sdvs.for_executable_file(actual)
+        actual_validator = ddv_validators.all_of(path_as_exe_file_cmd.resolve(environment.symbols).validators)
+
         passes_pre_sds = not self.configuration.exists_pre_sds
         passes_post_sds = not passes_pre_sds
-        validator_util.check_ddv(self,
-                                 ddv_validators.all_of(path_as_exe_file_cmd.resolve(environment.symbols).validators),
-                                 environment.tcds,
-                                 validation.Expectation(passes_pre_sds=passes_pre_sds,
-                                                        passes_post_sds=passes_post_sds))
+        expectation = validation.Expectation(
+            passes_pre_sds=passes_pre_sds,
+            passes_post_sds=passes_post_sds,
+        )
+
+        assertion = ddv_assertions.DdvValidationAssertion.of_expectation(expectation, environment.tcds)
+        assertion.apply_with_message(self, actual_validator, 'validation')
 
 
 class CheckExistingFile(CheckBase):

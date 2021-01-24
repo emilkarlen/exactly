@@ -13,11 +13,10 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
+from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line
-from exactly_lib_test.impls.types.test_resources.validation import ValidationExpectationSvh, \
-    all_validations_passes__svh
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.tcfs.test_resources.ds_construction import tcds_with_act_as_curr_dir__post_act
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
@@ -105,7 +104,7 @@ class Expectation2:
 
 
 def expectation(
-        validation: ValidationExpectationSvh = all_validations_passes__svh(),
+        validation: ValidationExpectationSvh = ValidationExpectationSvh.passes(),
         main_result: ValueAssertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
         symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
         main_side_effects_on_sds: ValueAssertion[SandboxDs] = asrt.anything_goes(),

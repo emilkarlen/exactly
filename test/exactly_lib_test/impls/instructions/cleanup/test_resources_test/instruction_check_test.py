@@ -13,7 +13,7 @@ from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     cleanup_phase_instruction_that
 from exactly_lib_test.impls.instructions.cleanup.test_resources import instruction_check as sut
-from exactly_lib_test.impls.types.test_resources.symbol_table_check_help import \
+from exactly_lib_test.impls.test_resources.symbol_table_check_help import \
     do_fail_if_symbol_table_does_not_equal, \
     get_symbol_table_from_path_resolving_environment_that_is_first_arg, \
     get_symbol_table_from_instruction_environment_that_is_first_arg

@@ -1,5 +1,4 @@
 import os
-import os
 import unittest
 from contextlib import contextmanager
 from typing import List, Optional, Sequence, ContextManager, Callable
@@ -24,8 +23,7 @@ from exactly_lib.util.process_execution.execution_elements import ProcessExecuti
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import eh_assertions as asrt_eh
-from exactly_lib_test.impls.types.test_resources.validation import ValidationExpectationSvh, \
-    all_validations_passes__svh
+from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.tcfs.test_resources.ds_action import PlainTcdsAction
 from exactly_lib_test.tcfs.test_resources.hds_utils import home_directory_structure
@@ -106,7 +104,7 @@ class PostSdsExpectation:
 class Expectation:
     def __init__(self,
                  validation: ValidationExpectationSvh
-                 = all_validations_passes__svh(),
+                 = ValidationExpectationSvh.passes(),
                  prepare: ValueAssertion[sh.SuccessOrHardError]
                  = sh_assertions.is_success(),
                  execute: ValueAssertion[ExitCodeOrHardError]

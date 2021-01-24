@@ -10,8 +10,8 @@ from exactly_lib_test.impls.actors.file_interpreter.configuration import COMMAND
 from exactly_lib_test.impls.actors.test_resources import relativity_configurations, integration_check
 from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation, \
     check_execution, PostSdsExpectation
-from exactly_lib_test.impls.actors.test_resources.validation_pre_or_post_sds import VALIDATION_CASES
-from exactly_lib_test.impls.types.test_resources.validation import pre_sds_validation_fails__svh
+from exactly_lib_test.impls.actors.test_resources.validation_cases import VALIDATION_CASES
+from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.files import file_structure as fs
@@ -164,7 +164,7 @@ class TestValidationShouldFailWhenInterpreterProgramFileDoesNotExist(unittest.Te
         )
 
         expectation = Expectation(
-            validation=pre_sds_validation_fails__svh()
+            validation=ValidationExpectationSvh.fails__pre_sds()
         )
         # ACT & ASSERT #
         check_execution(self,
@@ -198,7 +198,7 @@ class TestValidationShouldFailWhenInterpreterProgramFileIsADirectory(unittest.Te
             ])
         )
         expectation = Expectation(
-            validation=pre_sds_validation_fails__svh()
+            validation=ValidationExpectationSvh.fails__pre_sds()
         )
         # ACT & ASSERT #
         check_execution(self,

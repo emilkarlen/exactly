@@ -5,8 +5,7 @@ from typing import Iterable, Sequence, Optional, Callable
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironment
-from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
+    PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -38,16 +37,6 @@ class SdvValidator:
         """
         raise NotImplementedError()
 
-    def validate_pre_or_post_sds(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Optional[TextRenderer]:
-        """
-        Validates the object using either pre- or post- SDS.
-        :return: Error message iff validation failed.
-        """
-        error_message = self.validate_pre_sds_if_applicable(environment)
-        if error_message is not None:
-            return error_message
-        return self.validate_post_sds_if_applicable(environment)
-
 
 class PreOrPostSdsValidatorPrimitive(ABC):
     """
@@ -72,16 +61,6 @@ class PreOrPostSdsValidatorPrimitive(ABC):
         :return: Error message iff validation was applicable and validation failed.
         """
         raise NotImplementedError()
-
-    def validate_pre_or_post_sds(self) -> Optional[TextRenderer]:
-        """
-        Validates the object using either pre- or post- SDS.
-        :return: Error message iff validation failed.
-        """
-        error_message = self.validate_pre_sds_if_applicable()
-        if error_message is not None:
-            return error_message
-        return self.validate_post_sds_if_applicable()
 
 
 class FixedPreOrPostSdsValidator(PreOrPostSdsValidatorPrimitive):
@@ -158,29 +137,7 @@ class AndSdvValidator(SdvValidator):
         return None
 
 
-class SdvValidatorOfReferredSdvBase(SdvValidator):
-    """
-    Validates an object using a referred resolvers validator.
-    """
-
-    def __init__(self, symbol_name: str):
-        self.symbol_name = symbol_name
-
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
-        return self._referred_validator(environment).validate_pre_sds_if_applicable(environment)
-
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
-        return self._referred_validator(environment).validate_post_sds_if_applicable(environment)
-
-    def _referred_validator(self, environment: PathResolvingEnvironment) -> SdvValidator:
-        raise NotImplementedError('abstract method')
-
-
 DdvValidatorResolver = Callable[[SymbolTable], DdvValidator]
-
-
-def validator_resolver_of_constant_success(symbols: SymbolTable) -> DdvValidator:
-    return ddv_validation.ConstantDdvValidator.new_success()
 
 
 class SdvValidatorFromDdvValidator(SdvValidator):

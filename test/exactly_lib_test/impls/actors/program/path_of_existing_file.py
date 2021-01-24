@@ -5,8 +5,8 @@ from exactly_lib_test.execution.test_resources import eh_assertions as asrt_eh
 from exactly_lib_test.impls.actors.test_resources import integration_check
 from exactly_lib_test.impls.actors.test_resources import relativity_configurations
 from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation, PostSdsExpectation
+from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as args
-from exactly_lib_test.impls.types.test_resources.validation import pre_sds_validation_fails__svh
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents
@@ -77,6 +77,6 @@ class TestValidationErrorWhenExecutableFileDoesNotExist(unittest.TestCase):
             [instr(source_w_relative_name_of_existing_file.as_arguments.lines)],
             Arrangement(),
             Expectation(
-                validation=pre_sds_validation_fails__svh()
+                validation=ValidationExpectationSvh.fails__pre_sds()
             ),
         )

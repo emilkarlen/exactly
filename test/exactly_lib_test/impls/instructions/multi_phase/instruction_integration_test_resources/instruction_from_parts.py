@@ -16,7 +16,7 @@ from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import StringRest
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
-from exactly_lib_test.impls.types.test_resources.pre_or_post_sds_validator import SdvValidatorThat
+from exactly_lib_test.impls.test_resources.validation.sdv_validators import SdvValidatorThat
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

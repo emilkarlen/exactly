@@ -3,10 +3,10 @@ from typing import List, Sequence
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.impls.test_resources.validation import validation
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions, Expectation
 from exactly_lib_test.impls.types.integer.test_resources.integer_sdv import \
     is_reference_to_symbol_in_expression
-from exactly_lib_test.impls.types.test_resources import validation
-from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions, Expectation
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -56,7 +56,7 @@ def failing_integer_validation_cases(symbol_in_integer_name: str = 'symbol_in_in
                               [],
                               [],
                               validation.PRE_SDS_FAILURE_EXPECTATION,
-                              validation.pre_sds_validation_fails__w_any_msg(),
+                              validation.ValidationAssertions.pre_sds_fails__w_any_msg(),
                               )
         for expr_str in
         _PRE_SDS_VALIDATION_FAILURE__CONSTANT_STRINGS
@@ -68,14 +68,14 @@ def failing_integer_validation_cases(symbol_in_integer_name: str = 'symbol_in_in
                               [non_int_string_symbol],
                               [is_reference_to_symbol_in_expression(non_int_string_symbol.name)],
                               validation.PRE_SDS_FAILURE_EXPECTATION,
-                              validation.pre_sds_validation_fails__w_any_msg(),
+                              ValidationAssertions.pre_sds_fails__w_any_msg(),
                               ),
         IntegerValidationCase('failing validation/pre sds: non-iterable string ref',
                               'len({})'.format(symbol_reference_syntax_for_name(non_iterable_string_symbol.name)),
                               [non_iterable_string_symbol],
                               [is_reference_to_symbol_in_expression(non_iterable_string_symbol.name)],
                               validation.PRE_SDS_FAILURE_EXPECTATION,
-                              validation.pre_sds_validation_fails__w_any_msg(),
+                              ValidationAssertions.pre_sds_fails__w_any_msg(),
                               ),
     ]
 

@@ -14,8 +14,8 @@ from exactly_lib_test.impls.instructions.multi_phase.copy_.test_resources import
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, \
     expectation
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf
-from exactly_lib_test.impls.types.test_resources import validation as asrt_validation
 from exactly_lib_test.impls.types.test_resources.relativity_options import RelativityOptionConfigurationRelHds, \
     RelativityOptionConfigurationForRelNonHds
 from exactly_lib_test.section_document.test_resources import parse_checker
@@ -107,7 +107,7 @@ class TestValidationErrorScenarios(unittest.TestCase):
                             symbols=relativity_option.symbols.in_arrangement(),
                         ),
                         expectation(
-                            validation=asrt_validation.pre_sds_validation_fails__w_any_msg(),
+                            validation=ValidationAssertions.pre_sds_fails__w_any_msg(),
                             symbol_usages=relativity_option.symbols.usages_expectation(),
                         ),
                     )
@@ -127,7 +127,7 @@ class TestValidationErrorScenarios(unittest.TestCase):
                             symbols=relativity_option.symbols.in_arrangement(),
                         ),
                         expectation(
-                            validation=asrt_validation.pre_sds_validation_fails__w_any_msg(),
+                            validation=ValidationAssertions.pre_sds_fails__w_any_msg(),
                             symbol_usages=relativity_option.symbols.usages_expectation(),
                         ),
                     )
@@ -147,7 +147,7 @@ class TestValidationErrorScenarios(unittest.TestCase):
                         ),
                         expectation(
                             symbol_usages=relativity_option.symbols.usages_expectation(),
-                            validation=asrt_validation.post_sds_validation_fails__w_any_msg(),
+                            validation=ValidationAssertions.post_sds_fails__w_any_msg(),
                         )
                     )
 
@@ -167,7 +167,7 @@ class TestValidationErrorScenarios(unittest.TestCase):
                         ),
                         expectation(
                             symbol_usages=src_relativity.symbols.usages_expectation(),
-                            validation=asrt_validation.post_sds_validation_fails__w_any_msg(),
+                            validation=ValidationAssertions.post_sds_fails__w_any_msg(),
                         )
                     )
 

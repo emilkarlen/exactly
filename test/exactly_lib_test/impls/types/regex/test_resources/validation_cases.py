@@ -4,9 +4,8 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.regex.test_resources.assertions import is_reference_to_valid_regex_string_part
-from exactly_lib_test.impls.types.test_resources import validation
-from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext
@@ -42,13 +41,13 @@ def failing_regex_validation_cases(symbol_in_regex_name: str = 'symbol_in_regex'
             '*',
             [],
             [],
-            validation.pre_sds_validation_fails__w_any_msg(),
+            ValidationAssertions.pre_sds_fails__w_any_msg(),
         ),
         RegexValidationCase(
             'failing validation/post sds',
             '*' + symbol_reference_syntax_for_name(post_sds_path.name),
             [post_sds_path],
             [is_reference_to_valid_regex_string_part(post_sds_path.name)],
-            validation.post_sds_validation_fails__w_any_msg(),
+            ValidationAssertions.post_sds_fails__w_any_msg(),
         ),
     ]

@@ -18,10 +18,10 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions
+from exactly_lib_test.impls.test_resources.validation import validation as validation_utils
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions, ValidationResultAssertion
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line_2
-from exactly_lib_test.impls.types.test_resources import validation as validation_utils
-from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions, ValidationResultAssertion
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
@@ -89,7 +89,7 @@ class Expectation(Generic[T]):
         self.instruction_application_environment = assertion_on_instruction_environment
 
 
-def expectation(validation: ValidationAssertions = validation_utils.all_validations_passes(),
+def expectation(validation: ValidationAssertions = validation_utils.ValidationAssertions.all_passes(),
                 main_result: ValueAssertion[T] = asrt.anything_goes(),
                 main_raises_hard_error: bool = False,
                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,

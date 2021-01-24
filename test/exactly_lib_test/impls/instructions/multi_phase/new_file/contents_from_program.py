@@ -21,11 +21,11 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.uti
     IS_FAILURE, IS_SUCCESS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check as embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_transformers.test_resources import abstract_syntaxes as str_trans_abs_stx
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
-from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly
@@ -244,7 +244,7 @@ class TestFailingValidation(unittest.TestCase):
             NArrEx(
                 'pre SDS validation failure SHOULD cause validation error',
                 RelOptionType.REL_HDS_CASE,
-                embryo_check.expectation(validation=validation.pre_sds_validation_fails__w_any_msg()),
+                embryo_check.expectation(validation=ValidationAssertions.pre_sds_fails__w_any_msg()),
             ),
             NArrEx(
                 'post SDS validation failure SHOULD cause main error',

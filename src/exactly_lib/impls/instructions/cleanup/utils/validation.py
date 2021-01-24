@@ -2,7 +2,7 @@ from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
+    PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.result import sh
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 
@@ -20,9 +20,6 @@ class PreOrPostSdsSvhValidationForSuccessOrHardError:
 
     def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> sh.SuccessOrHardError:
         return self._translate(self.validator.validate_post_sds_if_applicable(environment))
-
-    def validate_pre_or_post_sds(self, environment: PathResolvingEnvironmentPreOrPostSds) -> sh.SuccessOrHardError:
-        return self._translate(self.validator.validate_pre_or_post_sds(environment))
 
     @staticmethod
     def _translate(error_message_or_none: Optional[TextRenderer]) -> sh.SuccessOrHardError:

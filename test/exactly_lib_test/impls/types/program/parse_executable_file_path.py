@@ -18,14 +18,13 @@ from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import StringRest
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.util.parse.token import QuoteType
+from exactly_lib_test.impls.test_resources.validation import ddv_assertions, validation
 from exactly_lib_test.impls.types.program.test_resources import parse_executable_file_path_cases as utils
 from exactly_lib_test.impls.types.program.test_resources.parse_executable_file_path_cases import \
     RelativityConfiguration, \
     suite_for, \
     ExpectationOnExeFile
-from exactly_lib_test.impls.types.test_resources import relativity_options, \
-    pre_or_post_sds_validator as validator_util
-from exactly_lib_test.impls.types.test_resources import validation
+from exactly_lib_test.impls.types.test_resources import relativity_options
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import tcds_populators as tcds_pop
@@ -255,14 +254,14 @@ class TestParseInvalidSyntax(unittest.TestCase):
 
 CONFIGURATION_FOR_PYTHON_EXECUTABLE = TestCaseConfiguration(
     syntax_elements.PYTHON_EXECUTABLE_OPTION_STRING,
-    validation_result=validation.expect_passes_all_validations(),
+    validation_result=validation.Expectation.passes_all(),
     path_ddv=path_ddvs.absolute_file_name(sys.executable),
     expected_symbol_references=[],
 )
 
 CONFIGURATION_FOR_ABSOLUTE_PATH_OF_EXISTING_EXECUTABLE_FILE = TestCaseConfiguration(
     string_formatting.file_name(sys.executable),
-    validation_result=validation.expect_passes_all_validations(),
+    validation_result=validation.Expectation.passes_all(),
     path_ddv=path_ddvs.absolute_file_name(sys.executable),
     expected_symbol_references=[],
 )
@@ -271,7 +270,7 @@ _ABSOLUT_PATH_THAT_DOES_NOT_EXIST = str(non_existing_absolute_path('/absolute/pa
 
 CONFIGURATION_FOR_ABSOLUTE_PATH_OF_NON_EXISTING_FILE = TestCaseConfiguration(
     string_formatting.file_name(_ABSOLUT_PATH_THAT_DOES_NOT_EXIST),
-    validation_result=validation.expect_validation_pre_eds(False),
+    validation_result=validation.Expectation.pre_eds(False),
     path_ddv=path_ddvs.absolute_file_name(_ABSOLUT_PATH_THAT_DOES_NOT_EXIST),
     expected_symbol_references=[],
 )
@@ -355,8 +354,7 @@ class TestParseAbsolutePath(unittest.TestCase):
             expected_symbol_references=[],
         )
 
-        validator_expectation = validation.Expectation(passes_pre_sds=True,
-                                                       passes_post_sds=True)
+        validator_expectation = validation.Expectation.passes_all()
 
         self._check__abs_stx(
             arguments,
@@ -401,10 +399,10 @@ class TestParseAbsolutePath(unittest.TestCase):
         expected_source_after_parse.apply_with_message(self, source, 'parse source')
         exe_file_command = command_sdvs.for_executable_file(exe_file)
         with tcds_with_act_as_curr_dir() as environment:
-            validator_util.check_ddv(self,
-                                     ddv_validators.all_of(exe_file_command.resolve(environment.symbols).validators),
-                                     environment.tcds,
-                                     validator_expectation)
+            actual_validator = ddv_validators.all_of(exe_file_command.resolve(environment.symbols).validators)
+            assertion = ddv_assertions.DdvValidationAssertion.of_expectation(validator_expectation,
+                                                                             environment.tcds)
+            assertion.apply_with_message(self, actual_validator, 'validation')
 
     def _check__abs_stx(self,
                         arguments: AbstractSyntax,

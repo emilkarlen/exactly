@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, MultiSourceExpectation, \
     ExecutionExpectation, Expectation, ParseExpectation
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
@@ -9,7 +10,6 @@ from exactly_lib_test.impls.types.string_source.test_resources import abstract_s
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check
 from exactly_lib_test.impls.types.string_transformers.test_resources import abstract_syntaxes as str_trans_abs_stx
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
-from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
@@ -94,12 +94,12 @@ class TestFailingValidation(unittest.TestCase):
             NArrEx(
                 'pre SDS validation failure',
                 RelOptionType.REL_HDS_CASE,
-                validation.pre_sds_validation_fails__w_any_msg(),
+                ValidationAssertions.pre_sds_fails__w_any_msg(),
             ),
             NArrEx(
                 'post SDS validation failure',
                 RelOptionType.REL_ACT,
-                validation.post_sds_validation_fails__w_any_msg(),
+                ValidationAssertions.post_sds_fails__w_any_msg(),
             ),
         ]
         for case in cases:

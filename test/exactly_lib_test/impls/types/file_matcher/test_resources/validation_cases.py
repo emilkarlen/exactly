@@ -6,14 +6,15 @@ from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.impls.test_resources.validation import ddv_validators, validation
+from exactly_lib_test.impls.test_resources.validation import svh_validation
+from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationActual, \
+    ValidationAssertions
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_wo_tcds, \
     PrimAndExeExpectation
 from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax
-from exactly_lib_test.impls.types.test_resources import validation
-from exactly_lib_test.impls.types.test_resources.pre_or_post_sds_value_validator import constant_validator
-from exactly_lib_test.impls.types.test_resources.validation import ValidationActual, \
-    ValidationExpectationSvh, ValidationAssertions
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext
 
@@ -60,7 +61,7 @@ def failing_validation_cases__svh(symbol_name: str = 'file_matcher_symbol'
                               case.expected,
                               case.actual)
         )
-        for case in validation.failing_validation_cases__svh()
+        for case in svh_validation.failing_validation_cases__svh()
     ]
 
 
@@ -119,6 +120,6 @@ def _successful_matcher_with_validation(the_validation: ValidationActual) -> Fil
 
     return sdv_ddv.sdv_from_parts(
         references=(),
-        validator=constant_validator(the_validation),
+        validator=ddv_validators.constant(the_validation),
         matcher=get_matcher
     )

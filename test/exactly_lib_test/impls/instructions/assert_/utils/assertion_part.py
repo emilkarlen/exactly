@@ -13,7 +13,7 @@ from exactly_lib.type_val_deps.sym_ref.restrictions import ValueTypeRestriction
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.common.test_resources.text_doc_assertions import is_string_for_test
-from exactly_lib_test.impls.types.test_resources.pre_or_post_sds_validator import SdvValidatorThat
+from exactly_lib_test.impls.test_resources.validation.sdv_validators import SdvValidatorThat
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh, svh_assertions as asrt_svh
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment

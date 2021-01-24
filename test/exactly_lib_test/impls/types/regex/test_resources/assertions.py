@@ -8,9 +8,9 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependencies
 from exactly_lib.util import symbol_table
-from exactly_lib_test.impls.types.test_resources.pre_or_post_sds_value_validator import \
-    PreOrPostSdsValueValidationAssertion
-from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions, all_validations_passes
+from exactly_lib_test.impls.test_resources.validation.ddv_assertions import \
+    DdvValidationAssertion
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -26,7 +26,7 @@ def matches_regex_sdv(
         primitive_value: Callable[[TestCaseDs], ValueAssertion[Pattern]] = lambda tcds: asrt.anything_goes(),
         references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
         dir_dependencies: DirDependencies = DirDependencies.NONE,
-        validation: ValidationAssertions = all_validations_passes(),
+        validation: ValidationAssertions = ValidationAssertions.all_passes(),
         symbols: symbol_table.SymbolTable = None,
         tcds: TestCaseDs = fake_tcds(),
 ) -> ValueAssertion[RegexSdv]:
@@ -66,7 +66,7 @@ def matches_regex_sdv(
                         'validator',
                         lambda value: value.validator(),
                         asrt.is_instance_with(DdvValidator,
-                                              PreOrPostSdsValueValidationAssertion(
+                                              DdvValidationAssertion(
                                                   tcds,
                                                   validation))
                     ),

@@ -14,7 +14,7 @@ from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     setup_phase_instruction_that
 from exactly_lib_test.impls.instructions.setup.test_resources import instruction_check as sut
-from exactly_lib_test.impls.types.test_resources.symbol_table_check_help import \
+from exactly_lib_test.impls.test_resources.symbol_table_check_help import \
     do_fail_if_symbol_table_does_not_equal, \
     get_symbol_table_from_path_resolving_environment_that_is_first_arg, \
     get_symbol_table_from_instruction_environment_that_is_first_arg
