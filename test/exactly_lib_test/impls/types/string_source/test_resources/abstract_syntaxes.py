@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.impls.types.string_source import defs
@@ -40,12 +40,33 @@ class TransformedStringSourceAbsStx(StringSourceAbsStx):
         ])
 
 
+class CustomStringSourceAbsStx(StringSourceAbsStx):
+    def __init__(self, tokens: TokenSequence):
+        self._tokens = tokens
+
+    @staticmethod
+    def missing_value() -> StringSourceAbsStx:
+        return CustomStringSourceAbsStx(TokenSequence.empty())
+
+    @staticmethod
+    def w_superfluous() -> StringSourceAbsStx:
+        return CustomStringSourceAbsStx(
+            TokenSequence.concat([
+                StringSourceOfStringAbsStx.of_str('valid').tokenization(),
+                TokenSequence.sequence('superfluous'),
+            ])
+        )
+
+    def tokenization(self) -> TokenSequence:
+        return self._tokens
+
+
 class StringSourceOfStringAbsStx(StringSourceAbsStx):
     def __init__(self, string: StringAbsStx):
         self.string = string
 
     @staticmethod
-    def of_str(s: str, quoting: QuoteType) -> StringSourceAbsStx:
+    def of_str(s: str, quoting: Optional[QuoteType] = None) -> StringSourceAbsStx:
         return StringSourceOfStringAbsStx(
             str_abs_stx.StringLiteralAbsStx(s, quoting)
         )

@@ -25,6 +25,13 @@ MISSING_SOURCE = 'Missing argument ({string}, {path} or {here_doc})'.format(
     here_doc=syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name,
 )
 
+_SYNTAX_ELEMENT_NAME = '|'.join([
+    syntax_elements.STRING_SYNTAX_ELEMENT.singular_name,
+    syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name,
+    ' '.join([option_syntax(FILE_ARGUMENT_OPTION),
+              syntax_elements.PATH_SYNTAX_ELEMENT.singular_name]),
+])
+
 
 def parse_from_parse_source(source: ParseSource,
                             conf: RelOptionArgumentConfiguration = CONFIGURATION) -> StringOrPathSdv:
@@ -55,7 +62,7 @@ def parse_from_token_parser(token_parser: TokenParser,
 def parse_string_or_here_doc_from_token_parser(token_parser: TokenParser,
                                                consume_last_here_doc_line: bool = True
                                                ) -> Tuple[SourceType, StringSdv]:
-    token_parser.require_head_token_has_valid_syntax()
+    token_parser.require_has_valid_head_token(_SYNTAX_ELEMENT_NAME)
     if token_parser.token_stream.head.source_string.startswith(string.HERE_DOCUMENT_MARKER_PREFIX):
         here_doc = parse_here_document.parse_as_last_argument_from_token_parser(True, token_parser,
                                                                                 consume_last_here_doc_line)

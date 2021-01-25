@@ -3,7 +3,6 @@ import unittest
 from typing import Sequence
 
 from exactly_lib.execution import phase_step
-from exactly_lib.impls.instructions.setup import stdin as sut
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -211,9 +210,6 @@ class Checker:
                                arrangement,
                                expectation.as_expectation_w_source(source_case.expectation),
                                )
-
-
-CHECKER = Checker(sut.Parser())
 
 
 class Executor:
