@@ -3,7 +3,7 @@ from typing import Generic, Sequence, TypeVar
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_prims.description.tree_structured import WithNodeDescription

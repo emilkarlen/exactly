@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.impls.actors import file_interpreter as sut
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
-from exactly_lib.test_case.actor import ParseException
+from exactly_lib.test_case.phases.act.actor import ParseException
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.impls.actors.file_interpreter.configuration import TheConfigurationBase, \

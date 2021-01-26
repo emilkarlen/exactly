@@ -7,8 +7,8 @@ from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import PhaseStepFailureException, ExecutionFailureStatus
 from exactly_lib.impls.actors.util import source_code_lines
 from exactly_lib.section_document.model import SectionContents, ElementType
-from exactly_lib.test_case.actor import Actor, ActionToCheck, ParseException
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.actor import Actor, ActionToCheck, ParseException
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util.str_ import misc_formatting
 

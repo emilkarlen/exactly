@@ -2,7 +2,7 @@ import os
 import unittest
 
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.actor import Actor
+from exactly_lib.test_case.phases.act.actor import Actor
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import recorder as instr_setup
 from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions

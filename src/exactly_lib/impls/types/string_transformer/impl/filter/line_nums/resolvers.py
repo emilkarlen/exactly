@@ -11,7 +11,7 @@ from exactly_lib.impls.types.string_transformer.impl.filter.line_nums.range_expr
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator

@@ -1,5 +1,4 @@
 import os
-import os
 import pathlib
 import subprocess
 import sys
@@ -11,6 +10,7 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
+from exactly_lib.execution.partial_execution.setup_settings_handler import StandardSetupSettingsHandler
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.impls.os_services import os_services_access
@@ -18,20 +18,21 @@ from exactly_lib.impls.types.string_source import as_stdin
 from exactly_lib.impls.types.string_source import file_source
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.tcfs.sds import SandboxDs
-from exactly_lib.test_case.actor import ActionToCheck, Actor, ParseException
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases import setup
+from exactly_lib.test_case.phases.act.actor import ActionToCheck, Actor, ParseException
+from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
+from exactly_lib.test_case.phases.setup.settings_handler import SetupSettingsHandler
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
-from exactly_lib.type_val_prims.string_source.string_source import StringSource
+from exactly_lib.type_val_deps.dep_variants.adv_w_validation.impls import ConstantAdvWValidation
 from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
+from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result, \
+    settings_handlers
 from exactly_lib_test.execution.partial_execution.test_resources.act_phase_utils import \
     actor_for_execution_of_python_source
 from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_expect import execute_and_check, \
@@ -186,16 +187,18 @@ class TestExecute(unittest.TestCase):
         file_with_stdin_contents = fs.File('redirected-to-stdin.txt', 'contents of file to redirect')
         with tmp_dir(fs.DirContents([file_with_stdin_contents])) as abs_tmp_dir_path:
             absolute_name_of_file_to_redirect = abs_tmp_dir_path / file_with_stdin_contents.name
-            setup_settings = setup.default_settings()
-            setup_settings.stdin = file_source.string_source_of_file__poorly_described(
-                absolute_name_of_file_to_redirect,
-                DirFileSpaceThatMustNoBeUsed())
+            setup_settings = StandardSetupSettingsHandler.new_empty()
+            setup_settings.builder.stdin = ConstantAdvWValidation.new_wo_validation(
+                file_source.string_source_of_file__poorly_described(
+                    absolute_name_of_file_to_redirect,
+                    DirFileSpaceThatMustNoBeUsed())
+            )
             _check_contents_of_stdin_for_setup_settings(self,
                                                         setup_settings,
                                                         file_with_stdin_contents.contents)
 
     def test_WHEN_stdin_is_not_set_in_setup_THEN_it_should_be_empty(self):
-        setup_settings = setup.default_settings()
+        setup_settings = StandardSetupSettingsHandler.new_empty()
         setup_settings.stdin = None
         expected_contents_of_stdin = ''
         _check_contents_of_stdin_for_setup_settings(self,
@@ -222,7 +225,7 @@ def _stderr_result_file_contains(expected_contents: str) -> ValueAssertion:
 
 
 def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
-                                                setup_settings: SetupSettingsBuilder,
+                                                settings_handler: SetupSettingsHandler,
                                                 expected_contents_of_stdin: str) -> PartialExeResult:
     """
     Tests contents of stdin by executing a Python program that stores
@@ -241,7 +244,7 @@ def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
                 executor_that_records_contents_of_stdin)
             test_case = _empty_test_case()
             # ACT #
-            result = _execute(parser, test_case, setup_settings)
+            result = _execute(parser, test_case, settings_handler)
             # ASSERT #
             file_checker = FileChecker(put)
             file_checker.assert_file_contents(output_file_path,
@@ -277,7 +280,7 @@ class _ActionToCheckThatRecordsCurrentDir(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                stdin: Optional[StringSource],
+                input_: ActExecutionInput,
                 output_files: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         self.cwd_registerer.register_cwd_for(phase_step.ACT__EXECUTE)
@@ -295,10 +298,10 @@ class _AtcThatExecutesPythonProgramFile(ActionToCheckThatJustReturnsSuccess):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                stdin: Optional[StringSource],
+                input_: ActExecutionInput,
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
-        with as_stdin.of_optional(stdin) as stdin_f:
+        with as_stdin.of_optional(input_.stdin) as stdin_f:
             exit_code = subprocess.call([sys.executable, str(self.python_program_file)],
                                         timeout=60,
                                         stdin=stdin_f,
@@ -314,7 +317,7 @@ class _AtcThatReturnsConstantExitCode(ActionToCheckThatJustReturnsSuccess):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                stdin: Optional[StringSource],
+                input_: ActExecutionInput,
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         return new_eh_exit_code(self.exit_code)
@@ -330,7 +333,7 @@ def _empty_test_case() -> TestCase:
 
 def _execute(actor: Actor,
              test_case: TestCase,
-             setup_settings: SetupSettingsBuilder = setup.default_settings(),
+             setup_settings_handler: Optional[SetupSettingsHandler] = None,
              is_keep_sandbox: bool = False,
              current_directory: pathlib.Path = None,
              mem_buff_size: int = 2 ** 10,
@@ -348,7 +351,7 @@ def _execute(actor: Actor,
                                        mem_buff_size),
                 ConfPhaseValues(NameAndValue('the actor', actor),
                                 hds),
-                setup_settings,
+                settings_handlers.from_optional(setup_settings_handler),
                 is_keep_sandbox)
 
 

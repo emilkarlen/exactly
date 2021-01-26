@@ -2,9 +2,9 @@ from typing import Sequence, Optional
 
 from exactly_lib.impls.actors.util.actor_from_parts import parts
 from exactly_lib.impls.actors.util.actor_from_parts.parts import ExecutableObjectParser
-from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.actor import Actor
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep

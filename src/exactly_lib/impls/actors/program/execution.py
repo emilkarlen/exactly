@@ -5,9 +5,9 @@ from typing import Optional
 from exactly_lib.impls.actors.util import std_files
 from exactly_lib.impls.types.string_source.factory import RootStringSourceFactory
 from exactly_lib.impls.types.string_transformer import sequence_resolving
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.type_val_prims.program.program import Program

@@ -19,8 +19,8 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.instruction_parsers import InstructionParserThatConsumesCurrentLine
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.symbol.value_type import ValueType
-from exactly_lib.test_case.actor import Actor, ActionToCheck, ParseException
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.actor import Actor, ActionToCheck, ParseException
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
 from exactly_lib.type_val_deps.sym_ref.restrictions import ValueTypeRestriction

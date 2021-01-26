@@ -6,8 +6,8 @@ from typing import Sequence
 from exactly_lib.impls.types.string_matcher.parse.equality import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.util.str_.misc_formatting import lines_content

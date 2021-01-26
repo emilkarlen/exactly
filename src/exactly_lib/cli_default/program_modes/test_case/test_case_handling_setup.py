@@ -7,8 +7,8 @@ from exactly_lib.impls.actors.util.source_code_lines import all_source_code_line
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IdentityPreprocessor
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.test_case.actor import Actor, ActionToCheck
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.actor import Actor, ActionToCheck
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 
 
 def setup() -> TestCaseHandlingSetup:

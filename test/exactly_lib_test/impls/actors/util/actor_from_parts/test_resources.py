@@ -6,9 +6,9 @@ from exactly_lib.impls.actors.util.actor_from_parts import parts as sut
 from exactly_lib.impls.actors.util.actor_from_parts.parts import EXECUTABLE_OBJECT, Validator, Executor
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.actor import ParseException
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep

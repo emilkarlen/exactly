@@ -7,7 +7,7 @@ from exactly_lib.impls.types.matcher.property_getter import PropertyGetterSdv, P
     PropertyGetterAdv, PropertyGetter
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherAdv, FileMatcherDdv, FileMatcherSdv
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv

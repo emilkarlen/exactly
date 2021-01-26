@@ -1,5 +1,5 @@
 import pathlib
-from typing import List
+from typing import List, Optional
 
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.section_document import model
@@ -20,8 +20,7 @@ from exactly_lib_test.execution.test_resources.test_case_generation import instr
 
 
 class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutionBase):
-    def __init__(self,
-                 recorder: ListRecorder = None):
+    def __init__(self, recorder: Optional[ListRecorder] = None):
         super().__init__()
         self.__recorder = recorder
         if self.__recorder is None:

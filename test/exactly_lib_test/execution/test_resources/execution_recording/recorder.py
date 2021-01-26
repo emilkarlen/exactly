@@ -1,12 +1,12 @@
 class ListElementRecorder:
     def __init__(self,
-                 element_list: list,
+                 recording_media: list,
                  element):
-        self.recorder = element_list
+        self.recording_media = recording_media
         self.element = element
 
     def record(self):
-        self.recorder.append(self.element)
+        self.recording_media.append(self.element)
 
 
 class ListRecorder:

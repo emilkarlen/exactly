@@ -1,7 +1,7 @@
 from typing import Sequence, List
 
 from exactly_lib.section_document.syntax import is_empty_or_comment_line
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.util.str_ import misc_formatting
 
 

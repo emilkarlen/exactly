@@ -10,7 +10,7 @@ from exactly_lib.execution.partial_execution.configuration import TestCase
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import PhaseStepFailureException, ExecutionFailureStatus
 from exactly_lib.section_document.model import SectionContents
-from exactly_lib.test_case.actor import ActionToCheck
+from exactly_lib.test_case.phases.act.actor import ActionToCheck
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util.symbol_table import SymbolTable

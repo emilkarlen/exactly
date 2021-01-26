@@ -18,11 +18,11 @@ from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.result import ExecutionFailureStatus, PhaseStepFailure, PhaseStepFailureException
 from exactly_lib.tcfs.sds import SandboxDs, construct_at
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.actor import ActionToCheck, Actor
+from exactly_lib.test_case.phases.act.actor import ActionToCheck, Actor
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
+from exactly_lib.test_case.phases.setup.settings_handler import SetupSettingsHandler
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util.file_utils.misc_utils import resolved_path_name
 from exactly_lib.util.name_and_value import NameAndValue
@@ -34,11 +34,11 @@ class Configuration(tuple):
     def __new__(cls,
                 conf_from_outside: ExecutionConfiguration,
                 conf_phase_values: ConfPhaseValues,
-                setup_settings_builder: SetupSettingsBuilder,
+                setup_settings_handler: SetupSettingsHandler,
                 ):
         return tuple.__new__(cls, (conf_from_outside,
                                    conf_phase_values,
-                                   setup_settings_builder))
+                                   setup_settings_handler))
 
     @property
     def exe_conf(self) -> ExecutionConfiguration:
@@ -49,13 +49,13 @@ class Configuration(tuple):
         return self[1]
 
     @property
-    def setup_settings_builder(self) -> SetupSettingsBuilder:
+    def setup_settings_handler(self) -> SetupSettingsHandler:
         return self[2]
 
 
-def execute(exe_conf: Configuration,
+def execute(configuration: Configuration,
             test_case: TestCase) -> PartialExeResult:
-    executor = _PartialExecutor(exe_conf,
+    executor = _PartialExecutor(configuration,
                                 test_case)
     return executor.execute()
 
@@ -87,11 +87,10 @@ class _PartialExecutor:
         self.exe_conf = conf.exe_conf
         self.conf_values = conf.conf_phase_values
         self._test_case = test_case
-        self._setup_settings_builder = conf.setup_settings_builder
-        self._stdin_from_setup = None
+        self._setup_settings_builder = conf.setup_settings_handler
         self._source_setup = None
         self._os_services = conf.exe_conf.os_services
-        self._act_phase_executor = None
+        self._act_phase_executor = _initial_atc_executor()
         self._action_to_check = None
         self._instruction_environment_pre_sds = None
 
@@ -129,6 +128,7 @@ class _PartialExecutor:
                     self._act__validate_post_setup,
                     self._before_assert__validate_post_setup,
                     self._assert__validate_post_setup,
+                    self._act__validate_act_execution_input,
                     self._act__prepare,
                 ])
         except PhaseStepFailureException as ex:
@@ -262,6 +262,12 @@ class _PartialExecutor:
         execute_action_and_catch_internal_error_exception(
             self._act_phase_executor.validate_post_setup(failure_con.apply), failure_con)
 
+    def _act__validate_act_execution_input(self):
+        failure_con = self._act_helper.failure_constructor(phase_step.ACT__VALIDATE_EXE_INPUT)
+
+        execute_action_and_catch_internal_error_exception(
+            self._act_phase_executor.validate_execution_info(failure_con.apply), failure_con)
+
     def _act__prepare(self):
         failure_con = self._act_helper.failure_constructor(phase_step.ACT__PREPARE)
 
@@ -295,15 +301,12 @@ class _PartialExecutor:
                                     self._test_case.cleanup_phase)
 
     def _setup__main(self):
-        try:
-            run_instructions_phase_step(phase_step.SETUP__MAIN,
-                                        phase_step_executors.SetupMainExecutor(
-                                            self._os_services,
-                                            self._post_sds_main_environments(phase_identifier.SETUP),
-                                            self._setup_settings_builder),
-                                        self._test_case.setup_phase)
-        finally:
-            self._stdin_from_setup = self._setup_settings_builder.stdin
+        run_instructions_phase_step(phase_step.SETUP__MAIN,
+                                    phase_step_executors.SetupMainExecutor(
+                                        self._os_services,
+                                        self._post_sds_main_environments(phase_identifier.SETUP),
+                                        self._setup_settings_builder.builder),
+                                    self._test_case.setup_phase)
 
     def _setup__validate_post_setup(self):
         run_instructions_phase_step(phase_step.SETUP__VALIDATE_POST_SETUP,
@@ -324,7 +327,7 @@ class _PartialExecutor:
             ),
             env_for_non_validate_steps,
             self._os_services,
-            self._stdin_from_setup,
+            self._setup_settings_builder.as_act_execution_input(),
             self.exe_conf.exe_atc_and_skip_assertions,
         )
 
@@ -414,3 +417,7 @@ class _PartialExecutor:
                                 self.__sandbox_directory_structure,
                                 self._action_to_check_outcome,
                                 None)
+
+
+def _initial_atc_executor() -> Optional[ActionToCheckExecutor]:
+    return None

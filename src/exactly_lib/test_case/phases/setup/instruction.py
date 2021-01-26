@@ -1,29 +1,12 @@
-from typing import Optional, Sequence
+from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import TestCaseInstructionWithSymbols
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
-from exactly_lib.type_val_prims.string_source.string_source import StringSource
-
-
-class SetupSettingsBuilder:
-    def __init__(self):
-        self.__stdin = None
-
-    @property
-    def stdin(self) -> Optional[StringSource]:
-        return self.__stdin
-
-    @stdin.setter
-    def stdin(self, x: Optional[StringSource]):
-        self.__stdin = x
-
-
-def default_settings() -> SetupSettingsBuilder:
-    return SetupSettingsBuilder()
 
 
 class SetupPhaseInstruction(TestCaseInstructionWithSymbols):
@@ -31,15 +14,15 @@ class SetupPhaseInstruction(TestCaseInstructionWithSymbols):
     Abstract base class for instructions of the SETUP phase.
     """
 
-    def validate_pre_sds(self,
-                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self, environment: InstructionEnvironmentForPreSdsStep,
+                         ) -> svh.SuccessOrValidationErrorOrHardError:
         """
         :raises: :class:`HardErrorException`
         """
         return svh.new_svh_success()
 
-    def validate_post_setup(self,
-                            environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self, environment: InstructionEnvironmentForPostSdsStep,
+                            ) -> svh.SuccessOrValidationErrorOrHardError:
         """
         :raises: :class:`HardErrorException`
         """

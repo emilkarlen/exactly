@@ -1,10 +1,8 @@
-from typing import Optional
-
 from exactly_lib.definitions.entity import actors
 from exactly_lib.impls.actors.program import actor as command_line_actor
 from exactly_lib.processing.act_phase import ActPhaseSetup
+from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatRunsConstantActions
@@ -38,6 +36,6 @@ class PrintStringOnStdout:
 
     def __call__(self,
                  environment: InstructionEnvironmentForPostSdsStep,
-                 stdin: Optional[StringSource],
+                 input_: ActExecutionInput,
                  output: StdOutputFiles):
         output.out.write(self.string_to_print)

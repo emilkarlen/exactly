@@ -7,7 +7,7 @@ from exactly_lib.impls.types.line_matcher.trace_rendering import LineMatcherLine
 from exactly_lib.impls.types.matcher.impls import quantifier_matchers
 from exactly_lib.impls.types.string_matcher import matcher_options
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.types.line_matcher import LineMatcherSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine

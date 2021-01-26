@@ -1,5 +1,8 @@
 import unittest
+from typing import Optional
 
+from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
@@ -22,11 +25,17 @@ from exactly_lib_test.test_case.actor.test_resources.test_actions import execute
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(Test)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestValidatePreSds),
+        unittest.makeSuite(TestValidatePostSetup),
+        unittest.makeSuite(TestValidationOfExecutionInput),
+        unittest.makeSuite(TestPrepare),
+        unittest.makeSuite(TestExecute),
+    ])
 
 
-class Test(TestCaseBase):
-    def test_hard_error_in_validate_pre_sds(self):
+class TestValidatePreSds(TestCaseBase):
+    def test_hard_error(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
@@ -48,7 +57,7 @@ class Test(TestCaseBase):
                 ],
             ))
 
-    def test_hard_error_exception_in_validate_pre_sds(self):
+    def test_hard_error_exception(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(
@@ -72,7 +81,7 @@ class Test(TestCaseBase):
                 ],
             ))
 
-    def test_validation_error_in_validate_pre_sds(self):
+    def test_validation_error(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
@@ -95,7 +104,7 @@ class Test(TestCaseBase):
                 ],
             ))
 
-    def test_exception_in_validate_pre_sds(self):
+    def test_exception(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
@@ -116,7 +125,9 @@ class Test(TestCaseBase):
                 ],
             ))
 
-    def test_validation_error_in_validate_post_setup(self):
+
+class TestValidatePostSetup(TestCaseBase):
+    def test_validation_error(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
@@ -143,7 +154,7 @@ class Test(TestCaseBase):
                 ],
             ))
 
-    def test_hard_error_in_validate_post_setup(self):
+    def test_hard_error(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
@@ -170,7 +181,7 @@ class Test(TestCaseBase):
                 ],
             ))
 
-    def test_hard_exception_in_validate_post_setup(self):
+    def test_hard_exception(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(
@@ -199,7 +210,7 @@ class Test(TestCaseBase):
                 ],
             ))
 
-    def test_exception_in_validate_post_setup(self):
+    def test_exception(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
@@ -226,7 +237,111 @@ class Test(TestCaseBase):
                 ],
             ))
 
-    def test_hard_error_in_prepare(self):
+
+class TestValidationOfExecutionInput(TestCaseBase):
+    def test_hard_error(self):
+        failure_message = 'error in act/prepare'
+
+        def validator_that_reports_error() -> Optional[TextRenderer]:
+            return text_docs.single_pre_formatted_line_object(failure_message)
+
+        test_case = _single_successful_instruction_in_each_phase()
+        self._check(
+            Arrangement(test_case),
+            custom_act_execution_input_validator=validator_that_reports_error,
+            expectation=Expectation(
+                asrt_result.matches2(ExecutionFailureStatus.HARD_ERROR,
+                                     asrt_result.has_sds(),
+                                     asrt_result.has_no_action_to_check_outcome(),
+                                     ExpectedFailureForPhaseFailure.new_with_message(
+                                         phase_step.ACT__VALIDATE_EXE_INPUT,
+                                         failure_message)
+                                     ),
+                [phase_step.ACT__PARSE] +
+                SYMBOL_VALIDATION_STEPS__ONCE +
+                PRE_SDS_VALIDATION_STEPS__ONCE +
+                [phase_step.SETUP__MAIN,
+
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.ACT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
+
+                 phase_step.ACT__VALIDATE_EXE_INPUT,
+
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                 ],
+            ))
+
+    def test_hard_error_exception(self):
+        failure_message = 'HE exception in act/validate exe info'
+
+        def validator_that_raises_hard_error() -> Optional[TextRenderer]:
+            raise hard_error_ex(failure_message)
+
+        test_case = _single_successful_instruction_in_each_phase()
+        self._check(
+            Arrangement(test_case),
+            custom_act_execution_input_validator=validator_that_raises_hard_error,
+            expectation=Expectation(
+                asrt_result.matches2(ExecutionFailureStatus.HARD_ERROR,
+                                     asrt_result.has_sds(),
+                                     asrt_result.has_no_action_to_check_outcome(),
+                                     ExpectedFailureForPhaseFailure.new_with_message(
+                                         phase_step.ACT__VALIDATE_EXE_INPUT,
+                                         failure_message)
+                                     ),
+                [phase_step.ACT__PARSE] +
+                SYMBOL_VALIDATION_STEPS__ONCE +
+                PRE_SDS_VALIDATION_STEPS__ONCE +
+                [phase_step.SETUP__MAIN,
+
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.ACT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
+
+                 phase_step.ACT__VALIDATE_EXE_INPUT,
+
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                 ],
+            ))
+
+    def test_internal_error(self):
+        def validator_that_raises_exception() -> Optional[TextRenderer]:
+            raise test.ImplementationErrorTestException()
+
+        test_case = _single_successful_instruction_in_each_phase()
+        self._check(
+            Arrangement(test_case, ),
+            custom_act_execution_input_validator=validator_that_raises_exception,
+            expectation=Expectation(
+                asrt_result.matches2(ExecutionFailureStatus.INTERNAL_ERROR,
+                                     asrt_result.has_sds(),
+                                     asrt_result.has_no_action_to_check_outcome(),
+                                     ExpectedFailureForPhaseFailure.new_with_exception(
+                                         phase_step.ACT__VALIDATE_EXE_INPUT,
+                                         test.ImplementationErrorTestException),
+                                     ),
+                [phase_step.ACT__PARSE] +
+                SYMBOL_VALIDATION_STEPS__ONCE +
+                PRE_SDS_VALIDATION_STEPS__ONCE +
+                [phase_step.SETUP__MAIN,
+
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.ACT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
+
+                 phase_step.ACT__VALIDATE_EXE_INPUT,
+
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                 ],
+            ))
+
+
+class TestPrepare(TestCaseBase):
+    def test_hard_error(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
@@ -250,13 +365,15 @@ class Test(TestCaseBase):
                  phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                  phase_step.ASSERT__VALIDATE_POST_SETUP,
 
+                 phase_step.ACT__VALIDATE_EXE_INPUT,
+
                  phase_step.ACT__PREPARE,
 
                  (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                  ],
             ))
 
-    def test_hard_error_exception_in_prepare(self):
+    def test_hard_error_exception(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(
@@ -282,13 +399,15 @@ class Test(TestCaseBase):
                  phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                  phase_step.ASSERT__VALIDATE_POST_SETUP,
 
+                 phase_step.ACT__VALIDATE_EXE_INPUT,
+
                  phase_step.ACT__PREPARE,
 
                  (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                  ],
             ))
 
-    def test_internal_error_in_prepare(self):
+    def test_internal_error(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
@@ -312,13 +431,17 @@ class Test(TestCaseBase):
                  phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                  phase_step.ASSERT__VALIDATE_POST_SETUP,
 
+                 phase_step.ACT__VALIDATE_EXE_INPUT,
+
                  phase_step.ACT__PREPARE,
 
                  (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                  ],
             ))
 
-    def test_hard_error_in_execute(self):
+
+class TestExecute(TestCaseBase):
+    def test_hard_error(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
@@ -342,6 +465,8 @@ class Test(TestCaseBase):
                  phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                  phase_step.ASSERT__VALIDATE_POST_SETUP,
 
+                 phase_step.ACT__VALIDATE_EXE_INPUT,
+
                  phase_step.ACT__PREPARE,
                  phase_step.ACT__EXECUTE,
 
@@ -349,7 +474,7 @@ class Test(TestCaseBase):
                  ],
             ))
 
-    def test_hard_error_exception_in_execute(self):
+    def test_hard_error_exception(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
@@ -373,6 +498,8 @@ class Test(TestCaseBase):
                  phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                  phase_step.ASSERT__VALIDATE_POST_SETUP,
 
+                 phase_step.ACT__VALIDATE_EXE_INPUT,
+
                  phase_step.ACT__PREPARE,
                  phase_step.ACT__EXECUTE,
 
@@ -380,7 +507,7 @@ class Test(TestCaseBase):
                  ],
             ))
 
-    def test_internal_error_in_execute(self):
+    def test_internal_error(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
@@ -403,6 +530,8 @@ class Test(TestCaseBase):
                  phase_step.ACT__VALIDATE_POST_SETUP,
                  phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                  phase_step.ASSERT__VALIDATE_POST_SETUP,
+
+                 phase_step.ACT__VALIDATE_EXE_INPUT,
 
                  phase_step.ACT__PREPARE,
                  phase_step.ACT__EXECUTE,

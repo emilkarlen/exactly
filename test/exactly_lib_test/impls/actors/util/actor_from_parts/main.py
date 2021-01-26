@@ -4,8 +4,8 @@ from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.execution import phase_step
 from exactly_lib.impls.actors.util.actor_from_parts import parts as sut
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.hard_error import HardErrorException
+from exactly_lib.test_case.phases.act.actor import ParseException
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
 from exactly_lib.util.name_and_value import NameAndValue

@@ -2,8 +2,8 @@ import pathlib
 import unittest
 from typing import Sequence
 
-from exactly_lib.test_case.actor import Actor, ParseException
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.actor import Actor, ParseException
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib_test.impls.actors.test_resources.action_to_check import Configuration
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_hds

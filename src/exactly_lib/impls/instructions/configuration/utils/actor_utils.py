@@ -19,7 +19,7 @@ from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case.actor import Actor
+from exactly_lib.test_case.phases.act.actor import Actor
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem

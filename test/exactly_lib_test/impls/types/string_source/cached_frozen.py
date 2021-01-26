@@ -5,7 +5,7 @@ from typing import ContextManager, IO
 
 from exactly_lib.impls.types.string_source import cached_frozen as sut
 from exactly_lib.impls.types.string_source.contents import contents_of_str
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace

@@ -14,7 +14,7 @@ from exactly_lib.processing.standalone.accessor_resolver import AccessorResolver
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.actor import ActionToCheck
+from exactly_lib.test_case.phases.act.actor import ActionToCheck
 from exactly_lib.util.symbol_table import SymbolTable
 
 

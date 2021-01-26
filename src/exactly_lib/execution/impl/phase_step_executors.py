@@ -10,7 +10,8 @@ from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, Previo
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, \
     ConfigurationBuilder
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
+from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.test_case.result import pfh, sh, svh
 
 InstructionEnvPostSdsGetter = Iterator[InstructionEnvironmentForPostSdsStep]
@@ -84,16 +85,16 @@ class SetupMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  os_services: OsServices,
                  instruction_environments: InstructionEnvPostSdsGetter,
-                 setup_settings_builder: SetupSettingsBuilder):
+                 settings_builder: SetupSettingsBuilder):
         self.__os_services = os_services
         self.__instruction_environments = instruction_environments
-        self.__setup_settings_builder = setup_settings_builder
+        self.__settings_builder = settings_builder
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
             instruction.main(next(self.__instruction_environments),
                              self.__os_services,
-                             self.__setup_settings_builder))
+                             self.__settings_builder))
 
 
 class BeforeAssertValidatePostSetupExecutor(ControlledInstructionExecutor):

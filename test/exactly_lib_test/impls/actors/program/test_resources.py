@@ -9,7 +9,7 @@ from exactly_lib import program_info
 from exactly_lib.impls.actors import common
 from exactly_lib.impls.actors.program import actor as sut
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.actors.test_resources.action_to_check import Configuration, \
     TestCaseSourceSetup

@@ -3,7 +3,7 @@ from typing import Sequence
 from exactly_lib.impls.types.path.path_check import PathCheck, pre_sds_validate, pre_or_post_sds_validate
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
 from exactly_lib.test_case.result import svh
 
 

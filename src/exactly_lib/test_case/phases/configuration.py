@@ -3,7 +3,7 @@ from typing import Optional
 
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
-from exactly_lib.test_case.actor import Actor
+from exactly_lib.test_case.phases.act.actor import Actor
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result.sh import SuccessOrHardError
 from exactly_lib.test_case.test_case_status import TestCaseStatus

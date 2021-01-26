@@ -49,6 +49,8 @@ class Test(TestCaseBase):
                          phase_step.ASSERT__VALIDATE_POST_SETUP,
                          phase_step.ASSERT__VALIDATE_POST_SETUP,
 
+                         phase_step.ACT__VALIDATE_EXE_INPUT,
+
                          phase_step.ACT__PREPARE,
                          phase_step.ACT__EXECUTE,
 

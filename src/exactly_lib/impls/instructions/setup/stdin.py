@@ -1,17 +1,19 @@
-from pathlib import Path
-from typing import Sequence, ContextManager, Iterator
+from typing import Sequence, List, Optional
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
-from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args
+from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args, InvokationVariant, \
+    SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import instruction_arguments, formatting, syntax_descriptions
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.impls import file_properties
 from exactly_lib.impls.file_properties import FileType
 from exactly_lib.impls.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
-from exactly_lib.impls.types.path.path_check import PathCheck
+from exactly_lib.impls.types.path.path_check import PathCheck, PathCheckDdvValidator, PathCheckDdv
 from exactly_lib.impls.types.string_or_path import parse_string_or_path
 from exactly_lib.impls.types.string_or_path.doc import StringOrHereDocOrFile
 from exactly_lib.impls.types.string_or_path.primitive import SourceType
@@ -22,19 +24,19 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import fro
     TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case.hard_error import HardErrorException
+from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.act.adv_w_validation import AdvWValidation
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from exactly_lib.test_case.result import sh
+from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
+from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
+from exactly_lib.test_case.result import sh, svh
+from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
-from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive
-from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
-from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
@@ -69,7 +71,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def single_line_description(self) -> str:
         return self._tp.format('Sets the contents of stdin for the {atc}')
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> Sequence[InvokationVariant]:
         args = [a.Single(a.Multiplicity.MANDATORY, a.Constant(instruction_arguments.ASSIGNMENT_OPERATOR)),
                 self.string_or_here_doc_or_file_arg.argument_usage(a.Multiplicity.MANDATORY),
                 ]
@@ -78,10 +80,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
                                          self._tp.fnap(_DESCRIPTION_REST)),
         ]
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> Sequence[SyntaxElementDescription]:
         return self.string_or_here_doc_or_file_arg.syntax_element_descriptions()
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return self.string_or_here_doc_or_file_arg.see_also_targets()
 
 
@@ -121,8 +123,7 @@ class _InstructionForString(SetupPhaseInstruction):
         contents = self.stdin_contents.resolve_value_of_any_dependency(
             environment.path_resolving_environment_pre_or_post_sds)
 
-        string_source_factory = RootStringSourceFactory(environment.tmp_dir__path_access.paths_access)
-        settings_builder.stdin = string_source_factory.of_const_str(contents)
+        settings_builder.stdin = _StdinOfString(contents)
 
         return sh.new_sh_success()
 
@@ -131,83 +132,61 @@ class _InstructionForFile(InstructionWithFileRefsBase):
     def __init__(self, stdin_contents: PathSdv):
         super().__init__((PathCheck(stdin_contents,
                                     file_properties.must_exist_as(FileType.REGULAR)),))
+        self._file_path_check = PathCheck(stdin_contents,
+                                          file_properties.must_exist_as(FileType.REGULAR))
         self.stdin_contents = stdin_contents
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self.stdin_contents.references
+
+    def validate_post_setup(self,
+                            environment: InstructionEnvironmentForPostSdsStep,
+                            ) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder,
              ) -> sh.SuccessOrHardError:
-        described_path = self.stdin_contents.resolve(environment.symbols).value_of_any_dependency__d(environment.tcds)
+        path_ddv = self.stdin_contents.resolve(environment.symbols)
 
-        string_source_factory = RootStringSourceFactory(environment.tmp_dir__path_access.paths_access)
-        stdin_wo_check_of_existence = string_source_factory.of_file__described(described_path)
-        stdin_w_check_of_existence = _StringSourceThatRaisesHardErrorIfFileIsInvalid(stdin_wo_check_of_existence,
-                                                                                     described_path.describer)
-
-        settings_builder.stdin = stdin_w_check_of_existence
+        settings_builder.stdin = _StdinOfFile(path_ddv, environment.tcds)
 
         return sh.new_sh_success()
 
 
-class _StringSourceThatRaisesHardErrorIfFileIsInvalid(StringSource):
+class _StdinOfFile(AdvWValidation[StringSource]):
     def __init__(self,
-                 checked: StringSource,
-                 path_description: PathDescriberForPrimitive,
+                 path: PathDdv,
+                 tcds: TestCaseDs,
                  ):
-        self._checked = checked
-        self._path_description = path_description
-        self._check = file_properties.must_exist_as(FileType.REGULAR, follow_symlinks=True)
-        self._contents = _ContentsThatRaisesHardErrorIfFileIsInvalid(checked,
-                                                                     path_description)
+        self._path = path
+        self._tcds = tcds
 
-    def new_structure_builder(self) -> StringSourceStructureBuilder:
-        return self._checked.new_structure_builder()
+    def validate(self) -> Optional[TextRenderer]:
+        path_validator = PathCheckDdvValidator(
+            PathCheckDdv(self._path, file_properties.must_exist_as(FileType.REGULAR))
+        )
+        return path_validator.validate_post_sds_if_applicable(self._tcds)
 
-    def contents(self) -> StringSourceContents:
-        return self._contents
+    def resolve(self, environment: ApplicationEnvironment) -> StringSource:
+        string_source_factory = RootStringSourceFactory(environment.tmp_files_space)
+        return string_source_factory.of_file__described(
+            self._path.value_of_any_dependency__d(self._tcds)
+        )
 
-    def freeze(self):
-        pass
 
+class _StdinOfString(AdvWValidation[StringSource]):
+    def __init__(self, contents: str):
+        self._contents = contents
 
-class _ContentsThatRaisesHardErrorIfFileIsInvalid(StringSourceContents):
-    def __init__(self,
-                 checked: StringSource,
-                 path_description: PathDescriberForPrimitive,
+    def validate(self) -> Optional[TextRenderer]:
+        return None
 
-                 ):
-        self._checked = checked
-        self._path_description = path_description
-        self._check = file_properties.must_exist_as(FileType.REGULAR, follow_symlinks=True)
-
-    @property
-    def may_depend_on_external_resources(self) -> bool:
-        return self._checked.contents().may_depend_on_external_resources
-
-    @property
-    def as_file(self) -> Path:
-        ret_val = self._checked.contents().as_file
-        self._do_check(ret_val)
-        return ret_val
-
-    @property
-    def as_lines(self) -> ContextManager[Iterator[str]]:
-        return self._checked.contents().as_lines
-
-    @property
-    def tmp_file_space(self) -> DirFileSpace:
-        return self._checked.contents().tmp_file_space
-
-    def _do_check(self, path: Path):
-        check_result = self._check.apply(path)
-        if not check_result.is_success:
-            raise HardErrorException(
-                file_properties.FailureRenderer(check_result.cause, self._path_description)
-            )
+    def resolve(self, environment: ApplicationEnvironment) -> StringSource:
+        string_source_factory = RootStringSourceFactory(environment.tmp_files_space)
+        return string_source_factory.of_const_str(self._contents)
 
 
 _DESCRIPTION_REST = """\

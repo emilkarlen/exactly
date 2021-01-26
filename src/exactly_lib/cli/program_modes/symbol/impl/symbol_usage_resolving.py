@@ -6,8 +6,9 @@ from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SYMBOL
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, SymbolDefinition, SymbolUsageVisitor
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import Phase
-from exactly_lib.test_case.phases import setup, before_assert, assert_, cleanup
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases import before_assert, assert_, cleanup
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
+from exactly_lib.test_case.phases.setup import instruction
 from exactly_lib.test_case.test_case_doc import TestCaseOfInstructions, ElementWithSourceLocation
 from exactly_lib.util import symbol_table
 from exactly_lib.util.symbol_table import SymbolTable
@@ -66,7 +67,7 @@ class DefinitionsInfoResolverFromTestCase(DefinitionsResolver):
     def symbol_usages(self) -> Iterator[ContextAnd[SymbolUsage]]:
         return itertools.chain.from_iterable([
             _symbol_usages_from(phase_identifier.SETUP,
-                                self._test_case.setup_phase, setup.get_symbol_usages),
+                                self._test_case.setup_phase, instruction.get_symbol_usages),
             self._act_phase_symbol_usages(),
             _symbol_usages_from(phase_identifier.BEFORE_ASSERT,
                                 self._test_case.before_assert_phase,

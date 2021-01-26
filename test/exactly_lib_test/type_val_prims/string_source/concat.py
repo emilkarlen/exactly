@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from typing import Sequence, ContextManager, List
 
 from exactly_lib.definitions.primitives import string_source
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.string_source.impls import concat as sut
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder

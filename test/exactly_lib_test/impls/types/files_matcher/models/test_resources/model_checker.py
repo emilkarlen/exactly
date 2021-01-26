@@ -4,7 +4,7 @@ from typing import List
 
 from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel

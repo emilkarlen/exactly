@@ -4,7 +4,7 @@ from typing import Generic, Sequence, Callable
 from exactly_lib.definitions import logic
 from exactly_lib.impls.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator

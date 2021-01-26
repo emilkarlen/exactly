@@ -5,7 +5,7 @@ from typing import List
 from exactly_lib.impls.actors import null as sut
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation, \
     check_execution, PostSdsExpectation
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr

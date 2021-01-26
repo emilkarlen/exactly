@@ -4,7 +4,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedInstruction
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.util.line_source import LineSequence
 
 

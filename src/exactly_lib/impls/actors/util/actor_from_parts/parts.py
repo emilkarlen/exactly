@@ -3,10 +3,11 @@ from typing import Sequence, TypeVar, Generic, Optional
 
 from exactly_lib.impls.svh_validators import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case.actor import ActionToCheck, Actor
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.actor import ActionToCheck, Actor
+from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -209,11 +210,11 @@ class ActionToCheckFromParts(Generic[EXECUTABLE_OBJECT], ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                stdin: Optional[StringSource],
+                input_: ActExecutionInput,
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         try:
-            exit_code = self._executor.execute(environment, stdin, output)
+            exit_code = self._executor.execute(environment, input_.stdin, output)
             return eh.new_eh_exit_code(exit_code)
         except HardErrorException as ex:
             return eh.new_eh_hard_error(FailureDetails.new_message(ex.error))

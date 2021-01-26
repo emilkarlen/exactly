@@ -5,7 +5,7 @@ from typing import Sequence, List, Tuple
 
 from exactly_lib.impls.actors.util import source_code_lines as sut
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 

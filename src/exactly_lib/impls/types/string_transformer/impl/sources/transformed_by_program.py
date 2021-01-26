@@ -4,7 +4,7 @@ from exactly_lib.impls.program_execution import command_processors
 from exactly_lib.impls.program_execution.command_processor import CommandProcessor
 from exactly_lib.impls.types.string_transformer import sequence_resolving
 from exactly_lib.impls.types.utils.command_w_stdin import CommandWStdin
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.type_val_prims.string_source.contents import StringSourceContents

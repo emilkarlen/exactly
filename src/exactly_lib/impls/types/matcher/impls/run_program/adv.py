@@ -7,7 +7,7 @@ from exactly_lib.impls.program_execution.command_processor import CommandProcess
 from exactly_lib.impls.types.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.impls.types.matcher.impls.run_program.run_conf import RunConfiguration, MODEL
 from exactly_lib.impls.types.string_source import as_stdin
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.types.program.ddv.program import ProgramAdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer

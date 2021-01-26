@@ -2,8 +2,8 @@ from typing import Sequence
 
 from exactly_lib.impls.actors.util.actor_from_parts.parts import ExecutableObjectParser
 from exactly_lib.impls.actors.util.source_code_lines import all_source_code_lines__std_syntax
-from exactly_lib.test_case.actor import ParseException
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.actor import ParseException
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 
 
 class ParserForSingleLineUsingStandardSyntax(ExecutableObjectParser):

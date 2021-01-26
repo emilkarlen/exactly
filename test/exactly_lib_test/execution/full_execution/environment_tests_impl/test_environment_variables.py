@@ -7,7 +7,7 @@ from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.actor import Actor
+from exactly_lib.test_case.phases.act.actor import Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.type_val_prims.string_source.string_source import StringSource

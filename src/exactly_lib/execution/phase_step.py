@@ -5,8 +5,9 @@ STEP__VALIDATE_PRE_SDS = '2:validate-pre-sds'
 STEP__VALIDATE_POST_SETUP = '3:validate-post-setup'
 STEP__MAIN = '9:main'
 STEP__ACT__PARSE = '0:act-parse'
-STEP__ACT__PREPARE = '4:act-prepare'
-STEP__ACT__EXECUTE = '5:act-execute'
+STEP__ACT__VALIDATE_EXE_INPUT = '4:act-validate-exe-input'
+STEP__ACT__PREPARE = '5:act-prepare'
+STEP__ACT__EXECUTE = '6:act-execute'
 
 
 class SimplePhaseStep(tuple):
@@ -80,6 +81,7 @@ ACT__PARSE = PhaseStep(phase_identifier.ACT, STEP__ACT__PARSE)
 ACT__VALIDATE_SYMBOLS = _validate_symbols_step(phase_identifier.ACT)
 ACT__VALIDATE_PRE_SDS = _validate_pre_sds_step(phase_identifier.ACT)
 ACT__VALIDATE_POST_SETUP = _validate_post_setup_step(phase_identifier.ACT)
+ACT__VALIDATE_EXE_INPUT = PhaseStep(phase_identifier.ACT, STEP__ACT__VALIDATE_EXE_INPUT)
 ACT__PREPARE = PhaseStep(phase_identifier.ACT, STEP__ACT__PREPARE)
 ACT__EXECUTE = PhaseStep(phase_identifier.ACT, STEP__ACT__EXECUTE)
 

@@ -1,6 +1,6 @@
 from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.types.string_transformer.impl.sources import transformed_by_program
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.type_val_prims.string_source.string_source import StringSource

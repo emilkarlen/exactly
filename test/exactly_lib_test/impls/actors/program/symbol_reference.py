@@ -4,7 +4,7 @@ from typing import List, ContextManager
 
 from exactly_lib.impls.actors.program import actor as sut
 from exactly_lib.tcfs.path_relativity import RelOptionType, RelHdsOptionType
-from exactly_lib.test_case.actor import ParseException
+from exactly_lib.test_case.phases.act.actor import ParseException
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util.str_.misc_formatting import lines_content

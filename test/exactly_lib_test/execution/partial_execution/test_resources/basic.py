@@ -1,5 +1,4 @@
 import pathlib
-import pathlib
 import shutil
 import types
 import unittest
@@ -9,13 +8,13 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
+from exactly_lib.execution.partial_execution.setup_settings_handler import StandardSetupSettingsHandler
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.sds import SandboxDs
-from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phase_identifier import PhaseEnum
-from exactly_lib.test_case.phases import setup
+from exactly_lib.test_case.phases.act.actor import Actor
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.functional import Composition
@@ -216,7 +215,7 @@ def _execute(test_case: TestCase,
         ConfPhaseValues(NameAndValue('the actor', arrangement.actor),
                         arrangement.hds,
                         timeout_in_seconds=arrangement.timeout_in_seconds),
-        setup.default_settings(),
+        StandardSetupSettingsHandler.new_empty(),
         is_keep_sandbox)
     return Result(arrangement.hds,
                   partial_result)

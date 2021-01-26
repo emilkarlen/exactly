@@ -1,4 +1,4 @@
-from exactly_lib.test_case.actor import Actor
+from exactly_lib.test_case.phases.act.actor import Actor
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib_test.test_case.actor.test_resources import test_actions
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import \

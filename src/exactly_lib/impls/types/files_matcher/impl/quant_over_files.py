@@ -6,7 +6,7 @@ from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.impls.types.files_matcher import config
 from exactly_lib.impls.types.matcher.impls import quantifier_matchers
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel
 from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel
 from exactly_lib.util.description_tree.renderer import DetailsRenderer

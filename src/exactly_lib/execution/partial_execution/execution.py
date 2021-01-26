@@ -5,8 +5,8 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution.configuration import TestCase, ConfPhaseValues
 from exactly_lib.execution.partial_execution.impl import executor
 from exactly_lib.execution.partial_execution.result import PartialExeResult
-from exactly_lib.test_case.actor import Actor, ActionToCheck
-from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
+from exactly_lib.test_case.phases.act.actor import Actor, ActionToCheck
+from exactly_lib.test_case.phases.setup.settings_handler import SetupSettingsHandler
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
@@ -27,7 +27,7 @@ def parse_atc_and_validate_symbols(actor: NameAndValue[Actor],
 def execute(test_case: TestCase,
             full_exe_input_conf: ExecutionConfiguration,
             conf_phase_values: ConfPhaseValues,
-            initial_setup_settings: SetupSettingsBuilder,
+            setup_handler: SetupSettingsHandler,
             is_keep_sandbox: bool) -> PartialExeResult:
     """
     Part of execution that is independent of the "status" (SKIP, PASS, FAIL, ...)
@@ -50,7 +50,7 @@ def execute(test_case: TestCase,
             ret_val = executor.execute(
                 executor.Configuration(full_exe_input_conf,
                                        conf_phase_values,
-                                       initial_setup_settings),
+                                       setup_handler),
                 test_case,
             )
             return ret_val

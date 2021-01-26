@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from typing import List, ContextManager
 
 from exactly_lib.impls.types.program.command import command_sdvs
-from exactly_lib.test_case.actor import Actor
+from exactly_lib.test_case.phases.act.actor import Actor
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.impls.actors.test_resources.action_to_check import Configuration, TestCaseSourceSetup

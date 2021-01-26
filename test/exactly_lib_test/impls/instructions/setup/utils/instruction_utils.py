@@ -6,7 +6,7 @@ from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
+from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv

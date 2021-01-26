@@ -6,7 +6,7 @@ from typing import ContextManager
 
 from exactly_lib.impls.types.string_source import file_source as sut
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace

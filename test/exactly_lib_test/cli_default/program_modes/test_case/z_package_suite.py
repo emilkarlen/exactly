@@ -3,7 +3,8 @@ import unittest
 from exactly_lib_test.cli_default.program_modes.test_case import misc, \
     command_line_arguments, output_result_of_act_phase, \
     preprocessing, \
-    act_phase, \
+    default_actor, \
+    setup_of_stdin, \
     predefined_symbols
 from exactly_lib_test.cli_default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
@@ -15,7 +16,8 @@ def suite_that_does_require_main_program_runner(mpr: MainProgramRunner) -> unitt
     ret_val.addTest(command_line_arguments.suite_for(mpr))
     ret_val.addTest(misc.suite_for(mpr))
     ret_val.addTest(preprocessing.suite_for(mpr))
-    ret_val.addTest(act_phase.suite_for(mpr))
+    ret_val.addTest(default_actor.suite_for(mpr))
+    ret_val.addTest(setup_of_stdin.suite_for(mpr))
     return ret_val
 
 

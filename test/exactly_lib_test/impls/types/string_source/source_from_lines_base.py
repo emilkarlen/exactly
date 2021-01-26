@@ -2,7 +2,7 @@ import unittest
 from contextlib import contextmanager
 from typing import ContextManager, Sequence
 
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib_test.impls.types.string_source.test_resources.dir_file_space_getter import \
     dir_file_space_for_single_usage_getter

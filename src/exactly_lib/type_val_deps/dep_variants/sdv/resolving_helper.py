@@ -1,7 +1,7 @@
 from typing import TypeVar
 
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MODEL, MatcherSdv
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment

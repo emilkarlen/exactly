@@ -7,7 +7,8 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
+from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
@@ -24,6 +25,7 @@ from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh, svh_assertions as asrt_svh
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
+from exactly_lib_test.test_case.test_resources.settings_builder_assertions import SettingsBuilderAssertionModel
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -62,13 +64,13 @@ class TestSettingsBuilder(TestCaseBase):
             sut.Arrangement(),
             sut.Expectation(
                 settings_builder=asrt.is_instance_with(
-                    sut.SettingsBuilderAssertionModel,
+                    SettingsBuilderAssertionModel,
                     asrt.and_([
                         asrt.sub_component('SettingsBuilder',
-                                           sut.SettingsBuilderAssertionModel.actual.fget,
+                                           SettingsBuilderAssertionModel.actual.fget,
                                            asrt.is_instance(SetupSettingsBuilder)),
                         asrt.sub_component('environment',
-                                           sut.SettingsBuilderAssertionModel.environment.fget,
+                                           SettingsBuilderAssertionModel.environment.fget,
                                            asrt.is_instance(InstructionEnvironmentForPostSdsStep)),
                     ]))),
         )
@@ -79,7 +81,7 @@ class TestSettingsBuilder(TestCaseBase):
                 utils.ParserThatGives(setup_phase_instruction_that()),
                 single_line_source(),
                 sut.Arrangement(
-                    initial_settings_builder=SetupSettingsBuilder()
+                    settings_builder=SetupSettingsBuilder.new_empty()
                 ),
                 sut.Expectation(
                     settings_builder=asrt.sub_component(

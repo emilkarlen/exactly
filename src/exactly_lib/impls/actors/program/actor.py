@@ -3,8 +3,8 @@ from exactly_lib.impls.actors.common import relativity_configuration_of_action_t
 from exactly_lib.impls.actors.program.executable_object import ProgramToExecute
 from exactly_lib.impls.actors.program.parse import Parser
 from exactly_lib.impls.actors.util.actor_from_parts import parts
-from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.act.actor import Actor
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators

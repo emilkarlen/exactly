@@ -5,8 +5,8 @@ from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.impls.types.path import path_check
 from exactly_lib.impls.types.utils.command_w_stdin import CommandWStdin
 from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv import advs
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator

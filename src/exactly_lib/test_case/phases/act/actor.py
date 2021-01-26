@@ -1,16 +1,16 @@
 from abc import ABC, abstractmethod
-from typing import Sequence, Optional
+from typing import Sequence
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
-from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.std import StdOutputFiles
 
 
@@ -65,7 +65,7 @@ class ActionToCheck(SymbolUser):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                stdin: Optional[StringSource],
+                input_: ActExecutionInput,
                 output_files: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         """

@@ -15,6 +15,7 @@ ACT__PARSE = phase_step.ACT__PARSE.simple
 ACT__VALIDATE_SYMBOLS = phase_step.ACT__VALIDATE_SYMBOLS.simple
 ACT__VALIDATE_PRE_SDS = phase_step.ACT__VALIDATE_PRE_SDS.simple
 ACT__VALIDATE_POST_SETUP = phase_step.ACT__VALIDATE_POST_SETUP.simple
+ACT__VALIDATE_EXE_INPUT = phase_step.ACT__VALIDATE_EXE_INPUT.simple
 ACT__PREPARE = phase_step.ACT__PREPARE.simple
 ACT__EXECUTE = phase_step.ACT__EXECUTE.simple
 

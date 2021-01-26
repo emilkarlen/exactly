@@ -2,7 +2,7 @@ from typing import Optional
 
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.tcfs.hds import HomeDs
-from exactly_lib.test_case.actor import Actor
+from exactly_lib.test_case.phases.act.actor import Actor
 from exactly_lib.util.name_and_value import NameAndValue
 
 

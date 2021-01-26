@@ -8,8 +8,8 @@ from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.path_relativity import RelSdsOptionType, RelHdsOptionType
 from exactly_lib.tcfs.sds import SandboxDs
-from exactly_lib.test_case.actor import Actor
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.actor import Actor
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import eh_assertions

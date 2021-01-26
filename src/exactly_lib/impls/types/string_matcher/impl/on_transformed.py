@@ -7,7 +7,7 @@ from exactly_lib.impls.types.string_matcher.impl.base_class import StringMatcher
     StringMatcherAdvImplBase
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator

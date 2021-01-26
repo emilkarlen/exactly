@@ -1,15 +1,15 @@
 import pathlib
-from typing import Sequence, Optional
+from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.test_case.actor import ActionToCheck
 from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.act.actor import ActionToCheck
+from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
-from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib_test.test_case.actor.test_resources import test_actions
 from exactly_lib_test.test_case.actor.test_resources.execute_methods import BeforeExecuteMethod, ExecuteFunctionEh
@@ -33,7 +33,7 @@ class ActionToCheckThatJustReturnsSuccess(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                stdin: Optional[StringSource],
+                input_: ActExecutionInput,
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         return new_eh_exit_code(0)
@@ -77,11 +77,11 @@ class ActionToCheckWrapperWithActions(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                stdin: Optional[StringSource],
+                input_: ActExecutionInput,
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
-        self.before_wrapped_execute(environment, stdin, output)
-        return self.__wrapped.execute(environment, os_services, stdin, output)
+        self.before_wrapped_execute(environment, input_, output)
+        return self.__wrapped.execute(environment, os_services, input_, output)
 
 
 class ActionToCheckThatRunsConstantActions(ActionToCheck):
@@ -131,8 +131,8 @@ class ActionToCheckThatRunsConstantActions(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                stdin: Optional[StringSource],
+                input_: ActExecutionInput,
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
-        self.__execute_initial_action(environment, stdin, output)
-        return self.__execute_action(environment, stdin, output)
+        self.__execute_initial_action(environment, input_, output)
+        return self.__execute_action(environment, input_, output)

@@ -18,8 +18,8 @@ from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phase_identifier import Phase, PhaseEnum
+from exactly_lib.test_case.phases.act.actor import Actor
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result import pfh, sh, svh
 from exactly_lib.util.file_utils.misc_utils import resolved_path_name

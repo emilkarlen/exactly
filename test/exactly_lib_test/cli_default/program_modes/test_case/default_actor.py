@@ -20,7 +20,17 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    return tests_for_setup_without_preprocessor(TESTS, main_program_runner)
+    return tests_for_setup_without_preprocessor(
+        [
+            DefaultActorConfShouldSucceedWhenActPhaseIsEmpty(),
+            DefaultActorConfShouldSucceedWhenActPhaseIsJustSpace(),
+            DefaultActorConfShouldSucceedWhenActPhaseIsJustSpaceOrComments(),
+            DefaultActorConfShouldBeInvalidWhenActPhaseIsASingleCommandLineOfNonExistingExeFile(),
+            DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHdsAct(),
+            DefaultActorConfShouldFailWhenActPhaseIsMultipleCommandLines(),
+        ],
+        main_program_runner
+    )
 
 
 def suite() -> unittest.TestSuite:
@@ -88,7 +98,7 @@ class DefaultActorConfShouldFailWhenActPhaseIsMultipleCommandLines(SetupWithoutP
                               'system-under-test'])
 
 
-class DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfNonExistingExeFile(
+class DefaultActorConfShouldBeInvalidWhenActPhaseIsASingleCommandLineOfNonExistingExeFile(
     SetupWithoutPreprocessorAndDefaultActor):
     def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__VALIDATION_ERROR)
@@ -99,15 +109,6 @@ class DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfNonExisting
     def test_case(self) -> str:
         return lines_content(['system-under-test'])
 
-
-TESTS = [
-    DefaultActorConfShouldSucceedWhenActPhaseIsEmpty(),
-    DefaultActorConfShouldSucceedWhenActPhaseIsJustSpace(),
-    DefaultActorConfShouldSucceedWhenActPhaseIsJustSpaceOrComments(),
-    DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfNonExistingExeFile(),
-    DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHdsAct(),
-    DefaultActorConfShouldFailWhenActPhaseIsMultipleCommandLines(),
-]
 
 PYTHON_PROGRAM_THAT_EXISTS_WITH_STATUS_0 = lines_content(['import sys',
                                                           'sys.exit(0)'])

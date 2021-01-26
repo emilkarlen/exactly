@@ -5,7 +5,7 @@ from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
     InstructionParserWithoutSourceFileLocationInfo, InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
 
 

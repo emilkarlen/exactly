@@ -8,10 +8,10 @@ from exactly_lib.execution.full_execution.result import new_skipped
 from exactly_lib.execution.impl import phase_step_executors, phase_step_execution
 from exactly_lib.execution.partial_execution import execution
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
+from exactly_lib.execution.partial_execution.setup_settings_handler import StandardSetupSettingsHandler
 from exactly_lib.execution.result import ExecutionFailureStatus, PhaseStepFailure
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.test_case_status import TestCaseStatus
 
@@ -43,7 +43,7 @@ def execute(conf: ExecutionConfiguration,
                  test_case.cleanup_phase),
         conf,
         conf_phase_values,
-        setup.default_settings(),
+        StandardSetupSettingsHandler.new_empty(),
         is_keep_sandbox)
     return new_from_result_of_partial_execution(configuration_builder.test_case_status,
                                                 partial_result)

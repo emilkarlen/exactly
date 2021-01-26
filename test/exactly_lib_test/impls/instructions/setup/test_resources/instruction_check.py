@@ -1,6 +1,6 @@
 import os
 import unittest
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.execution import phase_step
 from exactly_lib.impls.os_services import os_services_access
@@ -13,12 +13,13 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
-from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
+from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
+from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.execution.partial_execution.test_resources import settings_handlers
 from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__consume_last_line__s__nsc
@@ -26,30 +27,16 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_populators, \
     tcds_populators, sds_populator
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
+from exactly_lib_test.test_case.test_resources import settings_builder_assertions as asrt_settings
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
+from exactly_lib_test.test_case.test_resources.settings_builder_assertions import SettingsBuilderAssertionModel
 from exactly_lib_test.test_resources.source import layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction, tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-
-
-class SettingsBuilderAssertionModel(tuple):
-    def __new__(cls,
-                actual: SetupSettingsBuilder,
-                environment: InstructionEnvironmentForPostSdsStep,
-                ):
-        return tuple.__new__(cls, (actual, environment))
-
-    @property
-    def actual(self) -> SetupSettingsBuilder:
-        return self[0]
-
-    @property
-    def environment(self) -> InstructionEnvironmentForPostSdsStep:
-        return self[1]
 
 
 class Arrangement(ArrangementWithSds):
@@ -61,7 +48,7 @@ class Arrangement(ArrangementWithSds):
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                  os_services: OsServices = os_services_access.new_for_current_os(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
-                 initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder(),
+                 settings_builder: Optional[SetupSettingsBuilder] = None,
                  symbols: SymbolTable = None,
                  fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
                  ):
@@ -75,7 +62,7 @@ class Arrangement(ArrangementWithSds):
                          symbols=symbols,
                          fs_location_info=fs_location_info,
                          )
-        self.initial_settings_builder = initial_settings_builder
+        self.initial_settings_builder = settings_handlers.builder_from_optional(settings_builder)
 
 
 class Expectation:
@@ -99,7 +86,7 @@ class Expectation:
                  main_side_effects_on_tcds: ValueAssertion[TestCaseDs]
                  = asrt.anything_goes(),
                  settings_builder: ValueAssertion[SettingsBuilderAssertionModel]
-                 = asrt.anything_goes(),
+                 = asrt_settings.stdin_is_not_present(),
                  source: ValueAssertion[ParseSource]
                  = asrt.anything_goes(),
                  symbols_after_main: ValueAssertion[Sequence[SymbolUsage]]
@@ -135,7 +122,7 @@ class MultiSourceExpectation:
                  main_side_effects_on_tcds: ValueAssertion[TestCaseDs]
                  = asrt.anything_goes(),
                  settings_builder: ValueAssertion[SettingsBuilderAssertionModel]
-                 = asrt.anything_goes(),
+                 = asrt_settings.stdin_is_not_present(),
                  symbols_after_main: ValueAssertion[Sequence[SymbolUsage]]
                  = asrt.anything_goes(),
                  ):
@@ -294,7 +281,8 @@ class Executor:
             self.expectation.settings_builder.apply_with_message(
                 self.put,
                 SettingsBuilderAssertionModel(self.arrangement.initial_settings_builder,
-                                              instruction_environment),
+                                              instruction_environment,
+                                              self.arrangement.os_services),
                 'settings builder'
             )
         self.expectation.main_result.apply_with_message(self.put, main_result,

@@ -5,7 +5,7 @@ from exactly_lib.execution import phase_step
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.actor import Actor
+from exactly_lib.test_case.phases.act.actor import Actor
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case.result.eh import new_eh_exit_code
 from exactly_lib.util.line_source import LineSequence

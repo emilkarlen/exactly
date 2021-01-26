@@ -3,34 +3,24 @@ import unittest
 from exactly_lib.impls.instructions.setup import stdin as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.test_case.phases import setup as setup_phase
-from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
-from exactly_lib.type_val_prims.string_source.string_source import StringSource
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
-from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.instructions.setup.test_resources import instruction_check
 from exactly_lib_test.impls.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
-    Expectation, SettingsBuilderAssertionModel, MultiSourceExpectation
+    Expectation, MultiSourceExpectation
 from exactly_lib_test.impls.test_resources import abstract_syntaxes
 from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfFileAbsStx, \
     StringSourceOfStringAbsStx, CustomStringSourceAbsStx
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.section_document.test_resources import parse_checker
-from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.section_document.test_resources.parse_source import remaining_source_of_abs_stx
 from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
-from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh
-from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
-from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
+from exactly_lib_test.test_case.test_resources import settings_builder_assertions as asrt_settings
+from exactly_lib_test.test_case.test_resources.settings_builder_assertions import SettingsBuilderAssertionModel
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
-from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringHereDocAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
@@ -43,7 +33,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSuccessfulScenariosWithSetStdinToFile),
         unittest.makeSuite(TestSuccessfulScenariosWithSetStdinToHereDoc),
         unittest.makeSuite(TestFailingInstructionExecution),
-        TestStringSourceAsFileShouldRaiseHardErrorWhenFileDoNotExist(),
+        TestActExeInputWStdinAsFileShouldBeInvalidWhenFileDoNotExist(),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
@@ -97,7 +87,7 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                     ),
                     MultiSourceExpectation(
                         symbols_after_parse=rel_conf.symbols.usages_expectation(),
-                        settings_builder=AssertStdinIsPresentWithContents(
+                        settings_builder=_stdin_is_present_and_valid(
                             stdin_file.contents,
                             may_depend_on_external_resources=True),
                     ),
@@ -128,50 +118,32 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                     ),
                     MultiSourceExpectation(
                         symbols_after_parse=rel_conf.symbols.usages_expectation(),
-                        settings_builder=AssertStdinIsPresentWithContents(
+                        settings_builder=_stdin_is_present_and_valid(
                             stdin_file.contents,
                             may_depend_on_external_resources=True),
                     )
                 )
 
 
-class TestStringSourceAsFileShouldRaiseHardErrorWhenFileDoNotExist(TestCaseBaseForParser):
+class TestActExeInputWStdinAsFileShouldBeInvalidWhenFileDoNotExist(TestCaseBaseForParser):
     def runTest(self):
         # ARRANGE #
         rel_conf = rel_opt_conf.conf_rel_any(RelOptionType.REL_ACT)
         syntax = InstructionAbsStx(
-            StringSourceOfFileAbsStx(rel_conf.path_abs_stx_of_name('non-existing-file.txt'))
+            StringSourceOfFileAbsStx(rel_conf.path_abs_stx_of_name('non-existing-stdin-file.txt'))
         )
-
-        source_for_non_existing_file = remaining_source_of_abs_stx(syntax)
-        parser = sut.Parser()
-        proc_exe_arrangement = ProcessExecutionArrangement()
         # ACT & ASSERT #
-        instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source_for_non_existing_file)
-        self.assertIsInstance(instruction, SetupPhaseInstruction)
-        with tcds_with_act_as_curr_dir() as path_resolving_environment:
-            environment_builder = InstructionEnvironmentPostSdsBuilder.new_tcds(
-                path_resolving_environment.tcds,
-                SymbolTable.empty(),
-                proc_exe_arrangement.process_execution_settings,
+        CHECKER.check_multi_source__abs_stx(
+            self,
+            syntax,
+            Arrangement(
+                symbols=rel_conf.symbols.in_arrangement(),
+            ),
+            MultiSourceExpectation(
+                symbols_after_parse=rel_conf.symbols.usages_expectation(),
+                settings_builder=asrt_settings.stdin_is_present_but_invalid(),
             )
-            instruction_environment = environment_builder.build_post_sds()
-            settings_builder = setup_phase.default_settings()
-
-            main_result = instruction.main(instruction_environment,
-                                           proc_exe_arrangement.os_services,
-                                           settings_builder)
-
-            asrt_sh.is_success().apply_with_message(self, main_result, 'main result')
-            actual_stdin = settings_builder.stdin
-            self.assertIsInstance(actual_stdin, StringSource, 'stdin should have been set')
-            assert actual_stdin is not None
-
-            with self.assertRaises(HardErrorException) as cm:
-                path = actual_stdin.contents().as_file
-
-            asrt_text_doc.is_any_text().apply_with_message(self, cm.exception.error,
-                                                           'error message')
+        )
 
 
 class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
@@ -185,7 +157,7 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
             syntax,
             Arrangement(),
             MultiSourceExpectation(
-                settings_builder=AssertStdinIsPresentWithContents(
+                settings_builder=_stdin_is_present_and_valid(
                     content_line_of_here_doc,
                     may_depend_on_external_resources=False,
                 ),
@@ -213,7 +185,7 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
                 symbols=symbol.symbol_table
             ),
             MultiSourceExpectation(
-                settings_builder=AssertStdinIsPresentWithContents(
+                settings_builder=_stdin_is_present_and_valid(
                     expected_stdin_contents,
                     may_depend_on_external_resources=False),
                 symbols_after_parse=expected_symbol_references,
@@ -253,11 +225,11 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
             ),
             MultiSourceExpectation(
                 symbols_after_parse=symbol_rel_opt.symbols.usages_expectation(),
-                validation=ValidationExpectationSvh.fails__post_sds(),
+                settings_builder=asrt_settings.stdin_is_present_but_invalid(),
             ),
         )
 
-    def test_referenced_file_is_a_directory(self):
+    def test_referenced_file_is_a_directory__pre_sds(self):
         the_dir = Dir.empty('a-directory')
         rel_conf = rel_opt_conf.conf_rel_any(RelOptionType.REL_HDS_CASE)
         syntax = InstructionAbsStx(
@@ -268,33 +240,34 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
             self,
             syntax,
             Arrangement(
-                hds_contents=hds_case_dir_contents(DirContents([Dir.empty('directory')]))
+                tcds_contents=rel_conf.populator_for_relativity_option_root(
+                    DirContents([the_dir])
+                ),
             ),
             MultiSourceExpectation(
                 validation=ValidationExpectationSvh.fails__pre_sds(),
             ),
         )
 
-
-class AssertStdinIsPresentWithContents(ValueAssertionBase[SettingsBuilderAssertionModel]):
-    def __init__(self,
-                 expected: str,
-                 may_depend_on_external_resources: bool
-                 ):
-        self._expectation = asrt_string_source.matches__str(
-            asrt.equals(expected),
-            asrt.equals(may_depend_on_external_resources),
+    def test_referenced_file_is_a_directory__post_sds(self):
+        the_dir = Dir.empty('a-directory')
+        rel_conf = rel_opt_conf.conf_rel_any(RelOptionType.REL_TMP)
+        syntax = InstructionAbsStx(
+            StringSourceOfFileAbsStx(rel_conf.path_abs_stx_of_name(the_dir.name))
         )
 
-    def _apply(self,
-               put: unittest.TestCase,
-               value: SettingsBuilderAssertionModel,
-               message_builder: asrt.MessageBuilder,
-               ):
-        stdin = value.actual.stdin
-        put.assertIsNotNone(stdin,
-                            message_builder.apply('stdin should be present'))
-        self._expectation.apply(put, stdin, message_builder)
+        CHECKER.check_multi_source__abs_stx(
+            self,
+            syntax,
+            Arrangement(
+                tcds_contents=rel_conf.populator_for_relativity_option_root(
+                    DirContents([the_dir])
+                ),
+            ),
+            MultiSourceExpectation(
+                settings_builder=asrt_settings.stdin_is_present_but_invalid(),
+            ),
+        )
 
 
 class InstructionAbsStx(AbstractSyntax):
@@ -307,6 +280,18 @@ class InstructionAbsStx(AbstractSyntax):
 
 CHECKER = instruction_check.Checker(sut.Parser())
 PARSE_CHECKER = parse_checker.Checker(sut.Parser())
+
+
+def _stdin_is_present_and_valid(expected: str,
+                                may_depend_on_external_resources: bool,
+                                ) -> ValueAssertion[SettingsBuilderAssertionModel]:
+    return asrt_settings.stdin_is_present_and_valid(
+        asrt_string_source.matches__str(
+            contents=asrt.equals(expected),
+            may_depend_on_external_resources=asrt.equals(may_depend_on_external_resources),
+        )
+    )
+
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

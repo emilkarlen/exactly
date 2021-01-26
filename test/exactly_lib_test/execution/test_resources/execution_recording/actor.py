@@ -1,8 +1,8 @@
 from typing import Sequence
 
 from exactly_lib.execution import phase_step_simple as phase_step
-from exactly_lib.test_case.actor import Actor, ActionToCheck
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.actor import Actor, ActionToCheck
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib_test.execution.test_resources.execution_recording.action_to_check import \
     ActionToCheckWrapperThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
@@ -16,16 +16,16 @@ class ActorThatRecordsSteps(Actor):
                  wrapped: Actor,
                  parse_action=actions.do_nothing,
                  ):
-        self.__recorder = recorder
-        self.__wrapped = wrapped
-        self.__parse_action = parse_action
+        self._recorder = recorder
+        self._wrapped = wrapped
+        self._parse_action = parse_action
 
     def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheck:
-        self.__recorder.recording_of(phase_step.ACT__PARSE).record()
-        self.__parse_action(instructions)
+        self._recorder.recording_of(phase_step.ACT__PARSE).record()
+        self._parse_action(instructions)
 
-        return ActionToCheckWrapperThatRecordsSteps(self.__recorder,
-                                                    self.__wrapped.parse(instructions))
+        return ActionToCheckWrapperThatRecordsSteps(self._recorder,
+                                                    self._wrapped.parse(instructions))
 
 
 def actor_of_constant(recorder: ListRecorder,

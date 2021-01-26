@@ -8,7 +8,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo, FileLocationInfo
-from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

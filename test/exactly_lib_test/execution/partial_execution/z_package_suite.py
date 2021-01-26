@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib_test.execution.partial_execution import \
+    setup_settings_handler, \
     atc_execution, \
     instruction_environment, \
     deletion_of_sds, \
@@ -12,6 +13,7 @@ from exactly_lib_test.execution.partial_execution.phase_step_sequence import z_p
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
+    ret_val.addTest(setup_settings_handler.suite())
     ret_val.addTest(atc_execution.suite())
     ret_val.addTest(instruction_environment.suite())
     ret_val.addTest(deletion_of_sds.suite())

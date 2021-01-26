@@ -3,12 +3,12 @@ from typing import Sequence, TypeVar, Generic, Callable
 from exactly_lib.section_document.model import SectionContents, ElementType, SectionContentElement, Instruction, \
     InstructionInfo
 from exactly_lib.section_document.source_location import SourceLocationInfo
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction
-from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
 
 T = TypeVar('T')
 

@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from typing import List, ContextManager
 
 from exactly_lib.impls.actors.program import actor as sut
-from exactly_lib.test_case.actor import ParseException
+from exactly_lib.test_case.phases.act.actor import ParseException
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import eh_assertions as asrt_eh
