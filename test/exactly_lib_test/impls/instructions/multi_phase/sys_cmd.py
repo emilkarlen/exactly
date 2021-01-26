@@ -52,7 +52,8 @@ def suite() -> unittest.TestSuite:
         TestNonZeroExitCodeFromExecution(),
         TestContentsOfStdinShouldBeEmpty(),
         unittest.makeSuite(TestFailingParse),
-        suite_for_instruction_documentation(sut.DescriptionForNonAssertPhaseInstruction('instruction name'))
+        suite_for_instruction_documentation(sut.DescriptionForNonAssertPhaseInstruction('instruction name',
+                                                                                        'section_name'))
     ])
 
 

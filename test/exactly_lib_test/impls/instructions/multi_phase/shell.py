@@ -27,7 +27,8 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestSymbolReferences),
         unittest.makeSuite(TestFailingParse),
-        suite_for_instruction_documentation(sut.DescriptionForNonAssertPhaseInstruction('instruction name'))
+        suite_for_instruction_documentation(sut.DescriptionForNonAssertPhaseInstruction('instruction name',
+                                                                                        'phase_name'))
     ])
 
 

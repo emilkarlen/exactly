@@ -5,10 +5,11 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.impls.instructions.multi_phase.utils import \
-    instruction_from_parts_for_executing_program as spe_parts
+    instruction_from_parts_for_executing_program as spe_parts, simple_proc_exe_help
 from exactly_lib.impls.instructions.multi_phase.utils import run_assertions
 from exactly_lib.impls.instructions.multi_phase.utils.assert_phase_info import \
     IsBothAssertionAndHelperIfInAssertPhase
@@ -48,6 +49,7 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithSplittedPartsF
                                       IsBothAssertionAndHelperIfInAssertPhase):
     def __init__(self,
                  name: str,
+                 phase_name: str,
                  single_line_description: str):
         super().__init__(name, {
             'PASS': exit_values.EXECUTION__PASS.exit_identifier,
@@ -55,13 +57,17 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithSplittedPartsF
             'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
             'EXIT_CODE': misc_texts.EXIT_CODE.singular,
         })
-        self.__single_line_description = single_line_description
+        self._phase_name = phase_name
+        self._single_line_description = single_line_description
 
     def single_line_description(self) -> str:
-        return self.__single_line_description
+        return self._single_line_description
 
     def _main_description_rest_body(self) -> List[ParagraphItem]:
         return []
+
+    def notes(self) -> SectionContents:
+        return simple_proc_exe_help.notes_on_when_to_use_run_instruction()
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return [
@@ -73,15 +79,23 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithSplittedPartsF
         ]
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
-        return cross_reference_id_list([
-            syntax_elements.STRING_SYNTAX_ELEMENT,
-            syntax_elements.PROGRAM_ARGUMENT_SYNTAX_ELEMENT,
-        ])
+        return [
+            syntax_elements.STRING_SYNTAX_ELEMENT.cross_reference_target,
+            syntax_elements.PROGRAM_ARGUMENT_SYNTAX_ELEMENT.cross_reference_target,
+            TestCasePhaseInstructionCrossReference(
+                self._phase_name,
+                instruction_names.RUN_INSTRUCTION_NAME,
+            )
+        ]
 
 
 class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
-    def __init__(self, name: str):
+    def __init__(self,
+                 name: str,
+                 section_name: str,
+                 ):
         super().__init__(name,
+                         section_name,
                          _SINGLE_LINE_DESCRIPTION_FOR_NON_ASSERT_PHASE_INSTRUCTIONS)
 
     def outcome(self) -> SectionContents:

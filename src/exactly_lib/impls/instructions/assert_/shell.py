@@ -3,6 +3,7 @@ from exactly_lib.impls.instructions.assert_.utils import instruction_from_parts
 from exactly_lib.impls.instructions.multi_phase import shell
 from exactly_lib.impls.instructions.multi_phase.shell import TheInstructionDocumentationBase, \
     SINGLE_LINE_DESCRIPTION_FOR_ASSERT_PHASE_INSTRUCTION
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose, AssertPhasePurpose
 from exactly_lib.util.textformat.structure.document import SectionContents
 
@@ -15,7 +16,9 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 class TheDocumentation(TheInstructionDocumentationBase, WithAssertPhasePurpose):
     def __init__(self, name: str):
-        super().__init__(name, SINGLE_LINE_DESCRIPTION_FOR_ASSERT_PHASE_INSTRUCTION)
+        super().__init__(name,
+                         phase_identifier.ASSERT.section_name,
+                         SINGLE_LINE_DESCRIPTION_FOR_ASSERT_PHASE_INSTRUCTION)
 
     @property
     def assert_phase_purpose(self) -> AssertPhasePurpose:
