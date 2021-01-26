@@ -11,7 +11,7 @@ from exactly_lib_test.impls.actors.program.test_resources import ConfigurationWi
     valid_source_variants, tmp_dir_in_path_with_files, invalid_source_variants
 from exactly_lib_test.impls.actors.test_resources import integration_check
 from exactly_lib_test.impls.actors.test_resources.action_to_check import suite_for_execution, TestCaseSourceSetup
-from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation
+from exactly_lib_test.impls.actors.test_resources.integration_check import Expectation, arrangement_w_tcds
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as args
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
@@ -75,7 +75,7 @@ class TestHardErrorWhenInvalidProgram(unittest.TestCase):
             self,
             sut.actor(),
             [instr([program_line])],
-            Arrangement(),
+            arrangement_w_tcds(),
             Expectation.hard_error_from_execute(),
         )
 
@@ -102,7 +102,7 @@ class TestSymbolReferencesAndSourceVariants(unittest.TestCase):
                         self,
                         sut.actor(),
                         [instr([program_line])],
-                        Arrangement(
+                        arrangement_w_tcds(
                             symbol_table=program_symbol.symbol_table,
                             process_execution=ProcessExecutionArrangement(
                                 process_execution_settings=proc_exe_env_for_test(

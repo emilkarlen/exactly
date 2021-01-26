@@ -1,14 +1,10 @@
-[conf]
-
-actor = command
-
 [setup]
 
 stdin = 'the stdin'
 
 [act]
 
--python @[EXACTLY_HOME]@/print-stdin.py
+@ COPY_STDIN_2_STDOUT
 
 [assert]
 

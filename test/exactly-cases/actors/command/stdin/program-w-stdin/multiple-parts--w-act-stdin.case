@@ -1,0 +1,22 @@
+[setup]
+
+def string STDIN_OF_ACT       = 'the stdin of the act phase'
+def string STDIN_OF_PROGRAM_1 = 'the stdin of the program, 1st'
+def string STDIN_OF_PROGRAM_2 = 'the stdin of the program, 2nd'
+
+def program COPY_STDIN_2_STDOUT__W_STDIN_1 =
+
+    @ COPY_STDIN_2_STDOUT
+      -stdin @[STDIN_OF_PROGRAM_1]@
+
+stdin = @[STDIN_OF_ACT]@
+
+
+[act]
+
+@ COPY_STDIN_2_STDOUT__W_STDIN_1
+  -stdin @[STDIN_OF_PROGRAM_2]@
+
+[assert]
+
+stdout equals @[STDIN_OF_PROGRAM_1]@@[STDIN_OF_PROGRAM_2]@@[STDIN_OF_ACT]@

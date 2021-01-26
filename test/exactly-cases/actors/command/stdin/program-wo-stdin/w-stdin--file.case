@@ -1,7 +1,3 @@
-[conf]
-
-actor = command
-
 [setup]
 
 file stdin.txt = 'the stdin'
@@ -10,7 +6,7 @@ stdin = -file -rel-act stdin.txt
 
 [act]
 
--python @[EXACTLY_HOME]@/print-stdin.py
+@ COPY_STDIN_2_STDOUT
 
 [assert]
 

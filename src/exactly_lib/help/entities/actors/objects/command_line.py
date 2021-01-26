@@ -6,6 +6,7 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import conf_params, syntax_elements, types
 from exactly_lib.definitions.entity.actors import COMMAND_LINE_ACTOR
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.entities.actors.objects.common import \
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH
@@ -33,7 +34,9 @@ class CommandLineActorDocumentation(ActorDocumentation):
             'executable_file': formatting.misc_name_with_formatting(misc_texts.EXECUTABLE_FILE),
             'relativity': formatting.misc_name_with_formatting(misc_texts.RELATIVITY),
             'stdout': misc_texts.STDOUT,
+            'stdin': misc_texts.STDIN,
             'os_process': misc_texts.OS_PROCESS_NAME,
+            'setup_phase': phase_names.SETUP,
         })
 
     def act_phase_contents(self) -> doc.SectionContents:
@@ -51,6 +54,10 @@ class CommandLineActorDocumentation(ActorDocumentation):
                 docs.section(
                     self._tp.text('{path:/u} {relativity:s}'),
                     self._notes_section_paragraphs(),
+                ),
+                docs.section(
+                    self._tp.text(misc_texts.STDIN.capitalize()),
+                    self._tp.fnap(_STDIN_DESCRIPTION),
                 ),
                 docs.section(
                     self._tp.text('Transformations'),
@@ -102,6 +109,13 @@ Any number of empty lines and comment lines are allowed.
 
 _PATH_RELATIVITY_HEADER = """\
 When {PROGRAM} has the form of the {PATH} of {executable_file:a}:
+"""
+
+_STDIN_DESCRIPTION = """\
+If {PROGRAM} defines {stdin},
+then the {stdin} of the {os_process}
+is the {stdin} defined for {PROGRAM}
+followed by the {stdin} set in the {setup_phase:emphasis} phase.
 """
 
 _TRANSFORMATION_DESCRIPTION = """\

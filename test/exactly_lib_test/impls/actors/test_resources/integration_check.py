@@ -1,7 +1,6 @@
 import os
 import unittest
-from contextlib import contextmanager
-from typing import List, Optional, Sequence, ContextManager, Callable
+from typing import List, Optional, Sequence, Callable
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
@@ -26,17 +25,21 @@ from exactly_lib_test.execution.test_resources import eh_assertions as asrt_eh
 from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.tcfs.test_resources.ds_action import PlainTcdsAction
-from exactly_lib_test.tcfs.test_resources.hds_utils import home_directory_structure
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangementPreAct, \
+    tcds_with_act_as_curr_dir__pre_act__optional
 from exactly_lib_test.test_case.result.test_resources import failure_details_assertions as asrt_failure_details, \
     sh_assertions as asrt_sh
 from exactly_lib_test.test_case.result.test_resources import sh_assertions
+from exactly_lib_test.test_case.test_resources import act_phase_instruction
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_resources.process import SubProcessResult, ProcessExecutor, \
     capture_process_executor_result__wo_stdin, ProcessExecutorWoStdin
-from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.source import layout
+from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion, \
+    StopAssertion
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 
@@ -50,25 +53,45 @@ class HardErrorResultError(Exception):
 
 class Arrangement:
     def __init__(self,
-                 hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
-                 symbol_table: Optional[SymbolTable] = None,
+                 tcds: Optional[TcdsArrangementPreAct] = None,
+                 symbols: Optional[SymbolTable] = None,
                  process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement(
                      process_execution_settings=proc_exe_env_for_test()
                  ),
                  stdin_contents: str = '',
-                 post_sds_action: PlainTcdsAction = PlainTcdsAction(),
                  mem_buff_size: int = 2 ** 10,
                  ):
-        self.symbol_table = symbol_table_from_none_or_value(symbol_table)
-        self.hds_contents = hds_contents
+        self.symbol_table = symbol_table_from_none_or_value(symbols)
+        self.tcds = tcds
         self.process_execution = process_execution
         self.stdin_contents = stdin_contents
-        self.post_sds_action = post_sds_action
         self.mem_buff_size = mem_buff_size
 
     @property
     def proc_exe_settings(self) -> ProcessExecutionSettings:
         return self.process_execution.process_execution_settings
+
+
+def arrangement_w_tcds(
+        hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
+        symbol_table: Optional[SymbolTable] = None,
+        process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement(
+            process_execution_settings=proc_exe_env_for_test()
+        ),
+        stdin_contents: str = '',
+        post_sds_action: PlainTcdsAction = PlainTcdsAction(),
+        mem_buff_size: int = 2 ** 10,
+) -> Arrangement:
+    return Arrangement(
+        tcds=TcdsArrangementPreAct(
+            hds_contents=hds_contents,
+            post_population_action=post_sds_action,
+        ),
+        symbols=symbol_table,
+        process_execution=process_execution,
+        stdin_contents=stdin_contents,
+        mem_buff_size=mem_buff_size,
+    )
 
 
 class PostSdsExpectation:
@@ -157,8 +180,39 @@ def check_execution(put: unittest.TestCase,
                     arrangement: Arrangement,
                     expectation: Expectation,
                     ):
-    checker = _Checker(put, actor, act_phase_instructions, arrangement, expectation)
+    checker = _Executor(put, actor, act_phase_instructions, arrangement, expectation)
     checker.check()
+
+
+class Checker:
+    def __init__(self, actor: Actor):
+        self._actor = actor
+
+    def check(self,
+              put: unittest.TestCase,
+              instructions: List[ActPhaseInstruction],
+              arrangement: Arrangement,
+              expectation: Expectation,
+              ):
+        executor = _Executor(put, self._actor, instructions, arrangement, expectation)
+        executor.check()
+
+    def check__abs_stx(self,
+                       put: unittest.TestCase,
+                       syntax: AbstractSyntax,
+                       arrangement: Arrangement,
+                       expectation: Expectation,
+                       ):
+        for layout_spec in layout.STANDARD_LAYOUT_SPECS:
+            source_str = syntax.tokenization().layout(layout_spec.value)
+            source_lines = source_str.splitlines(keepends=False)
+            with put.subTest(layout=layout_spec.name):
+                self.check(
+                    put,
+                    [act_phase_instruction.instr(source_lines)],
+                    arrangement,
+                    expectation,
+                )
 
 
 class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessExecutor):
@@ -185,7 +239,7 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
                                    exit_code_or_hard_error.failure_details)
 
 
-class _Checker:
+class _Executor:
     def __init__(self,
                  put: unittest.TestCase,
                  actor: Actor,
@@ -206,18 +260,29 @@ class _Checker:
     def check(self):
         try:
             self._check()
-        except _CheckIsDoneException:
+        except StopAssertion:
             return None
 
     def _check(self):
         atc = self._parse()
-        with self._pre_sds_env() as env_pre_sds:
-            self._validate_pre_sds(atc, env_pre_sds)
+        with tcds_with_act_as_curr_dir__pre_act__optional(self._arrangement.tcds) as tcds:
+            env_pre_sds = InstructionEnvironmentForPreSdsStep(
+                tcds.hds,
+                self._arrangement.proc_exe_settings,
+                self._arrangement.symbol_table,
+                self._arrangement.mem_buff_size,
+            )
 
-            with self._post_sds_env(env_pre_sds) as env_post_sds:
-                self._validate_post_sds(atc, env_post_sds)
-                self._prepare(atc, env_post_sds)
-                self._execute(atc, env_post_sds)
+            self._check_pre_sds(atc, env_pre_sds)
+
+            environment_builder = InstructionEnvironmentPostSdsBuilder.new_from_pre_sds(
+                env_pre_sds,
+                tcds.sds,
+            )
+            env_post_sds = environment_builder.build_post_sds()
+            self._expectation_post_sds = self._expectation.post_sds(tcds.sds)
+
+            self._check_post_sds(atc, env_post_sds)
 
     def _parse(self) -> ActionToCheck:
         atc = self._actor.parse(self._instructions)
@@ -225,29 +290,16 @@ class _Checker:
 
         return atc
 
-    @contextmanager
-    def _pre_sds_env(self) -> ContextManager[InstructionEnvironmentForPreSdsStep]:
-        with home_directory_structure(contents=self._arrangement.hds_contents) as hds:
-            instruction_environment = InstructionEnvironmentForPreSdsStep(
-                hds,
-                self._arrangement.proc_exe_settings,
-                self._arrangement.symbol_table,
-                self._arrangement.mem_buff_size)
-            yield instruction_environment
+    def _check_pre_sds(self, atc: ActionToCheck, env: InstructionEnvironmentForPreSdsStep):
+        self._validate_pre_sds(atc, env)
 
-    @contextmanager
-    def _post_sds_env(self, env_pre_sds: InstructionEnvironmentForPreSdsStep,
-                      ) -> ContextManager[InstructionEnvironmentForPostSdsStep]:
-        with sds_with_act_as_curr_dir(symbols=env_pre_sds.symbols
-                                      ) as path_resolving_env:
-            environment_builder = InstructionEnvironmentPostSdsBuilder.new_from_pre_sds(
-                env_pre_sds,
-                path_resolving_env.sds,
-            )
-            env_post_sds = environment_builder.build_post_sds()
-            self._arrangement.post_sds_action.apply(env_post_sds.tcds)
-            self._expectation_post_sds = self._expectation.post_sds(env_post_sds.sds)
-            yield env_post_sds
+    def _check_post_sds(self,
+                        atc: ActionToCheck,
+                        env: InstructionEnvironmentForPostSdsStep,
+                        ):
+        self._validate_post_sds(atc, env)
+        self._prepare(atc, env)
+        self._execute(atc, env)
 
     def _validate_pre_sds(self,
                           atc: ActionToCheck,
@@ -262,7 +314,7 @@ class _Checker:
         self._check_symbols_after(atc, phase_step.STEP__VALIDATE_PRE_SDS)
 
         if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
-            raise _CheckIsDoneException()
+            raise StopAssertion()
 
     def _validate_post_sds(self,
                            atc: ActionToCheck,
@@ -277,7 +329,7 @@ class _Checker:
         self._check_symbols_after(atc, phase_step.STEP__VALIDATE_POST_SETUP)
 
         if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
-            raise _CheckIsDoneException()
+            raise StopAssertion()
 
     def _prepare(self,
                  atc: ActionToCheck,
@@ -291,7 +343,7 @@ class _Checker:
                                         MessageBuilder('Result of prepare'))
         self._check_symbols_after(atc, phase_step.STEP__ACT__PREPARE)
         if not step_result.is_success:
-            raise _CheckIsDoneException()
+            raise StopAssertion()
 
     def _execute(self,
                  atc: ActionToCheck,
@@ -337,10 +389,6 @@ class _Checker:
             self._put,
             atc.symbol_usages(),
             'symbol-usages after ' + step)
-
-
-class _CheckIsDoneException(Exception):
-    pass
 
 
 class ProcessExecutorForProgramExecutorWoStdinThatRaisesIfResultIsNotExitCode(ProcessExecutorWoStdin):

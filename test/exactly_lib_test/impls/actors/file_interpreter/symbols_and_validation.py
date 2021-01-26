@@ -18,7 +18,7 @@ from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.impls.actors.file_interpreter.configuration import COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE
 from exactly_lib_test.impls.actors.test_resources import integration_check
 from exactly_lib_test.impls.actors.test_resources import relativity_configurations
-from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement
+from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, arrangement_w_tcds
 from exactly_lib_test.impls.actors.test_resources.integration_check import Expectation, \
     check_execution, PostSdsExpectation
 from exactly_lib_test.impls.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
@@ -84,7 +84,7 @@ class TestCaseWInterpreterThatRunsPythonProgramFileBase(unittest.TestCase):
 class TestValidationShouldFailWhenSourceFileDoesNotExist(TestCaseWInterpreterThatRunsPythonProgramFileBase):
     def runTest(self):
         command_line = 'non-existing-file.src'
-        arrangement = Arrangement()
+        arrangement = arrangement_w_tcds()
 
         expectation = Expectation(
             validation=ValidationExpectationSvh.fails__pre_sds()
@@ -98,7 +98,7 @@ class TestValidationShouldFailWhenSourceFileIsADirectory(TestCaseWInterpreterTha
     def runTest(self):
         source_file = 'source-file.src'
         command_line = source_file
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 Dir.empty(source_file)]))
         )
@@ -124,7 +124,7 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseWInterpreterThatRunsP
             argument=argument_symbol.name__sym_ref_syntax,
         )
 
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.File(
                     symbol_for_source_file.str_value,
@@ -177,7 +177,7 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseWInterpreterThatRunsPy
             source_file_name_symbol.str_value,
             PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
 
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.Dir(sub_dir_of_home, [executable_file])
             ])),
@@ -222,7 +222,7 @@ class TestStringSymbolReferenceInInterpreter(unittest.TestCase):
             )
         )
 
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             symbol_table=python_interpreter_symbol.symbol_table,
             hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                 fs.DirContents([source_file])
@@ -259,7 +259,7 @@ class TestValidationShouldFailWhenInterpreterProgramFileDoesNotExist(unittest.Te
                                   path_ddvs.constant_path_part('non-existing'))),
         )
 
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                 fs.DirContents([source_file])
             )
@@ -290,7 +290,7 @@ class TestValidationShouldFailWhenInterpreterProgramFileIsADirectory(unittest.Te
         )
 
         command_line = source_file
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             hds_contents=hds_populators.multiple([
                 relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                     fs.DirContents([source_file])
@@ -336,7 +336,7 @@ class TestValidationOfArguments(unittest.TestCase):
                     self,
                     actor,
                     [act_instruction],
-                    Arrangement(
+                    arrangement_w_tcds(
                         hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                             fs.DirContents([exe_file])
                         )
@@ -366,7 +366,7 @@ class TestValidationOfArguments(unittest.TestCase):
                     self,
                     actor,
                     [act_instruction],
-                    Arrangement(
+                    arrangement_w_tcds(
                         hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                             fs.DirContents([exe_file])
                         )
@@ -430,7 +430,7 @@ class TestArgumentsAreProgramArguments(unittest.TestCase):
             self,
             actor,
             [act_instruction],
-            Arrangement(
+            arrangement_w_tcds(
                 process_execution=ProcessExecutionArrangement(
                     os_services=os_services_access.new_for_cmd_exe(executor_that_records_arguments)
                 ),
@@ -503,7 +503,7 @@ class TestArgumentsOfInterpreterAndActAreConcatenated(unittest.TestCase):
             self,
             actor,
             [act_instruction],
-            Arrangement(
+            arrangement_w_tcds(
                 process_execution=ProcessExecutionArrangement(
                     os_services=os_services_access.new_for_cmd_exe(executor_that_records_arguments)
                 ),

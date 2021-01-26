@@ -1,0 +1,11 @@
+[act]
+
+@ COPY_STDIN_2_STDOUT
+
+[assert]
+
+exit-code == 0
+
+stdout empty
+
+stderr empty

@@ -10,8 +10,8 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, simple_success, \
-    check_execution, Expectation
+from exactly_lib_test.impls.actors.test_resources.integration_check import simple_success, \
+    check_execution, Expectation, arrangement_w_tcds
 from exactly_lib_test.impls.actors.util.actor_from_parts.test_resources import ParserThatRaisesException, \
     ParserThatExpectsSingleInstructionAndRecordsAndReturnsTheTextOfThatInstruction, \
     SymbolUserWithConstantSymbolReferences, ParserWithConstantResult, ValidatorConstructorThatRaises, \
@@ -64,7 +64,7 @@ class TestConstructor(unittest.TestCase):
         check_execution(self,
                         actor,
                         [],
-                        Arrangement(),
+                        arrangement_w_tcds(),
                         Expectation(
                             symbol_usages=asrt.matches_sequence([
                                 asrt_sym_ref.matches_reference_2(
@@ -84,7 +84,7 @@ class TestConstructor(unittest.TestCase):
                                    ValidatorConstructorThatRecordsStep(step_recorder),
                                    ExecutorConstructorThatRecordsStep(step_recorder))
         act_phase_instructions = [instr(['act phase source'])]
-        arrangement = Arrangement()
+        arrangement = arrangement_w_tcds()
         expectation = simple_success()
         # ACT #
         check_execution(self,
@@ -123,7 +123,7 @@ class TestConstructor(unittest.TestCase):
             ),
         )
 
-        arrangement = Arrangement()
+        arrangement = arrangement_w_tcds()
         expectation = Expectation.hard_error_from_prepare(
             error_message=asrt_text_doc.is_single_pre_formatted_text_that_equals(hard_error_message)
         )
@@ -154,7 +154,7 @@ class TestConstructor(unittest.TestCase):
             ),
         )
 
-        arrangement = Arrangement()
+        arrangement = arrangement_w_tcds()
         expectation = Expectation.hard_error_from_execute(
             error_message=asrt_text_doc.is_single_pre_formatted_text_that_equals(hard_error_message)
         )

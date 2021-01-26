@@ -1,7 +1,7 @@
 import subprocess
 import unittest
 from abc import ABC
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.impls.types.string_source import sdvs as str_src_sdvs
@@ -10,6 +10,7 @@ from exactly_lib.test_case.command_executor import CommandExecutor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
+from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv
 from exactly_lib.util.parse.token import QuoteType
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
@@ -202,11 +203,15 @@ else:
 
 
 class StdinCheckViaCopyToOutputFileTestSetup:
-    def __init__(self, output_file: ProcOutputFile):
+    def __init__(self,
+                 output_file: ProcOutputFile,
+                 stdin_defined_for_program: Sequence[StringSourceSdv] = (),
+                 ):
         self.output_file = output_file
         self._copy_program_symbol = ProgramSymbolContext.of_sdv(
             'COPY_STDIN',
-            program_sdvs.for_py_source_on_command_line(py_programs.copy_stdin_to(output_file))
+            program_sdvs.for_py_source_on_command_line(py_programs.copy_stdin_to(output_file),
+                                                       stdin=stdin_defined_for_program)
         )
 
     def program_that_copies_stdin_syntax(self) -> PgmAndArgsAbsStx:

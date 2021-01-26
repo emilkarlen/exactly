@@ -15,7 +15,7 @@ from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_t
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.impls.actors.test_resources import integration_check
 from exactly_lib_test.impls.actors.test_resources.integration_check import \
-    Expectation, Arrangement, PostSdsExpectation
+    Expectation, Arrangement, PostSdsExpectation, arrangement_w_tcds
 from exactly_lib_test.impls.instructions.multi_phase.change_dir import CwdSdsAssertion
 from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.tcfs.test_resources.dir_populator import HdsPopulator
@@ -127,7 +127,7 @@ class TestStdoutIsConnectedToProgram(TestBase):
         with self.config.program_that_prints_to_stdout(stdout_output) as setup:
             self._check(
                 setup.act_phase_instructions,
-                Arrangement(
+                arrangement_w_tcds(
                     symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     process_execution=_proc_exe_arr_w_environ(setup.environ),
@@ -149,7 +149,7 @@ class TestStderrIsConnectedToProgram(TestBase):
         with self.config.program_that_prints_to_stderr(stderr_output) as setup:
             self._check(
                 setup.act_phase_instructions,
-                Arrangement(
+                arrangement_w_tcds(
                     symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     process_execution=_proc_exe_arr_w_environ(setup.environ),
@@ -171,7 +171,7 @@ class TestStdinAndStdoutAreConnectedToProgram(TestBase):
         with self.config.program_that_copes_stdin_to_stdout() as setup:
             self._check(
                 setup.act_phase_instructions,
-                Arrangement(
+                arrangement_w_tcds(
                     symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     stdin_contents=stdin_contents,
@@ -193,7 +193,7 @@ class TestExitCodeIsReturned(TestBase):
         with self.config.program_that_exits_with_code(87) as setup:
             self._check(
                 setup.act_phase_instructions,
-                Arrangement(
+                arrangement_w_tcds(
                     symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     process_execution=_proc_exe_arr_w_environ(setup.environ),
@@ -214,7 +214,7 @@ class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
             environ[var_name] = var_value
             self._check(
                 setup.act_phase_instructions,
-                Arrangement(
+                arrangement_w_tcds(
                     symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     process_execution=ProcessExecutionArrangement(
@@ -254,7 +254,7 @@ class TestCwdOfAtcIsCurrentDirCurrentDirIsNotChangedByTheActor(TestBase):
         with self.config.program_that_prints_cwd_to_stdout() as setup:
             self._check(
                 setup.act_phase_instructions,
-                Arrangement(
+                arrangement_w_tcds(
                     symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     post_sds_action=MkSubDirAndMakeItCurrentDirectory(
@@ -277,7 +277,7 @@ class TestTimeoutValueIsUsed(TestBase):
         with self.config.program_that_sleeps_at_least(5) as setup:
             self._check(
                 setup.act_phase_instructions,
-                Arrangement(
+                arrangement_w_tcds(
                     symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     process_execution=ProcessExecutionArrangement(
@@ -303,7 +303,7 @@ class TestHardErrorFromExecutorIsDetected(TestBase):
         with self.config.program_that_exits_with_code(0) as setup:
             self._check(
                 setup.act_phase_instructions,
-                Arrangement(
+                arrangement_w_tcds(
                     symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     process_execution=ProcessExecutionArrangement(

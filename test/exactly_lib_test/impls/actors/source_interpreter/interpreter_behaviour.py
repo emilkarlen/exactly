@@ -10,8 +10,8 @@ from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
 from exactly_lib_test.impls.actors.test_resources import python3
 from exactly_lib_test.impls.actors.test_resources.action_to_check import \
     Configuration, suite_for_execution, TestCaseSourceSetup
-from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation, \
-    check_execution
+from exactly_lib_test.impls.actors.test_resources.integration_check import Expectation, \
+    check_execution, arrangement_w_tcds
 from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.util.test_resources import py_program
@@ -71,7 +71,7 @@ class TestValidationErrorWhenInterpreterDoesNotExist(unittest.TestCase):
         check_execution(self,
                         actor,
                         empty_source,
-                        Arrangement(),
+                        arrangement_w_tcds(),
                         Expectation(
                             validation=ValidationExpectationSvh.fails__pre_sds()
                         )

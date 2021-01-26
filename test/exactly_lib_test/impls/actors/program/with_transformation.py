@@ -7,7 +7,8 @@ from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import eh_assertions as asrt_eh
 from exactly_lib_test.impls.actors.test_resources import integration_check
-from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation, PostSdsExpectation
+from exactly_lib_test.impls.actors.test_resources.integration_check import Expectation, PostSdsExpectation, \
+    arrangement_w_tcds
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_transformers.test_resources.test_transformers_setup import \
@@ -79,7 +80,7 @@ class TestTransformerShouldBeAppliedToStdout(unittest.TestCase):
             self,
             sut.actor(),
             [instr(source.as_arguments.lines)],
-            Arrangement(
+            arrangement_w_tcds(
                 symbol_table=SymbolContext.symbol_table_of_contexts(symbols),
                 hds_contents=hds_populators.contents_in(
                     RelHdsOptionType.REL_HDS_CASE,
@@ -141,7 +142,7 @@ class TestHardErrorInTransformerShouldResultInHardErrorOfExecute(unittest.TestCa
             self,
             sut.actor(),
             [instr(source.as_arguments.lines)],
-            Arrangement(
+            arrangement_w_tcds(
                 symbol_table=SymbolContext.symbol_table_of_contexts(symbols),
                 hds_contents=hds_populators.contents_in(
                     RelHdsOptionType.REL_HDS_CASE,

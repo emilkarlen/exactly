@@ -74,7 +74,7 @@ def check_actor_execution(put: unittest.TestCase,
         put,
         configuration_builder.actor.value,
         act_phase_instructions,
-        integration_check.Arrangement(
+        integration_check.arrangement_w_tcds(
             hds_contents=arrangement.hds_contents,
             process_execution=ProcessExecutionArrangement(
                 os_services=arrangement.os_services,

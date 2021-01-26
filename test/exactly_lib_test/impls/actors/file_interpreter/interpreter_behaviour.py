@@ -69,7 +69,7 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
         act_phase_instructions = [instr([str(surrounded_by_hard_quotes(expected_file_name))]),
                                   instr([''])]
         executor_that_records_arguments = CommandExecutorThatRecordsArguments()
-        arrangement = integration_check.Arrangement(
+        arrangement = integration_check.arrangement_w_tcds(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
                 File.empty(expected_file_name)])),
             process_execution=ProcessExecutionArrangement(
@@ -113,7 +113,7 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         act_phase_instructions = [instr([act_line_1]),
                                   instr([atc_line_2])]
         executor_that_records_arguments = CommandExecutorThatRecordsArguments()
-        arrangement = integration_check.Arrangement(
+        arrangement = integration_check.arrangement_w_tcds(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
                 File.empty(atc_file_name)])),
             process_execution=ProcessExecutionArrangement(
@@ -154,7 +154,7 @@ class TestSymbolUsages(unittest.TestCase):
             symbol=symbol.name__sym_ref_syntax,
         )
 
-        arrangement = integration_check.Arrangement(
+        arrangement = integration_check.arrangement_w_tcds(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.File(
                     source_file,

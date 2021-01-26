@@ -4,7 +4,8 @@ from exactly_lib.impls.actors.program import actor as sut
 from exactly_lib_test.execution.test_resources import eh_assertions as asrt_eh
 from exactly_lib_test.impls.actors.test_resources import integration_check
 from exactly_lib_test.impls.actors.test_resources import relativity_configurations
-from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation, PostSdsExpectation
+from exactly_lib_test.impls.actors.test_resources.integration_check import Expectation, PostSdsExpectation, \
+    arrangement_w_tcds
 from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as args
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
@@ -46,7 +47,7 @@ class TestDefaultRelativityOfExistingPath(unittest.TestCase):
             self,
             sut.actor(),
             [instr(source_w_relative_name_of_existing_file.as_arguments.lines)],
-            Arrangement(
+            arrangement_w_tcds(
                 hds_contents=relativity_configurations.PROGRAM_FILE.populator_for_relativity_option_root__hds(
                     DirContents([py_file]))
             ),
@@ -75,7 +76,7 @@ class TestValidationErrorWhenExecutableFileDoesNotExist(unittest.TestCase):
             self,
             sut.actor(),
             [instr(source_w_relative_name_of_existing_file.as_arguments.lines)],
-            Arrangement(),
+            arrangement_w_tcds(),
             Expectation(
                 validation=ValidationExpectationSvh.fails__pre_sds()
             ),

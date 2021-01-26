@@ -1,0 +1,4 @@
+[suites]
+
+program-wo-stdin
+program-w-stdin

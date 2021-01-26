@@ -21,6 +21,7 @@ with exception of a "0." prefix until version 1 is released.
  - Type `line-matcher` - `contents` - matches text contents using a `string-matcher`
  - Type `string-transformer` - `strip`
  - Type `string-transformer` - `filter` - `-line-nums` Matches lines against line number ranges
+ - Type `program` - `-stdin` - Ability to set stdin
  - Type `integer-matcher`
  - Builtin symbol - string `NEW_LINE`
 

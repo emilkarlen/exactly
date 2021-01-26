@@ -15,7 +15,7 @@ from exactly_lib_test.impls.actors.test_resources import \
 from exactly_lib_test.impls.actors.test_resources.action_to_check import Configuration, \
     suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.impls.actors.test_resources.integration_check import \
-    check_execution, Arrangement, Expectation, PostSdsExpectation
+    check_execution, Expectation, PostSdsExpectation, arrangement_w_tcds
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_hds
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPreSdsBuilder
@@ -93,7 +93,7 @@ class TestSymbolReferences(unittest.TestCase):
             self,
             sut.actor(),
             act_phase_instructions,
-            Arrangement(
+            arrangement_w_tcds(
                 symbol_table=symbol.symbol_table
             ),
             Expectation(

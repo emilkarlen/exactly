@@ -42,7 +42,7 @@ def system_program(program: StringSdv,
             stdin,
             arguments=ArgumentsSdv.empty(),
             transformations=transformations,
-        )
+        ),
     )
 
 
@@ -62,6 +62,15 @@ def interpret_py_source_file_that_must_exist(py_source_file: PathSdv,
     ).new_accumulated(AccumulatedComponents.of_arguments(arguments))
 
 
-def for_py_source_on_command_line(python_source: str) -> ProgramSdvForCommand:
-    return command_program_sdv.plain(
-        test_command_sdvs.for_py_source_on_command_line(python_source))
+def for_py_source_on_command_line(python_source: str,
+                                  stdin: Sequence[StringSourceSdv] = (),
+                                  transformations: Sequence[StringTransformerSdv] = (),
+                                  ) -> ProgramSdvForCommand:
+    return command_program_sdv.ProgramSdvForCommand(
+        test_command_sdvs.for_py_source_on_command_line(python_source),
+        AccumulatedComponents(
+            stdin,
+            arguments=ArgumentsSdv.empty(),
+            transformations=transformations,
+        )
+    )

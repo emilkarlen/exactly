@@ -10,8 +10,8 @@ from exactly_lib_test.impls.actors.program.test_resources import ConfigurationWi
 from exactly_lib_test.impls.actors.test_resources import \
     test_validation_for_single_file, relativity_configurations
 from exactly_lib_test.impls.actors.test_resources.action_to_check import suite_for_execution, TestCaseSourceSetup
-from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation, \
-    check_execution, PostSdsExpectation
+from exactly_lib_test.impls.actors.test_resources.integration_check import Expectation, \
+    check_execution, PostSdsExpectation, arrangement_w_tcds
 from exactly_lib_test.impls.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
@@ -57,7 +57,7 @@ class TestValidationErrorPreSds(unittest.TestCase):
         act_phase_instructions = [
             instr(['non-existing-executable'])
         ]
-        arrangement = Arrangement()
+        arrangement = arrangement_w_tcds()
         expectation = Expectation(
             validation=ValidationExpectationSvh.fails__pre_sds()
         )
@@ -72,7 +72,7 @@ class TestValidationErrorPreSds(unittest.TestCase):
         act_phase_instructions = [
             instr([executable_file_name])
         ]
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                 fs.DirContents([File.empty(executable_file_name)]))
         )
@@ -92,7 +92,7 @@ class TestSuccessfulExecutionOfProgramRelHdsActWithCommandLineArguments(unittest
         act_phase_instructions = [
             instr(['system-under-test first-argument "quoted argument"'])
         ]
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                 fs.DirContents([
                     fs.python_executable_file(
@@ -131,7 +131,7 @@ class TestSymbolUsages(unittest.TestCase):
             list_symbol=list_symbol.name__sym_ref_syntax,
         )
 
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                 fs.DirContents([
                     fs.python_executable_file(
@@ -168,7 +168,7 @@ class TestSymbolUsages(unittest.TestCase):
             symbol=symbol.name__sym_ref_syntax,
         )
 
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                 fs.DirContents([
                     fs.python_executable_file(
@@ -204,7 +204,7 @@ class TestSymbolUsages(unittest.TestCase):
             string_constant=string_constant,
         )
 
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                 fs.DirContents([
                     fs.python_executable_file(
@@ -243,7 +243,7 @@ class TestSymbolUsages(unittest.TestCase):
             argument=argument_symbol.name__sym_ref_syntax,
         )
 
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                 fs.DirContents([
                     fs.python_executable_file(
@@ -297,7 +297,7 @@ class TestSymbolUsages(unittest.TestCase):
             executable_file_name_symbol.str_value,
             PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
 
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                 fs.DirContents([
                     fs.Dir(sub_dir_of_home, [executable_file])
@@ -338,7 +338,7 @@ class TestSymbolUsages(unittest.TestCase):
             symbol=symbol.name__sym_ref_syntax,
         )
 
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                 fs.DirContents([
                     fs.python_executable_file(

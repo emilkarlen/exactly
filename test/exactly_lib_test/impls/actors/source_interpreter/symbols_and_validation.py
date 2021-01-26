@@ -9,7 +9,7 @@ from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib_test.impls.actors.file_interpreter.configuration import COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE
 from exactly_lib_test.impls.actors.test_resources import relativity_configurations, integration_check
 from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation, \
-    check_execution, PostSdsExpectation
+    check_execution, PostSdsExpectation, arrangement_w_tcds
 from exactly_lib_test.impls.actors.test_resources.validation_cases import VALIDATION_CASES
 from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.tcfs.test_resources import hds_populators
@@ -62,7 +62,7 @@ class TestThatSymbolReferencesAreReportedAndUsed(TestCaseWInterpreterThatRunsPyt
 
         self._check(
             single_source_line,
-            Arrangement(
+            arrangement_w_tcds(
                 symbol_table=symbol.symbol_table
             ),
             Expectation(
@@ -90,7 +90,7 @@ class TestThatSourceCanReferenceSymbolsThatAreResolvedPostSds(TestCaseWInterpret
 
         self._check(
             single_source_line,
-            Arrangement(
+            arrangement_w_tcds(
                 symbol_table=symbol.symbol_table
 
             ),
@@ -121,7 +121,7 @@ class TestStringSymbolReferenceInInterpreter(unittest.TestCase):
             )
         )
 
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             symbol_table=python_interpreter_symbol.symbol_table,
             hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                 fs.DirContents([source_file])
@@ -157,7 +157,7 @@ class TestValidationShouldFailWhenInterpreterProgramFileDoesNotExist(unittest.Te
                                   path_ddvs.constant_path_part('non-existing'))),
         )
 
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                 fs.DirContents([source_file])
             )
@@ -187,7 +187,7 @@ class TestValidationShouldFailWhenInterpreterProgramFileIsADirectory(unittest.Te
                                   path_ddvs.constant_path_part(a_dir.name))),
         )
 
-        arrangement = Arrangement(
+        arrangement = arrangement_w_tcds(
             hds_contents=hds_populators.multiple([
                 relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
                     fs.DirContents([source_file])
@@ -229,7 +229,7 @@ class TestValidationOfInterpreterArguments(unittest.TestCase):
                     self,
                     actor,
                     [act_instruction],
-                    Arrangement(),
+                    arrangement_w_tcds(),
                     Expectation(validation=case.expectation),
                 )
 

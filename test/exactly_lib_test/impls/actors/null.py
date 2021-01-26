@@ -6,8 +6,8 @@ from exactly_lib.impls.actors import null as sut
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
-from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation, \
-    check_execution, PostSdsExpectation
+from exactly_lib_test.impls.actors.test_resources.integration_check import Expectation, \
+    check_execution, PostSdsExpectation, arrangement_w_tcds
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
@@ -56,7 +56,7 @@ class TestSuccessfulExecution(unittest.TestCase):
         actor = sut.actor()
         for case_name, act_phase_instructions in cases:
             with self.subTest(case_name=case_name):
-                arrangement = Arrangement()
+                arrangement = arrangement_w_tcds()
                 expectation = Expectation(
                     post_sds=PostSdsExpectation.constant(
                         sub_process_result_from_execute=expected_output
@@ -84,7 +84,7 @@ class TestNoSymbolsAreReferenced(unittest.TestCase):
         actor = sut.actor()
         for case_name, act_phase_instructions in cases:
             with self.subTest(case_name=case_name):
-                arrangement = Arrangement()
+                arrangement = arrangement_w_tcds()
                 expectation = Expectation(symbol_usages=asrt.is_empty_sequence)
                 check_execution(self,
                                 actor,

@@ -7,7 +7,7 @@ from exactly_lib.test_case.result import svh
 from exactly_lib_test.impls.actors.test_resources import \
     test_validation_for_single_line_source as single_line_source, integration_check
 from exactly_lib_test.impls.actors.test_resources.action_to_check import Configuration
-from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation
+from exactly_lib_test.impls.actors.test_resources.integration_check import Expectation, arrangement_w_tcds
 from exactly_lib_test.impls.actors.test_resources.test_validation_for_single_line_source import \
     TestCaseForConfigurationForValidation
 from exactly_lib_test.impls.actors.test_resources.validation_cases import VALIDATION_CASES
@@ -81,7 +81,7 @@ class test_fail_WHEN_file_does_not_exist(unittest.TestCase):
                     self,
                     self.conf.actor,
                     act_phase_instructions,
-                    Arrangement(),
+                    arrangement_w_tcds(),
                     Expectation(validation=case.expectation),
                 )
 

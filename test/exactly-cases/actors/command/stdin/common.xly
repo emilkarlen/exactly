@@ -1,0 +1,7 @@
+[conf]
+
+actor = command
+
+[setup]
+
+including ../../../utils/copy-stdin-programs.xly

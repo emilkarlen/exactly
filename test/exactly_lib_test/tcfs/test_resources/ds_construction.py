@@ -8,13 +8,28 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.functional import reduce_optional
 from exactly_lib_test.tcfs.test_resources import hds_populators, sds_populator, non_hds_populator, \
-    tcds_populators
+    tcds_populators, fake_ds
 from exactly_lib_test.tcfs.test_resources.ds_action import PlainTcdsAction
 from exactly_lib_test.tcfs.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_utils import sandbox_directory_structure, \
     write_act_result
 from exactly_lib_test.test_case.test_resources.act_result import ActEnvironment, ActResultProducer, \
     ActResultProducerFromActResult, NULL_ACT_RESULT_PRODUCER
+
+
+class TcdsArrangementPreAct:
+    def __init__(self,
+                 tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
+                 hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
+                 non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
+                 pre_population_action: PlainTcdsAction = PlainTcdsAction(),
+                 post_population_action: PlainTcdsAction = PlainTcdsAction(),
+                 ):
+        self.hds_contents = hds_contents
+        self.non_hds_contents = non_hds_contents
+        self.tcds_contents = tcds_contents
+        self.pre_population_action = pre_population_action
+        self.post_population_action = post_population_action
 
 
 class TcdsArrangement:
@@ -73,6 +88,26 @@ def tcds_with_act_as_curr_dir_3(arrangement: TcdsArrangement) -> ContextManager[
     )
 
 
+def tcds_with_act_as_curr_dir__pre_act(arrangement: TcdsArrangementPreAct) -> ContextManager[TestCaseDs]:
+    return tcds_with_act_as_curr_dir_2(
+        hds_contents=arrangement.hds_contents,
+        non_hds_contents=arrangement.non_hds_contents,
+        tcds_contents=arrangement.tcds_contents,
+        pre_contents_population_action=arrangement.pre_population_action,
+        post_contents_population_action=arrangement.post_population_action,
+    )
+
+
+def tcds_with_act_as_curr_dir__pre_act__optional(arrangement: Optional[TcdsArrangementPreAct]
+                                                 ) -> ContextManager[TestCaseDs]:
+    return (
+        dummy_tcds()
+        if arrangement is None
+        else
+        tcds_with_act_as_curr_dir__pre_act(arrangement)
+    )
+
+
 def tcds_with_act_as_curr_dir__post_act(arrangement: TcdsArrangementPostAct) -> ContextManager[TestCaseDs]:
     return tcds_with_act_as_curr_dir_2(
         hds_contents=arrangement.hds_contents,
@@ -82,6 +117,20 @@ def tcds_with_act_as_curr_dir__post_act(arrangement: TcdsArrangementPostAct) -> 
         pre_contents_population_action=arrangement.pre_population_action,
         post_contents_population_action=arrangement.post_population_action,
     )
+
+
+def tcds_with_act_as_curr_dir__post_act__optional(arrangement: Optional[TcdsArrangementPostAct]
+                                                  ) -> ContextManager[TestCaseDs]:
+    return (
+        dummy_tcds()
+        if arrangement is None
+        else
+        tcds_with_act_as_curr_dir__post_act(arrangement)
+    )
+
+
+def dummy_tcds() -> ContextManager[TestCaseDs]:
+    yield fake_ds.fake_tcds()
 
 
 @contextmanager
