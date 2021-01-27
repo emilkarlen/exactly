@@ -1,1 +1,5 @@
-*.case
+[suites]
+
+from-act
+from-pgm
+line-matches
