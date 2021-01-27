@@ -219,6 +219,12 @@ The following case shows some examples, but *doesn't make sense* tough::
 
     run my-setup-helper-program first "second arg"
 
+    run my-setup-helper-program arg
+        -stdin 'the stdin of the program'
+
+    run -ignore-exit-code my-setup-helper-program
+
+
     def list DB_ARGS = -uu -pp -hlocalhost -Dd
 
     run % mysql @[DB_ARGS]@ --batch --execute "create table my_table(id int)"
@@ -227,7 +233,8 @@ The following case shows some examples, but *doesn't make sense* tough::
 
     file interesting-records.txt =
          -stdout-from
-          % mysql @[MYSQL_BATCH]@ :> select * from a_table where name = "interesting"
+           % mysql @[MYSQL_BATCH]@ :> select * from a_table where name = "interesting"
+
 
     % touch file
 
@@ -244,8 +251,6 @@ The following case shows some examples, but *doesn't make sense* tough::
           -python @[EXACTLY_HOME]@/my-text-generating-program.py
           -transformed-by
               strip -trailing-new-lines
-
-    run  -ignore-exit-code  % stat optional-file.txt
 
     [act]
 
