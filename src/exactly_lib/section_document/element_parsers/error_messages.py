@@ -1,4 +1,3 @@
-from abc import abstractmethod
 from typing import Any, Mapping
 
 from exactly_lib.section_document.element_parsers.token_stream_parser import ErrorMessageGenerator
@@ -8,7 +7,6 @@ class ConstantErrorMessage(ErrorMessageGenerator):
     def __init__(self, message: str):
         self._message = message
 
-    @abstractmethod
     def message(self) -> str:
         return self._message
 
