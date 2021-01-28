@@ -72,7 +72,7 @@ class FileMaker:
 
 class FileMakerParser(ParserFromTokens):
     def __init__(self, src_rel_opt_conf: RelOptionsConfiguration):
-        self._string_source_parser = parse_string_source.StringSourceParser(src_rel_opt_conf)
+        self._string_source_parser = parse_string_source.string_source_parser(src_rel_opt_conf)
 
     def parse(self, parser: TokenParser) -> FileMaker:
         contents = self._parse_string_source(parser)

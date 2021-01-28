@@ -307,3 +307,7 @@ class CommandLine:
                                                                      repr(self._argument_usages),
                                                                      repr(self._prefix),
                                                                      repr(self._suffix))
+
+
+def single_mandatory(argument: Argument) -> ArgumentUsage:
+    return Single(Multiplicity.MANDATORY, argument)

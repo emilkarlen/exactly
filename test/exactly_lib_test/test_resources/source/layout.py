@@ -84,4 +84,5 @@ class _NewLineIfNotFirstOrLast(LayoutAble):
 
 
 OPTIONAL_NEW_LINE = _OptionalNewLine()
+NEW_LINE = '\n'
 NEW_LINE_IF_NOT_FIRST_OR_LAST = _NewLineIfNotFirstOrLast()

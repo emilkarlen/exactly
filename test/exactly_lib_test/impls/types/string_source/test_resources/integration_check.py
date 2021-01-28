@@ -10,7 +10,7 @@ from exactly_lib_test.type_val_deps.types.string_source.test_resources.propertie
 def checker(accepted_file_relativities: RelOptionsConfiguration
             ) -> integration_check.IntegrationChecker[StringSource, None, None]:
     return integration_check.IntegrationChecker(
-        parse.StringSourceParser(accepted_file_relativities),
+        parse.string_source_parser(accepted_file_relativities),
         StringSourcePropertiesConfiguration(),
         check_application_result_with_tcds=False,
     )

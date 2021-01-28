@@ -13,6 +13,7 @@ from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
+from exactly_lib.help.entities.utils.se_within_parens import OptionallyWithinParens
 from exactly_lib.impls import texts
 from exactly_lib.impls.file_properties import FileType
 from exactly_lib.impls.types.path import relative_path_options_documentation as rel_path_doc
@@ -23,6 +24,13 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 TEXT_UNTIL_END_OF_LINE_ARGUMENT = a.Named('TEXT-UNTIL-END-OF-LINE')
+
+
+def documentation() -> SyntaxElementDocumentation:
+    primitive = Documentation()
+    return OptionallyWithinParens(primitive.type_category,
+                                  primitive.name_and_cross_ref_target,
+                                  Documentation())
 
 
 class Documentation(SyntaxElementDocumentation):
@@ -126,10 +134,6 @@ Transforms the original contents.
 
 _PROGRAM_DESCRIPTION = """\
 The output from {program_type:a/q}.
-
-
-{PROGRAM} includes arguments until end of line,
-and an optional {TRANSFORMATION} on a following line.
 """
 
 _FILE_DESCRIPTION = """\

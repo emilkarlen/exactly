@@ -1,6 +1,6 @@
 from typing import Sequence, Optional, Callable
 
-from exactly_lib_test.test_resources.source import token_sequences
+from exactly_lib_test.test_resources.source import token_sequences, layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 
@@ -45,6 +45,39 @@ class DelegateAbsStx(AbstractSyntax):
 
     def tokenization(self) -> TokenSequence:
         return self._delegate.tokenization()
+
+
+class WithinParensAbsStx(AbstractSyntax):
+    def __init__(self,
+                 element: AbstractSyntax,
+                 end_paren_on_separate_line: bool = False,
+                 ):
+        self._element = element
+        self._end_paren_on_separate_lines = end_paren_on_separate_line
+
+    def tokenization(self) -> TokenSequence:
+        return TokenSequence.concat([
+            TokenSequence.singleton('('),
+            TokenSequence.optional_new_line(),
+            self._element.tokenization(),
+            self._end_paren()
+        ])
+
+    def _end_paren(self) -> TokenSequence:
+        return (
+            TokenSequence.sequence([layout.NEW_LINE, ')'])
+            if self._end_paren_on_separate_lines
+            else
+            TokenSequence.singleton(')')
+        )
+
+
+class CustomAbsStx(AbstractSyntax):
+    def __init__(self, tokens: TokenSequence):
+        self._tokens = tokens
+
+    def tokenization(self) -> TokenSequence:
+        return self._tokens
 
 
 class InfixOperatorAbsStx(AbstractSyntax):

@@ -1,3 +1,7 @@
+[cases]
+
+*.case
+
 [suites]
 
 run

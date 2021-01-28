@@ -49,7 +49,7 @@ ALL_SYNTAX_ELEMENT_DOCS = (
 
     type_program.DOCUMENTATION,
 
-    string_source.Documentation(),
+    string_source.documentation(),
     act_interpreter.documentation(),
     program_argument.documentation(),
 )

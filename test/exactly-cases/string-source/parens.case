@@ -1,0 +1,26 @@
+[setup]
+
+file from-string.txt = ( 'constant string' )
+
+file stdin.txt = <<EOF
+the stdin
+EOF
+
+file from-program.txt =
+    -stdout-from
+      -python -c :> import sys; sys.stdout.write(sys.stdin.read()); print('after stdin')
+        -stdin ( -file stdin.txt )
+        -transformed-by char-case -to-upper
+
+# ^ The parentheses around the STRING-SOURCE makes
+#     -transformed-by ...
+# associate with the PROGRAM, not the STRING-SOURCE.
+
+[assert]
+
+contents from-string.txt equals 'constant string'
+
+contents from-program.txt equals <<EOF
+THE STDIN
+AFTER STDIN
+EOF

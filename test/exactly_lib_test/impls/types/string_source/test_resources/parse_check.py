@@ -19,13 +19,13 @@ ARBITRARY_FILE_RELATIVITIES = rel_opts_conf_of_single(RelOptionType.REL_ACT)
 def just_parse(source: ParseSource,
                accepted_file_relativities: RelOptionsConfiguration = ARBITRARY_FILE_RELATIVITIES,
                ):
-    parse.StringSourceParser(accepted_file_relativities).parse(source)
+    parse.string_source_parser(accepted_file_relativities).parse(source)
 
 
 def checker(accepted_file_relativities: RelOptionsConfiguration = ARBITRARY_FILE_RELATIVITIES
             ) -> parse_checker.Checker:
     return parse_checker.Checker(
         ParserAsLocationAwareParser(
-            parse.StringSourceParser(accepted_file_relativities)
+            parse.string_source_parser(accepted_file_relativities)
         )
     )

@@ -16,7 +16,8 @@ from exactly_lib.util.textformat.structure.document import SectionContents, Sect
 class SyntaxElementDocumentation(EntityDocumentation):
     def __init__(self,
                  type_category: Optional[TypeCategory],
-                 name_and_cross_ref_target: SingularNameAndCrossReferenceId):
+                 name_and_cross_ref_target: SingularNameAndCrossReferenceId,
+                 ):
         super().__init__(name_and_cross_ref_target)
         self._type_category = type_category
 
