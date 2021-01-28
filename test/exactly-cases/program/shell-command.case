@@ -7,7 +7,7 @@
 
 file f.txt = "some text"
 
-def program CAT_FILE = % cat
+def program CAT_FILE = $ cat
                        -transformed-by char-case -to-upper
 
 
@@ -20,7 +20,7 @@ stdout -from
        "SOME TEXT"
 
 stdout -from
-       % cat f.txt
+       $ cat f.txt
        -transformed-by char-case -to-upper
        equals
        "SOME TEXT"
