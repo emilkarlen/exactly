@@ -69,7 +69,7 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
                                       program=pgm_and_args_case.name,
                                       ignore_exit_code=ignore_exit_code):
                         # ACT & ASSERT #
-                        CHECKER.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+                        CHECKER.check__abs_stx__layouts__source_variants__wo_input(
                             self,
                             equivalent_source_variants__for_expr_parse__s__nsc,
                             StringSourceOfProgramAbsStx(
@@ -96,7 +96,7 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
             for ignore_exit_code in [False, True]:
                 with self.subTest(output_file=output_file,
                                   ignore_exit_code=ignore_exit_code):
-                    CHECKER.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+                    CHECKER.check__abs_stx__layouts__source_variants__wo_input(
                         self,
                         equivalent_source_variants__for_expr_parse__s__nsc,
                         StringSourceOfProgramAbsStx(

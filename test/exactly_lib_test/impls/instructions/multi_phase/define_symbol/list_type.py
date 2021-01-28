@@ -41,7 +41,7 @@ class TestListSuccessfulParse(unittest.TestCase):
             ),
         )
 
-        INSTRUCTION_CHECKER.check__abs_stx__std_layouts_and_source_variants(
+        INSTRUCTION_CHECKER.check__abs_stx__layout_and_source_variants(
             self,
             syntax,
             ArrangementWithSds(),
@@ -75,7 +75,7 @@ class TestListSuccessfulParse(unittest.TestCase):
             ),
         )
         # ACT & ASSERT #
-        INSTRUCTION_CHECKER.check__abs_stx__std_layouts_and_source_variants(
+        INSTRUCTION_CHECKER.check__abs_stx__layout_and_source_variants(
             self,
             syntax,
             ArrangementWithSds(),
@@ -93,7 +93,7 @@ class TestListSuccessfulParse(unittest.TestCase):
 
         syntax = _syntax(symbol_to_assign, ListSymbolReferenceAbsStx(referred_symbol_name))
         # ACT & ASSERT #
-        INSTRUCTION_CHECKER.check__abs_stx__std_layouts_and_source_variants(
+        INSTRUCTION_CHECKER.check__abs_stx__layout_and_source_variants(
             self,
             syntax,
             ArrangementWithSds(),

@@ -223,7 +223,7 @@ class Checker(Generic[T]):
             source: AbstractSyntax,
             arrangement: ArrangementWithSds,
             expectation_: MultiSourceExpectation[T],
-            layouts: Sequence[NameAndValue[LayoutSpec]],
+            layouts: Sequence[NameAndValue[LayoutSpec]] = layout.STANDARD_LAYOUT_SPECS,
     ):
         self.check__token_sequence__layout_and_source_variants(
             put,

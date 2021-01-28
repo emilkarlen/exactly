@@ -124,7 +124,7 @@ class TestDriverTypesWArgListExceptSymbolReference(unittest.TestCase):
                 with self.subTest(command=pgm_and_args_case.name,
                                   arguments=arguments_case.name):
                     # ACT & ASSERT #
-                    CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+                    CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
                         self,
                         equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc,
                         pgm_w_args,
@@ -166,7 +166,7 @@ class TestDriverTypesWArgListExceptSymbolReference(unittest.TestCase):
                 with self.subTest(pgm_and_args=pgm_and_args_case.name,
                                   arguments=arguments_case.name):
                     # ACT & ASSERT #
-                    CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+                    CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
                         self,
                         equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc,
                         pgm_w_args,
@@ -257,7 +257,7 @@ class TestShellArgumentsAndSymbolReferences(unittest.TestCase):
         )
 
         # ACT & ASSERT #
-        CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+        CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
             self,
             equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc,
             syntax,
@@ -330,7 +330,7 @@ class TestShellArgumentsAndSymbolReferences(unittest.TestCase):
         )
 
         # ACT & ASSERT #
-        CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+        CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
             self,
             equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc,
             syntax,

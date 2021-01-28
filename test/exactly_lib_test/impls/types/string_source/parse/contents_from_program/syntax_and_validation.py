@@ -5,6 +5,8 @@ from exactly_lib.util.process_execution.process_output_files import ProcOutputFi
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, MultiSourceExpectation, \
     ExecutionExpectation, Expectation, ParseExpectation
+from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__for_full_line_expr_parse__s__nsc
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check
@@ -67,7 +69,7 @@ class TestSymbolReferences(unittest.TestCase):
 
         checker = integration_check.checker__w_arbitrary_file_relativities()
         # ACT & ASSERT #
-        checker.check__abs_stx__wo_input__std_layouts_and_source_variants(
+        checker.check__abs_stx__layouts__std_source_variants__wo_input(
             self,
             OptionallyOnNewLine(transformed_program_output_contents_syntax),
             arrangement_w_tcds(
@@ -115,8 +117,9 @@ class TestFailingValidation(unittest.TestCase):
             # ACT & ASSERT #
             checker = integration_check.checker__w_arbitrary_file_relativities()
             with self.subTest(step=case.name):
-                checker.check__abs_stx__wo_input__std_layouts_and_source_variants__full_line_parse(
+                checker.check__abs_stx__layouts__source_variants__wo_input(
                     self,
+                    equivalent_source_variants__for_full_line_expr_parse__s__nsc,
                     OptionallyOnNewLine(string_source_syntax),
                     arrangement_w_tcds(),
                     MultiSourceExpectation(

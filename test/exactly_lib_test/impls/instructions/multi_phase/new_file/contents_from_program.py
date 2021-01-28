@@ -222,7 +222,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(unittest.TestCase)
                 with self.subTest(relativity_option_string=str(rel_opt_conf.option_argument),
                                   program=program_case.name,
                                   output_channel=proc_output_file):
-                    integration_check.CHECKER__BEFORE_ACT.check__abs_stx__std_layouts_and_source_variants(
+                    integration_check.CHECKER__BEFORE_ACT.check__abs_stx__layout_and_source_variants(
                         self,
                         instruction_syntax,
                         ArrangementWithSds(

@@ -5,6 +5,8 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.parse.token import QuoteType, SOFT_QUOTE_CHAR
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import MultiSourceExpectation, \
     Expectation, ParseExpectation, arrangement_w_tcds
+from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__for_full_line_expr_parse__s__nsc
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check
 from exactly_lib_test.impls.types.string_source.test_resources import parse_check
@@ -33,7 +35,7 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
         string_value = str_abs_stx.StringLiteralAbsStx('the_string_value')
         string_source_syntax = string_source_abs_stx.StringSourceOfStringAbsStx(string_value)
         # ACT & ASSERT #
-        CHECKER.check__abs_stx__wo_input__std_layouts_and_source_variants(
+        CHECKER.check__abs_stx__layouts__std_source_variants__wo_input(
             self,
             OptionallyOnNewLine(string_source_syntax),
             arrangement_w_tcds(),
@@ -51,7 +53,7 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
                                                        quoting_=QuoteType.SOFT)
         string_source_syntax = string_source_abs_stx.StringSourceOfStringAbsStx(string_value)
         # ACT & ASSERT #
-        CHECKER.check__abs_stx__wo_input__std_layouts_and_source_variants(
+        CHECKER.check__abs_stx__layouts__std_source_variants__wo_input(
             self,
             OptionallyOnNewLine(string_source_syntax),
             arrangement_w_tcds(),
@@ -67,8 +69,9 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
         # ARRANGE #
         string_value = str_abs_stx.StringHereDocAbsStx('single line in here doc\n')
         string_source_syntax = string_source_abs_stx.StringSourceOfStringAbsStx(string_value)
-        CHECKER.check__abs_stx__wo_input__std_layouts_and_source_variants__full_line_parse(
+        CHECKER.check__abs_stx__layouts__source_variants__wo_input(
             self,
+            equivalent_source_variants__for_full_line_expr_parse__s__nsc,
             OptionallyOnNewLine(string_source_syntax),
             arrangement_w_tcds(),
             MultiSourceExpectation.of_prim__const(

@@ -69,7 +69,7 @@ class TestSuccessfulParsing(unittest.TestCase):
 
             with self.subTest(command=pgm_and_args_case.name):
                 # ACT & ASSERT #
-                CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+                CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
                     self,
                     equivalent_source_variants__for_expr_parse__s__nsc,
                     program_w_stdin,
@@ -141,7 +141,7 @@ class TestSuccessfulParsing(unittest.TestCase):
                 )
 
                 # ACT & ASSERT #
-                CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+                CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
                     self,
                     equivalent_source_variants__for_expr_parse__s__nsc,
                     program_w_stdin,
@@ -186,7 +186,7 @@ class TestValidation(unittest.TestCase):
                 with self.subTest(command=pgm_and_args_case.name,
                                   validation=validation_case.name):
                     # ACT & ASSERT #
-                    CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+                    CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
                         self,
                         equivalent_source_variants__for_expr_parse__s__nsc,
                         program_w_stdin,
@@ -243,7 +243,7 @@ class TestValidation(unittest.TestCase):
                 with self.subTest(validation=validation_case.name,
                                   invalid_stdin_location=invalid_stdin_location_case.name):
                     # ACT & ASSERT #
-                    CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+                    CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
                         self,
                         equivalent_source_variants__for_expr_parse__s__nsc,
                         program_w_stdin,

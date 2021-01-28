@@ -232,7 +232,7 @@ class SymbolReferencesTestExecutor(TestExecutorBase, ABC):
 
             with self.put.subTest(case=case.name):
                 # ACT & ASSERT #
-                self.integration_checker().check__abs_stx__std_layouts__mk_source_variants__wo_input(
+                self.integration_checker().check__abs_stx__layouts__source_variants__wo_input(
                     self.put,
                     equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc,
                     case.source,
@@ -276,7 +276,7 @@ class ValidationOfAccumulatedArgumentsExecutor(TestExecutorBase, ABC):
             [invalid_argument_syntax],
         )
         # ACT & ASSERT #
-        self.integration_checker().check__abs_stx__std_layouts__mk_source_variants__wo_input(
+        self.integration_checker().check__abs_stx__layouts__source_variants__wo_input(
             self.put,
             equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc,
             reference_and_additional_invalid_argument,
@@ -321,7 +321,7 @@ class ValidationOfSdvArgumentsExecutor(TestExecutorBase, ABC):
             [argument_syntax],
         )
         # ACT & ASSERT #
-        self.integration_checker().check__abs_stx__std_layouts__mk_source_variants__wo_input(
+        self.integration_checker().check__abs_stx__layouts__source_variants__wo_input(
             self.put,
             equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc,
             reference_and_additional_invalid_argument,

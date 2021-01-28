@@ -74,7 +74,7 @@ class TestPgmAndArgs(unittest.TestCase):
 
             with self.subTest(command=pgm_and_args_case.name):
                 # ACT & ASSERT #
-                CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+                CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
                     self,
                     equivalent_source_variants__for_expr_parse__s__nsc,
                     program_w_stdin,
@@ -128,7 +128,7 @@ class TestShellCommandLine(unittest.TestCase):
             )
 
         # ACT & ASSERT #
-        CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+        CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
             self,
             equivalent_source_variants__for_expr_parse__s__nsc,
             program_w_stdin,

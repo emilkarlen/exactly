@@ -56,7 +56,7 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
         for pgm_and_args_case in pgm_and_args_cases.cases_w_and_wo_argument_list__including_program_reference():
             with self.subTest(pgm_and_args_case.name):
                 # ACT & ASSERT #
-                integration_check.CHECKER__PARSE_FULL.check__abs_stx__std_layouts__mk_source_variants(
+                integration_check.CHECKER__PARSE_FULL.check__abs_stx__layouts__source_variants(
                     self,
                     equivalent_source_variants__for_expr_parse__s__nsc,
                     abstract_syntaxes.RunProgramAbsStx(
@@ -81,7 +81,7 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
         # ARRANGE #
         test_setup = MultipleStdinOfProgramTestSetup(self, exit_code=0)
         # ACT & ASSERT #
-        integration_check.CHECKER__PARSE_FULL.check__abs_stx__std_layouts__mk_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check__abs_stx__layouts__source_variants(
             self,
             equivalent_source_variants__for_expr_parse__s__nsc,
             abstract_syntaxes.RunProgramAbsStx(

@@ -5,6 +5,8 @@ from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, MultiSourceExpectation
+from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__for_full_line_expr_parse__s__nsc
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check
@@ -110,8 +112,9 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(unittest.TestCase)
                 )
                 with self.subTest(program=program_case.name,
                                   output_channel=proc_output_file):
-                    checker.check__abs_stx__wo_input__std_layouts_and_source_variants__full_line_parse(
+                    checker.check__abs_stx__layouts__source_variants__wo_input(
                         self,
+                        equivalent_source_variants__for_full_line_expr_parse__s__nsc,
                         OptionallyOnNewLine(syntax),
                         arrangement_w_tcds(
                             symbols=symbols,

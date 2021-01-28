@@ -50,7 +50,7 @@ class TestSuccessfulExecution(unittest.TestCase):
             src_rel_opt_conf.path_abs_stx_of_name(src_file.name)
         )
         # ACT & ASSERT #
-        checker.check__abs_stx__wo_input__std_layouts_and_source_variants(
+        checker.check__abs_stx__layouts__std_source_variants__wo_input(
             self,
             OptionallyOnNewLine(file_contents_abs_stx),
             arrangement_w_tcds(
@@ -89,7 +89,7 @@ class TestSuccessfulExecution(unittest.TestCase):
 
         checker = integration_check.checker(parse_check.rel_opts_conf_of_single(src_rel_opt_conf.relativity))
         # ACT & ASSERT #
-        checker.check__abs_stx__wo_input__std_layouts_and_source_variants(
+        checker.check__abs_stx__layouts__std_source_variants__wo_input(
             self,
             OptionallyOnNewLine(transformed_file_contents_abs_stx),
             arrangement_w_tcds(
@@ -141,7 +141,7 @@ class TestSymbolReferences(unittest.TestCase):
         ])
 
         # ACT & ASSERT #
-        checker.check__abs_stx__wo_input__std_layouts_and_source_variants(
+        checker.check__abs_stx__layouts__std_source_variants__wo_input(
             self,
             OptionallyOnNewLine(string_source_syntax),
             arrangement_w_tcds(
@@ -202,7 +202,7 @@ class TestValidation(unittest.TestCase):
         for validation_case in str_trans_validation_cases.failing_validation_cases(str_trans_syntax.symbol_name):
             with self.subTest(validation_case.name):
                 v_case = validation_case.value
-                checker.check__abs_stx__wo_input__std_layouts_and_source_variants(
+                checker.check__abs_stx__layouts__std_source_variants__wo_input(
                     self,
                     OptionallyOnNewLine(transformed_string_source_syntax),
                     arrangement_w_tcds(
@@ -254,7 +254,7 @@ class TestValidation(unittest.TestCase):
                                   contents=contents_arguments.name,
                                   relativity_of_src_path=src_file_rel_conf.option_argument):
                     # ACT & ASSERT #
-                    checker.check__abs_stx__wo_input__std_layouts_and_source_variants(
+                    checker.check__abs_stx__layouts__std_source_variants__wo_input(
                         self,
                         OptionallyOnNewLine(contents_arguments.value),
                         arrangement_w_tcds(

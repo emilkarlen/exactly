@@ -21,7 +21,7 @@ class TestPlainForms(unittest.TestCase):
         for pgm_and_args_case in pgm_and_args_cases.cases_w_and_wo_argument_list__including_program_reference():
             with self.subTest(command=pgm_and_args_case.name):
                 # ACT & ASSERT #
-                CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+                CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
                     self,
                     equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc,
                     pgm_and_args_case.pgm_and_args,

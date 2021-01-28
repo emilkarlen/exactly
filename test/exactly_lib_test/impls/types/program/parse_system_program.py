@@ -242,7 +242,7 @@ class TestValidation(unittest.TestCase):
                 with self.subTest(relativity=relativity_conf.option_string,
                                   file_do_existence_case=file_existence_case.name):
                     # ACT & ASSERT #
-                    CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+                    CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
                         self,
                         equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc,
                         source_syntax,
@@ -267,7 +267,7 @@ class TestValidation(unittest.TestCase):
             [ArgumentOfStringAbsStx.of_str('argument-that-is-not-a-file')]
         )
         # ACT & ASSERT #
-        CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+        CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
             self,
             equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc,
             abstract_syntax,
@@ -307,7 +307,7 @@ def _check_parsing_of_program(put: unittest.TestCase,
         source_abs_stx = program_case.source_element.new_w_additional_arguments(argument_case.source_elements)
 
         # ACT & ASSERT #
-        CHECKER_WO_EXECUTION.check__abs_stx__std_layouts__mk_source_variants__wo_input(
+        CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
             put,
             equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc,
             source_abs_stx,

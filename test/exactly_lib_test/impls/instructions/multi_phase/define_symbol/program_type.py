@@ -77,7 +77,7 @@ class TestSuccessfulDefinitionOfProgramWoArguments(unittest.TestCase):
                 value_assertion=expected_symbol_container,
             )
         )
-        INSTRUCTION_CHECKER.check__abs_stx__std_layouts_and_source_variants(
+        INSTRUCTION_CHECKER.check__abs_stx__layout_and_source_variants(
             self,
             define_symbol_syntax,
             ArrangementWithSds(),

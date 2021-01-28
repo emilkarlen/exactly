@@ -7,6 +7,8 @@ from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, MultiSourceExpectation, \
     Expectation, ParseExpectation, prim_asrt__constant
+from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__for_full_line_expr_parse__s__nsc
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check
@@ -57,9 +59,9 @@ class TestUnableToExecute(unittest.TestCase):
                 with self.subTest(transformation=transformation_case.name,
                                   ignore_exit_code=ignore_exit_code):
                     # ACT & ASSERT #
-                    checker.check__abs_stx__wo_input__std_layouts_and_source_variants__full_line_parse(
+                    checker.check__abs_stx__layouts__source_variants__wo_input(
                         self,
-                        OptionallyOnNewLine(syntax),
+                        equivalent_source_variants__for_full_line_expr_parse__s__nsc, OptionallyOnNewLine(syntax),
                         arrangement_w_tcds(
                             symbols=symbols,
                         ),
@@ -166,8 +168,9 @@ class TestNonZeroExitCode(unittest.TestCase):
                 checker = integration_check.checker__w_arbitrary_file_relativities()
                 with self.subTest(output_file=output_case.output_file,
                                   program=program_case.name):
-                    checker.check__abs_stx__wo_input__std_layouts_and_source_variants__full_line_parse(
+                    checker.check__abs_stx__layouts__source_variants__wo_input(
                         self,
+                        equivalent_source_variants__for_full_line_expr_parse__s__nsc,
                         OptionallyOnNewLine(syntax),
                         arrangement_w_tcds(
                             symbols=SymbolContext.symbol_table_of_contexts(symbol_contexts),
