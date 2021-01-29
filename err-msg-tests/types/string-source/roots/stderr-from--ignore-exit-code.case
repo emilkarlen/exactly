@@ -1,0 +1,6 @@
+[assert]
+
+
+run @ EXIT_ERROR
+    -stdin -stderr-from -ignore-exit-code
+      @ PRINT

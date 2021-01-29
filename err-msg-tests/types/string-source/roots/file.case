@@ -1,0 +1,8 @@
+[setup]
+
+file string-source.txt
+
+[assert]
+
+run @ EXIT_ERROR
+    -stdin -file string-source.txt

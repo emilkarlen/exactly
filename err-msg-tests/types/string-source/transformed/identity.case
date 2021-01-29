@@ -1,0 +1,7 @@
+[assert]
+
+run @ EXIT_ERROR
+    -stdin (
+      -file -rel-home string-source.txt
+        -transformed-by identity
+      )

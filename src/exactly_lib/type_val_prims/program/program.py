@@ -28,7 +28,7 @@ class Program(WithCachedNodeDescriptionBase):
             raise NotImplementedError('error terror')
 
     def _structure(self) -> StructureRenderer:
-        return program_structure_renderer(self._command.structure(),
+        return program_structure_renderer(self._command.new_structure_builder(),
                                           self._stdin,
                                           self._transformation)
 

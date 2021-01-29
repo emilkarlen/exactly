@@ -16,6 +16,6 @@ class CommandWStdin:
 
     def structure(self) -> StructureRenderer:
         return program.command_w_stdin_renderer(
-            self.command.structure(),
+            self.command.new_structure_builder(),
             self.stdin,
         )

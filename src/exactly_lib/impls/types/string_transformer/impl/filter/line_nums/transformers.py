@@ -70,7 +70,8 @@ class MultipleLineRangesTransformer(StringTransformer):
         merged_ranges = range_merge.merge(non_neg_values)
 
         if merged_ranges.is_empty:
-            return sources.empty(model)
+            return sources.empty(model,
+                                 self._get_structure)
         elif merged_ranges.is_everything():
             return model
         else:
@@ -112,7 +113,8 @@ class _SingleRangeSourceConstructor(RangeVisitor[StringSource]):
     def visit_single_line(self, x: SingleLineRange) -> StringSource:
         line_num = x.line_number
         if line_num == 0:
-            return sources.empty(self._source_model)
+            return sources.empty(self._source_model,
+                                 self._transformer_description)
         elif line_num > 0:
             return sources.single_non_neg_int_source(self._mem_buff_size, self._transformer_description,
                                                      self._source_model, line_num - 1)
@@ -124,7 +126,8 @@ class _SingleRangeSourceConstructor(RangeVisitor[StringSource]):
         limit = x.upper_limit
 
         if limit == 0:
-            return sources.empty(self._source_model)
+            return sources.empty(self._source_model,
+                                 self._transformer_description)
         elif limit > 0:
             return sources.upper_non_neg_limit_source(self._mem_buff_size, self._transformer_description,
                                                       self._source_model, limit - 1)
@@ -149,7 +152,8 @@ class _SingleRangeSourceConstructor(RangeVisitor[StringSource]):
         lower = x.lower_limit
         upper = x.upper_limit
         if upper == 0:
-            return sources.empty(self._source_model)
+            return sources.empty(self._source_model,
+                                 self._transformer_description)
 
         if lower >= 0:
             if upper >= 0:
@@ -164,7 +168,8 @@ class _SingleRangeSourceConstructor(RangeVisitor[StringSource]):
 
     def _lower_and_upper__non_neg(self, lower: int, upper: int) -> StringSource:
         if lower > upper:
-            return sources.empty(self._source_model)
+            return sources.empty(self._source_model,
+                                 self._transformer_description)
 
         if lower > 0:
             lower -= 1
@@ -175,7 +180,8 @@ class _SingleRangeSourceConstructor(RangeVisitor[StringSource]):
 
     def _lower_and_upper__neg(self, lower: int, upper: int) -> StringSource:
         return (
-            sources.empty(self._source_model)
+            sources.empty(self._source_model,
+                          self._transformer_description)
             if lower > upper
             else
             sources.lower_neg_upper_neg_source(self._mem_buff_size, self._transformer_description,

@@ -287,6 +287,7 @@ class _ToUpperCommandSourceConstructor(SourceConstructorWAppEnvForTest):
             )
 
             yield sut.transformed_by_command(
+                'the structure header',
                 CommandWStdin(_to_upper_command(tmp_dir_path, self.exit_code), ()),
                 self.ignore_exit_code,
                 app_env,
@@ -323,6 +324,7 @@ class _ToUpperProgramSourceConstructor(SourceConstructorWAppEnvForTest):
             )
 
             yield sut.transformed_by_program(
+                'the structure header',
                 self._to_upper_program(tmp_dir_path),
                 self.ignore_exit_code,
                 app_env,

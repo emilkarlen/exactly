@@ -18,9 +18,11 @@ from exactly_lib.type_val_prims.string_source.structure_builder import StringSou
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
 
-def empty(transformed: StringSource) -> StringSource:
+def empty(transformed: StringSource,
+          transformer_description: Callable[[], StructureRenderer],
+          ) -> StringSource:
     def new_structure_builder() -> StringSourceStructureBuilder:
-        return transformed.new_structure_builder()
+        return transformed.new_structure_builder().with_transformed_by(transformer_description())
 
     return StringSourceWConstantContents(
         new_structure_builder,

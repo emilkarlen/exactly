@@ -30,6 +30,9 @@ def suite() -> unittest.TestSuite:
 class TestUnconditionallyEmptyTransformations(unittest.TestCase):
     def test_freeze_should_not_freeze_source_model(self):
         # ARRANGE #
+        def mk_transformer(root: StringSource) -> StringSource:
+            return sut.empty(root, _transformer_description)
+
         with dir_file_space_with_existing_dir() as tmp_file_space:
             for may_depend_on_external_resources in [False, True]:
                 for num_initial_freeze_invocations in [1, 2]:
@@ -38,7 +41,7 @@ class TestUnconditionallyEmptyTransformations(unittest.TestCase):
                         # ACT & ASSERT #
                         freeze_check.check(
                             self,
-                            sut.empty,
+                            mk_transformer,
                             may_depend_on_external_resources,
                             num_initial_freeze_invocations,
                             tmp_file_space,
@@ -55,7 +58,7 @@ class TestUnconditionallyEmptyTransformations(unittest.TestCase):
                                                         tmp_file_space,
                                                         source_may_depend_on_external_resources)
                 # ACT #
-                string_source = sut.empty(source_model)
+                string_source = sut.empty(source_model, _transformer_description)
                 # ASSERT #
                 self.assertEqual(string_source.contents().may_depend_on_external_resources,
                                  source_may_depend_on_external_resources)

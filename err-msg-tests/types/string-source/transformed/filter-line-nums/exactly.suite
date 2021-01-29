@@ -1,0 +1,7 @@
+*.case
+
+[setup]
+
+def program EXIT_ERROR = -python -c exit(1)
+
+def path STRING_SOURCE_FILE = -rel-home ../string-source.txt

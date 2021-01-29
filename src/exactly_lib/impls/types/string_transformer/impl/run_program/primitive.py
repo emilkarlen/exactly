@@ -46,6 +46,7 @@ class _RunStringTransformer(WithCachedNodeDescriptionBase, StringTransformer):
 
     def transform(self, model: StringSource) -> StringSource:
         return transformed_by_program.transformed_by_program(
+            self._name,
             self._program,
             self._ignore_exit_code,
             self._environment,

@@ -40,7 +40,7 @@ class Processor(Generic[RET], CommandProcessor[RET]):
 
         raise HardErrorException(
             top_lvl_error_msg_rendering.non_zero_exit_code_msg(
-                command.structure().build(),
+                command.new_structure_builder().build(),
                 exit_code,
                 self._stderr_part(result),
             )

@@ -1,0 +1,4 @@
+[assert]
+
+run @ EXIT_ERROR
+    -stdin 'string source / string'

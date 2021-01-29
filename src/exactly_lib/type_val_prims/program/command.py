@@ -7,9 +7,6 @@ from abc import ABC, abstractmethod
 from typing import List, Sequence
 
 from exactly_lib.type_val_prims.description.structure_building import StructureBuilder
-from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
-from exactly_lib.util.description_tree.renderer import NodeRenderer, NODE_DATA
-from exactly_lib.util.description_tree.tree import Node
 
 
 class ProgramAndArguments:
@@ -47,12 +44,9 @@ class Command:
             self._arguments + list(tail_arguments)
         )
 
-    def structure(self) -> StructureBuilder:
+    def new_structure_builder(self) -> StructureBuilder:
         """:returns A new object on each invokation."""
         return self._driver.structure_for(self._arguments)
-
-    def structure_renderer(self) -> StructureRenderer:
-        return _CommandStructureRenderer(self)
 
     @property
     def driver(self) -> CommandDriver:
@@ -61,11 +55,3 @@ class Command:
     @property
     def arguments(self) -> List[str]:
         return self._arguments
-
-
-class _CommandStructureRenderer(NodeRenderer[None]):
-    def __init__(self, command: Command):
-        self._command = command
-
-    def render(self) -> Node[NODE_DATA]:
-        return self._command.structure().build().render()

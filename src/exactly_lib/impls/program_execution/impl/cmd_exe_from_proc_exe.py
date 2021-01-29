@@ -39,7 +39,7 @@ def _raise_hard_error(command: Command, ex: process_executor.ProcessExecutionExc
     from exactly_lib.util.simple_textstruct.rendering import line_objects
     raise HardErrorException(
         top_lvl_error_msg_rendering.unable_to_execute_msg(
-            command.structure().build(),
+            command.new_structure_builder().build(),
             blocks.MajorBlocksOfSingleLineObject(
                 line_objects.PreFormattedString.of_str(str(ex.cause))
             )

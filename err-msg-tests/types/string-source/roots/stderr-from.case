@@ -1,0 +1,5 @@
+[assert]
+
+
+run @ EXIT_ERROR
+    -stdin -stderr-from @ PRINT

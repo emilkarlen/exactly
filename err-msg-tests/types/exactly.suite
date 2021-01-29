@@ -8,3 +8,4 @@ files-condition
 files-matcher
 string-transformer
 program
+string-source

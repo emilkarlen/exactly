@@ -1,4 +1,5 @@
 from exactly_lib.common.err_msg import std_err_contents
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import program as program_primitives
 from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.impls.types.string_source.cached_frozen import StringSourceWithCachedFrozen
@@ -16,7 +17,7 @@ from exactly_lib.util.process_execution.execution_elements import ProcessExecuti
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
 
-def string_source(structure_header: str,
+def string_source(structure_option: str,
                   ignore_exit_code: bool,
                   output_channel_to_capture: ProcOutputFile,
                   command: CommandWStdin,
@@ -26,7 +27,7 @@ def string_source(structure_header: str,
                   tmp_file_space: DirFileSpace,
                   ) -> StringSource:
     constructor_of_structure_builder = ConstructorOfStructureBuilder(
-        structure_header,
+        structure_option,
         ignore_exit_code,
         command.structure(),
     )
@@ -48,20 +49,22 @@ def string_source(structure_header: str,
 
 class ConstructorOfStructureBuilder:
     def __init__(self,
-                 structure_header: str,
+                 structure_option: str,
                  ignore_exit_code: bool,
                  command: StructureRenderer,
                  ):
-        self._structure_header = structure_header
+        self._structure_header = ' '.join((structure_option, syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name))
         self._ignore_exit_code = ignore_exit_code
         self._command = command
 
     def new_structure_builder(self) -> StringSourceStructureBuilder:
         return StringSourceStructureBuilder(
             self._structure_header,
-            (custom_details.optional_option(program_primitives.WITH_IGNORED_EXIT_CODE_OPTION_NAME,
-                                            self._ignore_exit_code),),
-            (self._command,),
+            (
+                custom_details.optional_option(program_primitives.WITH_IGNORED_EXIT_CODE_OPTION_NAME,
+                                               self._ignore_exit_code),
+                custom_details.TreeStructure(self._command),
+            ),
         )
 
 

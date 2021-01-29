@@ -1,0 +1,7 @@
+*.case
+
+[setup]
+
+def program EXIT_ERROR = -python -c exit(1)
+
+def program PRINT = -python -c :> print('string source / from program')
