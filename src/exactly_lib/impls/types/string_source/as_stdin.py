@@ -13,7 +13,7 @@ def of_optional(stdin: Optional[StringSource]) -> ContextManager[ProcessExecutio
 
 def of_sequence(stdin_parts: Sequence[StringSource],
                 mem_buff_size: int) -> ContextManager[ProcessExecutionFile]:
-    return _context_manager(concat.string_source_of_mb_empty_sequence(stdin_parts, mem_buff_size))
+    return _context_manager(concat.string_source_of_mb_empty_sequence(stdin_parts, mem_buff_size, 'stdin'))
 
 
 @contextmanager

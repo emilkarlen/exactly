@@ -11,25 +11,28 @@ from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
 
 def string_source_of_mb_empty_sequence(parts: Sequence[StringSource],
-                                       mem_buff_size: int) -> Optional[StringSource]:
+                                       mem_buff_size: int,
+                                       file_name: str = 'concat') -> Optional[StringSource]:
     if not parts:
         return None
     elif len(parts) == 1:
         return parts[0]
     else:
-        return string_source(parts, mem_buff_size)
+        return string_source(parts, mem_buff_size, file_name)
 
 
 def string_source_of_non_empty_sequence(parts: Sequence[StringSource],
-                                        mem_buff_size: int) -> StringSource:
+                                        mem_buff_size: int,
+                                        file_name: str = 'concat') -> StringSource:
     if len(parts) == 1:
         return parts[0]
     else:
-        return string_source(parts, mem_buff_size)
+        return string_source(parts, mem_buff_size, file_name)
 
 
 def string_source(parts: Sequence[StringSource],
                   mem_buff_size: int,
+                  file_name: str = 'concat'
                   ) -> StringSource:
     """
     :param parts: Must contain at least 2 elements
@@ -44,18 +47,18 @@ def string_source(parts: Sequence[StringSource],
 
     return cached_frozen.StringSourceWithCachedFrozen(
         new_structure_builder,
-        _ConcatStringSourceContents(parts),
+        _ConcatStringSourceContents(parts, file_name),
         mem_buff_size,
-        _FILE_NAME,
+        file_name,
     )
 
 
-_FILE_NAME = 'concat'
-
-
 class _ConcatStringSourceContents(ContentsWithCachedPathFromWriteToBase):
-    def __init__(self, parts: Sequence[StringSource]):
-        super().__init__(_FILE_NAME)
+    def __init__(self,
+                 parts: Sequence[StringSource],
+                 file_name: str,
+                 ):
+        super().__init__(file_name)
         self._parts = parts
 
     @property
