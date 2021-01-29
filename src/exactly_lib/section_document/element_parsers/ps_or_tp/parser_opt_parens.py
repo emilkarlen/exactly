@@ -32,6 +32,5 @@ class OptionallySurroundedByParenthesisParser(Generic[PARSE_RESULT], ParserFromT
     def _parse_w_present_begin_paren(self, parser: TokenParser) -> PARSE_RESULT:
         parser.consume_head()
         ret_val = self._parser_of_plain.parse_from_token_parser(parser)
-        parser.require_head_is_unquoted_and_equals(')', self._MISSING_PAREN_END)
-        parser.consume_head()
+        parser.consume_mandatory_constant_unquoted_string(')', must_be_on_current_line=False)
         return ret_val

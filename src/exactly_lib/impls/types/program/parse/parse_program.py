@@ -1,12 +1,15 @@
 from typing import Optional
 
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import program
 from exactly_lib.impls.types.parse.options import OptionalOptionWMandatoryArgumentParser
 from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
-from exactly_lib.impls.types.program import syntax_elements
+from exactly_lib.impls.types.program import syntax_elements as pgm_syntax_elements
 from exactly_lib.impls.types.program.parse import parse_executable_file, parse_system_program, \
     parse_shell_command, parse_with_reference_to_program
-from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
+from exactly_lib.section_document.element_parsers.ps_or_tp import parser_opt_parens
+from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase, \
+    CurrentLineMustNotBeEmptyExceptForSpace
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.type_val_deps.types.program.sdv.accumulated_components import AccumulatedComponents
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
@@ -15,30 +18,37 @@ from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransfo
 
 
 def program_parser(must_be_on_current_line: bool = False,
-                   exe_file_relativity: RelOptionArgumentConfiguration = syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF,
+                   exe_file_relativity: RelOptionArgumentConfiguration
+                   = pgm_syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF,
                    ) -> Parser[ProgramSdv]:
-    return _Parser(exe_file_relativity,
-                   must_be_on_current_line=must_be_on_current_line)
+    parser_for_element_on_arbitrary_line = parser_opt_parens.OptionallySurroundedByParenthesisParser(
+        _Parser(exe_file_relativity)
+    )
+    return (
+        CurrentLineMustNotBeEmptyExceptForSpace.of_mandatory_element(
+            syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
+            parser_for_element_on_arbitrary_line,
+        )
+        if must_be_on_current_line
+        else
+        parser_for_element_on_arbitrary_line
+    )
 
 
 class _Parser(ParserFromTokenParserBase[ProgramSdv]):
-    def __init__(self,
-                 exe_file_relativity: RelOptionArgumentConfiguration,
-                 must_be_on_current_line: bool = False,
-                 ):
+    def __init__(self, exe_file_relativity: RelOptionArgumentConfiguration):
         super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
         self._string_transformer_parser = None
         self._string_source_parser = None
-        self._must_be_on_current_line = must_be_on_current_line
         self._parser_of_executable_file = parse_executable_file.parser_of_program(exe_file_relativity)
         self._program_variant_setups = {
-            syntax_elements.SHELL_COMMAND_TOKEN:
+            pgm_syntax_elements.SHELL_COMMAND_TOKEN:
                 parse_shell_command.program_parser().parse_from_token_parser,
 
-            syntax_elements.SYSTEM_PROGRAM_TOKEN:
+            pgm_syntax_elements.SYSTEM_PROGRAM_TOKEN:
                 parse_system_program.program_parser().parse_from_token_parser,
 
-            syntax_elements.SYMBOL_REF_PROGRAM_TOKEN:
+            pgm_syntax_elements.SYMBOL_REF_PROGRAM_TOKEN:
                 parse_with_reference_to_program.program_parser().parse_from_token_parser,
         }
 
@@ -90,5 +100,5 @@ class _Parser(ParserFromTokenParserBase[ProgramSdv]):
         return parser.parse_default_or_optional_command(
             self._parser_of_executable_file.parse_from_token_parser,
             self._program_variant_setups,
-            self._must_be_on_current_line,
+            False,
         )

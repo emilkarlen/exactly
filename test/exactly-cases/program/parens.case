@@ -1,0 +1,11 @@
+[act]
+
+(
+   -python -c :> print('stdout')
+)
+
+[assert]
+
+stdout equals <<-
+stdout
+-

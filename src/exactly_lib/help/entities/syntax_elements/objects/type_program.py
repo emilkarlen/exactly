@@ -15,6 +15,7 @@ from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help.entities.utils import programs
+from exactly_lib.help.entities.utils.se_within_parens import OptionallyWithinParens
 from exactly_lib.impls import texts
 from exactly_lib.impls.types.path import path_relativities, relative_path_options_documentation as rel_path_doc
 from exactly_lib.impls.types.program import syntax_elements as pgm_syntax_elements
@@ -39,11 +40,11 @@ class _Documentation(SyntaxElementDocumentation):
     def invokation_variants(self) -> List[InvokationVariant]:
         return [
             invokation_variant_from_args([
-                a.Single(a.Multiplicity.MANDATORY, self._pgm_and_args.element),
+                a.single_mandatory(self._pgm_and_args.element),
                 a.Single(a.Multiplicity.OPTIONAL,
                          _STDIN_ARGUMENT),
                 a.Single(a.Multiplicity.OPTIONAL,
-                         string_transformer.STRING_TRANSFORMATION_ARGUMENT),
+                         a.Named(_OUTPUT_TRANSFORMATION)),
             ]),
         ]
 
@@ -99,7 +100,7 @@ class _PgmAndArgs(SyntaxElementDescriptionTree):
 
     def _pgm_for_arg_list_variant(self) -> InvokationVariant:
         return invokation_variant_from_args([
-            a.Single(a.Multiplicity.MANDATORY, self._pgm_for_arg_list.element),
+            a.single_mandatory(self._pgm_for_arg_list.element),
             syntax_elements.PROGRAM_ARGUMENT_SYNTAX_ELEMENT.zero_or_more,
         ],
             _TEXT_PARSER.fnap(_PGM_WITH_ARG_LIST_INVOKATION_VARIANT_DESCRIPTION))
@@ -109,11 +110,11 @@ class _ShellCommandLine(InvokationVariantHelper):
     @property
     def syntax(self) -> Sequence[a.ArgumentUsage]:
         return [
-            a.Single(a.Multiplicity.MANDATORY,
-                     a.Constant(instruction_names.SHELL_INSTRUCTION_NAME)
-                     ),
-            a.Single(a.Multiplicity.MANDATORY,
-                     syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT.argument)
+            a.single_mandatory(
+                a.Constant(instruction_names.SHELL_INSTRUCTION_NAME)
+            ),
+            a.single_mandatory(
+                syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT.argument)
         ]
 
     @property
@@ -197,8 +198,8 @@ def _transformation_description_rest() -> List[ParagraphItem]:
 
 
 def _transformation_sed() -> SyntaxElementDescription:
-    return cli_argument_syntax_element_description(
-        string_transformer.STRING_TRANSFORMATION_ARGUMENT,
+    return SyntaxElementDescription(
+        _OUTPUT_TRANSFORMATION,
         _transformation_description_rest(),
         [
             invokation_variant_from_args([a.Single(a.Multiplicity.MANDATORY,
@@ -206,6 +207,8 @@ def _transformation_sed() -> SyntaxElementDescription:
         ]
     )
 
+
+_OUTPUT_TRANSFORMATION = 'TRANSFORMATION-OF-OUTPUT'
 
 EXECUTABLE_ARG = a.Named('EXECUTABLE')
 
@@ -229,7 +232,9 @@ _TEXT_PARSER = TextParser({
     'stdin': misc_texts.STDIN,
 })
 
-DOCUMENTATION = _Documentation()
+DOCUMENTATION = OptionallyWithinParens(
+    _Documentation(),
+)
 
 _PGM_AND_ARGS = """\
 A program followed by arguments until end of line.

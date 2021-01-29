@@ -3,7 +3,7 @@ import unittest
 from exactly_lib_test.impls.types.program.parse_program import invalid_syntax, \
     arguments, \
     all_forms_wo_optional_components, all_forms_w_optional_components, \
-    stdin, transformation
+    stdin, transformation, within_parens
 
 
 def suite() -> unittest.TestSuite:
@@ -14,6 +14,7 @@ def suite() -> unittest.TestSuite:
         stdin.suite(),
         transformation.suite(),
         all_forms_w_optional_components.suite(),
+        within_parens.suite(),
     ])
 
 

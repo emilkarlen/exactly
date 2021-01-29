@@ -51,6 +51,14 @@ class CurrentLineMustNotBeEmptyExceptForSpace(Generic[PARSE_RESULT], Parser[PARS
         self._with_non_empty_current_line = with_non_empty_current_line
         self._error_message_if_current_line_empty = error_message_if_current_line_empty
 
+    @staticmethod
+    def of_mandatory_element(element_name: str,
+                             with_non_empty_current_line: Parser[PARSE_RESULT]) -> Parser[PARSE_RESULT]:
+        return CurrentLineMustNotBeEmptyExceptForSpace(
+            with_non_empty_current_line,
+            'Missing ' + element_name,
+        )
+
     def parse(self, source: ParseSource) -> PARSE_RESULT:
         if source.is_at_eol__except_for_space:
             raise instruction_parser_exceptions.SingleInstructionInvalidArgumentException(

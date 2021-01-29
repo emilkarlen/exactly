@@ -27,10 +27,7 @@ TEXT_UNTIL_END_OF_LINE_ARGUMENT = a.Named('TEXT-UNTIL-END-OF-LINE')
 
 
 def documentation() -> SyntaxElementDocumentation:
-    primitive = Documentation()
-    return OptionallyWithinParens(primitive.type_category,
-                                  primitive.name_and_cross_ref_target,
-                                  Documentation())
+    return OptionallyWithinParens(Documentation())
 
 
 class Documentation(SyntaxElementDocumentation):
