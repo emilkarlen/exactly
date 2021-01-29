@@ -108,7 +108,8 @@ class Parser(ComparisonActualFileParser):
 class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor):
     def __init__(self,
                  checked_output: process_output_files.ProcOutputFile,
-                 program: ProgramSdv):
+                 program: ProgramSdv,
+                 ):
         self._checked_output = checked_output
         self._program = program
 

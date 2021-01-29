@@ -1,0 +1,21 @@
+[assert]
+
+def string STDIN_PART_1 = 'the contents of stdin, part 1'
+def string STDIN_PART_2 = 'the contents of stdin, part 2'
+def string EXPECTED_STDIN = @[STDIN_PART_1]@@[STDIN_PART_2]@
+
+def program COPY_STDIN__W_PART_1__STDOUT =
+    @ COPY_STDIN_2_STDOUT
+      -stdin @[STDIN_PART_1]@
+
+def program COPY_STDIN__W_PART_1__STDERR =
+    @ COPY_STDIN_2_STDERR
+      -stdin @[STDIN_PART_1]@
+
+stdout -from @ COPY_STDIN__W_PART_1__STDOUT
+               -stdin @[STDIN_PART_2]@
+       equals @[EXPECTED_STDIN]@
+
+stderr -from @ COPY_STDIN__W_PART_1__STDERR
+               -stdin @[STDIN_PART_2]@
+       equals @[EXPECTED_STDIN]@

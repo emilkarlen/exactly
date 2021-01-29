@@ -29,6 +29,10 @@ class TokenSequence(ABC):
         return _Sequence(('\n',))
 
     @staticmethod
+    def new_line() -> 'TokenSequence':
+        return _Sequence((layout.NEW_LINE,))
+
+    @staticmethod
     def optional_new_line() -> 'TokenSequence':
         return _Sequence((layout.OPTIONAL_NEW_LINE,))
 

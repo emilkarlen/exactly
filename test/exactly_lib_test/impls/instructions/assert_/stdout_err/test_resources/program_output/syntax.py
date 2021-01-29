@@ -2,11 +2,9 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib_test.impls.instructions.assert_.test_resources.stdout_stderr.program_output import \
+from exactly_lib_test.impls.instructions.assert_.stdout_err.test_resources.program_output import configuration, \
     arguments_building as po_ab
-from exactly_lib_test.impls.instructions.assert_.test_resources.stdout_stderr.program_output import \
-    configuration
-from exactly_lib_test.impls.instructions.assert_.test_resources.stdout_stderr.program_output.configuration import \
+from exactly_lib_test.impls.instructions.assert_.stdout_err.test_resources.program_output.configuration import \
     TestCaseBase
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args

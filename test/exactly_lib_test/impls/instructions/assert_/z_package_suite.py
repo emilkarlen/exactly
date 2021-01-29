@@ -11,11 +11,11 @@ from exactly_lib_test.impls.instructions.assert_ import \
     sys_cmd, \
     env, \
     define_symbol
-from exactly_lib_test.impls.instructions.assert_ import stdout, stderr
 from exactly_lib_test.impls.instructions.assert_ import test_resources_test
 from exactly_lib_test.impls.instructions.assert_.contents_of_dir import z_package_suite as contents_of_dir
 from exactly_lib_test.impls.instructions.assert_.contents_of_file import z_package_suite as contents_of_file
 from exactly_lib_test.impls.instructions.assert_.existence_of_file import z_package_suite as existence_of_file
+from exactly_lib_test.impls.instructions.assert_.stdout_err import z_package_suite as stdout_err
 from exactly_lib_test.impls.instructions.assert_.test_resources_test import z_package_suite as test_resources_test
 from exactly_lib_test.impls.instructions.assert_.utils import z_package_suite as utils
 
@@ -28,8 +28,7 @@ def suite() -> unittest.TestSuite:
         exitcode.suite(),
         contents_of_file.suite(),
         contents_of_dir.suite(),
-        stdout.suite(),
-        stderr.suite(),
+        stdout_err.suite(),
         existence_of_file.suite(),
         new_file.suite(),
         new_dir.suite(),

@@ -4,13 +4,11 @@ from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
-from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.impls.instructions.assert_.test_resources.stdout_stderr.program_output import \
+from exactly_lib_test.impls.instructions.assert_.stdout_err.test_resources.program_output import configuration, \
     arguments_building as args
-from exactly_lib_test.impls.instructions.assert_.test_resources.stdout_stderr.program_output import \
-    configuration
-from exactly_lib_test.impls.instructions.assert_.test_resources.stdout_stderr.program_output.configuration import \
+from exactly_lib_test.impls.instructions.assert_.stdout_err.test_resources.program_output.configuration import \
     TestCaseBase
+from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.impls.types.matcher.test_resources.matchers import MatcherTestImplBase
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as args2
@@ -49,7 +47,7 @@ class TestProgramIsExecutedEvenThoughMatcherDoNotAccessModel(TestCaseBase):
             arguments,
             ArrangementPostAct(
                 symbols=string_matcher_that_do_not_access_model.symbol_table,
-                os_services=(_os_services_w_cmd_exe_counting(command_execution_counter)),
+                os_services=_os_services_w_cmd_exe_counting(command_execution_counter),
             ),
             Expectation(
                 symbol_usages=string_matcher_that_do_not_access_model.usages_assertion

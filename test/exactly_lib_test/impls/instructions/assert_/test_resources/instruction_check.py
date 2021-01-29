@@ -16,12 +16,15 @@ from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__consume_last_line
+    equivalent_source_variants__with_source_check__consume_last_line, \
+    equivalent_source_variants__consume_last_line__s__nsc
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.tcfs.test_resources.ds_construction import tcds_with_act_as_curr_dir__post_act
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ArrangementPostAct2
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
+from exactly_lib_test.test_resources.source import layout
+from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -103,6 +106,15 @@ class Expectation2:
         self.execution = execution
 
 
+class MultiSourceExpectation:
+    def __init__(self,
+                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                 execution: ExecutionExpectation = ExecutionExpectation(),
+                 ):
+        self.symbol_usages = symbol_usages
+        self.execution = execution
+
+
 def expectation(
         validation: ValidationExpectationSvh = ValidationExpectationSvh.passes(),
         main_result: ValueAssertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
@@ -173,6 +185,31 @@ class Checker:
         )
         execution_checker.check(instruction)
 
+    def check__abs_stx__source_variants(self,
+                                        put: unittest.TestCase,
+                                        syntax: AbstractSyntax,
+                                        arrangement: ArrangementPostAct2,
+                                        expectation: MultiSourceExpectation,
+                                        ):
+        tokens = syntax.tokenization()
+        for layout_case in layout.STANDARD_LAYOUT_SPECS:
+            source_str = tokens.layout(layout_case.value)
+            for source_case in equivalent_source_variants__consume_last_line__s__nsc(source_str):
+                with put.subTest(layout=layout_case.name,
+                                 source_variant=source_case.name):
+                    self.check_2(
+                        put,
+                        source_case.source,
+                        arrangement,
+                        Expectation2(
+                            ParseExpectation(
+                                source_case.expectation,
+                                expectation.symbol_usages,
+                            ),
+                            expectation.execution,
+                        )
+                    )
+
     def check_multi__with_source_variants(
             self,
             put: unittest.TestCase,
@@ -180,8 +217,9 @@ class Checker:
             symbol_usages: ValueAssertion[Sequence[SymbolUsage]],
             execution: Sequence[NExArr[ExecutionExpectation, ArrangementPostAct2]],
     ):
-        for parse_source in equivalent_source_variants__with_source_check__consume_last_line(put,
-                                                                                             source.arguments.as_single_string):
+        for parse_source in equivalent_source_variants__with_source_check__consume_last_line(
+                put,
+                source.arguments.as_single_string):
             instruction = self._parse_checker.parse(
                 put,
                 source.fs_location_info,

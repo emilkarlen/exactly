@@ -1,0 +1,8 @@
+[cases]
+
+*.case
+
+[setup]
+
+including ../../utils/copy-stdin-programs.xly
+

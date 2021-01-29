@@ -1,0 +1,11 @@
+[assert]
+
+def string STDIN_PART = 'the contents of stdin'
+
+stdout -from @ COPY_STDIN_2_STDOUT @[STDIN_PART]@
+               -stdin @[STDIN_PART]@
+       equals @[STDIN_PART]@
+
+stderr -from @ COPY_STDIN_2_STDERR @[STDIN_PART]@
+               -stdin @[STDIN_PART]@
+       equals @[STDIN_PART]@

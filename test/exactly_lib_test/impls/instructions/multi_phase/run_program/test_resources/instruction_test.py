@@ -1,7 +1,6 @@
 import unittest
 from typing import Sequence
 
-import exactly_lib_test.impls.types.program.test_resources.stdin_test_setups
 from exactly_lib.definitions.primitives import program as program_primitives
 from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -15,6 +14,8 @@ from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_tes
     suite_for_cases
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
+from exactly_lib_test.impls.types.program.test_resources.stdin_test_setups import \
+    StdinCheckWithProgramWExitCode0ForSuccess
 from exactly_lib_test.impls.types.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.test_resources import relativity_options
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf
@@ -211,7 +212,7 @@ class TestSuccessAndSymbolUsages(TestCaseBase):
 
 class TestStdin(TestCaseBase):
     def runTest(self):
-        setup = exactly_lib_test.impls.types.program.test_resources.stdin_test_setups.StdinCheckWithProgramWExitCode0ForSuccess()
+        setup = StdinCheckWithProgramWExitCode0ForSuccess()
         argument_syntax = setup.program_that_checks_stdin__syntax('the contents of stdin')
         self.conf.run_test(
             self,

@@ -4,15 +4,13 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.impls.instructions.assert_.test_resources.stdout_stderr.program_output import \
+from exactly_lib_test.impls.instructions.assert_.stdout_err.test_resources.program_output import configuration, \
     arguments_building as po_ab
-from exactly_lib_test.impls.instructions.assert_.test_resources.stdout_stderr.program_output import \
-    configuration
-from exactly_lib_test.impls.instructions.assert_.test_resources.stdout_stderr.program_output.configuration import \
+from exactly_lib_test.impls.instructions.assert_.stdout_err.test_resources.program_output.configuration import \
     TestCaseBase
-from exactly_lib_test.impls.instructions.assert_.test_resources.stdout_stderr.program_output.utils import \
+from exactly_lib_test.impls.instructions.assert_.stdout_err.test_resources.program_output.utils import \
     matches_reference
+from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.impls.types.string_matcher.test_resources import matcher_arguments
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO

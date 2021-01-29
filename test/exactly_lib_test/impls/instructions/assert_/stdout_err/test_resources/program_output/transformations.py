@@ -1,11 +1,10 @@
 import unittest
 
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.impls.instructions.assert_.test_resources.stdout_stderr.program_output import \
-    configuration
-from exactly_lib_test.impls.instructions.assert_.test_resources.stdout_stderr.program_output.configuration import \
+from exactly_lib_test.impls.instructions.assert_.stdout_err.test_resources.program_output import configuration
+from exactly_lib_test.impls.instructions.assert_.stdout_err.test_resources.program_output.configuration import \
     TestCaseBase
+from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.impls.types.string_matcher.test_resources import matcher_arguments
 from exactly_lib_test.impls.types.string_transformers.test_resources import \

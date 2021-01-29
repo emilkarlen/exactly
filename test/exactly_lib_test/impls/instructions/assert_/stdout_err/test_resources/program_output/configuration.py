@@ -2,10 +2,10 @@ from typing import List
 
 from exactly_lib.impls.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionParser
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
+from exactly_lib_test.impls.instructions.assert_.stdout_err.test_resources.program_output import \
+    arguments_building as args
 from exactly_lib_test.impls.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.impls.instructions.assert_.test_resources.stdout_stderr.program_output import \
-    arguments_building as args
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.impls.types.string_matcher.test_resources import matcher_arguments
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \

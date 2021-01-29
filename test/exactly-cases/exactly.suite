@@ -33,3 +33,5 @@ actors
 file
 
 run
+
+stdout_err

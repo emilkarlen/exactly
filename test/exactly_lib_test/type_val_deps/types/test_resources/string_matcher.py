@@ -19,6 +19,8 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.abstract_syntax import \
+    StringMatcherSymbolReferenceAbsStx
 
 
 def string_matcher_sdv_constant_test_impl(resolved_value: StringMatcher,
@@ -134,6 +136,10 @@ class StringMatcherSymbolContext(MatcherTypeSymbolContext[StringSource]):
     @property
     def argument(self) -> StringMatcherArg:
         return args.SymbolReferenceWReferenceSyntax(self.name)
+
+    @property
+    def abstract_syntax(self) -> StringMatcherSymbolReferenceAbsStx:
+        return StringMatcherSymbolReferenceAbsStx(self.name)
 
 
 class StringMatcherSymbolContextOfPrimitiveConstant(StringMatcherSymbolContext):
