@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Generic, Sequence, Callable
 
 from exactly_lib.definitions import logic
-from exactly_lib.impls.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNameAndNodeStructureDescriptionBase
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
@@ -19,7 +19,7 @@ from exactly_lib.util.description_tree import renderers
 
 
 class Negation(Generic[MODEL],
-               WithCachedNameAndTreeStructureDescriptionBase,
+               WithCachedNameAndNodeStructureDescriptionBase,
                MatcherWTrace[MODEL],
                ):
     NAME = logic.NOT_OPERATOR_NAME
@@ -34,7 +34,7 @@ class Negation(Generic[MODEL],
         )
 
     def __init__(self, negated: MatcherWTrace[MODEL]):
-        WithCachedNameAndTreeStructureDescriptionBase.__init__(self)
+        WithCachedNameAndNodeStructureDescriptionBase.__init__(self)
         self._negated = negated
 
     @property
@@ -124,7 +124,7 @@ def no_op_freezer(model: MODEL) -> MODEL:
 
 
 class _InfixOperatorBase(Generic[MODEL],
-                         WithCachedNameAndTreeStructureDescriptionBase,
+                         WithCachedNameAndNodeStructureDescriptionBase,
                          MatcherWTrace[MODEL],
                          ABC):
 
@@ -132,7 +132,7 @@ class _InfixOperatorBase(Generic[MODEL],
                  operands: Sequence[MatcherWTrace[MODEL]],
                  model_freezer: Callable[[MODEL], MODEL] = no_op_freezer,
                  ):
-        WithCachedNameAndTreeStructureDescriptionBase.__init__(self)
+        WithCachedNameAndNodeStructureDescriptionBase.__init__(self)
         self._operands = operands
         self._model_freezer = model_freezer
 

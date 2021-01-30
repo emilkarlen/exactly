@@ -9,7 +9,7 @@ from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 
 
-class WithCachedNameAndTreeStructureDescriptionBase(WithNameAndNodeDescription, ABC):
+class WithCachedNameAndNodeStructureDescriptionBase(WithNameAndNodeDescription, ABC):
     def __init__(self):
         self._structure_renderer = renderers.CachedSingleInvokation(
             renderers.FromFunction(self._structure)
