@@ -6,7 +6,7 @@ from exactly_lib_test.impls.instructions.assert_.test_resources.file_contents.in
     InstructionTestConfiguration, TestWithConfigurationBase
 from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_building import SB
-from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax
+from exactly_lib_test.impls.types.string_transformer.test_resources import argument_syntax
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY

@@ -30,7 +30,7 @@ from exactly_lib_test.impls.types.integer.test_resources.arguments_building impo
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
     ParseExpectation, ExecutionExpectation, Expectation
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as sm_arg
-from exactly_lib_test.impls.types.string_transformers.test_resources import test_transformers_setup
+from exactly_lib_test.impls.types.string_transformer.test_resources import test_transformers_setup
 from exactly_lib_test.impls.types.test_resources import relativity_options
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \

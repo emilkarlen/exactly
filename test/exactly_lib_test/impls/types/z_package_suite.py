@@ -18,7 +18,7 @@ from exactly_lib_test.impls.types.string_ import z_package_suite as string
 from exactly_lib_test.impls.types.string_matcher import z_package_suite as string_matcher
 from exactly_lib_test.impls.types.string_or_path import z_package_suite as string_or_path
 from exactly_lib_test.impls.types.string_source import z_package_suite as string_sources
-from exactly_lib_test.impls.types.string_transformers import z_package_suite as string_transformers
+from exactly_lib_test.impls.types.string_transformer import z_package_suite as string_transformers
 
 
 def suite() -> unittest.TestSuite:

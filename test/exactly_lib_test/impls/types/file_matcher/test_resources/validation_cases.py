@@ -14,7 +14,7 @@ from exactly_lib_test.impls.test_resources.validation.validation import Validati
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_wo_tcds, \
     PrimAndExeExpectation
 from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
-from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax
+from exactly_lib_test.impls.types.string_transformer.test_resources import argument_syntax
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext
 

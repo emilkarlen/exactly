@@ -12,7 +12,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arra
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
-from exactly_lib_test.impls.types.string_transformers.test_resources import \
+from exactly_lib_test.impls.types.string_transformer.test_resources import \
     validation_cases as str_trans_validation_cases
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.test_utils import NExArr

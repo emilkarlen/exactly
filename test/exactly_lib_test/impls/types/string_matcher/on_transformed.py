@@ -13,7 +13,7 @@ from exactly_lib_test.impls.types.string_matcher.test_resources import string_ma
 from exactly_lib_test.impls.types.string_matcher.test_resources import \
     validation_cases as string_matcher_failing_validation_cases
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
-from exactly_lib_test.impls.types.string_transformers.test_resources import validation_cases \
+from exactly_lib_test.impls.types.string_transformer.test_resources import validation_cases \
     as string_transformer_failing_validation_cases
 from exactly_lib_test.impls.types.test_resources import arguments_building as ab
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source

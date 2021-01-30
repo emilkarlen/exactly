@@ -9,7 +9,7 @@ from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_buildi
 from exactly_lib_test.impls.types.string_matcher.test_resources.test_configuration import \
     TestCaseBase
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
-from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax
+from exactly_lib_test.impls.types.string_transformer.test_resources import argument_syntax
 from exactly_lib_test.impls.types.test_resources.matcher_assertions import is_arbitrary_matching_failure, \
     is_matching_success
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source

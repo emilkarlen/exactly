@@ -11,7 +11,7 @@ from exactly_lib_test.impls.types.string_matcher.test_resources import test_conf
 from exactly_lib_test.impls.types.string_matcher.test_resources import test_configuration as tc
 from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_building import args
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
-from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as str_trans_syntax
+from exactly_lib_test.impls.types.string_transformer.test_resources import argument_syntax as str_trans_syntax
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source

@@ -9,7 +9,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arra
     ExecutionExpectation
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check, parse_check
-from exactly_lib_test.impls.types.string_transformers.test_resources import \
+from exactly_lib_test.impls.types.string_transformer.test_resources import \
     validation_cases as str_trans_validation_cases, abstract_syntaxes as str_trans_abs_stx
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_hds, conf_rel_any
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source

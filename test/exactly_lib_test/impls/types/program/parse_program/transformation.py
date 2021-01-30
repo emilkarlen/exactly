@@ -10,8 +10,8 @@ from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instru
 from exactly_lib_test.impls.types.program.parse_program.test_resources import pgm_and_args_cases
 from exactly_lib_test.impls.types.program.parse_program.test_resources.integration_checker import CHECKER_WO_EXECUTION
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
-from exactly_lib_test.impls.types.string_transformers.test_resources import validation_cases
-from exactly_lib_test.impls.types.string_transformers.test_resources.abstract_syntaxes import \
+from exactly_lib_test.impls.types.string_transformer.test_resources import validation_cases
+from exactly_lib_test.impls.types.string_transformer.test_resources.abstract_syntaxes import \
     StringTransformerCompositionAbsStx, CustomStringTransformerAbsStx
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source

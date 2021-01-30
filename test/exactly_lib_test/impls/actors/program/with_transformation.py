@@ -11,7 +11,7 @@ from exactly_lib_test.impls.actors.test_resources.integration_check import Expec
     arrangement_w_tcds
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
-from exactly_lib_test.impls.types.string_transformers.test_resources.test_transformers_setup import \
+from exactly_lib_test.impls.types.string_transformer.test_resources.test_transformers_setup import \
     TO_UPPER_CASE_TRANSFORMER
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import hds_populators

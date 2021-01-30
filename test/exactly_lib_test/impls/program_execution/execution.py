@@ -11,8 +11,8 @@ from exactly_lib_test.impls.types.parse.test_resources.arguments_building import
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.program.test_resources.assertions import assert_process_result_data
-from exactly_lib_test.impls.types.string_transformers.test_resources import test_transformers_setup
-from exactly_lib_test.impls.types.string_transformers.test_resources.validation_cases import \
+from exactly_lib_test.impls.types.string_transformer.test_resources import test_transformers_setup
+from exactly_lib_test.impls.types.string_transformer.test_resources.validation_cases import \
     failing_validation_cases
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext

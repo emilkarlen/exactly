@@ -12,7 +12,7 @@ from exactly_lib_test.impls.types.parse.test_resources import \
     string_argument_syntax, list_argument_syntax, path_argument_syntax
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as program_syntax
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building as string_matcher_syntax
-from exactly_lib_test.impls.types.string_transformers.test_resources import \
+from exactly_lib_test.impls.types.string_transformer.test_resources import \
     argument_syntax as string_transformers_syntax
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, ParseSourceBuilder
 

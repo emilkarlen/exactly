@@ -1,4 +1,4 @@
-from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax
+from exactly_lib_test.impls.types.string_transformer.test_resources import argument_syntax
 
 TRANSFORMER_OPTION_ALTERNATIVES = [
     '',

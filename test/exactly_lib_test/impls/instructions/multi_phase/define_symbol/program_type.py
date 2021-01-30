@@ -10,7 +10,7 @@ from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resource
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
     MultiSourceExpectation
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
-from exactly_lib_test.impls.types.string_transformers.test_resources.abstract_syntaxes import \
+from exactly_lib_test.impls.types.string_transformer.test_resources.abstract_syntaxes import \
     symbol_reference_followed_by_superfluous_string_on_same_line
 from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage

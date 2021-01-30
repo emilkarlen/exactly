@@ -7,7 +7,7 @@ from exactly_lib_test.impls.instructions.assert_.stdout_err.test_resources.progr
 from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.impls.types.string_matcher.test_resources import matcher_arguments
-from exactly_lib_test.impls.types.string_transformers.test_resources import \
+from exactly_lib_test.impls.types.string_transformer.test_resources import \
     test_transformers_setup as transformers_setup
 from exactly_lib_test.impls.types.test_resources import arguments_building as ab
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \
