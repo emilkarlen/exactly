@@ -113,7 +113,8 @@ def syntax_elements_help(syntax_elements: Iterable[SyntaxElementDocumentation]) 
                           syntax_elements)
 
 
-def for_type_with_grammar(type_info: SingularNameAndCrossReferenceId,
+def for_type_with_grammar(type_category_for_help: TypeCategory,
+                          type_info: SingularNameAndCrossReferenceId,
                           grammar: Grammar) -> SyntaxElementDocumentation:
     syntax = Syntax(grammar)
 
@@ -124,7 +125,7 @@ def for_type_with_grammar(type_info: SingularNameAndCrossReferenceId,
     description = grammar.description()
 
     return syntax_element_documentation(
-        TypeCategory.LOGIC,
+        type_category_for_help,
         type_info,
         description.initial_paragraphs,
         description.sections,

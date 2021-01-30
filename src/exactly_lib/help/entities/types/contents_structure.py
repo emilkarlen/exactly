@@ -58,13 +58,14 @@ class TypeDocumentation(EntityDocumentation):
                 )
 
 
-class LogicTypeWithExpressionGrammarDocumentation(TypeDocumentation):
+class TypeWithExpressionGrammarDocumentation(TypeDocumentation):
     def __init__(self,
+                 type_category_for_help: TypeCategory,
                  name_and_cross_ref_target: TypeNameAndCrossReferenceId,
                  corresponding_syntax_element: SyntaxElementInfo,
                  description: SectionContents = SectionContents.empty(),
                  ):
-        super().__init__(TypeCategory.LOGIC,
+        super().__init__(type_category_for_help,
                          name_and_cross_ref_target,
                          corresponding_syntax_element,
                          description)

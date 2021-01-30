@@ -81,9 +81,10 @@ _FILE_NAME_WITH_MATCHER_DESCRIPTION_REST = """\
 A condition that includes matching of the named file by {FILE_MATCHER}.
 
 
-If there are multiple {FILE_MATCHER}s associated with a single file name
-(via multiple {FILE_CONDITION}s),
-then the matchers are combined using {CONJUNCTION}, in order of appearance. 
+Multiple {FILE_MATCHER}s may be associated with a single file name
+(via multiple {FILE_CONDITION}s).
+
+In this case, the matchers are combined using {CONJUNCTION}, in order of appearance. 
 
 
 The {FILE_MATCHER_SEPARATOR} before {FILE_MATCHER}

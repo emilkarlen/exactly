@@ -2,7 +2,7 @@ from exactly_lib.definitions import misc_texts, formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
 from exactly_lib.definitions.entity import types, syntax_elements, conf_params, concepts
-from exactly_lib.help.entities.types.contents_structure import LogicTypeWithExpressionGrammarDocumentation, \
+from exactly_lib.help.entities.types.contents_structure import TypeWithExpressionGrammarDocumentation, \
     TypeDocumentation
 from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -24,32 +24,34 @@ The line separator depends on the {current_OS} ('\\n', '\\r\\n', e.g.).
 Line separator are not included in the line contents.
 """
 
-INTEGER_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
+INTEGER_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
+    TypeCategory.LOGIC,
     types.INTEGER_MATCHER_TYPE_INFO,
     syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT)
 
-LINE_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
+LINE_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
+    TypeCategory.LOGIC,
     types.LINE_MATCHER_TYPE_INFO,
     syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
     _TP.section_contents(_LINE_MATCHER_DESCRIPTION))
 
-FILE_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
+FILE_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
+    TypeCategory.LOGIC,
     types.FILE_MATCHER_TYPE_INFO,
     syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT)
 
-FILES_CONDITION_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
-    types.FILES_CONDITION_TYPE_INFO,
-    syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT)
-
-STRING_TRANSFORMER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
+STRING_TRANSFORMER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
+    TypeCategory.LOGIC,
     types.STRING_TRANSFORMER_TYPE_INFO,
     syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT)
 
-STRING_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
+STRING_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
+    TypeCategory.LOGIC,
     types.STRING_MATCHER_TYPE_INFO,
     syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT)
 
-FILES_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
+FILES_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
+    TypeCategory.LOGIC,
     types.FILES_MATCHER_TYPE_INFO,
     syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT)
 

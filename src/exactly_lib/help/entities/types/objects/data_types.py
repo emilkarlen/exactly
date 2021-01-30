@@ -5,7 +5,7 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case.instructions import instruction_names
-from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
+from exactly_lib.help.entities.types.contents_structure import TypeDocumentation, TypeWithExpressionGrammarDocumentation
 from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -54,3 +54,7 @@ PATH_DOCUMENTATION = TypeDocumentation(TypeCategory.DATA,
                                            concepts.TCDS_CONCEPT_INFO.cross_reference_target,
                                        ]
                                        )
+FILES_CONDITION_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
+    TypeCategory.DATA,
+    types.FILES_CONDITION_TYPE_INFO,
+    syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT)
