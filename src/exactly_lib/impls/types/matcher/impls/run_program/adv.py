@@ -4,6 +4,8 @@ from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import matcher
 from exactly_lib.impls.program_execution.command_processor import CommandProcessor
+from exactly_lib.impls.program_execution.processors import read_stderr_on_error
+from exactly_lib.impls.program_execution.processors.read_stderr_on_error import Result
 from exactly_lib.impls.types.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.impls.types.matcher.impls.run_program.run_conf import RunConfiguration, MODEL
 from exactly_lib.impls.types.string_source import as_stdin
@@ -16,8 +18,6 @@ from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.process_execution import file_ctx_managers
-from exactly_lib.util.process_execution.executors import read_stderr_on_error
-from exactly_lib.util.process_execution.executors.read_stderr_on_error import Result
 from . import trace
 
 

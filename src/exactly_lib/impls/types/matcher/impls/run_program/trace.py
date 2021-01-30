@@ -3,13 +3,13 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import matcher
 from exactly_lib.impls import texts
 from exactly_lib.impls.description_tree import custom_details
+from exactly_lib.impls.program_execution.processors.read_stderr_on_error import Result
 from exactly_lib.type_val_prims.description import trace_building
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.matcher.matching_result import TraceRenderer
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
-from exactly_lib.util.process_execution.executors.read_stderr_on_error import Result
 
 
 class TheStructureRenderer(NodeRenderer[None]):

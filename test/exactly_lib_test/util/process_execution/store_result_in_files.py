@@ -2,14 +2,14 @@ import pathlib
 import unittest
 
 from exactly_lib.impls.os_services import os_services_access
+from exactly_lib.impls.program_execution.processors import store_result_in_files as sut
+from exactly_lib.impls.program_execution.processors.store_result_in_files import ExitCodeAndFiles
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.type_val_prims.program.commands import CommandDriverForExecutableFile
 from exactly_lib.util import exception
 from exactly_lib.util.process_execution import process_output_files, file_ctx_managers
 from exactly_lib.util.process_execution.execution_elements import with_no_timeout
-from exactly_lib.util.process_execution.executors import store_result_in_files as sut
-from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndFiles
 from exactly_lib.util.process_execution.process_output_files import FileNames
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_resources.files import tmp_dir

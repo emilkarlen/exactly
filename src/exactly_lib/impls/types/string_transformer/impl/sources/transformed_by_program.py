@@ -2,6 +2,8 @@ from typing import IO
 
 from exactly_lib.impls.program_execution import command_processors
 from exactly_lib.impls.program_execution.command_processor import CommandProcessor
+from exactly_lib.impls.program_execution.processors import store_result_in_files
+from exactly_lib.impls.program_execution.processors.store_result_in_files import ExitCodeAndStderrFile
 from exactly_lib.impls.types.program.run_program_description import RunProgramStructureRenderer
 from exactly_lib.impls.types.string_transformer import sequence_resolving
 from exactly_lib.impls.types.utils.command_w_stdin import CommandWStdin
@@ -13,8 +15,6 @@ from exactly_lib.type_val_prims.string_source.contents import StringSourceConten
 from exactly_lib.type_val_prims.string_source.impls import concat
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.process_execution import file_ctx_managers, process_output_files
-from exactly_lib.util.process_execution.executors import store_result_in_files
-from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndStderrFile
 from . import transformed_string_sources
 
 

@@ -10,6 +10,8 @@ from exactly_lib.impls.instructions.multi_phase.utils.instruction_part_utils imp
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.impls.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.impls.program_execution.command_processor import CommandProcessor
+from exactly_lib.impls.program_execution.processors import read_stderr_on_error
+from exactly_lib.impls.program_execution.processors.read_stderr_on_error import ResultWithFiles
 from exactly_lib.impls.types.program import top_lvl_error_msg_rendering
 from exactly_lib.impls.types.string_source import as_stdin as str_src_as_stdin
 from exactly_lib.section_document.element_parsers import misc_utils
@@ -25,8 +27,6 @@ from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.process_execution import process_output_files
-from exactly_lib.util.process_execution.executors import read_stderr_on_error
-from exactly_lib.util.process_execution.executors.read_stderr_on_error import ResultWithFiles
 from exactly_lib.util.process_execution.process_output_files import FileNames
 
 

@@ -3,21 +3,8 @@ from typing import TypeVar, Callable
 
 from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.impls.program_execution.command_processor import CommandProcessor
-from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.util.file_utils.std import StdFiles
 
 T = TypeVar('T')
-
-
-def processor__raw(
-        os_services: OsServices,
-        files: StdFiles,
-) -> CommandProcessor[int]:
-    from exactly_lib.util.process_execution.executors.executor import ProcessorFromExecutor
-    return ProcessorFromExecutor(
-        os_services.command_executor,
-        files
-    )
 
 
 def processor_that_raises_hard_error_on_non_zero_exit_code(
@@ -25,8 +12,8 @@ def processor_that_raises_hard_error_on_non_zero_exit_code(
         get_exit_code: Callable[[T], int],
         get_stderr: Callable[[T], Path],
 ) -> CommandProcessor[T]:
-    from .impl import cmd_proc_w_exit_code_handling
-    return cmd_proc_w_exit_code_handling.Processor(
+    from .processors import w_exit_code_handling
+    return w_exit_code_handling.Processor(
         std_err_contents.STD_ERR_TEXT_READER,
         get_exit_code,
         get_stderr,

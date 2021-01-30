@@ -2,6 +2,7 @@ import subprocess
 from pathlib import Path
 from typing import IO, TextIO
 
+from exactly_lib.impls.program_execution.processors import read_stderr_on_error
 from exactly_lib.impls.types.program import top_lvl_error_msg_rendering
 from exactly_lib.impls.types.string_source import as_stdin
 from exactly_lib.impls.types.string_source.contents.contents_via_file import FileCreator
@@ -15,7 +16,6 @@ from exactly_lib.util.file_utils.text_reader import TextFromFileReader
 from exactly_lib.util.process_execution import file_ctx_managers
 from exactly_lib.util.process_execution import process_output_files
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
-from exactly_lib.util.process_execution.executors import read_stderr_on_error
 
 
 class StdoutWriter(Writer):

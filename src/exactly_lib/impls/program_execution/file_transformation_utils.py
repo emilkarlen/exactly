@@ -2,6 +2,8 @@ import pathlib
 
 from exactly_lib.impls.exception import pfh_exception
 from exactly_lib.impls.file_creation import FileTransformerHelper
+from exactly_lib.impls.program_execution.processors import store_result_in_files
+from exactly_lib.impls.program_execution.processors.store_result_in_files import ExitCodeAndFiles
 from exactly_lib.impls.types.string_source import as_stdin as str_src_stdin
 from exactly_lib.impls.types.string_transformer import sequence_resolving
 from exactly_lib.test_case.hard_error import HardErrorException
@@ -11,8 +13,6 @@ from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.process_execution import process_output_files
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
-from exactly_lib.util.process_execution.executors import store_result_in_files
-from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndFiles
 
 
 class ResultWithTransformation:
