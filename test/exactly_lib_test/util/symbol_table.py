@@ -183,8 +183,8 @@ class TestCopy(unittest.TestCase):
         # ARRANGE #
         symbol_in_original = NameAndValue('the original symbol name',
                                           ASymbolTableValue('the original symbol value'))
-        symbol_in_copy = NameAndValue('the copy_ symbol name',
-                                      ASymbolTableValue('the copy_ symbol value'))
+        symbol_in_copy = NameAndValue('the copy symbol name',
+                                      ASymbolTableValue('the copy symbol value'))
         original_table = sut.SymbolTable({symbol_in_original.name: symbol_in_original.value})
         # ACT #
         copied_table = original_table.copy()
@@ -194,7 +194,7 @@ class TestCopy(unittest.TestCase):
         _assert_table_contains(self, copied_table, symbol_in_copy)
         self.assertEqual(2,
                          len(copied_table.names_set),
-                         'the copy_ SHOULD contain the original symbol and the symbol added to the copy_')
+                         'the copy SHOULD contain the original symbol and the symbol added to the copy_')
         _assert_table_contains_single_value(self,
                                             original_table,
                                             symbol_in_original)

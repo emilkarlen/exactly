@@ -48,5 +48,5 @@ fi
 ########################################
 # Do it
 
-copy_-and-init-repo ${INIT_VENV_ARG}
-test-copy_-of-repo ${CHECKS}
+copy-and-init-repo ${INIT_VENV_ARG}
+test-copy-of-repo ${CHECKS}

@@ -29,7 +29,7 @@ Dockerfile.38: Dockerfile.in
 	sed 's/__IMAGE_TAG__/3.8-alpine/g' < Dockerfile.in > $@
 
 Dockerfile.39: Dockerfile.in
-	sed 's/__IMAGE_TAG__/3.9-rc-alpine/g' < Dockerfile.in > $@
+	sed 's/__IMAGE_TAG__/3.9-alpine/g' < Dockerfile.in > $@
 
 
 35: Dockerfile.35
