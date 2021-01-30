@@ -1,7 +1,7 @@
 import re
 from typing import Sequence, Iterable, Pattern, Match, Any, TypeVar, Generic, Callable
 
-from exactly_lib.common.report_rendering import print
+from exactly_lib.common.report_rendering import print_
 from exactly_lib.common.report_rendering.description_tree import layout__detail
 from exactly_lib.common.report_rendering.description_tree import layout__node_wo_data
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -267,7 +267,7 @@ class OfTextRenderer(DetailsRenderer):
     def render(self) -> Sequence[Detail]:
         return [
             tree.PreFormattedStringDetail(
-                print.print_to_str(self._text.render_sequence())
+                print_.print_to_str(self._text.render_sequence())
             )
         ]
 

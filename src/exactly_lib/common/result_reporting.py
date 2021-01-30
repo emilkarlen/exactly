@@ -1,6 +1,6 @@
 import io
 
-from exactly_lib.common.report_rendering import print
+from exactly_lib.common.report_rendering import print_
 from exactly_lib.common.report_rendering.parts import full_exec_result
 from exactly_lib.common.report_rendering.parts.error_info import ErrorInfoRenderer
 from exactly_lib.execution.full_execution.result import FullExeResult
@@ -38,5 +38,5 @@ def print_major_blocks(blocks_renderer: SequenceRenderer[MajorBlock],
                        printer: FilePrinter):
     document_renderer = rend.DocumentR(blocks_renderer)
 
-    print.print_document(document_renderer.render(),
-                         printer)
+    print_.print_document(document_renderer.render(),
+                          printer)
