@@ -21,7 +21,8 @@ from exactly_lib.impls.types.string_transformer.impl.filter.line_nums import ran
 from exactly_lib.impls.types.string_transformer.impl.filter.line_nums.range_expr import LowerAndUpperLimitRange, \
     Range, UpperLimitRange, LowerLimitRange, SingleLineRange
 from exactly_lib.impls.types.string_transformer.impl.filter.line_nums.range_merge import MergedRanges, FromTo
-from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import is_single, is_lower, \
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources.expectations import \
+    is_single, is_lower, \
     is_upper, is_lower_and_upper
 from exactly_lib_test.test_resources.test_utils import NArrEx, ArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

@@ -8,6 +8,8 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expe
     ParseExpectation, ExecutionExpectation, arrangement_wo_tcds
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import \
+    argument_building as range_args
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources.expectations import \
     IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_building as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
@@ -27,7 +29,7 @@ def suite() -> unittest.TestSuite:
 class TestParseFailsWhenRangeIsMissing(unittest.TestCase):
     def runTest(self):
         def mk_arguments(range_expr: str) -> ArgumentElementsRenderer:
-            return args.filter_line_nums(args.CustomRange(range_expr))
+            return args.filter_line_nums(range_args.CustomRange(range_expr))
 
         parse_check.PARSE_CHECKER__SIMPLE.check_invalid_syntax_cases_for_expected_valid_token(
             self,
@@ -75,7 +77,9 @@ class TestValidationPreSdsShouldFailWhenRangeExprHasNotExpectedParts(unittest.Te
                     case.value,
                     default_restrictions=IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS,
                 )
-                arguments = args.filter_line_nums(args.CustomRange(range_expr_symbol.name__sym_ref_syntax))
+                arguments = args.filter_line_nums(
+                    range_args.CustomRange(range_expr_symbol.name__sym_ref_syntax)
+                )
                 integration_check.CHECKER__PARSE_SIMPLE.check(
                     self,
                     arguments.as_remaining_source,
@@ -98,9 +102,9 @@ class TestValidationPreSdsShouldFailWhenIntExprIsNotAnExpressionThatEvaluatesToA
     def test__single_int(self):
         for case in failing_integer_validation_cases():
             range_cases = [
-                args.SingleLineRange(case.integer_expr_string),
-                args.UpperLimitRange(case.integer_expr_string),
-                args.LowerLimitRange(case.integer_expr_string),
+                range_args.SingleLineRange(case.integer_expr_string),
+                range_args.UpperLimitRange(case.integer_expr_string),
+                range_args.LowerLimitRange(case.integer_expr_string),
             ]
             for range_case in range_cases:
                 with self.subTest(invalid_value=case.case_name,
@@ -109,19 +113,19 @@ class TestValidationPreSdsShouldFailWhenIntExprIsNotAnExpressionThatEvaluatesToA
 
     def test__lower_and_upper_limit__invalid_lower(self):
         for case in failing_integer_validation_cases():
-            range_arg = args.LowerAndUpperLimitRange(case.integer_expr_string,
-                                                     '1')
+            range_arg = range_args.LowerAndUpperLimitRange(case.integer_expr_string,
+                                                           '1')
             with self.subTest(invalid_value=case.case_name):
                 self._check(case, range_arg)
 
     def test__lower_and_upper_limit__invalid_upper(self):
         for case in failing_integer_validation_cases():
-            range_arg = args.LowerAndUpperLimitRange('1',
-                                                     case.integer_expr_string)
+            range_arg = range_args.LowerAndUpperLimitRange('1',
+                                                           case.integer_expr_string)
             with self.subTest(invalid_value=case.case_name):
                 self._check(case, range_arg)
 
-    def _check(self, case: IntegerValidationCase, range_arg: args.Range):
+    def _check(self, case: IntegerValidationCase, range_arg: range_args.Range):
         integration_check.CHECKER__PARSE_SIMPLE.check(
             self,
             args.filter_line_nums(range_arg).as_remaining_source,

@@ -1,28 +1,32 @@
 import unittest
 from typing import List, Sequence, Callable
 
-from exactly_lib_test.impls.types.string_transformers.filter.line_numbers import test_resources as tr
-from exactly_lib_test.impls.types.string_transformers.test_resources import argument_building as args
-from exactly_lib_test.impls.types.string_transformers.test_resources.argument_building import Range
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import \
+    integration_check as _integration_check
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources.argument_building import Range
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources.expectations import \
+    InputAndExpectedWExtDeps, LinesContentsExpectation
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources.ranges import \
+    ranges_is_const_empty, ValidRange
 from exactly_lib_test.test_resources.test_utils import InpExp
 
 
 class Case:
     def __init__(self,
                  name: str,
-                 range_args: List[Range],
+                 ranges: List[ValidRange],
                  lines_in_ranges__increasing: List[int],
                  all_lines_after: bool,
                  ):
         self.name = name
-        self.range_args = range_args
+        self.ranges = ranges
         self.lines_in_ranges__increasing = lines_in_ranges__increasing
         self.all_lines_after = all_lines_after
 
     @staticmethod
     def w_upper_limit(
             name: str,
-            ranges: List[Range],
+            ranges: List[ValidRange],
             lines_in_ranges__increasing: List[int],
     ) -> 'Case':
         return Case(
@@ -35,7 +39,7 @@ class Case:
     @staticmethod
     def wo_upper_limit(
             name: str,
-            ranges: List[Range],
+            ranges: List[ValidRange],
             lines_in_ranges__increasing: List[int],
     ) -> 'Case':
         return Case(
@@ -70,6 +74,14 @@ class Case:
     def inp_exp_of(self, input_: List[str]) -> InpExp[List[str], List[str]]:
         return InpExp(input_, self.expected_output_for_input(input_))
 
+    def inp_exp_of__w_ext_deps(self, input_: List[str]) -> InputAndExpectedWExtDeps:
+        return InpExp(input_,
+                      LinesContentsExpectation.of_is_const_empty(self.expected_output_for_input(input_),
+                                                                 self.is_const_empty()))
+
+    def is_const_empty(self) -> bool:
+        return ranges_is_const_empty(self.ranges)
+
 
 class CheckerOfConstInput:
     def __init__(self,
@@ -82,13 +94,13 @@ class CheckerOfConstInput:
         self.max_as_lines_invocations = max_as_lines_invocations__when_only_checking_via_as_lines
 
     def check__w_max_lines_from_iter(self,
-                                     ranges: Sequence[args.Range],
+                                     ranges: Sequence[ValidRange],
                                      max_lines_accessed: int,
                                      expected: List[str],
                                      ):
-        return tr.check__w_max_as_lines_invocations__w_max_lines_from_iter(
+        return _integration_check.check__w_max_as_lines_invocations__w_max_lines_from_iter(
             self._put,
-            ranges,
+            _as_args(ranges),
             max_lines_accessed,
             self.max_as_lines_invocations,
             InpExp(self.input, expected),
@@ -98,12 +110,12 @@ class CheckerOfConstInput:
         self._check_cases_helper(cases, self._check_case__w_max_lines_from_iter)
 
     def check__wo_max_lines_from_iter(self,
-                                      ranges: Sequence[args.Range],
+                                      ranges: Sequence[ValidRange],
                                       expected: List[str],
                                       ):
-        tr.check__w_max_as_lines_invocations__wo_max_lines_from_iter(
+        _integration_check.check__w_max_as_lines_invocations__wo_max_lines_from_iter(
             self._put,
-            ranges,
+            _as_args(ranges),
             InpExp(self.input, expected),
             self.max_as_lines_invocations,
         )
@@ -112,13 +124,15 @@ class CheckerOfConstInput:
         self._check_cases_helper(cases, self._check_case__wo_max_lines_from_iter)
 
     def check__w_access_of_all_model_properties(self,
-                                                ranges: Sequence[args.Range],
+                                                ranges: Sequence[ValidRange],
                                                 expected: List[str],
                                                 ):
-        tr.check__w_access_of_all_model_properties(
+        _integration_check.check__w_access_of_all_model_properties(
             self._put,
-            ranges,
-            InpExp(self.input, expected),
+            _as_args(ranges),
+            InpExp(self.input,
+                   LinesContentsExpectation.of_is_const_empty(expected,
+                                                              ranges_is_const_empty(ranges))),
         )
 
     def check__w_access_of_all_model_properties__cases(self, cases: Sequence[Case]):
@@ -129,38 +143,29 @@ class CheckerOfConstInput:
                             do_check: Callable[[Case], None],
                             ):
         for case in cases:
-            with self._put.subTest(args=[str(r) for r in case.range_args]):
+            with self._put.subTest(args=[str(r) for r in case.ranges]):
                 do_check(case)
 
     def _check_case__w_access_of_all_model_properties(self, case: Case):
-        self.check__w_access_of_all_model_properties(case.range_args,
+        self.check__w_access_of_all_model_properties(case.ranges,
                                                      case.expected_output_for_input(self.input))
 
     def _check_case__w_max_lines_from_iter(self, case: Case):
         expected = case.expected_output_for_input(self.input)
         max_lines_accessed = case.max_lines_accessed_for_input(self.input)
-        self.check__w_max_lines_from_iter(case.range_args,
+        self.check__w_max_lines_from_iter(case.ranges,
                                           max_lines_accessed,
                                           expected,
                                           )
 
     def _check_case__wo_max_lines_from_iter(self, case: Case):
-        self.check__wo_max_lines_from_iter(case.range_args,
+        self.check__wo_max_lines_from_iter(case.ranges,
                                            case.expected_output_for_input(self.input),
                                            )
 
 
-class TestCaseWCheckerOfConstInputBase(unittest.TestCase):
-    def input(self) -> List[str]:
-        raise NotImplementedError('abstract method')
-
-    def max_as_lines_invocations__when_only_checking_via_as_lines(self) -> int:
-        raise NotImplementedError('abstract method')
-
-    @property
-    def checker(self) -> CheckerOfConstInput:
-        return CheckerOfConstInput(
-            self,
-            self.input(),
-            self.max_as_lines_invocations__when_only_checking_via_as_lines()
-        )
+def _as_args(ranges: Sequence[ValidRange]) -> Sequence[Range]:
+    return [
+        r.as_arg
+        for r in ranges
+    ]

@@ -4,6 +4,8 @@ from exactly_lib_test.impls.test_resources.validation.validation import Validati
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expectation, \
     ParseExpectation, ExecutionExpectation, arrangement_wo_tcds
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import \
+    argument_building as range_args
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_building as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 
@@ -16,8 +18,8 @@ def suite() -> unittest.TestSuite:
 
 class TestEveryRangeShouldBeValidated(unittest.TestCase):
     def runTest(self):
-        invalid_int_expr = args.SingleLineRange('1.5')
-        valid_int_expr = args.SingleLineRange('1')
+        invalid_int_expr = range_args.SingleLineRange('1.5')
+        valid_int_expr = range_args.SingleLineRange('1')
         range_expression_cases = [
             [invalid_int_expr, valid_int_expr, valid_int_expr],
             [valid_int_expr, invalid_int_expr, valid_int_expr],

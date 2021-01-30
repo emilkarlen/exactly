@@ -15,11 +15,13 @@ from exactly_lib_test.impls.types.string_source.test_resources import model_cons
 from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.multi_range import test_resources as tr
 from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.multi_range.test_resources import Case
 from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import \
+    argument_building as range_args
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources.expectations import \
     IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources.ranges import single, from_, \
+    to_, from_to
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_building as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
-from exactly_lib_test.impls.types.string_transformers.test_resources.argument_building import to_, from_, from_to, \
-    single
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringIntConstantSymbolContext, \
     StringConstantSymbolContext
@@ -56,8 +58,8 @@ class TestSymbolReferences(unittest.TestCase):
                                  input_lines[single_range_2_symbol.int_value - 1]]
 
         arguments = args.filter_line_nums__multi([
-            args.SingleLineRange(single_range_1_symbol.name__sym_ref_syntax),
-            args.SingleLineRange(single_range_2_symbol.name__sym_ref_syntax),
+            range_args.SingleLineRange(single_range_1_symbol.name__sym_ref_syntax),
+            range_args.SingleLineRange(single_range_2_symbol.name__sym_ref_syntax),
         ])
         integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants_for_full_line_parser_2(
             self,
@@ -96,8 +98,8 @@ class TestIntIsPyExprAndSourceConsumption(unittest.TestCase):
                                  input_lines[3 - 1]]
 
         arguments = args.filter_line_nums__multi([
-            args.SingleLineRange(single_range_1_symbol.name__sym_ref_syntax),
-            args.SingleLineRange(single_range_2_symbol.name__sym_ref_syntax),
+            range_args.SingleLineRange(single_range_1_symbol.name__sym_ref_syntax),
+            range_args.SingleLineRange(single_range_2_symbol.name__sym_ref_syntax),
         ])
         integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants_for_full_line_parser_2(
             self,
@@ -439,7 +441,23 @@ CASES = (
 )
 
 
-class TestModelWNumLines0(tr.TestCaseWCheckerOfConstInputBase):
+class TestCaseWCheckerOfConstInputBase(unittest.TestCase):
+    def input(self) -> List[str]:
+        raise NotImplementedError('abstract method')
+
+    def max_as_lines_invocations__when_only_checking_via_as_lines(self) -> int:
+        raise NotImplementedError('abstract method')
+
+    @property
+    def checker(self) -> tr.CheckerOfConstInput:
+        return tr.CheckerOfConstInput(
+            self,
+            self.input(),
+            self.max_as_lines_invocations__when_only_checking_via_as_lines()
+        )
+
+
+class TestModelWNumLines0(TestCaseWCheckerOfConstInputBase):
     def input(self) -> List[str]:
         return []
 
@@ -453,7 +471,7 @@ class TestModelWNumLines0(tr.TestCaseWCheckerOfConstInputBase):
         self.checker.check__w_access_of_all_model_properties__cases(CASES)
 
 
-class TestModelWNumLines1(tr.TestCaseWCheckerOfConstInputBase):
+class TestModelWNumLines1(TestCaseWCheckerOfConstInputBase):
     def input(self) -> List[str]:
         return ['1st']
 
@@ -467,7 +485,7 @@ class TestModelWNumLines1(tr.TestCaseWCheckerOfConstInputBase):
         self.checker.check__w_access_of_all_model_properties__cases(CASES)
 
 
-class TestModelWNumLines10(tr.TestCaseWCheckerOfConstInputBase):
+class TestModelWNumLines10(TestCaseWCheckerOfConstInputBase):
     def input(self) -> List[str]:
         return [
             '{}\n'.format(n + 1)
@@ -484,7 +502,7 @@ class TestModelWNumLines10(tr.TestCaseWCheckerOfConstInputBase):
         self.checker.check__w_access_of_all_model_properties__cases(CASES)
 
 
-class TestModelWNumLines20(tr.TestCaseWCheckerOfConstInputBase):
+class TestModelWNumLines20(TestCaseWCheckerOfConstInputBase):
     def input(self) -> List[str]:
         return [
             '{}\n'.format(n + 1)

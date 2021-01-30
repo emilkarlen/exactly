@@ -48,8 +48,7 @@ class TestUnconditionallyEmptyTransformations(unittest.TestCase):
                             source_model_method_invocations=asrt.is_empty_sequence,
                         )
 
-    def test_dependence_on_external_resources_should_UNFORTUNATELY_be_that_of_source_model(self):
-        # TODO ext-deps should be False - but a bit tricky to test since it is a rare exception.
+    def test_dependence_on_external_resources_should_be_constant_false(self):
         # ARRANGE #
         tmp_file_space = DirFileSpaceThatMustNoBeUsed()
         for source_may_depend_on_external_resources in [False, True]:
@@ -61,7 +60,7 @@ class TestUnconditionallyEmptyTransformations(unittest.TestCase):
                 string_source = sut.empty(source_model, _transformer_description)
                 # ASSERT #
                 self.assertEqual(string_source.contents().may_depend_on_external_resources,
-                                 source_may_depend_on_external_resources)
+                                 False)
 
 
 class TestNonUnconditionallyEmptyTransformationsExceptMultipleRangesWNegativeValues(unittest.TestCase):

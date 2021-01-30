@@ -223,7 +223,7 @@ class _EmptyContents(StringSourceContentsFromLinesBase):
 
     @property
     def may_depend_on_external_resources(self) -> bool:
-        return self._transformed.contents().may_depend_on_external_resources
+        return False
 
     @property
     @contextmanager

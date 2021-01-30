@@ -3,6 +3,7 @@ from typing import List
 
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_source.test_resources.model_constructor import ModelConstructor
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import ranges
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_building as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import may_dep_on_ext_resources
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -30,21 +31,23 @@ class TestMayDependOnExternalResourcesShouldBeThatOfSourceModel(
 
     def argument_cases(self) -> List[str]:
         return [
-            args.filter_line_nums(args.SingleLineRange('7')).as_str,
-            args.filter_line_nums(args.SingleLineRange('-7')).as_str,
-            args.filter_line_nums(args.UpperLimitRange('5')).as_str,
-            args.filter_line_nums(args.UpperLimitRange('-5')).as_str,
-            args.filter_line_nums(args.LowerLimitRange('5')).as_str,
-            args.filter_line_nums(args.LowerLimitRange('-5')).as_str,
+            args.filter_line_nums(ranges.single(7).as_arg).as_str,
+            args.filter_line_nums(ranges.single(-7).as_arg).as_str,
+            args.filter_line_nums(ranges.to_(5).as_arg).as_str,
+            args.filter_line_nums(ranges.to_(-5).as_arg).as_str,
+            args.filter_line_nums(ranges.from_(5).as_arg).as_str,
+            args.filter_line_nums(ranges.from_(-5).as_arg).as_str,
 
-            args.filter_line_nums(args.LowerAndUpperLimitRange('5', '6')).as_str,
-            args.filter_line_nums(args.LowerAndUpperLimitRange('-8', '8')).as_str,
-            args.filter_line_nums(args.LowerAndUpperLimitRange('2', '-2')).as_str,
-            args.filter_line_nums(args.LowerAndUpperLimitRange('-5', '-3')).as_str,
+            args.filter_line_nums(ranges.from_to(5, 6).as_arg).as_str,
+            args.filter_line_nums(ranges.from_to(-8, 8).as_arg).as_str,
+            args.filter_line_nums(ranges.from_to(2, -2).as_arg).as_str,
+            args.filter_line_nums(ranges.from_to(-5, -3).as_arg).as_str,
 
-            args.filter_line_nums__multi([args.SingleLineRange('5'), args.SingleLineRange('6')]).as_str,
+            args.filter_line_nums__multi([ranges.single(5).as_arg,
+                                          ranges.single(6).as_arg]).as_str,
 
-            args.filter_line_nums__multi([args.SingleLineRange('-5'), args.SingleLineRange('-6')]).as_str,
+            args.filter_line_nums__multi([ranges.single(-5).as_arg,
+                                          ranges.single(-6).as_arg]).as_str,
         ]
 
 

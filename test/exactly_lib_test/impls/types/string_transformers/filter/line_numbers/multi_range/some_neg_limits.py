@@ -17,12 +17,15 @@ from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.multi_
 from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.multi_range.test_resources import \
     CheckerOfConstInput
 from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import \
+    argument_building as range_args
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources.argument_building import \
+    Range
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources.expectations import \
     IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources.ranges import single, from_, \
+    to_, from_to
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_building as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
-from exactly_lib_test.impls.types.string_transformers.test_resources.argument_building import Range
-from exactly_lib_test.impls.types.string_transformers.test_resources.argument_building import to_, from_, from_to, \
-    single
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.test_utils import ArrEx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringIntConstantSymbolContext, \
@@ -59,8 +62,8 @@ class TestSymbolReferences(unittest.TestCase):
                                  input_lines[2]]
 
         arguments = args.filter_line_nums__multi([
-            args.SingleLineRange(single_range_1_symbol.name__sym_ref_syntax),
-            args.SingleLineRange(single_range_2_symbol.name__sym_ref_syntax),
+            range_args.SingleLineRange(single_range_1_symbol.name__sym_ref_syntax),
+            range_args.SingleLineRange(single_range_2_symbol.name__sym_ref_syntax),
         ])
         integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants_for_full_line_parser_2(
             self,
@@ -99,8 +102,8 @@ class TestIntIsPyExprAndSourceConsumption(unittest.TestCase):
                                  input_lines[3 - 1]]
 
         arguments = args.filter_line_nums__multi([
-            args.SingleLineRange(single_range_1_symbol.name__sym_ref_syntax),
-            args.SingleLineRange(single_range_2_symbol.name__sym_ref_syntax),
+            range_args.SingleLineRange(single_range_1_symbol.name__sym_ref_syntax),
+            range_args.SingleLineRange(single_range_2_symbol.name__sym_ref_syntax),
         ])
         integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants_for_full_line_parser_2(
             self,

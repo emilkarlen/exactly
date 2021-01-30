@@ -17,9 +17,14 @@ import unittest
 
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
-from exactly_lib_test.impls.types.string_transformers.filter.line_numbers import test_resources as tr
-from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import InputAndExpected, \
-    IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import \
+    argument_building as range_args
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import \
+    integration_check as _integration_check
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import ranges
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources.expectations import \
+    InputAndExpected, \
+    IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS, inp_exp__w_ext_deps
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_building as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
@@ -47,7 +52,7 @@ def suite() -> unittest.TestSuite:
 
 
 def single_line_arguments(int_expr: WithToString) -> ArgumentElementsRenderer:
-    return args.filter_line_nums(args.UpperLimitRange(str(int_expr)))
+    return args.filter_line_nums(range_args.UpperLimitRange(str(int_expr)))
 
 
 class TestIntIsPyExprAndSourceConsumption(unittest.TestCase):
@@ -104,7 +109,7 @@ class TestSymbolReferences(unittest.TestCase):
 
 
 class TestEmptyModel(unittest.TestCase):
-    RANGE_CASES = [0, 1, 2, -1, -2]
+    RANGE_CASES = [1, 2, 0, -1, -2]
     INPUT_AND_EXPECTED = InpExp([], [])
 
     def test_with_model_access__only_as_lines_is_used(self):
@@ -116,7 +121,7 @@ class TestEmptyModel(unittest.TestCase):
                     self.INPUT_AND_EXPECTED,
                 )
 
-    def test_with_model_access__check_all_model_properties(self):
+    def test_with_model_access__check_all_model_properties__non_const_empty(self):
         for range_int in self.RANGE_CASES:
             with self.subTest(range_int=range_int):
                 _check_int_arg__w_access_of_all_model_properties(
@@ -247,7 +252,8 @@ class TestNegativeIntOnNonModelWSingleLine(unittest.TestCase):
                 _check_int_arg__w_access_of_all_model_properties(
                     self,
                     case.arrangement,
-                    InpExp(self.INPUT_LINES, case.expectation),
+                    InpExp(self.INPUT_LINES,
+                           case.expectation),
                 )
 
 
@@ -294,7 +300,8 @@ class TestNegativeIntOnNonModelWMultipleLines(unittest.TestCase):
                 _check_int_arg__w_access_of_all_model_properties(
                     self,
                     case.arrangement,
-                    InpExp(self.INPUT_LINES, case.expectation),
+                    InpExp(self.INPUT_LINES,
+                           case.expectation),
                 )
 
 
@@ -302,9 +309,9 @@ def _check_int_arg__w_max_lines_from_iter(put: unittest.TestCase,
                                           arg: int,
                                           input_and_expected: InputAndExpected,
                                           ):
-    return tr.check__w_max_lines_from_iter(
+    return _integration_check.check__w_max_lines_from_iter(
         put,
-        [args.UpperLimitRange(str(arg))],
+        [ranges.to_(arg).as_arg],
         arg,
         input_and_expected,
     )
@@ -314,9 +321,9 @@ def _check_int_arg__wo_max_lines_from_iter(put: unittest.TestCase,
                                            range_expr: int,
                                            input_and_expected: InputAndExpected,
                                            ):
-    tr.check__w_max_as_lines_invocations__wo_max_lines_from_iter(
+    _integration_check.check__w_max_as_lines_invocations__wo_max_lines_from_iter(
         put,
-        [args.UpperLimitRange(str(range_expr))],
+        [ranges.to_(range_expr).as_arg],
         input_and_expected
     )
 
@@ -325,10 +332,11 @@ def _check_int_arg__w_access_of_all_model_properties(put: unittest.TestCase,
                                                      range_expr: int,
                                                      input_and_expected: InputAndExpected,
                                                      ):
-    tr.check__w_access_of_all_model_properties(
+    the_range = ranges.to_(range_expr)
+    _integration_check.check__w_access_of_all_model_properties(
         put,
-        [args.UpperLimitRange(str(range_expr))],
-        input_and_expected,
+        [the_range.as_arg],
+        inp_exp__w_ext_deps(input_and_expected, the_range),
     )
 
 

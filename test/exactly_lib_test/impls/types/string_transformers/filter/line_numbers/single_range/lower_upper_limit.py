@@ -18,9 +18,16 @@ from typing import List
 
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
-from exactly_lib_test.impls.types.string_transformers.filter.line_numbers import test_resources as tr
-from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import InputAndExpected, \
-    IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import \
+    argument_building as range_args
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import \
+    integration_check as _integration_check
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import ranges
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources.expectations import \
+    InputAndExpected, \
+    IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS, inp_exp__w_ext_deps
+from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources.ranges import \
+    range_is_const_empty
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_building as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
@@ -46,9 +53,13 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-def single_line_arguments(lower_expr: WithToString, upper_expr: WithToString) -> ArgumentElementsRenderer:
-    return args.filter_line_nums(args.LowerAndUpperLimitRange(str(lower_expr),
-                                                              str(upper_expr)))
+def single_line_arguments(lower_expr: WithToString,
+                          upper_expr: WithToString,
+                          ) -> ArgumentElementsRenderer:
+    return args.filter_line_nums(
+        range_args.LowerAndUpperLimitRange(str(lower_expr),
+                                           str(upper_expr))
+    )
 
 
 class Limits:
@@ -58,6 +69,10 @@ class Limits:
                  ):
         self.lower = lower
         self.upper = upper
+
+    @property
+    def is_const_empty(self) -> bool:
+        return range_is_const_empty(self.lower, self.upper)
 
     def __str__(self) -> str:
         return 'lower {}, upper {}'.format(self.lower, self.upper)
@@ -329,11 +344,11 @@ def _check_int_arg__w_max_lines_from_iter(put: unittest.TestCase,
                                           max_lines_accessed: int,
                                           input_and_expected: InputAndExpected,
                                           ):
-    return tr.check__w_max_lines_from_iter(
+    return _integration_check.check__w_max_lines_from_iter(
         put,
         [
-            args.LowerAndUpperLimitRange(str(limits.lower),
-                                         str(limits.upper))],
+            ranges.from_to(limits.lower,
+                           limits.upper).as_arg],
         max_lines_accessed,
         input_and_expected,
     )
@@ -343,11 +358,11 @@ def _check_int_arg__wo_max_lines_from_iter(put: unittest.TestCase,
                                            limits: Limits,
                                            input_and_expected: InputAndExpected,
                                            ):
-    tr.check__w_max_as_lines_invocations__wo_max_lines_from_iter(
+    _integration_check.check__w_max_as_lines_invocations__wo_max_lines_from_iter(
         put,
         [
-            args.LowerAndUpperLimitRange(str(limits.lower),
-                                         str(limits.upper))
+            ranges.from_to(limits.lower,
+                           limits.upper).as_arg
         ],
         input_and_expected
     )
@@ -357,13 +372,13 @@ def _check_int_arg__w_access_of_all_model_properties(put: unittest.TestCase,
                                                      limits: Limits,
                                                      input_and_expected: InputAndExpected,
                                                      ):
-    tr.check__w_access_of_all_model_properties(
+    the_range = ranges.from_to(limits.lower, limits.upper)
+    _integration_check.check__w_access_of_all_model_properties(
         put,
         [
-            args.LowerAndUpperLimitRange(str(limits.lower),
-                                         str(limits.upper))
+            the_range.as_arg
         ],
-        input_and_expected,
+        inp_exp__w_ext_deps(input_and_expected, the_range),
     )
 
 
