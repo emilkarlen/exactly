@@ -23,6 +23,7 @@ with exception of a "0." prefix until version 1 is released.
  - Type `string-transformer` - `filter` - `-line-nums` Matches lines against line number ranges
  - Type `program` - `-stdin` - Ability to set stdin
  - Type `integer-matcher`
+ - Syntax element `STRING-SOURCE`
  - Builtin symbol - string `NEW_LINE`
 
 ### Changed
