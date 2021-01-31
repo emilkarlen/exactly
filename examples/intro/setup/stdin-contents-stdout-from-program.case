@@ -1,0 +1,26 @@
+#
+# Sets stdin of [act] to the output from a program.
+#
+
+[setup]
+
+
+def string STDIN_CONTENTS = 'the contents of stdin'
+
+stdin = -stdout-from
+          -python -c :> print("""@[STDIN_CONTENTS]@""")
+
+
+[act]
+
+
+copy-stdin-to-stdout
+
+
+[assert]
+
+
+stdout equals
+<<-
+@[STDIN_CONTENTS]@
+-

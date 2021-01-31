@@ -64,9 +64,10 @@ class TokenParser:
             self.error(error_message_format_string)
 
     def require_existing_valid_head_token(self, syntax_element_name: str):
-        if self._token_stream.is_null:
+        if self._lookahead_token_has_invalid_syntax():
+            self.require_head_token_has_valid_syntax(syntax_element_name)
+        elif self._token_stream.is_null:
             self.error('Missing ' + syntax_element_name)
-        self.require_head_token_has_valid_syntax(syntax_element_name)
 
     def report_missing(self, syntax_element_name: str) -> T:
         return self.error('Missing ' + syntax_element_name)
@@ -117,7 +118,7 @@ class TokenParser:
             ''
             if error_message_format_string == ''
             else
-            self._str_constructor_w_format_map(error_message_format_string + ':')
+            self._str_constructor_w_format_map(error_message_format_string + ': ')
         )
         self._require_head_token_has_valid_syntax(err_msg_header)
 

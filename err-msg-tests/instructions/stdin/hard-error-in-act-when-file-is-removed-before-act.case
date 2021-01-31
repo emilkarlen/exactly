@@ -1,0 +1,15 @@
+# Tests that [act] results in HARD_ERROR when stdin file do not exist.
+
+[conf]
+
+actor = null
+
+[setup]
+
+def path STDIN_FILE = -rel-act stdin.txt
+
+file @[STDIN_FILE]@
+
+stdin = -file @[STDIN_FILE]@
+
+run -python -existing-file -rel-home utils/remove-file-as-1st-arg.py @[STDIN_FILE]@

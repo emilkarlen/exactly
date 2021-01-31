@@ -10,6 +10,7 @@ from exactly_lib.section_document.element_parsers.ps_or_tp import parser_opt_par
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv
 from exactly_lib.util.parse import token_matchers
@@ -19,8 +20,12 @@ from . import defs
 from ..path.rel_opts_configuration import RelOptionsConfiguration, RelOptionArgumentConfiguration
 
 
-def default_parser_for(phase_is_after_act: bool) -> Parser[StringSourceSdv]:
-    return string_source_parser(defs.src_rel_opt_arg_conf_for_phase(phase_is_after_act).options)
+def default_parser_for(phase_is_after_act: bool,
+                       default_relativity: RelOptionType = RelOptionType.REL_CWD,
+                       ) -> Parser[StringSourceSdv]:
+    return string_source_parser(
+        defs.src_rel_opt_arg_conf_for_phase(phase_is_after_act, default_relativity).options
+    )
 
 
 def string_source_parser(accepted_file_relativities: RelOptionsConfiguration) -> Parser[StringSourceSdv]:

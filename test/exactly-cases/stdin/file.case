@@ -1,0 +1,11 @@
+[setup]
+
+stdin = -file stdin-contents.txt
+
+[act]
+
+@ COPY_STDIN_2_STDOUT
+
+[assert]
+
+stdout equals -file stdin-contents.txt

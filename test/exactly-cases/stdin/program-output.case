@@ -1,0 +1,16 @@
+[setup]
+
+def string OUTPUT_FROM_PROGRAM = 'the output from the program'
+
+stdin = -stdout-from
+         -python -c :> print("""@[OUTPUT_FROM_PROGRAM]@""")
+
+[act]
+
+@ COPY_STDIN_2_STDOUT
+
+[assert]
+
+stdout equals <<-
+@[OUTPUT_FROM_PROGRAM]@
+-

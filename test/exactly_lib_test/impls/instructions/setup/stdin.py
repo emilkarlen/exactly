@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.impls.instructions.setup import stdin as sut
+from exactly_lib.impls.types.path import path_relativities
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
@@ -68,7 +69,7 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
             rel_opt_conf.symbol_conf_rel_any(
                 RelOptionType.REL_TMP,
                 'SYMBOL',
-                sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants),
+                RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants),
         ]
         stdin_file = File('stdin.txt', 'contents of stdin / rel non-hds')
 
@@ -100,14 +101,14 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
             rel_opt_conf.symbol_conf_rel_any(
                 RelOptionType.REL_HDS_CASE,
                 'SYMBOL',
-                sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants),
+                RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants),
         ]
         stdin_file = File('stdin.txt', 'contents of stdin / rel hds')
         for rel_conf in accepted_relativity_configurations:
             syntax = InstructionAbsStx(
                 StringSourceOfFileAbsStx(rel_conf.path_abs_stx_of_name(stdin_file.name))
             )
-            with self.subTest(option_string=rel_conf.option_argument):
+            with self.subTest(option_string=rel_conf.option_argument.as_str):
                 CHECKER.check_multi_source__abs_stx(
                     self,
                     syntax,
@@ -213,7 +214,7 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
         symbol_rel_opt = rel_opt_conf.symbol_conf_rel_any(
             RelOptionType.REL_ACT,
             'SYMBOL',
-            sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants)
+            RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants)
         syntax = InstructionAbsStx(
             StringSourceOfFileAbsStx(symbol_rel_opt.path_abs_stx_of_name('non-existing-file'))
         )
@@ -277,6 +278,8 @@ class InstructionAbsStx(AbstractSyntax):
     def tokenization(self) -> TokenSequence:
         return abstract_syntaxes.AssignmentOfMandatoryValue(self._value).tokenization()
 
+
+RELATIVITY_OPTIONS_CONFIGURATION = path_relativities.ALL_REL_OPTIONS_ARG_CONFIG
 
 CHECKER = instruction_check.Checker(sut.Parser())
 PARSE_CHECKER = parse_checker.Checker(sut.Parser())

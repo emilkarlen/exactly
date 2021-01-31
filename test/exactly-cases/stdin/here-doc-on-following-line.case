@@ -1,0 +1,19 @@
+[setup]
+
+def string STDIN_LINE = 'a line of the stdin'
+
+stdin =
+<<-
+@[STDIN_LINE]@
+-
+
+[act]
+
+@ COPY_STDIN_2_STDOUT
+
+[assert]
+
+stdout equals
+<<-
+@[STDIN_LINE]@
+-
