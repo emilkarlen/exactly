@@ -7,13 +7,13 @@ from typing import Callable, Optional, Sequence
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.definitions import actual_file_attributes
+from exactly_lib.definitions import actual_file_attributes, file_types
 from exactly_lib.impls.types.path import path_rendering
 from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, MajorBlock
-from exactly_lib.util.str_ import str_constructor, name
+from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.str_.name import NameWithGenderWithFormatting
 
 
@@ -38,13 +38,13 @@ class FileTypeInfo:
 
 TYPE_INFO = {
     FileType.REGULAR: FileTypeInfo('file',
-                                   NameWithGenderWithFormatting(name.a_name_with_plural_s('regular file')),
+                                   file_types.REGULAR,
                                    stat.S_ISREG, pathlib.Path.is_file),
     FileType.DIRECTORY: FileTypeInfo('dir',
-                                     NameWithGenderWithFormatting(name.NameWithGender('a', 'directory', 'directories')),
+                                     file_types.DIRECTORY,
                                      stat.S_ISDIR, pathlib.Path.is_dir),
     FileType.SYMLINK: FileTypeInfo('symlink',
-                                   NameWithGenderWithFormatting(name.a_name_with_plural_s('symbolic link')),
+                                   file_types.SYM_LINK,
                                    stat.S_ISLNK, pathlib.Path.is_symlink),
 }
 

@@ -6,8 +6,8 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args, InvokationVariant, \
     SyntaxElementDescription
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.definitions import file_types
 from exactly_lib.definitions.argument_rendering import path_syntax
-from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.test_case.instructions import instruction_names
@@ -56,7 +56,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         })
 
     def single_line_description(self) -> str:
-        return 'Creates a file'
+        return 'Creates ' + file_types.REGULAR.singular_determined
 
     def invokation_variants(self) -> List[InvokationVariant]:
         arguments = path_syntax.mandatory_path_with_optional_relativity(
@@ -75,8 +75,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return [
             rel_path_doc.path_element(_DST_PATH_ARGUMENT.name,
-                                      REL_OPT_ARG_CONF.options,
-                                      docs.paras(the_path_of('a non-existing file.'))),
+                                      REL_OPT_ARG_CONF.options),
         ]
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
