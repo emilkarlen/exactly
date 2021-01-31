@@ -1,16 +1,19 @@
 import unittest
 
 from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, MultiSourceExpectation, \
-    ExecutionExpectation, Expectation, ParseExpectation
+    ExecutionExpectation, Expectation, ParseExpectation, arrangement_wo_tcds
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__for_full_line_expr_parse__s__nsc
+    equivalent_source_variants__for_full_line_expr_parse__s__nsc, equivalent_source_variants__for_expr_parse__s__nsc
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check
 from exactly_lib_test.impls.types.string_transformer.test_resources import abstract_syntaxes as str_trans_abs_stx
+from exactly_lib_test.impls.types.string_transformer.test_resources.validation_cases import \
+    failing_validation_cases
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
@@ -23,7 +26,9 @@ from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as program_abs_stx
-from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx, \
+    ProgramAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfExistingPathAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
     StringTransformerSymbolReferenceAbsStx
@@ -37,7 +42,7 @@ from exactly_lib_test.type_val_prims.string_transformer.test_resources import st
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         TestSymbolReferences(),
-        TestFailingValidation(),
+        unittest.makeSuite(TestFailingValidation),
         unittest.makeSuite(TestSyntax),
     ])
 
@@ -90,9 +95,9 @@ class TestSymbolReferences(unittest.TestCase):
 
 
 class TestFailingValidation(unittest.TestCase):
-    def runTest(self):
+    def test_non_transformer_components(self):
         # ARRANGE #
-        cases = [
+        relativity_cases = [
             NArrEx(
                 'pre SDS validation failure',
                 RelOptionType.REL_HDS_CASE,
@@ -104,27 +109,97 @@ class TestFailingValidation(unittest.TestCase):
                 ValidationAssertions.post_sds_fails__w_any_msg(),
             ),
         ]
-        for case in cases:
-            program_with_ref_to_non_existing_file = program_abs_stx.ProgramOfExecutableFileCommandLineAbsStx(
-                path_abs_stx.RelOptPathAbsStx(case.arrangement, 'non-existing-file')
+
+        def make_pgm_w_ref_to_executable_file(relativity: RelOptionType) -> ProgramAbsStx:
+            return program_abs_stx.ProgramOfExecutableFileCommandLineAbsStx(
+                path_abs_stx.RelOptPathAbsStx(relativity, 'non-existing-file')
+            )
+
+        def make_pgm_w_ref_to_stdin_file(relativity: RelOptionType) -> ProgramAbsStx:
+            return program_abs_stx.FullProgramAbsStx(
+                program_abs_stx.ProgramOfSystemCommandLineAbsStx.of_str(
+                    'a-system-command'
+                ),
+                stdin=string_source_abs_stx.StringSourceOfFileAbsStx(
+                    path_abs_stx.RelOptPathAbsStx(relativity, 'non-existing-file')
+                )
+            )
+
+        def make_pgm_w_ref_to_argument_file(relativity: RelOptionType) -> ProgramAbsStx:
+            return program_abs_stx.ProgramOfSystemCommandLineAbsStx.of_str(
+                'a-system-command',
+                [
+                    ArgumentOfExistingPathAbsStx(
+                        path_abs_stx.RelOptPathAbsStx(relativity, 'non-existing-file')
+                    )
+                ]
+            )
+
+        program_cases = [
+            NameAndValue(
+                'missing executable file',
+                make_pgm_w_ref_to_executable_file,
+            ),
+            NameAndValue(
+                'missing argument file',
+                make_pgm_w_ref_to_argument_file,
+            ),
+            NameAndValue(
+                'missing stdin file',
+                make_pgm_w_ref_to_stdin_file,
+            ),
+        ]
+        for relativity_case in relativity_cases:
+            for program_case in program_cases:
+                string_source_syntax = string_source_abs_stx.StringSourceOfProgramAbsStx(
+                    ProcOutputFile.STDOUT,
+                    program_case.value(relativity_case.arrangement),
+                    ignore_exit_code=False,
+                )
+
+                # ACT & ASSERT #
+                checker = integration_check.checker__w_arbitrary_file_relativities()
+                with self.subTest(step=relativity_case.name,
+                                  program=program_case.name):
+                    checker.check__abs_stx__layouts__source_variants__wo_input(
+                        self,
+                        equivalent_source_variants__for_full_line_expr_parse__s__nsc,
+                        OptionallyOnNewLine(string_source_syntax),
+                        arrangement_w_tcds(),
+                        MultiSourceExpectation(
+                            execution=ExecutionExpectation(
+                                validation=relativity_case.expectation
+                            )
+                        )
+                    )
+
+    def test_transformer_component(self):
+        checker = integration_check.checker__w_arbitrary_file_relativities()
+        for validation_case in failing_validation_cases():
+            transformer_symbol = validation_case.value.symbol_context
+            program_syntax = program_abs_stx.FullProgramAbsStx(
+                program_abs_stx.ProgramOfSystemCommandLineAbsStx.of_str(
+                    'a-system-command'
+                ),
+                transformation=transformer_symbol.abs_stx_of_reference,
             )
             string_source_syntax = string_source_abs_stx.StringSourceOfProgramAbsStx(
                 ProcOutputFile.STDOUT,
-                program_with_ref_to_non_existing_file,
+                program_syntax,
                 ignore_exit_code=False,
             )
-
-            # ACT & ASSERT #
-            checker = integration_check.checker__w_arbitrary_file_relativities()
-            with self.subTest(step=case.name):
+            with self.subTest(validation_case.name):
                 checker.check__abs_stx__layouts__source_variants__wo_input(
                     self,
-                    equivalent_source_variants__for_full_line_expr_parse__s__nsc,
+                    equivalent_source_variants__for_expr_parse__s__nsc,
                     OptionallyOnNewLine(string_source_syntax),
-                    arrangement_w_tcds(),
+                    arrangement_wo_tcds(
+                        symbols=transformer_symbol.symbol_table
+                    ),
                     MultiSourceExpectation(
+                        symbol_references=transformer_symbol.references_assertion,
                         execution=ExecutionExpectation(
-                            validation=case.expectation
+                            validation=validation_case.value.expectation
                         )
                     )
                 )

@@ -85,6 +85,13 @@ class CommandOutputStringSourceDdv(StringSourceDdv):
         self._output_channel_to_capture = output_channel_to_capture
         self._command = command
         self._command_stdin = command_stdin
+        self._validators = (
+                list(self._command.validators) +
+                [
+                    part.validator
+                    for part in command_stdin
+                ]
+        )
 
     def new_structure_builder(self) -> StringSourceStructureBuilder:
         return cmd_string_source.ConstructorOfStructureBuilder(
@@ -101,7 +108,7 @@ class CommandOutputStringSourceDdv(StringSourceDdv):
 
     @property
     def validator(self) -> DdvValidator:
-        return ddv_validators.all_of(self._command.validators)
+        return ddv_validators.all_of(self._validators)
 
     def value_of_any_dependency(self, tcds: TestCaseDs) -> ApplicationEnvironmentDependentValue[PRIMITIVE]:
         def make_primitive(environment: ApplicationEnvironment) -> StringSource:
