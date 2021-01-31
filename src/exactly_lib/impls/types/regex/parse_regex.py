@@ -1,13 +1,12 @@
 import re
-from typing import Sequence, Set, Pattern, Optional, Tuple
+from typing import Sequence, Set, Pattern, Optional
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.impls.types.regex.regex_ddv import RegexSdv, RegexDdv
-from exactly_lib.impls.types.string_or_path.parse_string_or_path import parse_string_or_here_doc_from_token_parser
-from exactly_lib.impls.types.string_or_path.primitive import SourceType
+from exactly_lib.impls.types.string_.parse_string_or_here_doc import parse_string_or_here_doc_from_token_parser
 from exactly_lib.section_document.element_parsers.ps_or_tp import parsers
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -45,12 +44,12 @@ def regex_parser() -> Parser[RegexSdv]:
 def parse_regex(parser: TokenParser,
                 must_be_on_same_line: bool = True,
                 consume_last_here_doc_line: bool = False) -> RegexSdv:
-    return parse_regex2(parser, must_be_on_same_line, consume_last_here_doc_line)[1]
+    return parse_regex2(parser, must_be_on_same_line, consume_last_here_doc_line)
 
 
 def parse_regex2(parser: TokenParser,
                  must_be_on_same_line: bool = True,
-                 consume_last_here_doc_line: bool = False) -> Tuple[SourceType, RegexSdv]:
+                 consume_last_here_doc_line: bool = False) -> RegexSdv:
     if must_be_on_same_line:
         parser.require_is_not_at_eol(MISSING_REGEX_ARGUMENT_ERR_MSG)
 
@@ -60,9 +59,9 @@ def parse_regex2(parser: TokenParser,
     if must_be_on_same_line:
         parser.require_is_not_at_eol(MISSING_REGEX_ARGUMENT_ERR_MSG)
 
-    source_type, regex_pattern = parse_string_or_here_doc_from_token_parser(parser,
-                                                                            consume_last_here_doc_line)
-    return source_type, _RegexSdv(is_ignore_case, regex_pattern)
+    regex_pattern = parse_string_or_here_doc_from_token_parser(parser,
+                                                               consume_last_here_doc_line)
+    return _RegexSdv(is_ignore_case, regex_pattern)
 
 
 _PARSER = parsers.ParserFromTokenParserFunction(parse_regex)

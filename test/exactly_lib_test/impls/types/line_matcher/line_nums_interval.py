@@ -12,9 +12,9 @@ from exactly_lib_test.impls.types.line_matcher.test_resources import models
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, Expectation, \
     prim_asrt__constant
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as sm_args
+from exactly_lib_test.impls.types.string_source.test_resources.argument_renderers import FileOrString
 from exactly_lib_test.impls.types.test_resources import arguments_building as arg_rend
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
-from exactly_lib_test.test_resources.argument_renderers import FileOrString
 from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder

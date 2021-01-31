@@ -20,7 +20,7 @@ from exactly_lib.impls.program_execution.file_transformation_utils import \
     make_transformed_file_from_output_in_instruction_tmp_dir
 from exactly_lib.impls.text_render import header_rendering, file_or_dir_contents_headers
 from exactly_lib.impls.types.program.parse import parse_program
-from exactly_lib.impls.types.string_or_path import parse_string_or_path
+from exactly_lib.impls.types.string_ import parse_string_or_here_doc
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import RelOptionType
@@ -48,7 +48,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                   WithAssertPhasePurpose):
     def __init__(self, name: str,
                  name_of_checked_file: str):
-        self.file_arg = a.Named(parse_string_or_path.CONFIGURATION.argument_syntax_name)
+        self.file_arg = a.Named(parse_string_or_here_doc.CONFIGURATION.argument_syntax_name)
         self._help_parts = FileContentsCheckerHelp(name,
                                                    name_of_checked_file,
                                                    [])

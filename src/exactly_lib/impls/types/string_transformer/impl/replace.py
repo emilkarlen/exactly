@@ -45,8 +45,8 @@ _PARSE_REPLACEMENT_CONFIGURATION = parse_string.Configuration('REPLACEMENT')
 def parse_replace(token_parser: TokenParser) -> StringTransformerSdv:
     token_parser.require_has_valid_head_token(REPLACE_REGEX_ARGUMENT.name)
     preserve_new_lines = token_parser.consume_optional_option(names.PRESERVE_NEW_LINES_OPTION_NAME)
-    source_type, regex_sdv = parse_regex.parse_regex2(token_parser,
-                                                      must_be_on_same_line=True)
+    regex_sdv = parse_regex.parse_regex2(token_parser,
+                                         must_be_on_same_line=True)
     token_parser.require_is_not_at_eol(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)
 
     replacement = parse_string.parse_string_from_token_parser(token_parser, _PARSE_REPLACEMENT_CONFIGURATION)

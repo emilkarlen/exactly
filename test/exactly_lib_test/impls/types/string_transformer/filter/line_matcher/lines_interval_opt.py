@@ -6,12 +6,12 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.types.integer_matcher.test_resources import argument_building as im_args
 from exactly_lib_test.impls.types.line_matcher.test_resources import arguments_building as lm_arg
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as sm_args
+from exactly_lib_test.impls.types.string_source.test_resources.argument_renderers import FileOrString
 from exactly_lib_test.impls.types.string_transformer.filter.line_matcher import test_resources as tr
 from exactly_lib_test.impls.types.string_transformer.filter.line_matcher.test_resources import IntSymbol, \
     ModelAndArguments, _from_to, Case
 from exactly_lib_test.impls.types.test_resources import arguments_building as arg_rend
 from exactly_lib_test.test_resources.argument_renderer import SymbolReferenceWReferenceSyntax
-from exactly_lib_test.test_resources.argument_renderers import FileOrString
 
 
 def suite() -> unittest.TestSuite:

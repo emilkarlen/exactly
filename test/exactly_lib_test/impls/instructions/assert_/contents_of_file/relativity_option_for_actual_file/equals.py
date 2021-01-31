@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.impls.types.string_or_path import parse_string_or_path
+from exactly_lib.impls.types.string_source import defs as str_src_defs
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
@@ -166,7 +166,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
                  '{file_option} {rel_symbol_option} {rel_symbol_name} expected.txt',
                  relativity_option=self.rel_opt.option_argument,
                  maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
-                 file_option=option_syntax(parse_string_or_path.FILE_ARGUMENT_OPTION),
+                 file_option=option_syntax(str_src_defs.FILE_OPTION),
                  rel_symbol_name=expected_file_relativity_symbol),
             ArrangementPostAct(
                 tcds_contents=tcds_contents_arrangement,

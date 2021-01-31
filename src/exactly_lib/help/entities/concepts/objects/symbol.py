@@ -86,7 +86,7 @@ class _SymbolConcept(ConceptDocumentation):
         from exactly_lib.definitions.primitives.file_or_dir_contents import EMPTINESS_CHECK_ARGUMENT
         from exactly_lib.impls.types.string_matcher.matcher_options import EQUALS_ARGUMENT
 
-        from exactly_lib.impls.types.string_or_path.parse_string_or_path import FILE_ARGUMENT_OPTION
+        from exactly_lib.impls.types.string_source.defs import FILE_OPTION
         from exactly_lib.definitions.path import REL_symbol_OPTION
         part_2_parser = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
@@ -108,7 +108,7 @@ class _SymbolConcept(ConceptDocumentation):
             'not': logic.NOT_OPERATOR_NAME,
             'empty': EMPTINESS_CHECK_ARGUMENT,
             'equals': EQUALS_ARGUMENT,
-            'file_option': option_syntax.option_syntax(FILE_ARGUMENT_OPTION),
+            'file_option': option_syntax.option_syntax(FILE_OPTION),
             'rel_option': REL_symbol_OPTION,
             'ref_syntax_of_dir_name_symbol': symbol_reference_syntax_for_name('DIR_NAME_SYMBOL'),
             'ref_syntax_of_base_name_symbol': symbol_reference_syntax_for_name('BASE_NAME_SYMBOL'),

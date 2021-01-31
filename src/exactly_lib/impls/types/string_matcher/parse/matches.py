@@ -19,8 +19,8 @@ def parse(token_parser: TokenParser) -> StringMatcherSdv:
                                                                     lambda parser: True,
                                                                     matcher_options.FULL_MATCH_ARGUMENT_OPTION)
     token_parser.require_has_valid_head_token(syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
-    source_type, regex_sdv = parse_regex.parse_regex2(token_parser,
-                                                      must_be_on_same_line=False)
+    regex_sdv = parse_regex.parse_regex2(token_parser,
+                                         must_be_on_same_line=False)
 
     return matches.sdv(is_full_match, regex_sdv)
 

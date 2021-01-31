@@ -1,9 +1,8 @@
 from abc import ABC
-from typing import List, Sequence
+from typing import List
 
 from exactly_lib.definitions.primitives.string import HERE_DOCUMENT_MARKER_PREFIX
-from exactly_lib.impls.types.string_or_path.parse_string_or_path import FILE_ARGUMENT_OPTION
-from exactly_lib.util.str_.misc_formatting import lines_content
+from exactly_lib.impls.types.string_source import defs as str_src_defs
 from exactly_lib_test.tcfs.test_resources.path_arguments import PathArgument
 from exactly_lib_test.test_resources import argument_renderer as args_rend
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
@@ -14,17 +13,6 @@ class HereDocument(ArgumentElementsRenderer, ABC):
     def __init__(self, separator: str, contents_ended_w_new_line: str):
         self.separator = separator
         self.contents_ended_w_new_line = contents_ended_w_new_line
-
-    @staticmethod
-    def of_lines(self, separator: str, lines_wo_new_line: Sequence[str]) -> 'HereDocument':
-        return HereDocument(
-            separator,
-            ('\n'
-             if len(lines_wo_new_line) == 0
-             else
-             lines_content(lines_wo_new_line)
-             )
-        )
 
     @property
     def elements(self) -> List[WithToString]:
@@ -76,7 +64,7 @@ class FileOrStringAsFile(FileOrString):
     @property
     def elements(self) -> List[WithToString]:
         render = args_rend.SequenceOfArguments([
-            args_rend.OptionArgument(FILE_ARGUMENT_OPTION),
+            args_rend.OptionArgument(str_src_defs.FILE_OPTION),
             self.file,
         ])
         return render.elements

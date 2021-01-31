@@ -10,8 +10,8 @@ from exactly_lib.impls.types.path import parse_path
 from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionsConfiguration, \
     RelOptionArgumentConfiguration
 from exactly_lib.impls.types.program.parse import parse_program
+from exactly_lib.impls.types.string_ import parse_string_or_here_doc
 from exactly_lib.impls.types.string_matcher import parse_string_matcher
-from exactly_lib.impls.types.string_or_path import parse_string_or_path
 from exactly_lib.impls.types.string_transformer import parse_string_transformer
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
@@ -32,11 +32,10 @@ class StringParser(TypeValueParser):
               fs_location_info: FileSystemLocationInfo,
               token_parser: TokenParser,
               ) -> SymbolDependentValue:
-        source_type, sdv = parse_string_or_path.parse_string_or_here_doc_from_token_parser(
+        return parse_string_or_here_doc.parse_string_or_here_doc_from_token_parser(
             token_parser,
             consume_last_here_doc_line=False,
         )
-        return sdv
 
 
 class PathParser(TypeValueParser):

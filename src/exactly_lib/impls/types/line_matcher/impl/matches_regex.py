@@ -13,8 +13,8 @@ from exactly_lib.util.description_tree import renderers
 
 def parse(token_parser: TokenParser) -> LineMatcherSdv:
     token_parser.require_has_valid_head_token(syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
-    source_type, regex_sdv = parse_regex.parse_regex2(token_parser,
-                                                      must_be_on_same_line=True)
+    regex_sdv = parse_regex.parse_regex2(token_parser,
+                                         must_be_on_same_line=True)
 
     return _sdv(regex_sdv)
 

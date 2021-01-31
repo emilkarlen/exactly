@@ -70,9 +70,8 @@ def _parser(parse_matcher_of_regex: Callable[[TokenParser], FileMatcherSdv],
 
 def _parse_regex(token_parser: TokenParser) -> RegexSdv:
     token_parser.require_has_valid_head_token(syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
-    source_type, regex_sdv = parse_regex.parse_regex2(token_parser,
-                                                      must_be_on_same_line=True)
-    return regex_sdv
+    return parse_regex.parse_regex2(token_parser,
+                                    must_be_on_same_line=True)
 
 
 _SYNTAX_ELEM_STR = cl_syntax.cl_syntax_for_args((defs.GLOB_OR_REGEX__ARG_USAGE,))
