@@ -7,6 +7,7 @@ path-presentation
 source-file-info
 symbols
 types
+grammar-parser
 actor
 
 # suites

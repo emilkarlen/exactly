@@ -1,0 +1,3 @@
+[setup]
+
+def string-matcher INVALID = invalid/name

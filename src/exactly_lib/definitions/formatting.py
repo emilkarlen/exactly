@@ -180,6 +180,10 @@ def keyword(keyword: str) -> str:
     return '"' + keyword + '"'
 
 
+def parsed_str(s: str) -> str:
+    return repr(s)
+
+
 def syntax_element(human_readable_name: str) -> str:
     """
     Transforms a name with space and lowercase letters

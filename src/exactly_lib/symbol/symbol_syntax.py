@@ -157,4 +157,7 @@ def is_symbol_name(s: str) -> bool:
 
 
 def invalid_symbol_name_error(invalid_name: str) -> str:
-    return 'Invalid symbol name: {}.\nA symbol name must only contain alphanum and _'.format(invalid_name)
+    return 'Invalid symbol name: {}.\n{}'.format(invalid_name, SYMBOL_SYNTAX_DESCRIPTION_LINE)
+
+
+SYMBOL_SYNTAX_DESCRIPTION_LINE = 'A symbol name must only contain alphanum and _'

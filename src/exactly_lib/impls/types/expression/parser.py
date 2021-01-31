@@ -1,5 +1,7 @@
 from typing import Generic, Optional, Callable, Mapping, Sequence, AbstractSet, List
 
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.ps_or_tp import parsers as parser_impls
@@ -7,7 +9,6 @@ from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.util import collection
-from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.name_and_value import NameAndValue
 from .grammar import Grammar, EXPR, InfixOperator
 
@@ -88,7 +89,7 @@ class _Parser(Generic[EXPR]):
         self.parser = parser
         self.grammar = grammar
         self.prefix_operator_names = self.grammar.prefix_operators.keys()
-        self.missing_expression = 'Missing ' + self.grammar.concept.syntax_element.name
+        self._err_msg_renderer = _ErrorMessageRenderer(grammar)
 
     def parse(self, new_line_ignore: Optional[int]) -> EXPR:
         return self.parse_w_maybe_infix_ops(new_line_ignore,
@@ -174,7 +175,7 @@ class _Parser(Generic[EXPR]):
 
     def parse_mandatory_primitive(self, must_be_on_current_line: bool) -> EXPR:
         if must_be_on_current_line:
-            self.parser.require_is_not_at_eol(self.missing_expression)
+            self.parser.require_is_not_at_eol(self._err_msg_renderer.missing_element())
 
         if self.consume_optional_start_parentheses():
             expression = self.parse(_IS_INSIDE_PARENTHESIS)
@@ -200,13 +201,8 @@ class _Parser(Generic[EXPR]):
         if primitive_name in self.grammar.primitives:
             return self.grammar.primitives[primitive_name].parse_arguments(self.parser)
         elif not symbol_syntax.is_symbol_name(primitive_name):
-            if primitive_name.startswith(option_syntax.OPTION_PREFIX_CHARACTER):
-                raise SingleInstructionInvalidArgumentException(
-                    'Invalid option: ' + primitive_name
-                )
-            else:
-                err_msg = symbol_syntax.invalid_symbol_name_error(primitive_name)
-                raise SingleInstructionInvalidArgumentException(err_msg)
+            err_msg = self._err_msg_renderer.unknown_primitive(primitive_name)
+            raise SingleInstructionInvalidArgumentException(err_msg)
         else:
             return self.grammar.mk_reference(primitive_name)
 
@@ -239,3 +235,44 @@ class _Parser(Generic[EXPR]):
             list(map(NameAndValue.name.fget, precedence_level))
             for precedence_level in self.grammar.infix_ops_inc_precedence__seq
         ])
+
+
+class _ErrorMessageRenderer:
+    def __init__(self, grammar: Grammar):
+        self._grammar = grammar
+
+    def missing_element(self) -> str:
+        return 'Missing ' + self._grammar.concept.syntax_element.name
+
+    def unknown_primitive(self, primitive_name: str) -> str:
+        lines = [
+            'Unknown {}: {}'.format(self._grammar.concept.syntax_element.name,
+                                    formatting.parsed_str(primitive_name)),
+            '',
+            'Expecting one of',
+        ]
+        lines += [
+            '  ' + primitive
+            for primitive in self._known_primitives_and_prefix_operators()
+        ]
+        lines += [
+            '',
+            symbol_syntax.SYMBOL_SYNTAX_DESCRIPTION_LINE,
+        ]
+        return '\n'.join(lines)
+
+    def _known_primitives_and_prefix_operators(self) -> List[str]:
+        ret_val = [
+            formatting.keyword(primitive.name)
+            for primitive in self._grammar.primitives__seq
+        ]
+        ret_val += [
+            formatting.keyword(prefix_operator.name)
+            for prefix_operator in self._grammar.prefix_operators__seq
+        ]
+        ret_val += [
+            syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
+            syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.singular_name,
+            formatting.keyword('('),
+        ]
+        return ret_val
