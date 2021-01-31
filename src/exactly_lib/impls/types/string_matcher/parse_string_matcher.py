@@ -8,6 +8,7 @@ from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.impls import texts
 from exactly_lib.impls.types.expression import grammar
 from exactly_lib.impls.types.expression import parser as ep
+from exactly_lib.impls.types.expression.descriptions import alias
 from exactly_lib.impls.types.expression.parser import GrammarParsers
 from exactly_lib.impls.types.line_matcher import parse_line_matcher
 from exactly_lib.impls.types.matcher import standard_expression_grammar
@@ -81,6 +82,12 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.Primitive[StringMatch
             matcher_options.MATCHES_ARGUMENT,
             grammar.Primitive(matches.parse,
                               matches.Description())
+        ),
+        NameAndValue(
+            matcher_options.MATCHES_ARGUMENT__ALIAS,
+            grammar.Primitive(matches.parse,
+                              alias.Description(matcher_options.MATCHES_ARGUMENT,
+                                                matches.Description.ARGUMENT_USAGE_LIST))
         ),
     ]
 

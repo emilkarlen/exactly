@@ -25,7 +25,7 @@ class MatchesRegex(WithCachedNodeDescriptionBase,
                    MatcherWTrace[str]
                    ):
     NAME = ' '.join((
-        str_matcher.MATCH_REGEX_OR_GLOB_PATTERN_CHECK_ARGUMENT,
+        str_matcher.MATCH_REGEX_ARGUMENT,
         syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
     ))
 

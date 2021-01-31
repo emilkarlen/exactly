@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.definitions.entity import types
-from exactly_lib.impls.types.expression.grammar_elements import InfixOperatorDescriptionFromFunctions
+from exactly_lib.impls.types.expression.descriptions.operator import InfixOperatorDescriptionFromFunctions
 from exactly_lib.impls.types.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.impls.types.string_transformer.impl.sequence import StringTransformerSequenceDdv
 from exactly_lib.symbol.sdv_structure import references_from_objects_with_symbol_references, SymbolReference

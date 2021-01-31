@@ -1,0 +1,7 @@
+[setup]
+
+file f.txt
+
+[assert]
+
+exists f.txt : contents ~ 'non matching regex'

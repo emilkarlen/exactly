@@ -18,6 +18,7 @@ def string-matcher MATCHES         = matches [a-z]+
 def string-matcher MATCHES_FULL    = matches -full [a-z]+
 def string-matcher MATCHES_FULL_IC = matches -full -ignore-case [a-z]+
 def string-matcher NOT_MATCHES     = ! MATCHES
+def string-matcher MATCHES_ALIAS   = ~ -full -ignore-case [a-z]+
 
 def string-matcher RUN = run % grep pattern
 

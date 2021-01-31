@@ -1,0 +1,24 @@
+[setup]
+
+file actual.txt = <<-
+The first line
+-
+
+
+[assert]
+
+"Default mode"
+
+contents actual.txt
+         ~
+<<-
+The.*
+-
+
+"Full match option"
+
+contents actual.txt
+         ~ -full
+<<-
+The.*
+-

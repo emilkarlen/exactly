@@ -1,7 +1,9 @@
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.primitives import str_matcher
 from exactly_lib.util.cli_syntax.elements import argument as a
 
-REG_EX_OPERATOR = a.Named('~')
+REG_EX_OPERATOR = a.Named(str_matcher.MATCH_REGEX_ARGUMENT__SHORT)
+
 GLOB_OR_REGEX__ARG_USAGE = a.Choice.of_multiple_argument_choices(
     a.Multiplicity.MANDATORY,
     [

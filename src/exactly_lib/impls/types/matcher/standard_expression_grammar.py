@@ -2,7 +2,7 @@ from typing import Sequence, TypeVar, Callable
 
 from exactly_lib.definitions import logic
 from exactly_lib.impls.types.expression import grammar
-from exactly_lib.impls.types.expression.grammar_elements import OperatorDescriptionFromFunctions, \
+from exactly_lib.impls.types.expression.descriptions.operator import OperatorDescriptionFromFunctions, \
     InfixOperatorDescriptionFromFunctions
 from exactly_lib.impls.types.matcher.impls import combinator_sdvs, symbol_reference, parse_constant
 from exactly_lib.symbol.value_type import ValueType

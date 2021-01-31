@@ -5,3 +5,7 @@ hello-world
 [assert]
 
 stdout every line : contents matches 'Hello'
+
+# '~' is an alias for 'matches':
+
+stdout every line : contents ~ 'Hello'

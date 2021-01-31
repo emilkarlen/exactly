@@ -26,13 +26,15 @@ def parse(token_parser: TokenParser) -> StringMatcherSdv:
 
 
 class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
+    ARGUMENT_USAGE_LIST = (
+        a.Single(a.Multiplicity.OPTIONAL,
+                 a.Option(matcher_options.FULL_MATCH_ARGUMENT_OPTION)),
+        syntax_elements.REGEX_SYNTAX_ELEMENT.single_mandatory,
+    )
+
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
-        return (
-            a.Single(a.Multiplicity.OPTIONAL,
-                     a.Option(matcher_options.FULL_MATCH_ARGUMENT_OPTION)),
-            syntax_elements.REGEX_SYNTAX_ELEMENT.single_mandatory,
-        )
+        return self.ARGUMENT_USAGE_LIST
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
