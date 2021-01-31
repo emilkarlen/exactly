@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
 from pathlib import Path
-from typing import ContextManager, Iterator, IO
+from typing import ContextManager, Iterator, TextIO
 
 from exactly_lib.impls.types.string_source.contents.contents_with_cached_path import \
     StringSourceContentsWithCachedPath
@@ -38,7 +38,7 @@ class ContentsViaFile(StringSourceContentsWithCachedPath):
         with self.as_file.open() as lines:
             yield lines
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         with self.as_file.open() as lines:
             output.writelines(lines)
 

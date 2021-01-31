@@ -18,7 +18,7 @@ class StringSourceContentsFromLinesBase(StringSourceContents, ABC):
     def _to_file(self) -> Path:
         path = self.tmp_file_space.new_path()
 
-        with misc_utils.open_and_make_read_only_on_close__p(path, 'x') as f:
+        with misc_utils.open_and_make_read_only_on_close__text(path, 'x') as f:
             with self.as_lines as lines:
                 f.writelines(lines)
 

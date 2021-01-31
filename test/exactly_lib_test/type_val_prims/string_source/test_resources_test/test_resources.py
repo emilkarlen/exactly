@@ -2,7 +2,7 @@ import unittest
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
 from pathlib import Path
-from typing import ContextManager, Iterator, IO, Sequence
+from typing import ContextManager, Iterator, Sequence, TextIO
 
 from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
@@ -67,7 +67,7 @@ class _ContentsOfContentsData(StringSourceContents):
     def as_lines(self) -> ContextManager[Iterator[str]]:
         yield iter(self._data.data__as_lines)
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         output.write(self._data.data__write_to)
 
     @property

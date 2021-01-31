@@ -1,7 +1,7 @@
 import io
 import unittest
 from pathlib import Path
-from typing import List, Sequence, IO
+from typing import List, Sequence, TextIO
 
 from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.name_and_value import NameAndValue
@@ -174,7 +174,7 @@ class TestModelChecker(unittest.TestCase):
         # ARRANGE #
         io_passed_to_wrapper = io.StringIO()
 
-        def write_to_of_wrapped(f: IO):
+        def write_to_of_wrapped(f: TextIO):
             self.assertIs(f, io_passed_to_wrapper)
 
         wrapped = StringSourceOfContents.of_identical(

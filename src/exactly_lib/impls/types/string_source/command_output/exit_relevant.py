@@ -1,6 +1,6 @@
 import subprocess
 from pathlib import Path
-from typing import IO, TextIO
+from typing import TextIO
 
 from exactly_lib.impls.program_execution.processors import read_stderr_on_error
 from exactly_lib.impls.types.program import top_lvl_error_msg_rendering
@@ -30,7 +30,7 @@ class StdoutWriter(Writer):
         self._command_executor = command_executor
         self._stderr_msg_reader = stderr_msg_reader
 
-    def write(self, tmp_file_space: DirFileSpace, output: IO):
+    def write(self, tmp_file_space: DirFileSpace, output: TextIO):
         processor = self._processor(tmp_file_space, output)
         result = processor.process(self._proc_exe_settings, self._command.command)
         if result.exit_code != 0:
@@ -44,7 +44,7 @@ class StdoutWriter(Writer):
 
     def _processor(self,
                    tmp_file_space: DirFileSpace,
-                   output: IO,
+                   output: TextIO,
                    ) -> read_stderr_on_error.ProcessorThatReadsStderrOnNonZeroExitCode:
         return read_stderr_on_error.ProcessorThatReadsStderrOnNonZeroExitCode(
             self._command_executor,

@@ -1,4 +1,4 @@
-from typing import IO
+from typing import TextIO
 
 from exactly_lib.impls.program_execution import command_processors
 from exactly_lib.impls.program_execution.command_processor import CommandProcessor
@@ -79,7 +79,7 @@ class _TransformationWriter:
         self._ignore_exit_code = ignore_exit_code
         self.transformer = transformer
 
-    def write(self, source: StringSourceContents, output: IO):
+    def write(self, source: StringSourceContents, output: TextIO):
         command_processor = self._command_processor(source, output)
         command_processor.process(
             self.environment.process_execution_settings,
@@ -88,7 +88,7 @@ class _TransformationWriter:
 
     def _command_processor(self,
                            source: StringSourceContents,
-                           output: IO) -> CommandProcessor[ExitCodeAndStderrFile]:
+                           output: TextIO) -> CommandProcessor[ExitCodeAndStderrFile]:
         return command_processors.processor_that_optionally_raises_hard_error_on_non_zero_exit_code(
             self._ignore_exit_code,
             self._exit_code_agnostic_processor(source, output),
@@ -98,7 +98,7 @@ class _TransformationWriter:
 
     def _exit_code_agnostic_processor(self,
                                       source: StringSourceContents,
-                                      output: IO) -> CommandProcessor[ExitCodeAndStderrFile]:
+                                      output: TextIO) -> CommandProcessor[ExitCodeAndStderrFile]:
         path_of_file_with_model = source.as_file
         return store_result_in_files.ProcessorThatStoresStderrInFiles(
             self.environment.os_services.command_executor,

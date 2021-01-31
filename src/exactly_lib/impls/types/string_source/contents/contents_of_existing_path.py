@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 from pathlib import Path
-from typing import ContextManager, Iterator, IO
+from typing import ContextManager, Iterator, TextIO
 
 from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
@@ -35,10 +35,7 @@ class StringSourceContentsOfExistingPath(StringSourceContents):
         with self._existing_regular_file_path.open() as lines:
             yield lines
 
-    def write_to(self, output: IO):
-        # TODO Would like to have other kind of buffering than line buffering -
-        # the natural buffer size for the file.
-        # But have not found out how to read buffer chunks.
+    def write_to(self, output: TextIO):
         with self.as_lines as lines:
             output.writelines(lines)
 

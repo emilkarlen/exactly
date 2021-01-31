@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from typing import Sequence, ContextManager, Iterator, IO, Optional
+from typing import Sequence, ContextManager, Iterator, Optional, TextIO
 
 from exactly_lib.definitions.primitives import string_source as _primitive_defs
 from exactly_lib.impls.types.string_source import cached_frozen
@@ -77,7 +77,7 @@ class _ConcatStringSourceContents(ContentsWithCachedPathFromWriteToBase):
     def as_str(self) -> str:
         return ''.join(self._lines_iter())
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         for part in self._parts:
             part.contents().write_to(output)
 

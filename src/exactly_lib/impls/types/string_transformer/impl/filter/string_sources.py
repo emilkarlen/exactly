@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterator, ContextManager, IO, Optional
+from typing import Iterator, ContextManager, Optional, TextIO
 
 from exactly_lib.impls.types.string_source.contents.contents_with_cached_path import \
     StringSourceContentsWithCachedPath
@@ -38,7 +38,7 @@ class TransformedContentsViaAsLinesBase(StringSourceContentsWithCachedPath, ABC)
         with self._source.contents().as_lines as lines:
             yield self._transform_lines(lines)
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         with self.as_lines as lines:
             output.writelines(lines)
 

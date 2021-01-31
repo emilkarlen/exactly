@@ -2,21 +2,14 @@ import os
 import pathlib
 from contextlib import contextmanager
 from stat import S_IREAD, S_IRGRP, S_IROTH
-from typing import List, ContextManager, IO
+from typing import List, ContextManager, TextIO
 
 from exactly_lib.util import exception
 
 
 @contextmanager
-def open_and_make_read_only_on_close(filename: str, mode: str) -> ContextManager[IO]:
-    with open(filename, mode=mode) as f:
-        yield f
-    make_file_read_only(filename)
-
-
-@contextmanager
-def open_and_make_read_only_on_close__p(path: pathlib.Path, mode: str) -> ContextManager[IO]:
-    with path.open(mode=mode) as f:
+def open_and_make_read_only_on_close__text(path: pathlib.Path, text_mode: str) -> ContextManager[TextIO]:
+    with path.open(mode=text_mode) as f:
         yield f
     make_file_read_only__p(path)
 

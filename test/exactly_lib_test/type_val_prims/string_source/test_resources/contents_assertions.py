@@ -2,7 +2,7 @@ import unittest
 from abc import ABC
 from contextlib import contextmanager
 from pathlib import Path
-from typing import ContextManager, Iterator, IO, Sequence, Optional
+from typing import ContextManager, Iterator, Sequence, Optional, TextIO
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.hard_error import HardErrorException
@@ -74,7 +74,7 @@ class StringSourceContentsThatThatChecksLines(StringSourceContents):
         with self._checked.as_lines as lines:
             yield self._check_and_return_iterator(lines)
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         self._checked.write_to(output)
 
     @property

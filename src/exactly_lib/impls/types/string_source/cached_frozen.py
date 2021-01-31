@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Callable, Optional, IO, ContextManager, Iterator
+from typing import Callable, Optional, ContextManager, Iterator, TextIO
 
 from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
@@ -73,7 +73,7 @@ class _FreezingStringSourceContents(StringSourceContents):
     def as_lines(self) -> ContextManager[Iterator[str]]:
         return self._get_contents().as_lines
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         self._get_contents().write_to(output)
 
     @property
@@ -100,5 +100,5 @@ class _ContentsWriter(Writer):
     def __init__(self, contents: StringSourceContents):
         self._contents = contents
 
-    def write(self, tmp_file_space: DirFileSpace, output: IO):
+    def write(self, tmp_file_space: DirFileSpace, output: TextIO):
         self._contents.write_to(output)

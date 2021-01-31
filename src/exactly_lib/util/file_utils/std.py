@@ -1,10 +1,10 @@
 import subprocess
 import sys
-from typing import Union, IO
+from typing import Union, TextIO
 
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
-ProcessExecutionFile = Union[None, int, IO]
+ProcessExecutionFile = Union[None, int, TextIO]
 
 
 class StdOutputFiles(tuple):

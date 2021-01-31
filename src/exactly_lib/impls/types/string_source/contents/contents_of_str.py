@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from typing import Optional, ContextManager, Iterator, IO
+from typing import Optional, ContextManager, Iterator, TextIO
 
 from exactly_lib.impls.types.string_source.contents.contents_with_cached_path import \
     ContentsWithCachedPathFromWriteToBase
@@ -29,7 +29,7 @@ class ContentsOfStr(ContentsWithCachedPathFromWriteToBase):
     def as_lines(self) -> ContextManager[Iterator[str]]:
         yield iter(self._contents.splitlines(keepends=True))
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         output.write(self._contents)
 
     @property

@@ -1,5 +1,5 @@
 import unittest
-from typing import Union, IO
+from typing import Union, TextIO
 
 from exactly_lib.util.file_utils.std import ProcessExecutionFile
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder
@@ -31,12 +31,12 @@ class IsProcessExecutionFileWIthContents(ValueAssertionBase[ProcessExecutionFile
             message_builder.apply('file contents')
         )
 
-    def _contents(self, open_file: Union[int, IO]) -> str:
+    def _contents(self, open_file: Union[int, TextIO]) -> str:
         file = self._io_file(open_file)
         return file.read()
 
     @staticmethod
-    def _io_file(open_file: Union[int, IO]) -> IO:
+    def _io_file(open_file: Union[int, TextIO]) -> TextIO:
         return (
             open(open_file, closefd=False)
             if isinstance(open_file, int)

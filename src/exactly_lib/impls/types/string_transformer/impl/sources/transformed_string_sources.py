@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Iterator, Callable, IO, Optional
+from typing import Iterator, Callable, Optional, TextIO
 
 from exactly_lib.impls.types.string_source import cached_frozen
 from exactly_lib.impls.types.string_source.contents import contents_via_write_to
@@ -30,7 +30,7 @@ class StringTransformerFromLinesTransformer(StringTransformer, ABC):
         )
 
 
-def transformed_string_source_from_writer(write: Callable[[StringSourceContents, IO], None],
+def transformed_string_source_from_writer(write: Callable[[StringSourceContents, TextIO], None],
                                           model: StringSource,
                                           get_transformer_structure: Callable[[], StructureRenderer],
                                           mem_buff_size: int,
@@ -54,11 +54,11 @@ def transformed_string_source_from_writer(write: Callable[[StringSourceContents,
 
 class _WriterOfTransformed(contents_via_write_to.Writer):
     def __init__(self,
-                 write_transformed: Callable[[StringSourceContents, IO], None],
+                 write_transformed: Callable[[StringSourceContents, TextIO], None],
                  source: StringSourceContents,
                  ):
         self._write_transformed = write_transformed
         self._source = source
 
-    def write(self, tmp_file_space: DirFileSpace, output: IO):
+    def write(self, tmp_file_space: DirFileSpace, output: TextIO):
         self._write_transformed(self._source, output)

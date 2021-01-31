@@ -123,8 +123,8 @@ class ActionToCheckExecutor:
             yield self.exe_atc_and_skip_assertions
         else:
             sds = self.tcds.sds
-            with misc_utils.open_and_make_read_only_on_close__p(sds.result.stdout_file, 'w') as f_stdout:
-                with misc_utils.open_and_make_read_only_on_close__p(sds.result.stderr_file, 'w') as f_stderr:
+            with misc_utils.open_and_make_read_only_on_close__text(sds.result.stdout_file, 'w') as f_stdout:
+                with misc_utils.open_and_make_read_only_on_close__text(sds.result.stderr_file, 'w') as f_stderr:
                     yield StdOutputFiles(f_stdout, f_stderr)
 
     def _register_outcome(self, exit_code_or_hard_error: ExitCodeOrHardError):
@@ -134,7 +134,7 @@ class ActionToCheckExecutor:
                 self._store_exit_code(exit_code_or_hard_error.exit_code)
 
     def _store_exit_code(self, exitcode: int):
-        with misc_utils.open_and_make_read_only_on_close__p(self.tcds.sds.result.exitcode_file, 'w') as f:
+        with misc_utils.open_and_make_read_only_on_close__text(self.tcds.sds.result.exitcode_file, 'w') as f:
             f.write(str(exitcode))
 
     def _app_env_for_execute(self) -> ApplicationEnvironment:

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import ContextManager, Iterator, IO
+from typing import ContextManager, Iterator, TextIO
 
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
@@ -79,7 +79,7 @@ class StringSourceContents(ABC):
         """
         pass
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         """
         Writes the string to a file.
 

@@ -1,7 +1,7 @@
 import unittest
 from contextlib import contextmanager
 from pathlib import Path
-from typing import ContextManager, Iterator, Sequence, List, IO, Callable
+from typing import ContextManager, Iterator, Sequence, List, Callable, TextIO
 
 from exactly_lib.impls.types.string_source.source_from_lines import StringSourceContentsFromLinesBase
 from exactly_lib.test_case.hard_error import HardErrorException
@@ -46,7 +46,7 @@ class ContentsThatRaisesHardErrorException(StringSourceContents):
     def as_lines(self) -> ContextManager[Iterator[str]]:
         return self._raise_hard_error()
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         self._raise_hard_error()
 
     def _raise_hard_error(self):
@@ -61,7 +61,7 @@ class StringSourceContentsData:
                  as_str: Callable[[], str],
                  as_lines: Callable[[], Iterator[str]],
                  as_file: Callable[[DirFileSpace], Path],
-                 write_to: Callable[[IO], None],
+                 write_to: Callable[[TextIO], None],
                  ):
         self.may_depend_on_external_resources = may_depend_on_external_resources
         self.as_str = as_str
@@ -75,7 +75,7 @@ class StringSourceContentsData:
             as_str: Callable[[], str] = do_raise(ValueError('should not be called')),
             as_lines: Callable[[], Iterator[str]] = do_raise(ValueError('should not be called')),
             as_file: Callable[[DirFileSpace], Path] = do_raise(ValueError('should not be called')),
-            write_to: Callable[[IO], None] = do_raise(ValueError('should not be called')),
+            write_to: Callable[[TextIO], None] = do_raise(ValueError('should not be called')),
     ) -> 'StringSourceContentsData':
         return StringSourceContentsData(
             may_depend_on_external_resources=may_depend_on_external_resources,
@@ -94,7 +94,7 @@ class StringSourceContentsData:
             = do_raise(HardErrorException(asrt_text_doc.new_single_string_text_for_test('should not be called'))),
             as_file: Callable[[DirFileSpace], Path]
             = do_raise(HardErrorException(asrt_text_doc.new_single_string_text_for_test('should not be called'))),
-            write_to: Callable[[IO], None]
+            write_to: Callable[[TextIO], None]
             = do_raise(HardErrorException(asrt_text_doc.new_single_string_text_for_test('should not be called'))),
 
     ) -> 'StringSourceContentsData':
@@ -137,7 +137,7 @@ class StringSourceContentsData:
                 f.write(contents)
             return ret_val
 
-        def write_to(output: IO):
+        def write_to(output: TextIO):
             output.write(contents)
 
         return StringSourceContentsData(
@@ -170,7 +170,7 @@ class StringSourceContentsThat(StringSourceContents):
                  as_str: Callable[[], str],
                  as_lines: Callable[[], Iterator[str]],
                  as_file: Callable[[], Path],
-                 write_to: Callable[[IO], None],
+                 write_to: Callable[[TextIO], None],
                  ):
         self.__tmp_file_space = tmp_file_space
         self._may_depend_on_external_resources = may_depend_on_external_resources
@@ -186,7 +186,7 @@ class StringSourceContentsThat(StringSourceContents):
             as_str: Callable[[], str] = do_raise(ValueError('should not be called')),
             as_lines: Callable[[], Iterator[str]] = do_raise(ValueError('should not be called')),
             as_file: Callable[[], Path] = do_raise(ValueError('should not be called')),
-            write_to: Callable[[IO], None] = do_raise(ValueError('should not be called')),
+            write_to: Callable[[TextIO], None] = do_raise(ValueError('should not be called')),
     ) -> StringSourceContents:
         return StringSourceContentsThat(
             tmp_file_space=tmp_file_space,
@@ -218,7 +218,7 @@ class StringSourceContentsThat(StringSourceContents):
     def as_lines(self) -> ContextManager[Iterator[str]]:
         yield self._as_lines()
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         self._write_to(output)
 
 
@@ -276,7 +276,7 @@ class StringSourceContentsWCheckOfMaxNumAccessedLines(StringSourceContents):
         with self._checked.as_lines as lines_of_checked:
             yield self._lines_iter_w_num_access_check(lines_of_checked)
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         with self.as_lines as lines:
             output.writelines(lines)
 
@@ -359,7 +359,7 @@ class DelegatingStringSourceContents(StringSourceContents):
     def as_file(self) -> Path:
         return self._target.as_file
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         self._target.write_to(output)
 
     @property

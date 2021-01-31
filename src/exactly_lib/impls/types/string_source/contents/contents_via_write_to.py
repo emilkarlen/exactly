@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
-from typing import ContextManager, Iterator, IO, Optional
+from typing import ContextManager, Iterator, Optional, TextIO
 
 from exactly_lib.impls.types.string_source.contents.contents_with_cached_path import \
     ContentsWithCachedPathFromWriteToBase
@@ -9,7 +9,7 @@ from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
 class Writer(ABC):
     @abstractmethod
-    def write(self, tmp_file_space: DirFileSpace, output: IO):
+    def write(self, tmp_file_space: DirFileSpace, output: TextIO):
         pass
 
 
@@ -39,7 +39,7 @@ class ContentsViaWriteTo(ContentsWithCachedPathFromWriteToBase):
         with self.as_file.open() as lines:
             yield lines
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         if self._as_file_path is not None:
             with self._as_file_path.open() as f_cached:
                 output.writelines(f_cached)

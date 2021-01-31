@@ -1,10 +1,11 @@
 import unittest
 from contextlib import contextmanager
-from typing import Iterator, Sequence, IO, Callable, ContextManager
+from typing import Iterator, Sequence, Callable, ContextManager, TextIO
 
 from exactly_lib.impls.types.string_transformer.impl.sources import transformed_string_sources as sut
 from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.impls.transformed_string_sources import StringTransFun
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.description_tree import renderers
@@ -142,7 +143,7 @@ class _TransformAndWriteToFile:
         self._app_env = app_env
         self._transformer_function = transformer_function
 
-    def write(self, source: StringSource, output: IO) -> None:
+    def write(self, source: StringSourceContents, output: TextIO) -> None:
         with source.as_lines as lines:
             output.writelines(
                 self._transformer_function(lines)
@@ -152,7 +153,7 @@ class _TransformAndWriteToFile:
 class _TransformAndWriteToFileThatMustBeInvokedOnlyOnce:
     def __init__(self,
                  put: unittest.TestCase,
-                 writer: Callable[[StringSource, IO], None],
+                 writer: Callable[[StringSourceContents, TextIO], None],
                  message_builder: asrt.MessageBuilder,
                  ):
         self._put = put
@@ -160,7 +161,7 @@ class _TransformAndWriteToFileThatMustBeInvokedOnlyOnce:
         self._max_num_invocations_counter = MaxNumberOfTimesChecker(put, 1, 'transform-and-write',
                                                                     message_builder.apply(''))
 
-    def write(self, source: StringSource, output: IO) -> None:
+    def write(self, source: StringSourceContents, output: TextIO) -> None:
         self._max_num_invocations_counter.register()
         self._writer(source, output)
 

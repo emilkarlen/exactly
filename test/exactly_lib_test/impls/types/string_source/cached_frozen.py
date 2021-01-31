@@ -1,7 +1,7 @@
 import os
 import unittest
 from contextlib import contextmanager
-from typing import ContextManager, IO
+from typing import ContextManager, TextIO
 
 from exactly_lib.impls.types.string_source import cached_frozen as sut
 from exactly_lib.impls.types.string_source.contents import contents_of_str
@@ -202,7 +202,7 @@ class _ContentsThatAccessesFileNo(contents_of_str.ContentsOfStr):
                  ):
         super().__init__(contents, 'file-name', tmp_file_space)
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         file_no = output.fileno()
         super().write_to(output)
         output.flush()

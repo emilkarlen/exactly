@@ -1,7 +1,7 @@
 import enum
 import unittest
 from pathlib import Path
-from typing import ContextManager, Iterator, Sequence, List, IO, Optional
+from typing import ContextManager, Iterator, Sequence, List, Optional, TextIO
 
 from exactly_lib.impls.types.string_source.source_from_contents import StringSourceStructureBuilderGetter
 from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
@@ -175,6 +175,6 @@ class StringSourceContentsThatRecordsMethodInvocations(DelegatingStringSourceCon
         self.method_invocation_recorder.record(StringSourceMethod.AS_FILE)
         return super().as_file
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         self.method_invocation_recorder.record(StringSourceMethod.WRITE_TO)
         super().write_to(output)

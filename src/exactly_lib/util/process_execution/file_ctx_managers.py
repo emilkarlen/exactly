@@ -1,7 +1,7 @@
 import subprocess
 from contextlib import contextmanager
 from pathlib import Path
-from typing import ContextManager, IO
+from typing import ContextManager, TextIO
 
 from exactly_lib.util.file_utils.std import ProcessExecutionFile
 
@@ -18,5 +18,5 @@ def open_file(path: Path, mode: str) -> ContextManager[ProcessExecutionFile]:
 
 
 @contextmanager
-def opened_file(f: IO) -> ContextManager[ProcessExecutionFile]:
+def opened_file(f: TextIO) -> ContextManager[ProcessExecutionFile]:
     yield f

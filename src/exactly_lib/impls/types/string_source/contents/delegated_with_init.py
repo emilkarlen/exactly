@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import IO, ContextManager, Iterator, Callable
+from typing import ContextManager, Iterator, Callable, TextIO
 
 from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
@@ -37,7 +37,7 @@ class DelegatedStringSourceContentsWithInit(StringSourceContents):
     def as_lines(self) -> ContextManager[Iterator[str]]:
         return self._get_delegated().as_lines
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         self._get_delegated().write_to(output)
 
     def _get_delegated(self) -> StringSourceContents:

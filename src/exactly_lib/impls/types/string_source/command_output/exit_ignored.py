@@ -1,6 +1,6 @@
 import subprocess
 from abc import ABC, abstractmethod
-from typing import IO
+from typing import TextIO
 
 from exactly_lib.impls.types.string_source import as_stdin
 from exactly_lib.impls.types.string_source.contents.contents_via_write_to import Writer
@@ -21,7 +21,7 @@ class _WriterBase(Writer, ABC):
         self._proc_exe_settings = proc_exe_settings
         self._command_executor = command_executor
 
-    def write(self, tmp_file_space: DirFileSpace, output: IO):
+    def write(self, tmp_file_space: DirFileSpace, output: TextIO):
         with as_stdin.of_sequence(self._command.stdin, mem_buff_size=0) as stdin_f:
             std_files = StdFiles(stdin_f, self._output_files(output))
             self._command_executor.execute(
@@ -31,12 +31,12 @@ class _WriterBase(Writer, ABC):
             )
 
     @abstractmethod
-    def _output_files(self, output: IO) -> StdOutputFiles:
+    def _output_files(self, output: TextIO) -> StdOutputFiles:
         pass
 
 
 class StdoutWriter(_WriterBase):
-    def _output_files(self, output: IO) -> StdOutputFiles:
+    def _output_files(self, output: TextIO) -> StdOutputFiles:
         return StdOutputFiles(
             output,
             subprocess.DEVNULL,
@@ -44,7 +44,7 @@ class StdoutWriter(_WriterBase):
 
 
 class StderrWriter(_WriterBase):
-    def _output_files(self, output: IO) -> StdOutputFiles:
+    def _output_files(self, output: TextIO) -> StdOutputFiles:
         return StdOutputFiles(
             subprocess.DEVNULL,
             output,

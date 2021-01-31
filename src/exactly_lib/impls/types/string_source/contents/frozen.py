@@ -1,7 +1,7 @@
 import os
 import pathlib
 from contextlib import contextmanager
-from typing import Optional, IO, ContextManager, Iterator
+from typing import Optional, ContextManager, Iterator, TextIO
 
 from exactly_lib.impls.types.string_source.contents import contents_of_existing_path, contents_of_str
 from exactly_lib.impls.types.string_source.contents.contents_via_write_to import Writer
@@ -86,7 +86,7 @@ class _StringSourceContentsOfConstStrAndExistingPath(StringSourceContents):
 
         yield iter(self._contents_as_lines)
 
-    def write_to(self, output: IO):
+    def write_to(self, output: TextIO):
         output.write(self._contents_as_str)
 
     @property
