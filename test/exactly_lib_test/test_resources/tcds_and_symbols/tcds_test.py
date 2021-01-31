@@ -9,7 +9,7 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction, \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, anything_goes
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, anything_goes
 
 
 class PostActionCheck:
@@ -35,8 +35,8 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 expected_action_result: ValueAssertion = anything_goes(),
-                 expected_sds_contents_after: ValueAssertion = asrt.anything_goes(),
+                 expected_action_result: Assertion = anything_goes(),
+                 expected_sds_contents_after: Assertion = asrt.anything_goes(),
                  post_action_check: PostActionCheck = PostActionCheck(),
                  acton_raises_hard_error: bool = False):
         self.expected_action_result = expected_action_result

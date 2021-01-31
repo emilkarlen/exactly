@@ -3,8 +3,8 @@ from typing import TypeVar, Generic, Optional
 
 from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.test_case.phases.act.adv_w_validation import AdvWValidation
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder, \
-    ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import AssertionBase, MessageBuilder, \
+    Assertion
 
 T = TypeVar('T')
 
@@ -18,20 +18,20 @@ class AdvWvAssertionModel(Generic[T]):
         self.adv = adv
 
 
-def is_valid(resolved_value: ValueAssertion[T]) -> ValueAssertion[AdvWvAssertionModel[T]]:
+def is_valid(resolved_value: Assertion[T]) -> Assertion[AdvWvAssertionModel[T]]:
     return _IsValid(resolved_value)
 
 
-def is_invalid() -> ValueAssertion[AdvWvAssertionModel[T]]:
+def is_invalid() -> Assertion[AdvWvAssertionModel[T]]:
     return _IsInvalid()
 
 
-def is_valid__optional(resolved_value: ValueAssertion[Optional[T]]) -> ValueAssertion[Optional[AdvWvAssertionModel[T]]]:
+def is_valid__optional(resolved_value: Assertion[Optional[T]]) -> Assertion[Optional[AdvWvAssertionModel[T]]]:
     return _IsInvalid()
 
 
-class _IsValid(Generic[T], ValueAssertionBase[AdvWvAssertionModel[T]]):
-    def __init__(self, resolved_value: ValueAssertion[T]):
+class _IsValid(Generic[T], AssertionBase[AdvWvAssertionModel[T]]):
+    def __init__(self, resolved_value: Assertion[T]):
         self._resolved_value = resolved_value
 
     def _apply(self,
@@ -51,7 +51,7 @@ class _IsValid(Generic[T], ValueAssertionBase[AdvWvAssertionModel[T]]):
         )
 
 
-class _IsInvalid(Generic[T], ValueAssertionBase[AdvWvAssertionModel[T]]):
+class _IsInvalid(Generic[T], AssertionBase[AdvWvAssertionModel[T]]):
     def _apply(self,
                put: unittest.TestCase,
                value: AdvWvAssertionModel[T],

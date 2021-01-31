@@ -6,13 +6,13 @@ from exactly_lib.type_val_deps.dep_variants.data.data_type_sdv import DataTypeSd
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources import source_location_assertions as asrt_src_loc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 from exactly_lib_test.type_val_deps.data.test_resources.any_sdv_assertions import equals_data_type_sdv
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence
 
 
 def equals_container(expected: SymbolContainer,
-                     ignore_source_line: bool = True) -> ValueAssertion[SymbolContainer]:
+                     ignore_source_line: bool = True) -> Assertion[SymbolContainer]:
     """
     :param expected: Must contain a data type value
     """
@@ -58,14 +58,14 @@ def equals_container(expected: SymbolContainer,
 
 
 def equals_symbol_table(expected: SymbolTable,
-                        ignore_source_line: bool = True) -> ValueAssertion[SymbolTable]:
+                        ignore_source_line: bool = True) -> Assertion[SymbolTable]:
     """
     :param expected: Must contain only data type values
     """
     return _EqualsSymbolTable(expected, ignore_source_line)
 
 
-class _EqualsSymbolTable(ValueAssertionBase[SymbolTable]):
+class _EqualsSymbolTable(AssertionBase[SymbolTable]):
     def __init__(self,
                  expected: SymbolTable,
                  ignore_source_line: bool = True

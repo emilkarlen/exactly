@@ -26,7 +26,7 @@ from exactly_lib_test.impls.types.string_transformer.filter.line_numbers.test_re
     is_upper, is_lower_and_upper
 from exactly_lib_test.test_resources.test_utils import NArrEx, ArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite() -> unittest.TestSuite:
@@ -568,7 +568,7 @@ class TestNonNegativeRanges(unittest.TestCase):
             ),
         ])
 
-    def _check_permutations(self, ranges_cases: List[NArrEx[List[Range], ValueAssertion[MergedRanges]]]):
+    def _check_permutations(self, ranges_cases: List[NArrEx[List[Range], Assertion[MergedRanges]]]):
 
         for ranges_case in ranges_cases:
             for permutation in itertools.permutations(ranges_case.arrangement):
@@ -692,23 +692,23 @@ def _single(n: int) -> SingleLineRange:
     return SingleLineRange(n)
 
 
-def equals_segments(segments: List[Tuple[int, int]]) -> ValueAssertion[List[FromTo]]:
+def equals_segments(segments: List[Tuple[int, int]]) -> Assertion[List[FromTo]]:
     return asrt.matches_list([
         equals_segment(s[0], s[1])
         for s in segments
     ])
 
 
-def equals_segment(a: int, b: int) -> ValueAssertion[FromTo]:
+def equals_segment(a: int, b: int) -> Assertion[FromTo]:
     return asrt.equals((a, b))
 
 
-def matches_merged_ranges(head: ValueAssertion[Optional[int]] = asrt.is_none,
-                          body: ValueAssertion[List[FromTo]] = asrt.is_empty,
-                          tail: ValueAssertion[Optional[int]] = asrt.is_none,
-                          is_everything: ValueAssertion[bool] = asrt.equals(False),
-                          is_empty: ValueAssertion[bool] = asrt.equals(False),
-                          ) -> ValueAssertion[MergedRanges]:
+def matches_merged_ranges(head: Assertion[Optional[int]] = asrt.is_none,
+                          body: Assertion[List[FromTo]] = asrt.is_empty,
+                          tail: Assertion[Optional[int]] = asrt.is_none,
+                          is_everything: Assertion[bool] = asrt.equals(False),
+                          is_empty: Assertion[bool] = asrt.equals(False),
+                          ) -> Assertion[MergedRanges]:
     return asrt.is_none_or_instance_with__many(
         MergedRanges,
         [

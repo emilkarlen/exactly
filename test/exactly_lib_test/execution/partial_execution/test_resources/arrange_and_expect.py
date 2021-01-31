@@ -17,7 +17,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.tcfs.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from . import settings_handlers
 from .basic import Result
 
@@ -39,8 +39,8 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 assertion_on_sds: ValueAssertion[SandboxDs] = asrt.anything_goes(),
-                 phase_result: ValueAssertion[PartialExeResult] = asrt.anything_goes()):
+                 assertion_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+                 phase_result: Assertion[PartialExeResult] = asrt.anything_goes()):
         self.phase_result = phase_result
         self.assertion_on_sds = assertion_on_sds
 

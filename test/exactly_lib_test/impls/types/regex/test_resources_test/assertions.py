@@ -16,7 +16,7 @@ from exactly_lib_test.impls.types.regex.test_resources import assertions as sut
 from exactly_lib_test.impls.types.regex.test_resources.regex_ddvs import RegexSdvConstantTestImpl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils
 from exactly_lib_test.type_val_deps.types.string.test_resources import string
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
@@ -267,7 +267,7 @@ def arbitrary_sdv_with_references(references: Sequence[SymbolReference]) -> Rege
                                     references)
 
 
-def check_of_primitive_value_fails_expectedly(tcds: TestCaseDs) -> ValueAssertion[Pattern]:
+def check_of_primitive_value_fails_expectedly(tcds: TestCaseDs) -> Assertion[Pattern]:
     return asrt.fail('unconditional failure')
 
 

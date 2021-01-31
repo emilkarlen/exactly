@@ -4,7 +4,7 @@ from typing import Optional, Any
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.simple_textstruct.test_resources import render_to_str
 from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct
@@ -26,19 +26,19 @@ def new_pre_formatted_str_for_test(x: Any,
     return text_docs.single_pre_formatted_line_object(x, is_line_ended)
 
 
-def is_single_pre_formatted_text_that_equals(text: str) -> ValueAssertion[TextRenderer]:
+def is_single_pre_formatted_text_that_equals(text: str) -> Assertion[TextRenderer]:
     return _is_single_pre_formatted_text(asrt.equals(text))
 
 
-def is_string_for_test(text: ValueAssertion[str]) -> ValueAssertion[TextRenderer]:
+def is_string_for_test(text: Assertion[str]) -> Assertion[TextRenderer]:
     return _is_single_pre_formatted_text(text)
 
 
-def is_string_for_test_that_equals(text: str) -> ValueAssertion[TextRenderer]:
+def is_string_for_test_that_equals(text: str) -> Assertion[TextRenderer]:
     return is_string_for_test(asrt.equals(text))
 
 
-def _is_single_pre_formatted_text(text: ValueAssertion[str]) -> ValueAssertion[TextRenderer]:
+def _is_single_pre_formatted_text(text: Assertion[str]) -> Assertion[TextRenderer]:
     return asrt_renderer.is_renderer_of_major_blocks(
         asrt.matches_sequence([
             asrt_struct.matches_major_block__w_plain_properties(
@@ -58,7 +58,7 @@ def _is_single_pre_formatted_text(text: ValueAssertion[str]) -> ValueAssertion[T
     )
 
 
-def is_any_text() -> ValueAssertion[TextRenderer]:
+def is_any_text() -> Assertion[TextRenderer]:
     return _IS_ANY_TEXT
 
 
@@ -67,7 +67,7 @@ def assert_is_valid_text_renderer(put: unittest.TestCase,
     is_any_text().apply_without_message(put, actual)
 
 
-def rendered_text_matches(text: ValueAssertion[str]) -> ValueAssertion[TextRenderer]:
+def rendered_text_matches(text: Assertion[str]) -> Assertion[TextRenderer]:
     return asrt_renderer.is_renderer_of_major_blocks(
         asrt.on_transformed(render_to_str.print_major_blocks,
                             text)

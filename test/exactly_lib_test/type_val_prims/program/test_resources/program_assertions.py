@@ -6,40 +6,40 @@ from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, AssertionBase
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 
 
-def is_no_stdin() -> ValueAssertion[Sequence[StringSource]]:
+def is_no_stdin() -> Assertion[Sequence[StringSource]]:
     return asrt.is_empty_sequence
 
 
-def is_no_transformation() -> ValueAssertion[Sequence[StringTransformer]]:
+def is_no_transformation() -> Assertion[Sequence[StringTransformer]]:
     return asrt.is_empty_sequence
 
 
-def matches_program(command: ValueAssertion[Command],
-                    stdin: ValueAssertion[Sequence[StringSource]],
-                    transformer: ValueAssertion[Sequence[StringTransformer]]) -> ValueAssertion[Program]:
+def matches_program(command: Assertion[Command],
+                    stdin: Assertion[Sequence[StringSource]],
+                    transformer: Assertion[Sequence[StringTransformer]]) -> Assertion[Program]:
     return _MatchesProgramAssertion(command, stdin, transformer)
 
 
 def matches_py_source_on_cmd_line_program(py_source_to_interpret: str,
-                                          stdin: ValueAssertion[Sequence[StringSource]] = is_no_stdin(),
-                                          transformer: ValueAssertion[Sequence[StringTransformer]]
+                                          stdin: Assertion[Sequence[StringSource]] = is_no_stdin(),
+                                          transformer: Assertion[Sequence[StringTransformer]]
                                           = is_no_transformation()
-                                          ) -> ValueAssertion[Program]:
+                                          ) -> Assertion[Program]:
     return matches_program(asrt_command.equals_execute_py_source_command(py_source_to_interpret),
                            stdin=stdin,
                            transformer=transformer)
 
 
-class _MatchesProgramAssertion(ValueAssertionBase[Program]):
+class _MatchesProgramAssertion(AssertionBase[Program]):
     def __init__(self,
-                 command: ValueAssertion[Command],
-                 stdin: ValueAssertion[Sequence[StringSource]],
-                 transformer: ValueAssertion[Sequence[StringTransformer]],
+                 command: Assertion[Command],
+                 stdin: Assertion[Sequence[StringSource]],
+                 transformer: Assertion[Sequence[StringTransformer]],
                  ):
         self.command = command
         self.stdin = stdin

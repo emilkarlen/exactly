@@ -17,7 +17,7 @@ from exactly_lib_test.test_resources.process import SubProcessResult, SubProcess
 from exactly_lib_test.test_resources.value_assertions.process_result_assertions import is_result_for_empty_stdout
 from exactly_lib_test.test_resources.value_assertions.process_result_info_assertions import \
     is_process_result_for_exit_code
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
@@ -50,7 +50,7 @@ class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPrepr
     def additional_arguments(self) -> List[str]:
         return [long_syntax('invalid-option-that-should-cause-failure')]
 
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return is_process_result_for_exit_code(exit_codes.EXIT_INVALID_USAGE)
 
     def test_case(self) -> str:

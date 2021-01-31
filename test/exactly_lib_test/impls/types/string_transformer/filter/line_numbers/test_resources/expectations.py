@@ -11,7 +11,7 @@ from exactly_lib_test.impls.types.string_transformer.filter.line_numbers.test_re
 from exactly_lib_test.impls.types.string_transformer.test_resources.integration_check import StExpectation
 from exactly_lib_test.test_resources.test_utils import InpExp
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import \
     IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
@@ -75,7 +75,7 @@ def inp_exp__w_ext_deps(wo_expt_deps: InputAndExpected,
                                                    the_range.is_const_empty))
 
 
-def is_single(line_number: int) -> ValueAssertion[Range]:
+def is_single(line_number: int) -> Assertion[Range]:
     return asrt.is_instance_with(
         SingleLineRange,
         asrt.sub_component('line_number',
@@ -85,7 +85,7 @@ def is_single(line_number: int) -> ValueAssertion[Range]:
     )
 
 
-def is_lower(lower_limit: int) -> ValueAssertion[Range]:
+def is_lower(lower_limit: int) -> Assertion[Range]:
     return asrt.is_instance_with(
         LowerLimitRange,
         asrt.sub_component('lower_limit',
@@ -95,7 +95,7 @@ def is_lower(lower_limit: int) -> ValueAssertion[Range]:
     )
 
 
-def is_upper(upper_limit: int) -> ValueAssertion[Range]:
+def is_upper(upper_limit: int) -> Assertion[Range]:
     return asrt.is_instance_with(
         UpperLimitRange,
         asrt.sub_component('upper_limit',
@@ -106,7 +106,7 @@ def is_upper(upper_limit: int) -> ValueAssertion[Range]:
 
 
 def is_lower_and_upper(lower_limit: int,
-                       upper_limit: int) -> ValueAssertion[Range]:
+                       upper_limit: int) -> Assertion[Range]:
     return asrt.is_instance_with__many(
         LowerAndUpperLimitRange,
         [
@@ -124,8 +124,8 @@ def is_lower_and_upper(lower_limit: int,
 
 def expectation_of_successful_execution__check_only_as_lines(
         output_lines: List[str],
-        symbol_references: ValueAssertion[Sequence[SymbolReference]],
-        source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+        symbol_references: Assertion[Sequence[SymbolReference]],
+        source: Assertion[ParseSource] = asrt.anything_goes(),
 ) -> StExpectation:
     return Expectation(
         ParseExpectation(

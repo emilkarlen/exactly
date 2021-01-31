@@ -18,7 +18,7 @@ from exactly_lib_test.test_case.actor.test_resources.execute_methods import Exec
 from exactly_lib_test.test_case.actor.test_resources.test_actions import validate_action_that_returns, \
     execute_action_that_returns_exit_code, prepare_action_that_returns
 from exactly_lib_test.test_resources.actions import do_nothing
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class Arrangement(tuple):
@@ -63,14 +63,14 @@ class Arrangement(tuple):
 
 class Expectation(tuple):
     def __new__(cls,
-                expected_result: ValueAssertion[FullExeResult],
+                expected_result: Assertion[FullExeResult],
                 expected_internal_recording: list):
         return tuple.__new__(cls, (expected_result,
                                    expected_internal_recording,
                                    ))
 
     @property
-    def full_result(self) -> ValueAssertion[FullExeResult]:
+    def full_result(self) -> Assertion[FullExeResult]:
         return self[0]
 
     @property

@@ -8,8 +8,8 @@ from typing import Sequence
 from exactly_lib_test.test_resources.files import file_structure
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, AssertionBase
 
 
 class FileChecker:
@@ -111,11 +111,11 @@ class FileChecker:
         raise NotImplementedError()
 
 
-def file_does_not_exist() -> ValueAssertion[pathlib.Path]:
+def file_does_not_exist() -> Assertion[pathlib.Path]:
     return _FileDoesNotExist()
 
 
-class _FileDoesNotExist(ValueAssertionBase[pathlib.Path]):
+class _FileDoesNotExist(AssertionBase[pathlib.Path]):
     def _apply(self,
                put: unittest.TestCase,
                value: pathlib.Path,

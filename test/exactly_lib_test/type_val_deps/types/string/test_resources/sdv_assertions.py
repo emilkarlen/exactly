@@ -9,7 +9,7 @@ from exactly_lib.type_val_deps.types.string_.string_sdv_impls import ConstantStr
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 from exactly_lib_test.type_val_deps.data.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
@@ -19,7 +19,7 @@ from exactly_lib_test.type_val_deps.types.string.test_resources.ddv_assertions i
     equals_string_fragment_ddv
 
 
-def equals_string_fragment_sdv_with_exact_type(expected: StringFragmentSdv) -> ValueAssertion[StringFragmentSdv]:
+def equals_string_fragment_sdv_with_exact_type(expected: StringFragmentSdv) -> Assertion[StringFragmentSdv]:
     if isinstance(expected, ConstantStringFragmentSdv):
         return _EqualsStringFragmentAssertionForStringConstant(expected)
     if isinstance(expected, SymbolStringFragmentSdv):
@@ -27,18 +27,18 @@ def equals_string_fragment_sdv_with_exact_type(expected: StringFragmentSdv) -> V
     raise TypeError('Not a {}: {}'.format(StringFragmentSdv, expected))
 
 
-def equals_string_fragment_sdv(expected: StringFragmentSdv) -> ValueAssertion[StringFragmentSdv]:
+def equals_string_fragment_sdv(expected: StringFragmentSdv) -> Assertion[StringFragmentSdv]:
     return _EqualsStringFragmentAssertion(expected)
 
 
-def equals_string_fragments(expected_fragments) -> ValueAssertion:
+def equals_string_fragments(expected_fragments) -> Assertion:
     if isinstance(expected_fragments, list):
         expected_fragments = tuple(expected_fragments)
     return _EqualsStringFragments(expected_fragments)
 
 
 def equals_string_sdv(expected: StringSdv,
-                      symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentValue]:
+                      symbols: SymbolTable = None) -> Assertion[SymbolDependentValue]:
     if symbols is None:
         symbols = symbol_table_with_values_matching_references(expected.references)
 
@@ -58,7 +58,7 @@ def equals_string_sdv(expected: StringSdv,
         symbols)
 
 
-class _EqualsStringFragmentAssertionForStringConstant(ValueAssertionBase[StringFragmentSdv]):
+class _EqualsStringFragmentAssertionForStringConstant(AssertionBase[StringFragmentSdv]):
     def __init__(self, expected: ConstantStringFragmentSdv):
         self.expected = expected
 
@@ -77,7 +77,7 @@ class _EqualsStringFragmentAssertionForStringConstant(ValueAssertionBase[StringF
                         message_builder.apply('string_constant'))
 
 
-class _EqualsStringFragmentAssertionForSymbolReference(ValueAssertionBase[StringFragmentSdv]):
+class _EqualsStringFragmentAssertionForSymbolReference(AssertionBase[StringFragmentSdv]):
     def __init__(self, expected: SymbolStringFragmentSdv):
         self.expected = expected
 
@@ -96,7 +96,7 @@ class _EqualsStringFragmentAssertionForSymbolReference(ValueAssertionBase[String
                         message_builder.apply('symbol_name'))
 
 
-class _EqualsStringFragmentAssertion(ValueAssertionBase[StringFragmentSdv]):
+class _EqualsStringFragmentAssertion(AssertionBase[StringFragmentSdv]):
     def __init__(self, expected: StringFragmentSdv):
         self.expected = expected
 
@@ -140,17 +140,17 @@ class _EqualsStringFragmentAssertion(ValueAssertionBase[StringFragmentSdv]):
         assertion.apply(put, value, message_builder)
 
 
-def matches_primitive_string(resolved_str: ValueAssertion[str],
+def matches_primitive_string(resolved_str: Assertion[str],
                              symbol_references: Sequence[SymbolReference],
-                             symbols: SymbolTable) -> ValueAssertion[StringSdv]:
+                             symbols: SymbolTable) -> Assertion[StringSdv]:
     return MatchesPrimitiveValueResolvedOfAnyDependency(resolved_str,
                                                         symbol_references,
                                                         symbols)
 
 
-class MatchesPrimitiveValueResolvedOfAnyDependency(ValueAssertionBase[StringSdv]):
+class MatchesPrimitiveValueResolvedOfAnyDependency(AssertionBase[StringSdv]):
     def __init__(self,
-                 expected_resolved_primitive_value: ValueAssertion[str],
+                 expected_resolved_primitive_value: Assertion[str],
                  symbol_references: Sequence[SymbolReference],
                  symbols: SymbolTable):
         self.symbol_references = symbol_references
@@ -173,7 +173,7 @@ class MatchesPrimitiveValueResolvedOfAnyDependency(ValueAssertionBase[StringSdv]
                                                                   'resolved primitive value')
 
 
-class _EqualsStringFragments(ValueAssertionBase):
+class _EqualsStringFragments(AssertionBase):
     def __init__(self, expected: tuple):
         self._expected = expected
         assert isinstance(expected, tuple), 'Value reference list must be a tuple'

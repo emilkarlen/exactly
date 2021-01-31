@@ -15,7 +15,7 @@ from exactly_lib.util.interval.w_inversion.intervals import point, Empty, UpperL
 from exactly_lib_test.impls.types.matcher.test_resources.matchers import MatcherThatReportsHardError, \
     ConstantMatcherWithCustomName
 from exactly_lib_test.test_resources.test_utils import NArrEx
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.interval.test_resources import interval_assertion as asrt_interval
 from exactly_lib_test.util.interval.test_resources.interval_assertion import PosNeg
 
@@ -665,7 +665,7 @@ class TestDisjunction(unittest.TestCase):
 
 
 IntervalAdapter = Callable[[IntIntervalWInversion], IntIntervalWInversion]
-AssertionOnInterval = ValueAssertion[IntInterval]
+AssertionOnInterval = Assertion[IntInterval]
 
 
 class CaseWAdaptionVariants:
@@ -684,25 +684,25 @@ def _without_adaption(expectation: AssertionOnInterval,
     return NArrEx('wo adaption', _no_interval_adaption, expectation)
 
 
-def _w_max_upper_adaption(max_upper: int, expectation: ValueAssertion[IntInterval],
-                          ) -> NArrEx[IntervalAdapter, ValueAssertion[IntInterval]]:
+def _w_max_upper_adaption(max_upper: int, expectation: Assertion[IntInterval],
+                          ) -> NArrEx[IntervalAdapter, Assertion[IntInterval]]:
     return NArrEx('max upper {}'.format(max_upper),
                   _interval_adapter__max_upper(max_upper),
                   expectation)
 
 
-def _equals_interval(positive: IntInterval) -> ValueAssertion[IntInterval]:
+def _equals_interval(positive: IntInterval) -> Assertion[IntInterval]:
     return asrt_interval.equals_interval(positive)
 
 
-def _equals_negation_of(positive: IntIntervalWInversion) -> ValueAssertion[IntInterval]:
+def _equals_negation_of(positive: IntIntervalWInversion) -> Assertion[IntInterval]:
     return asrt_interval.equals_interval(positive.inversion)
 
 
 def _check_cases__wo_adaption(
         put: unittest.TestCase,
         interval_of_unknown_class: IntIntervalWInversion,
-        cases: Sequence[NArrEx[MatcherWTrace[Any], PosNeg[ValueAssertion[IntInterval]]]],
+        cases: Sequence[NArrEx[MatcherWTrace[Any], PosNeg[Assertion[IntInterval]]]],
 ):
     return _check_cases(put, interval_of_unknown_class, _no_interval_adaption, cases)
 
@@ -727,7 +727,7 @@ def _check_cases(
         put: unittest.TestCase,
         interval_of_unknown_class: IntIntervalWInversion,
         interval_adaption: Callable[[IntIntervalWInversion], IntIntervalWInversion],
-        cases: Sequence[NArrEx[MatcherWTrace[Any], ValueAssertion[IntInterval]]],
+        cases: Sequence[NArrEx[MatcherWTrace[Any], Assertion[IntInterval]]],
 ):
     for case in cases:
         with put.subTest(case.name):
@@ -738,7 +738,7 @@ def _check_case(
         put: unittest.TestCase,
         interval_of_unknown_class: IntIntervalWInversion,
         interval_adaption: Callable[[IntIntervalWInversion], IntIntervalWInversion],
-        case: NArrEx[MatcherWTrace[Any], ValueAssertion[IntInterval]],
+        case: NArrEx[MatcherWTrace[Any], Assertion[IntInterval]],
 ):
     _check(put, interval_of_unknown_class, interval_adaption, case.arrangement, case.expectation)
 
@@ -748,7 +748,7 @@ def _check(
         interval_of_unknown_class: IntIntervalWInversion,
         interval_adaption: Callable[[IntIntervalWInversion], IntIntervalWInversion],
         matcher: MatcherWTrace[Any],
-        expectation: ValueAssertion[IntInterval],
+        expectation: Assertion[IntInterval],
 ):
     # ACT #
     actual = sut.interval_of(matcher, interval_of_unknown_class, interval_adaption)

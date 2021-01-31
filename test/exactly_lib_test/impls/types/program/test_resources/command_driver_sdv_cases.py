@@ -12,7 +12,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Asse
 from exactly_lib_test.impls.types.test_resources import relativity_options
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 
 
@@ -20,7 +20,7 @@ class CommandDriverSdvCase:
     def __init__(self,
                  name: str,
                  command_driver: CommandDriverSdv,
-                 expected_command_driver: Callable[[AssertionResolvingEnvironment], ValueAssertion[CommandDriver]],
+                 expected_command_driver: Callable[[AssertionResolvingEnvironment], Assertion[CommandDriver]],
                  mk_arrangement: Callable[[SymbolTable], Arrangement],
                  ):
         self.name = name
@@ -49,19 +49,19 @@ def all_command_driver_types() -> Sequence[CommandDriverSdvCase]:
         )
 
     def expected_command_driver__system_program(env: AssertionResolvingEnvironment
-                                                ) -> ValueAssertion[CommandDriver]:
+                                                ) -> Assertion[CommandDriver]:
         return asrt_command.matches_system_program_command_driver(
             asrt.equals(system_program_name)
         )
 
     def expected_command_driver__executable_file(env: AssertionResolvingEnvironment
-                                                 ) -> ValueAssertion[CommandDriver]:
+                                                 ) -> Assertion[CommandDriver]:
         return asrt_command.matches_executable_file_command_driver(
             asrt.equals(executable_file_ddv.value_of_any_dependency__d(env.tcds).primitive),
         )
 
     def expected_command_driver__shell_cmd_line(env: AssertionResolvingEnvironment
-                                                ) -> ValueAssertion[CommandDriver]:
+                                                ) -> Assertion[CommandDriver]:
         return asrt_command.matches_shell_command_driver(
             asrt.equals(shell_initial_command)
         )

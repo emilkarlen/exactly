@@ -7,7 +7,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.regex.test_resources.assertions import is_reference_to_valid_regex_string_part
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext
 
 
@@ -16,7 +16,7 @@ class RegexValidationCase:
                  case_name: str,
                  regex_string: str,
                  symbols: List[SymbolContext],
-                 reference_assertions: List[ValueAssertion[SymbolReference]],
+                 reference_assertions: List[Assertion[SymbolReference]],
                  expectation: ValidationAssertions,
                  ):
         self.case_name = case_name

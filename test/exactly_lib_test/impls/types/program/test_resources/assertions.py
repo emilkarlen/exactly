@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder
 
 
@@ -14,23 +14,23 @@ class ResultWithTransformationData:
         self.result_of_transformation = result_of_transformation
 
 
-def assert_process_result_data(exitcode: ValueAssertion[int] = asrt.anything_goes(),
-                               stdout_contents: ValueAssertion[str] = asrt.anything_goes(),
-                               stderr_contents: ValueAssertion[str] = asrt.anything_goes(),
-                               contents_after_transformation: ValueAssertion[str] = asrt.anything_goes(),
-                               ) -> ValueAssertion[ResultWithTransformationData]:
+def assert_process_result_data(exitcode: Assertion[int] = asrt.anything_goes(),
+                               stdout_contents: Assertion[str] = asrt.anything_goes(),
+                               stderr_contents: Assertion[str] = asrt.anything_goes(),
+                               contents_after_transformation: Assertion[str] = asrt.anything_goes(),
+                               ) -> Assertion[ResultWithTransformationData]:
     return ResultWithTransformationDataAssertion(exitcode,
                                                  stdout_contents,
                                                  stderr_contents,
                                                  contents_after_transformation)
 
 
-class ResultWithTransformationDataAssertion(ValueAssertionBase[ResultWithTransformationData]):
+class ResultWithTransformationDataAssertion(AssertionBase[ResultWithTransformationData]):
     def __init__(self,
-                 exitcode: ValueAssertion[int] = asrt.anything_goes(),
-                 stdout_contents: ValueAssertion[str] = asrt.anything_goes(),
-                 stderr_contents: ValueAssertion[str] = asrt.anything_goes(),
-                 contents_after_transformation: ValueAssertion[str] = asrt.anything_goes()
+                 exitcode: Assertion[int] = asrt.anything_goes(),
+                 stdout_contents: Assertion[str] = asrt.anything_goes(),
+                 stderr_contents: Assertion[str] = asrt.anything_goes(),
+                 contents_after_transformation: Assertion[str] = asrt.anything_goes()
                  ):
         self.exitcode = exitcode
         self.stdout_contents = stdout_contents

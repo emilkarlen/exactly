@@ -11,13 +11,13 @@ from exactly_lib_test.impls.types.test_resources import relativity_options as re
 from exactly_lib_test.tcfs.test_resources import sds_populator
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class Configuration(ConfigurationBase):
     def expect_successful_execution_with_side_effect(self,
-                                                     side_effects_check: ValueAssertion,
-                                                     symbol_usages: ValueAssertion = asrt.is_empty_sequence):
+                                                     side_effects_check: Assertion,
+                                                     symbol_usages: Assertion = asrt.is_empty_sequence):
         raise NotImplementedError()
 
     def expect_target_is_not_a_directory(self):

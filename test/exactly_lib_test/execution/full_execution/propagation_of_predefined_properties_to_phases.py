@@ -15,7 +15,7 @@ from exactly_lib_test.execution.full_execution.test_resources import execution_c
 from exactly_lib_test.execution.test_resources.execution_recording.recording2 import PropertyRecorderBuilder, \
     actor_that_records_property_of_env_for_each_step_w_env_arg, \
     test_case_that_records_property_of_env_for_each_step_of_partial_execution
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_keys_equals
 
@@ -44,7 +44,7 @@ class TestPredefinedSymbols(unittest.TestCase):
 
     def _check(self,
                predefined_properties: PredefinedProperties,
-               assertion_on_recorded_symbol_table: ValueAssertion):
+               assertion_on_recorded_symbol_table: Assertion):
         # ARRANGE #
         actual_recorded_steps = {}
         recorder_builder = PropertyRecorderBuilder(

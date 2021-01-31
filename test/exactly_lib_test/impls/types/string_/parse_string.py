@@ -23,7 +23,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.string.test_resources.sdv_assertions import equals_string_sdv
 
 
@@ -39,7 +39,7 @@ def suite() -> unittest.TestSuite:
 class Expectation:
     def __init__(self,
                  fragments: List[Fragment],
-                 token_stream: ValueAssertion):
+                 token_stream: Assertion):
         self.fragments = fragments
         self.token_stream = token_stream
 
@@ -259,7 +259,7 @@ def _multi_line_source(lines: List[str],
     return TokenStream(all_lines)
 
 
-def assert_equals_string_sdv(fragments: List[Fragment]) -> ValueAssertion[SymbolDependentValue]:
+def assert_equals_string_sdv(fragments: List[Fragment]) -> Assertion[SymbolDependentValue]:
     expected_sdv = string_sdv_from_fragments(fragments)
     return equals_string_sdv(expected_sdv)
 

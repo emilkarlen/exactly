@@ -8,7 +8,7 @@ from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.logic.test_resources.symbol_context import LogicSymbolValueContext, \
     LogicTypeSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
@@ -46,7 +46,7 @@ class StringTransformerSymbolValueContext(LogicSymbolValueContext[StringTransfor
     def value_type(self) -> ValueType:
         return ValueType.STRING_TRANSFORMER
 
-    def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+    def reference_assertion(self, symbol_name: str) -> Assertion[SymbolReference]:
         return is_reference_to_string_transformer(symbol_name)
 
 

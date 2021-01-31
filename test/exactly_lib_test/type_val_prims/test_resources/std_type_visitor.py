@@ -3,7 +3,7 @@ from typing import Sequence, Generic, Callable
 
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherStdTypeVisitor, T, MatcherWTrace, MODEL
 from exactly_lib_test.test_resources.actions import do_raise
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class MatcherStdTypeVisitorTestAcceptImpl(Generic[MODEL, T], MatcherStdTypeVisitor[MODEL, T]):
@@ -58,7 +58,7 @@ class MatcherStdTypeVisitorTestAcceptImpl(Generic[MODEL, T], MatcherStdTypeVisit
 
 
 def assert_argument_satisfies__and_return(put: unittest.TestCase,
-                                          argument_assertion: ValueAssertion,
+                                          argument_assertion: Assertion,
                                           return_value) -> Callable:
     def ret_val(argument):
         argument_assertion.apply_with_message(put, argument, 'argument')

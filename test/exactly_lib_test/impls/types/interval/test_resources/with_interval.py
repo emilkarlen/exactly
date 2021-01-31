@@ -1,12 +1,12 @@
 from exactly_lib.impls.types.interval.with_interval import WithIntInterval
 from exactly_lib.util.interval.int_interval import IntInterval
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
-def is_with_interval(plain: ValueAssertion[IntInterval],
-                     complement: ValueAssertion[IntInterval] = asrt.anything_goes(),
-                     ) -> ValueAssertion:
+def is_with_interval(plain: Assertion[IntInterval],
+                     complement: Assertion[IntInterval] = asrt.anything_goes(),
+                     ) -> Assertion:
     return asrt.is_instance_with__many(
         WithIntInterval,
         [

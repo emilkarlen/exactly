@@ -21,7 +21,7 @@ from exactly_lib.type_val_deps.types.path.path_sdv_impls import path_rel_symbol
 from exactly_lib.type_val_deps.types.path.path_sdv_impls.constant import PathConstantSdv
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_context import DataSymbolValueContext, \
     DataTypeSymbolContext
@@ -129,7 +129,7 @@ class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
         return DataValueType.PATH
 
     @property
-    def assert_equals_sdv(self) -> ValueAssertion[SymbolDependentValue]:
+    def assert_equals_sdv(self) -> Assertion[SymbolDependentValue]:
         return sdv_assertions.equals_path_sdv(self.sdv)
 
     @property
@@ -144,21 +144,21 @@ class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
     def reference_restriction__path(self) -> DataTypeReferenceRestrictions:
         return path_reference_restrictions(self.accepted_relativities)
 
-    def reference_assertion__path_or_string(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+    def reference_assertion__path_or_string(self, symbol_name: str) -> Assertion[SymbolReference]:
         return asrt_sym_ref.matches_reference_2(
             symbol_name,
             concrete_restriction_assertion.equals_data_type_reference_restrictions(
                 self.reference_restriction__path_or_string)
         )
 
-    def reference_assertion__path(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+    def reference_assertion__path(self, symbol_name: str) -> Assertion[SymbolReference]:
         return asrt_sym_ref.matches_reference_2(
             symbol_name,
             concrete_restriction_assertion.equals_data_type_reference_restrictions(
                 self.reference_restriction__path)
         )
 
-    def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+    def reference_assertion(self, symbol_name: str) -> Assertion[SymbolReference]:
         return self.reference_assertion__path_or_string(symbol_name)
 
 
@@ -214,11 +214,11 @@ class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
         return SymbolReference(self.name, self.value.reference_restriction__path)
 
     @property
-    def reference_assertion__path_or_string(self) -> ValueAssertion[SymbolReference]:
+    def reference_assertion__path_or_string(self) -> Assertion[SymbolReference]:
         return self.reference_assertion
 
     @property
-    def reference_assertion__path(self) -> ValueAssertion[SymbolReference]:
+    def reference_assertion__path(self) -> Assertion[SymbolReference]:
         return self.value.reference_assertion__path(self.name)
 
     @property

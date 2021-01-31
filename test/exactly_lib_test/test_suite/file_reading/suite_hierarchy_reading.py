@@ -19,7 +19,7 @@ from exactly_lib_test.processing.test_resources.act_phase import command_line_ac
 from exactly_lib_test.section_document.test_resources.source_location_assertions import equals_source_location_path
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.test_suite.file_reading.test_resources import check_structure, check_exception
 from exactly_lib_test.test_suite.file_reading.test_resources.check_structure import equals_test_suite
 from exactly_lib_test.test_suite.file_reading.test_resources.exception_assertions import matches_suite_parse_error
@@ -44,7 +44,7 @@ class MainSuiteWithTwoReferencedCases(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return Path('main.suite')
 
-    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[TestSuiteHierarchy]:
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> Assertion[TestSuiteHierarchy]:
         return equals_test_suite(TestSuiteHierarchy(
             self.root_suite_based_at(root_path),
             [],
@@ -70,7 +70,7 @@ class InvalidCaseContentShouldNotCauseParsingToFail(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return Path('main.suite')
 
-    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[TestSuiteHierarchy]:
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> Assertion[TestSuiteHierarchy]:
         return equals_test_suite(TestSuiteHierarchy(
             self.root_suite_based_at(root_path),
             [],
@@ -94,7 +94,7 @@ class MainSuiteWithTwoReferencedSuites(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return Path('main.suite')
 
-    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[TestSuiteHierarchy]:
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> Assertion[TestSuiteHierarchy]:
         return equals_test_suite(TestSuiteHierarchy(
             self.root_suite_based_at(root_path),
             [],
@@ -127,7 +127,7 @@ class MainSuiteWithAbsoluteReferencesToSuitesAndCases(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return Path('main.suite')
 
-    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[TestSuiteHierarchy]:
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> Assertion[TestSuiteHierarchy]:
         return equals_test_suite(TestSuiteHierarchy(
             self.root_suite_based_at(root_path),
             [],
@@ -159,7 +159,7 @@ class MainSuiteWithReferencedSuitesAndCasesAndMixedSections(check_structure.Setu
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return Path('main.suite')
 
-    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[TestSuiteHierarchy]:
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> Assertion[TestSuiteHierarchy]:
         return equals_test_suite(TestSuiteHierarchy(
             self.root_suite_based_at(root_path),
             [],
@@ -202,7 +202,7 @@ class MainSuiteWithSuiteInSubDirWithCases(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return Path('main.suite')
 
-    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[TestSuiteHierarchy]:
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> Assertion[TestSuiteHierarchy]:
         return equals_test_suite(TestSuiteHierarchy(
             self.root_suite_based_at(root_path),
             [],
@@ -235,7 +235,7 @@ class MainSuiteInSubDirWithCasesAndSuiteInSubDirWithCases(check_structure.Setup)
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return Path('main-sub-dir') / 'main.suite'
 
-    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[TestSuiteHierarchy]:
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> Assertion[TestSuiteHierarchy]:
         dir_with_sub_suite = Path('main-sub-dir') / 'suite-sub-dir'
         return equals_test_suite(TestSuiteHierarchy(
             self.root_suite_based_at(root_path),
@@ -278,7 +278,7 @@ class MainSuiteInSubDirWithCasesInSuperDir(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return Path('main-sub-dir') / 'main.suite'
 
-    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[TestSuiteHierarchy]:
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> Assertion[TestSuiteHierarchy]:
         return equals_test_suite(TestSuiteHierarchy(
             self.root_suite_based_at(root_path),
             [],
@@ -304,7 +304,7 @@ class MainSuiteInSubDirWithSuiteWithCasesInSuperDir(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return Path('main-sub-dir') / 'main.suite'
 
-    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[TestSuiteHierarchy]:
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> Assertion[TestSuiteHierarchy]:
         dir_with_sub_suite = Path('main-sub-dir') / '..'
         return equals_test_suite(TestSuiteHierarchy(
             self.root_suite_based_at(root_path),
@@ -342,7 +342,7 @@ class MainSuiteInSubDirAndSuiteInSubDirWithCasesReferencedViaWildCards(check_str
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return Path('main-sub-dir') / 'main.suite'
 
-    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[TestSuiteHierarchy]:
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> Assertion[TestSuiteHierarchy]:
         dir_with_sub_suite = Path('main-sub-dir') / 'suite-sub-dir'
         return equals_test_suite(TestSuiteHierarchy(
             self.root_suite_based_at(root_path),
@@ -382,7 +382,7 @@ class ComplexStructure(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return Path('complex.suite')
 
-    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[TestSuiteHierarchy]:
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> Assertion[TestSuiteHierarchy]:
         return equals_test_suite(TestSuiteHierarchy(
             self.root_suite_based_at(root_path),
             [],

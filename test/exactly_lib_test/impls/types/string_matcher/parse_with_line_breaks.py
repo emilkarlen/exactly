@@ -15,7 +15,7 @@ from exactly_lib_test.impls.types.test_resources.matcher_assertions import is_ar
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite() -> unittest.TestSuite:
@@ -28,8 +28,8 @@ class Case:
     def __init__(self,
                  name: str,
                  source: ParseSource,
-                 source_assertion: ValueAssertion[ParseSource],
-                 main_result_assertion: ValueAssertion[MatchingResult],
+                 source_assertion: Assertion[ParseSource],
+                 main_result_assertion: Assertion[MatchingResult],
                  ):
         self.name = name
         self.source = source

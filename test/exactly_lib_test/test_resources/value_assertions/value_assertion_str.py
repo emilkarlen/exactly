@@ -2,45 +2,45 @@ import re
 import unittest
 
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 
 
-def is_empty() -> ValueAssertion[str]:
+def is_empty() -> Assertion[str]:
     """
     :rtype: An Assertion on a str.
     """
     return asrt.Equals('')
 
 
-def is_not_only_space() -> ValueAssertion[str]:
+def is_not_only_space() -> Assertion[str]:
     """
     :rtype: An Assertion on a str.
     """
     return _IS_NOT_ONLY_SPACE
 
 
-def begins_with(expected: str) -> ValueAssertion[str]:
+def begins_with(expected: str) -> Assertion[str]:
     """
     :rtype: An Assertion on a str.
     """
     return _BeginsWith(expected)
 
 
-def contains(expected: str) -> ValueAssertion[str]:
+def contains(expected: str) -> Assertion[str]:
     """
     :rtype: An Assertion on a str.
     """
     return _Contains(expected)
 
 
-def matches_reg_ex(reg_ex: str) -> ValueAssertion[str]:
+def matches_reg_ex(reg_ex: str) -> Assertion[str]:
     """
     :rtype: An Assertion on a str.
     """
     return _MatchesRegEx(reg_ex)
 
 
-class _BeginsWith(ValueAssertionBase):
+class _BeginsWith(AssertionBase):
     def __init__(self, initial: str):
         self.initial = initial
 
@@ -54,7 +54,7 @@ class _BeginsWith(ValueAssertionBase):
                         message_builder.apply('Initial characters of string.'))
 
 
-class _Contains(ValueAssertionBase[str]):
+class _Contains(AssertionBase[str]):
     def __init__(self, part: str):
         self.part = part
 
@@ -67,7 +67,7 @@ class _Contains(ValueAssertionBase[str]):
                        )
 
 
-class _MatchesRegEx(ValueAssertionBase[str]):
+class _MatchesRegEx(AssertionBase[str]):
     def __init__(self, reg_ex: str):
         self._reg_ex = reg_ex
 
@@ -86,7 +86,7 @@ class _MatchesRegEx(ValueAssertionBase[str]):
             )
 
 
-class _IsNotOnlySpace(ValueAssertionBase[str]):
+class _IsNotOnlySpace(AssertionBase[str]):
     _NON_SPACE_RE = re.compile('\\S')
 
     def _apply(self,
@@ -101,7 +101,7 @@ class _IsNotOnlySpace(ValueAssertionBase[str]):
 _IS_NOT_ONLY_SPACE = _IsNotOnlySpace()
 
 
-def first_line(assertion: ValueAssertion[str]) -> ValueAssertion[str]:
+def first_line(assertion: Assertion[str]) -> Assertion[str]:
     return asrt.on_transformed(
         get_first_line,
         assertion

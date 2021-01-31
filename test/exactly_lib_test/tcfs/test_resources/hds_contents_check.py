@@ -5,19 +5,19 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib_test.test_resources.files import file_structure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.file_assertions import DirContainsExactly
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def dir_contains_exactly(relativity_option: RelHdsOptionType,
                          expected_contents: file_structure.DirContents
-                         ) -> ValueAssertion[HomeDs]:
+                         ) -> Assertion[HomeDs]:
     return asrt.sub_component('relativity_option=' + str(relativity_option),
                               REL_HDS_OPTIONS_MAP[relativity_option].root_resolver.from_hds,
                               DirContainsExactly(expected_contents))
 
 
-def hds_2_tcds_assertion(assertion_on_hds: ValueAssertion[HomeDs]
-                         ) -> ValueAssertion[TestCaseDs]:
+def hds_2_tcds_assertion(assertion_on_hds: Assertion[HomeDs]
+                         ) -> Assertion[TestCaseDs]:
     return asrt.sub_component('hds',
                               TestCaseDs.hds.fget,
                               assertion_on_hds)

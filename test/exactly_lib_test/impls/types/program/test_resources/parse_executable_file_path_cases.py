@@ -26,7 +26,7 @@ from exactly_lib_test.test_resources.source.layout import STANDARD_LAYOUT_SPECS
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
     equals_data_type_symbol_references
 from exactly_lib_test.type_val_deps.types.path.test_resources.sdv_assertions import matches_path_sdv
@@ -70,7 +70,7 @@ class Arrangement:
 token_stream_is_null = assert_token_stream(is_null=asrt.is_true)
 
 
-def token_stream_has_remaining_source(source: str) -> ValueAssertion:
+def token_stream_has_remaining_source(source: str) -> Assertion:
     return assert_token_stream(is_null=asrt.is_false,
                                remaining_source=asrt.equals(source))
 
@@ -92,7 +92,7 @@ class ExpectationOnExeFile:
 
 class Expectation:
     def __init__(self,
-                 source: ValueAssertion[ParseSource],
+                 source: Assertion[ParseSource],
                  validation_result: validation.Expectation,
                  path_ddv: PathDdv,
                  expected_symbol_references: List[SymbolReference],
@@ -265,7 +265,7 @@ class CheckNonExistingFile(CheckBase):
             self._assert_does_not_pass_validation(exe_file, environment)
 
 
-def has_remaining_part_of_first_line(remaining_part: str) -> ValueAssertion[ParseSource]:
+def has_remaining_part_of_first_line(remaining_part: str) -> Assertion[ParseSource]:
     return asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
                                             remaining_part_of_current_line=asrt.equals(
                                                 remaining_part))

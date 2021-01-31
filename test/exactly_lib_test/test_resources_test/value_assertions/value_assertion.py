@@ -41,7 +41,7 @@ class TestBase(unittest.TestCase, ABC):
     def setUp(self):
         self.put = test_case_with_failure_exception_set_to_test_exception()
 
-    def _check_false_cases(self, cases: List[NEA[sut.ValueAssertion, Any]]):
+    def _check_false_cases(self, cases: List[NEA[sut.Assertion, Any]]):
         for case in cases:
             with self.subTest(case.name,
                               message_builder='sans message builder'):
@@ -52,7 +52,7 @@ class TestBase(unittest.TestCase, ABC):
                 with self.assertRaises(TestException):
                     case.expected.apply(self.put, case.actual, sut.MessageBuilder('head'))
 
-    def _check_true_cases(self, cases: List[NEA[sut.ValueAssertion, Any]]):
+    def _check_true_cases(self, cases: List[NEA[sut.Assertion, Any]]):
         for case in cases:
             with self.subTest(case.name,
                               message_builder='sans message builder'):
@@ -702,7 +702,7 @@ def test_case_with_failure_exception_set_to_test_exception() -> unittest.TestCas
     return put
 
 
-class _AssertionThatRaisesStopAssertion(sut.ValueAssertionBase):
+class _AssertionThatRaisesStopAssertion(sut.AssertionBase):
     def _apply(self,
                put: unittest.TestCase,
                value,

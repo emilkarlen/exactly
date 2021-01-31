@@ -17,7 +17,7 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.test_resources.source import layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite() -> unittest.TestSuite:
@@ -203,7 +203,7 @@ class _ParserOfInt(ParserFromTokenParserBase[int]):
 def _check_parse_from_parse_source(put: unittest.TestCase,
                                    source: ParseSource,
                                    expected_parsed_value: int,
-                                   expected_source_after_parse: ValueAssertion[ParseSource]):
+                                   expected_source_after_parse: Assertion[ParseSource]):
     # ACT #
     actual = _SUT_PARSER_OF_INT.parse(source)
     # ASSERT #
@@ -220,7 +220,7 @@ def _check_parse_from_parse_source(put: unittest.TestCase,
 def _check_parse_from_token_parser(put: unittest.TestCase,
                                    source: ParseSource,
                                    expected_parsed_value: int,
-                                   expected_source_after_parse: ValueAssertion[ParseSource]):
+                                   expected_source_after_parse: Assertion[ParseSource]):
     with token_stream_parser.from_parse_source(source, False, False) as token_parser:
         # ACT #
         actual = _SUT_PARSER_OF_INT.parse_from_token_parser(token_parser)

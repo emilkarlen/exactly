@@ -13,7 +13,7 @@ from exactly_lib_test.impls.types.string_source.test_resources import integratio
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.source.abstract_syntax_impls import OptionallyOnNewLine
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as program_abs_stx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import PgmAndArgsAbsStx, \
     ProgramOfSymbolReferenceAbsStx
@@ -34,7 +34,7 @@ class ProgramCase:
     def __init__(self,
                  name: str,
                  source: PgmAndArgsAbsStx,
-                 expected_reference: List[ValueAssertion[SymbolReference]]):
+                 expected_reference: List[Assertion[SymbolReference]]):
         self.name = name
         self.source = source
         self.expected_references = expected_reference
@@ -67,7 +67,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(unittest.TestCase)
               expected_file_contents: str,
               make_arguments: Callable[[TransformableProgramAbsStxBuilder], ProgramAbsStx],
               additional_symbols: Dict[str, SymbolContainer],
-              additional_symbol_references: List[ValueAssertion[SymbolReference]],
+              additional_symbol_references: List[Assertion[SymbolReference]],
               ):
 
         for proc_output_file in ProcOutputFile:

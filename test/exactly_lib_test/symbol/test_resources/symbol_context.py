@@ -12,7 +12,7 @@ from exactly_lib_test.section_document.test_resources import source_location
 from exactly_lib_test.test_resources import argument_renderer as args
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 SDV_TYPE = TypeVar('SDV_TYPE', bound=SymbolDependentValue)
 
@@ -38,7 +38,7 @@ class SymbolValueContext(Generic[SDV_TYPE], ABC):
         return self._sdv
 
     @abstractmethod
-    def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+    def reference_assertion(self, symbol_name: str) -> Assertion[SymbolReference]:
         pass
 
     @property
@@ -93,21 +93,21 @@ class SymbolContext(Generic[SDV_TYPE], ABC):
         return Entry(self.name, self.value.container)
 
     @property
-    def reference_assertion(self) -> ValueAssertion[SymbolReference]:
+    def reference_assertion(self) -> Assertion[SymbolReference]:
         return self.value.reference_assertion(self._name)
 
     @property
-    def usage_assertion(self) -> ValueAssertion[SymbolUsage]:
+    def usage_assertion(self) -> Assertion[SymbolUsage]:
         return self.value.reference_assertion(self._name)
 
     @property
-    def references_assertion(self) -> ValueAssertion[Sequence[SymbolReference]]:
+    def references_assertion(self) -> Assertion[Sequence[SymbolReference]]:
         return asrt.matches_sequence([
             self.reference_assertion,
         ])
 
     @property
-    def usages_assertion(self) -> ValueAssertion[Sequence[SymbolUsage]]:
+    def usages_assertion(self) -> Assertion[Sequence[SymbolUsage]]:
         return asrt.matches_sequence([
             self.usage_assertion,
         ])
@@ -121,14 +121,14 @@ class SymbolContext(Generic[SDV_TYPE], ABC):
 
     @staticmethod
     def references_assertion_of_contexts(symbols: Sequence['SymbolContext']
-                                         ) -> ValueAssertion[Sequence[SymbolReference]]:
+                                         ) -> Assertion[Sequence[SymbolReference]]:
         return asrt.matches_sequence([
             context.reference_assertion
             for context in symbols
         ])
 
     @staticmethod
-    def usages_assertion_of_contexts(symbols: Sequence['SymbolContext']) -> ValueAssertion[Sequence[SymbolUsage]]:
+    def usages_assertion_of_contexts(symbols: Sequence['SymbolContext']) -> Assertion[Sequence[SymbolUsage]]:
         return asrt.matches_sequence([
             symbol.usage_assertion
             for symbol in symbols

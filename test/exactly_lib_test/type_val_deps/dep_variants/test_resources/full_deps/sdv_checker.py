@@ -7,7 +7,7 @@ from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
 from exactly_lib.type_val_prims.description.details_structured import WithDetailsDescription
 from exactly_lib.type_val_prims.description.tree_structured import WithNodeDescription
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
     CommonSdvPropertiesChecker, PRIMITIVE, OUTPUT, CommonExecutionPropertiesChecker
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.logic_structure_assertions import has_valid_description
@@ -42,7 +42,7 @@ class WithNodeDescriptionExecutionPropertiesChecker(Generic[OUTPUT],
     def __init__(self,
                  expected_ddv_object_type: Type[FullDepsWithNodeDescriptionDdv],
                  expected_primitive_object_type: Type[WithNodeDescription],
-                 application_output: ValueAssertion[OUTPUT],
+                 application_output: Assertion[OUTPUT],
                  ):
         self._expected_ddv_object_type = expected_ddv_object_type
         self._expected_primitive_object_type = expected_primitive_object_type
@@ -119,7 +119,7 @@ class WithDetailsDescriptionExecutionPropertiesChecker(Generic[OUTPUT],
     def __init__(self,
                  expected_ddv_object_type: Type[WithDetailsDescription],
                  expected_primitive_object_type: Type[WithDetailsDescription],
-                 application_output: ValueAssertion[OUTPUT],
+                 application_output: Assertion[OUTPUT],
                  ):
         self._expected_ddv_object_type = expected_ddv_object_type
         self._expected_primitive_object_type = expected_primitive_object_type

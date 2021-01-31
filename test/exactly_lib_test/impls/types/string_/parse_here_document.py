@@ -11,7 +11,7 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
     is_at_beginning_of_line
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.string.test_resources import here_doc_assertion_utils as hd
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
@@ -82,8 +82,8 @@ class TestFailingScenarios(unittest.TestCase):
 class SuccessfulCase:
     def __init__(self,
                  source_lines: list,
-                 expected_document_contents: ValueAssertion,
-                 source_after_parse: ValueAssertion):
+                 expected_document_contents: Assertion,
+                 source_after_parse: Assertion):
         self.source_lines = source_lines
         self.expected_document_contents = expected_document_contents
         self.source_after_parse = source_after_parse

@@ -35,7 +35,7 @@ from exactly_lib_test.test_resources.source import custom_abstract_syntax as cus
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
@@ -360,7 +360,7 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                                    dst_file: fs.File,
                                    src_file_rel_opt_conf: RelativityOptionConfiguration,
                                    src_file: fs.File
-                                   ) -> ValueAssertion:
+                                   ) -> Assertion:
         if dst_file_rel_opt_conf.option_argument_str == src_file_rel_opt_conf.option_string or \
                 (dst_file_rel_opt_conf.is_rel_cwd and src_file_rel_opt_conf.is_rel_cwd):
             return dst_file_rel_opt_conf.assert_root_dir_contains_exactly(fs.DirContents([dst_file,

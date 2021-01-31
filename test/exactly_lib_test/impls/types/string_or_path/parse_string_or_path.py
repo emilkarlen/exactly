@@ -23,7 +23,7 @@ from exactly_lib_test.impls.types.test_resources.relativity_options import \
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source_lines
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
     equals_data_type_symbol_references
 from exactly_lib_test.type_val_deps.types.path.test_resources import concrete_path_parts
@@ -395,7 +395,7 @@ class TestFileRef(unittest.TestCase):
 class CommonExpectation:
     def __init__(self,
                  symbol_references: List[SymbolReference],
-                 source: ValueAssertion[ParseSource],
+                 source: Assertion[ParseSource],
                  symbol_table: Optional[SymbolTable] = None):
         self.symbol_references = symbol_references
         self.source = source

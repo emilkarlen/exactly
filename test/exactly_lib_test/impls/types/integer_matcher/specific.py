@@ -22,7 +22,7 @@ from exactly_lib_test.impls.types.parse.test_resources.arguments_building import
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 from exactly_lib_test.type_val_prims.matcher.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
@@ -45,7 +45,7 @@ class EquivalenceCheck:
         self.equivalent = equivalent
         self.models = models
 
-    def assertion(self) -> ValueAssertion[MatcherWTrace[int]]:
+    def assertion(self) -> Assertion[MatcherWTrace[int]]:
         return is_equivalent_to(self.equivalent, self.models)
 
 
@@ -54,8 +54,8 @@ class Case:
                  name: str,
                  source: str,
                  result: EquivalenceCheck,
-                 interval: PosNeg[ValueAssertion[IntIntervalWInversion]],
-                 references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+                 interval: PosNeg[Assertion[IntIntervalWInversion]],
+                 references: Assertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                  symbols: SymbolTable = empty_symbol_table(),
                  ):
         self.name = name
@@ -70,8 +70,8 @@ class ValidationCase:
     def __init__(self,
                  name: str,
                  source: ParseSource,
-                 source_assertion: ValueAssertion[ParseSource],
-                 references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+                 source_assertion: Assertion[ParseSource],
+                 references: Assertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                  symbols: SymbolTable = empty_symbol_table(),
                  ):
         self.name = name

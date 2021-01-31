@@ -18,7 +18,7 @@ from exactly_lib_test.test_resources import argument_renderer
 from exactly_lib_test.test_resources.argument_renderer import FromArgumentElementsBase
 from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
 from exactly_lib_test.test_resources.strings import WithToString
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.test_resources.symbols_setup import SymbolsArrEx
 
 
@@ -357,7 +357,7 @@ class FilesMatcherArgumentsSetup(SymbolsArrEx):
     def __init__(self,
                  arguments: AssertionVariantArgumentsConstructor,
                  symbols_in_arrangement: List[SymbolContext],
-                 expected_references: Sequence[ValueAssertion[SymbolReference]] = ()):
+                 expected_references: Sequence[Assertion[SymbolReference]] = ()):
         super().__init__(symbols_in_arrangement,
                          expected_references)
         self.arguments = arguments

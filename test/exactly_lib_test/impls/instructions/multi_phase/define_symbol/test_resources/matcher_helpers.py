@@ -15,17 +15,17 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.symbol.test_resources.types import LOGIC_VALUE_TYPE_2_VALUE_TYPE
 from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
 from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherTypeSymbolContext
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
 
 
-class AssertApplicationOfMatcherInSymbolTable(ValueAssertionBase[InstructionApplicationEnvironment], ABC):
+class AssertApplicationOfMatcherInSymbolTable(AssertionBase[InstructionApplicationEnvironment], ABC):
     def __init__(self,
                  matcher_symbol_name: str,
-                 expected_matcher_result: ValueAssertion[MatchingResult]):
+                 expected_matcher_result: Assertion[MatchingResult]):
         self.matcher_symbol_name = matcher_symbol_name
         self.expected_matcher_result = expected_matcher_result
 

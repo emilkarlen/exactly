@@ -11,7 +11,7 @@ from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources import test_of_test_resources_util as test_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, MessageBuilder
 from exactly_lib_test.type_val_prims.string_source.test_resources import multi_obj_assertions as sut, \
     source_constructors
 from exactly_lib_test.type_val_prims.string_source.test_resources.multi_obj_assertions import SourceConstructor
@@ -105,7 +105,7 @@ def as_line_sequence(s: str) -> Sequence[str]:
 
 
 def check_variants(expectation: sut.ExpectationOnUnFrozenAndFrozen,
-                   ) -> Sequence[NameAndValue[ValueAssertion[sut.SourceConstructors]]]:
+                   ) -> Sequence[NameAndValue[Assertion[sut.SourceConstructors]]]:
     return [
         NameAndValue(
             'check sequence permutations',

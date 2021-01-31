@@ -12,8 +12,8 @@ from exactly_lib_test.impls.types.matcher.test_resources.matcher_w_init_action i
     IntSequence, IntSequenceRegistry
 from exactly_lib_test.test_resources.recording import SequenceRecordingMedia
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, T, MessageBuilder, \
-    ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import AssertionBase, T, MessageBuilder, \
+    Assertion
 from exactly_lib_test.type_val_prims.matcher.test_resources import matching_result
 
 
@@ -68,7 +68,7 @@ class ApplicationSequenceFrom1Builder:
         )
 
 
-class MatcherApplicationSequenceAssertion(ValueAssertionBase[T]):
+class MatcherApplicationSequenceAssertion(AssertionBase[T]):
     def __init__(self, matchers_and_expected_s: Sequence[Tuple[ConstantMatcherThatRegistersApplication, List[int]]]):
         self._matchers_and_expected_s = matchers_and_expected_s
 
@@ -86,9 +86,9 @@ class MatcherApplicationSequenceAssertion(ValueAssertionBase[T]):
 
 
 def matches_w_application_order(
-        files_and_results: Mapping[PurePosixPath, ValueAssertion[Optional[FileMatcher]]],
+        files_and_results: Mapping[PurePosixPath, Assertion[Optional[FileMatcher]]],
         application_sequence: Sequence[Tuple[ConstantMatcherThatRegistersApplication, List[int]]],
-) -> ValueAssertion[FilesCondition]:
+) -> Assertion[FilesCondition]:
     return asrt.and_([
         asrt_primitive.files_matches(files_and_results),
         asrt.named('application order',

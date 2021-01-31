@@ -6,16 +6,16 @@ from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def matches_suite_parse_error(
-        suite_file: ValueAssertion[pathlib.Path] = asrt.anything_goes(),
-        maybe_section_name: ValueAssertion[Optional[str]] = asrt.anything_goes(),
-        source: ValueAssertion[Optional[LineSequence]] = asrt.anything_goes(),
-        source_location: ValueAssertion[Optional[SourceLocationPath]] = asrt.anything_goes(),
-        document_parser_exception: ValueAssertion[ParseError] = asrt.anything_goes(),
-) -> ValueAssertion[SuiteParseError]:
+        suite_file: Assertion[pathlib.Path] = asrt.anything_goes(),
+        maybe_section_name: Assertion[Optional[str]] = asrt.anything_goes(),
+        source: Assertion[Optional[LineSequence]] = asrt.anything_goes(),
+        source_location: Assertion[Optional[SourceLocationPath]] = asrt.anything_goes(),
+        document_parser_exception: Assertion[ParseError] = asrt.anything_goes(),
+) -> Assertion[SuiteParseError]:
     return asrt.is_instance_with__many(
         SuiteParseError,
         [

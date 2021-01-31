@@ -17,11 +17,11 @@ from exactly_lib_test.tcfs.test_resources.sds_check.sds_utils import sandbox_dir
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import SdsAction, \
     mk_dir_and_change_to_it_inside_of_sds_but_outside_of_any_of_the_relativity_option_dirs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
-def sds_2_tcds_assertion(assertion_on_sds: ValueAssertion[SandboxDs]
-                         ) -> ValueAssertion[TestCaseDs]:
+def sds_2_tcds_assertion(assertion_on_sds: Assertion[SandboxDs]
+                         ) -> Assertion[TestCaseDs]:
     return asrt.sub_component('sds',
                               TestCaseDs.sds.fget,
                               assertion_on_sds)

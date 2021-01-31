@@ -4,10 +4,10 @@ from xml.etree.ElementTree import Element
 
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
-def equals(expected: Element) -> ValueAssertion[Element]:
+def equals(expected: Element) -> Assertion[Element]:
     return asrt.and_([
         asrt.sub_component(
             'tag',
@@ -40,7 +40,7 @@ def equals(expected: Element) -> ValueAssertion[Element]:
     ])
 
 
-def str_as_xml_equals(expected: Element) -> ValueAssertion[str]:
+def str_as_xml_equals(expected: Element) -> Assertion[str]:
     return asrt.on_transformed2(
         ET.fromstring,
         equals(expected),
@@ -48,7 +48,7 @@ def str_as_xml_equals(expected: Element) -> ValueAssertion[str]:
     )
 
 
-def _text_assertion__none_eq_empty_str(expected: Optional[str]) -> ValueAssertion[Optional[str]]:
+def _text_assertion__none_eq_empty_str(expected: Optional[str]) -> Assertion[Optional[str]]:
     return (
         asrt.or_([
             asrt.is_none,

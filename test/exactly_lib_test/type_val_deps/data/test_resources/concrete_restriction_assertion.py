@@ -15,7 +15,7 @@ from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 from exactly_lib_test.type_val_deps.data.test_resources.data_type_reference_visitor import \
     DataTypeReferenceRestrictionsVisitor
 from exactly_lib_test.type_val_deps.types.path.test_resources.path_relativity import equals_path_relativity_variants
@@ -25,22 +25,22 @@ is_any_data_type_restriction = asrt.is_instance(AnyDataTypeRestriction)
 is_string_value_restriction = asrt.is_instance(StringRestriction)
 
 
-def equals_string_restriction(expected: StringRestriction) -> ValueAssertion[ValueRestriction]:
+def equals_string_restriction(expected: StringRestriction) -> Assertion[ValueRestriction]:
     return is_string_value_restriction
 
 
-def equals_path_relativity_restriction(expected: PathRelativityRestriction) -> ValueAssertion[ValueRestriction]:
+def equals_path_relativity_restriction(expected: PathRelativityRestriction) -> Assertion[ValueRestriction]:
     return asrt.is_instance_with(PathRelativityRestriction,
                                  asrt.sub_component('accepted',
                                                     PathRelativityRestriction.accepted.fget,
                                                     equals_path_relativity_variants(expected.accepted)))
 
 
-def equals_value_restriction(expected: ValueRestriction) -> ValueAssertion[ValueRestriction]:
+def equals_value_restriction(expected: ValueRestriction) -> Assertion[ValueRestriction]:
     return _EqualsValueRestriction(expected)
 
 
-def is_value_failure(message: ValueAssertion[TextRenderer]) -> ValueAssertion[ErrorMessageWithFixTip]:
+def is_value_failure(message: Assertion[TextRenderer]) -> Assertion[ErrorMessageWithFixTip]:
     return asrt.is_instance_with(
         ErrorMessageWithFixTip,
         asrt.and_([
@@ -54,8 +54,8 @@ def is_value_failure(message: ValueAssertion[TextRenderer]) -> ValueAssertion[Er
     )
 
 
-def is_failure_of_direct_reference(message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
-                                   ) -> ValueAssertion[Failure]:
+def is_failure_of_direct_reference(message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()
+                                   ) -> Assertion[Failure]:
     return asrt.is_instance_with(
         FailureOfDirectReference,
         asrt.sub_component('error',
@@ -64,12 +64,12 @@ def is_failure_of_direct_reference(message: ValueAssertion[TextRenderer] = asrt_
 
 
 def is_failure_of_indirect_reference(
-        failing_symbol: ValueAssertion[str] = asrt.is_instance(str),
-        path_to_failing_symbol: ValueAssertion[Sequence[str]] = asrt.is_instance(list),
-        error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text(),
-        meaning_of_failure: ValueAssertion[Optional[TextRenderer]] =
+        failing_symbol: Assertion[str] = asrt.is_instance(str),
+        path_to_failing_symbol: Assertion[Sequence[str]] = asrt.is_instance(list),
+        error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text(),
+        meaning_of_failure: Assertion[Optional[TextRenderer]] =
         asrt.is_none_or_instance_with(SequenceRenderer, asrt_text_doc.is_any_text()),
-) -> ValueAssertion:
+) -> Assertion:
     return asrt.is_instance_with(FailureOfIndirectReference,
                                  asrt.and_([
                                      asrt.sub_component('failing_symbol',
@@ -87,7 +87,7 @@ def is_failure_of_indirect_reference(
                                  ]))
 
 
-class _EqualsValueRestriction(ValueAssertionBase[ValueRestriction]):
+class _EqualsValueRestriction(AssertionBase[ValueRestriction]):
     def __init__(self, expected: ValueRestriction):
         self.expected = expected
 
@@ -118,9 +118,9 @@ class _EqualsValueRestrictionVisitor(ValueRestrictionVisitor):
 
 
 def matches_restrictions_on_direct_and_indirect(
-        assertion_on_direct: ValueAssertion[ValueRestriction] = asrt.anything_goes(),
-        assertion_on_every: ValueAssertion[ValueRestriction] = asrt.anything_goes(),
-) -> ValueAssertion[ReferenceRestrictions]:
+        assertion_on_direct: Assertion[ValueRestriction] = asrt.anything_goes(),
+        assertion_on_every: Assertion[ValueRestriction] = asrt.anything_goes(),
+) -> Assertion[ReferenceRestrictions]:
     return asrt.is_instance_with(
         ReferenceRestrictionsOnDirectAndIndirect,
         asrt.and_([
@@ -135,15 +135,15 @@ def matches_restrictions_on_direct_and_indirect(
 
 
 def equals_data_type_reference_restrictions(expected: DataTypeReferenceRestrictions
-                                            ) -> ValueAssertion[ReferenceRestrictions]:
+                                            ) -> Assertion[ReferenceRestrictions]:
     return _EQUALS_REFERENCE_RESTRICTIONS_VISITOR.visit(expected)
 
 
-def is_any_data_type_reference_restrictions() -> ValueAssertion[ReferenceRestrictions]:
+def is_any_data_type_reference_restrictions() -> Assertion[ReferenceRestrictions]:
     return equals_data_type_reference_restrictions(is_any_data_type())
 
 
-def is_reference_restrictions__to_type_convertible_to_string() -> ValueAssertion[ReferenceRestrictions]:
+def is_reference_restrictions__to_type_convertible_to_string() -> Assertion[ReferenceRestrictions]:
     return equals_data_type_reference_restrictions(is_any_data_type())
 
 
@@ -152,7 +152,7 @@ REFERENCES_ARE_UNRESTRICTED = matches_restrictions_on_direct_and_indirect(
     assertion_on_every=asrt.ValueIsNone())
 
 
-def equals_or_reference_restrictions(expected: OrReferenceRestrictions) -> ValueAssertion:
+def equals_or_reference_restrictions(expected: OrReferenceRestrictions) -> Assertion:
     expected_sub_restrictions = [
         asrt.is_instance_with(OrRestrictionPart,
                               asrt.and_([
@@ -173,7 +173,7 @@ def equals_or_reference_restrictions(expected: OrReferenceRestrictions) -> Value
 
 
 def _equals_reference_restriction_on_direct_and_indirect(expected: ReferenceRestrictionsOnDirectAndIndirect
-                                                         ) -> ValueAssertion[ReferenceRestrictions]:
+                                                         ) -> Assertion[ReferenceRestrictions]:
     return matches_restrictions_on_direct_and_indirect(
         assertion_on_direct=equals_value_restriction(expected.direct),
         assertion_on_every=asrt.is_none if expected.indirect is None else equals_value_restriction(expected.indirect)
@@ -181,10 +181,10 @@ def _equals_reference_restriction_on_direct_and_indirect(expected: ReferenceRest
 
 
 class _EqualsDataTypeReferenceRestrictionsVisitor(DataTypeReferenceRestrictionsVisitor):
-    def visit_direct_and_indirect(self, x: ReferenceRestrictionsOnDirectAndIndirect) -> ValueAssertion:
+    def visit_direct_and_indirect(self, x: ReferenceRestrictionsOnDirectAndIndirect) -> Assertion:
         return _equals_reference_restriction_on_direct_and_indirect(x)
 
-    def visit_or(self, x: OrReferenceRestrictions) -> ValueAssertion:
+    def visit_or(self, x: OrReferenceRestrictions) -> Assertion:
         return equals_or_reference_restrictions(x)
 
 
@@ -201,7 +201,7 @@ def value_restriction_that_is_unconditionally_unsatisfied(msg: str = 'error mess
     )
 
 
-def is_string_made_up_of_just_strings_reference_restrictions() -> ValueAssertion[ReferenceRestrictions]:
+def is_string_made_up_of_just_strings_reference_restrictions() -> Assertion[ReferenceRestrictions]:
     return matches_restrictions_on_direct_and_indirect(
         assertion_on_direct=asrt.is_instance(StringRestriction),
         assertion_on_every=asrt.is_instance(StringRestriction)

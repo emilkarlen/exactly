@@ -17,12 +17,12 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Di
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsActionFromSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class Configuration(ConfigurationBase):
     def expect_failure_to_create_dir(self,
-                                     symbol_usages: ValueAssertion = asrt.is_empty_sequence):
+                                     symbol_usages: Assertion = asrt.is_empty_sequence):
         raise NotImplementedError()
 
 

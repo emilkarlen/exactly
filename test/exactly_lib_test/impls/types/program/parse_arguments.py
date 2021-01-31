@@ -31,7 +31,7 @@ from exactly_lib_test.test_case.test_resources import validation_check
 from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, File, Dir
 from exactly_lib_test.test_resources.source.layout import LayoutSpec
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
     is_any_data_type_reference_restrictions
 from exactly_lib_test.type_val_deps.data.test_resources.data_symbol_utils import symbol_reference
@@ -64,8 +64,8 @@ ARRANGEMENT__NEUTRAL = Arrangement(empty_symbol_table())
 class Expectation:
     def __init__(self,
                  elements: List[ElementSdv],
-                 validators: ValueAssertion[Sequence[DdvValidator]],
-                 references: ValueAssertion[Sequence[SymbolReference]]):
+                 validators: Assertion[Sequence[DdvValidator]],
+                 references: Assertion[Sequence[SymbolReference]]):
         self.elements = elements
         self.validators = validators
         self.references = references
@@ -571,8 +571,8 @@ class TestSingleElement(unittest.TestCase):
                 _test_case(self, _case)
 
 
-def is_single_validator_with(expectations: Sequence[NameAndValue[ValueAssertion[DdvValidator]]]
-                             ) -> ValueAssertion[Sequence[DdvValidator]]:
+def is_single_validator_with(expectations: Sequence[NameAndValue[Assertion[DdvValidator]]]
+                             ) -> Assertion[Sequence[DdvValidator]]:
     return asrt.and_([
         asrt.len_equals(1),
         asrt.on_transformed(ddv_validators.all_of,

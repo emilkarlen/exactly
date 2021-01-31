@@ -25,7 +25,7 @@ from exactly_lib_test.test_case.actor.test_resources.test_actions import \
     execute_action_that_returns_exit_code, \
     prepare_action_that_returns
 from exactly_lib_test.test_resources.actions import do_nothing, do_return
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 _VALID_EMPTY_AEI = adv_impls.ConstantAdvWValidation(ActExecutionInput.empty(),
                                                     adv_impls.unconditionally_successful_validator)
@@ -80,13 +80,13 @@ class Arrangement(tuple):
 
 class Expectation(tuple):
     def __new__(cls,
-                result: ValueAssertion[PartialExeResult],
+                result: Assertion[PartialExeResult],
                 step_recordings: list):
         return tuple.__new__(cls, (result,
                                    step_recordings))
 
     @property
-    def result(self) -> ValueAssertion[PartialExeResult]:
+    def result(self) -> Assertion[PartialExeResult]:
         return self[0]
 
     @property

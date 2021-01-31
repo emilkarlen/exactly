@@ -25,16 +25,16 @@ from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import logic_structure_assertions as asrt_logic
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.sdv_assertions import matches_sdv
 
 
-def matches_matcher_sdv(primitive_value: ValueAssertion[MatcherWTrace] = asrt.anything_goes(),
-                        references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+def matches_matcher_sdv(primitive_value: Assertion[MatcherWTrace] = asrt.anything_goes(),
+                        references: Assertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                         symbols: SymbolTable = None,
                         tcds: TestCaseDs = fake_tcds(),
-                        ) -> ValueAssertion[SymbolDependentValue]:
+                        ) -> Assertion[SymbolDependentValue]:
     return matches_sdv(
         asrt.is_instance(MatcherSdv),
         references,
@@ -50,10 +50,10 @@ def matches_matcher_sdv(primitive_value: ValueAssertion[MatcherWTrace] = asrt.an
     )
 
 
-def matches_sdv_of_string(references: ValueAssertion[Sequence[SymbolReference]],
-                          ddv: ValueAssertion[StringDdv],
-                          custom: ValueAssertion[StringSdv] = asrt.anything_goes(),
-                          symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentValue]:
+def matches_sdv_of_string(references: Assertion[Sequence[SymbolReference]],
+                          ddv: Assertion[StringDdv],
+                          custom: Assertion[StringSdv] = asrt.anything_goes(),
+                          symbols: Optional[SymbolTable] = None) -> Assertion[SymbolDependentValue]:
     return matches_sdv(asrt.is_instance(StringSdv),
                        references,
                        asrt.is_instance_with(StringDdv, ddv),
@@ -61,10 +61,10 @@ def matches_sdv_of_string(references: ValueAssertion[Sequence[SymbolReference]],
                        symbol_table_from_none_or_value(symbols))
 
 
-def matches_sdv_of_list(references: ValueAssertion[Sequence[SymbolReference]],
-                        ddv: ValueAssertion[ListDdv],
-                        custom: ValueAssertion[ListSdv] = asrt.anything_goes(),
-                        symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentValue]:
+def matches_sdv_of_list(references: Assertion[Sequence[SymbolReference]],
+                        ddv: Assertion[ListDdv],
+                        custom: Assertion[ListSdv] = asrt.anything_goes(),
+                        symbols: Optional[SymbolTable] = None) -> Assertion[SymbolDependentValue]:
     return matches_sdv(asrt.is_instance(ListSdv),
                        references,
                        asrt.is_instance_with(ListDdv, ddv),
@@ -72,10 +72,10 @@ def matches_sdv_of_list(references: ValueAssertion[Sequence[SymbolReference]],
                        symbol_table_from_none_or_value(symbols))
 
 
-def matches_sdv_of_path(references: ValueAssertion[Sequence[SymbolReference]],
-                        ddv: ValueAssertion[PathDdv],
-                        custom: ValueAssertion[PathSdv] = asrt.anything_goes(),
-                        symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentValue]:
+def matches_sdv_of_path(references: Assertion[Sequence[SymbolReference]],
+                        ddv: Assertion[PathDdv],
+                        custom: Assertion[PathSdv] = asrt.anything_goes(),
+                        symbols: Optional[SymbolTable] = None) -> Assertion[SymbolDependentValue]:
     return matches_sdv(asrt.is_instance(PathSdv),
                        references,
                        asrt.is_instance_with(PathDdv, ddv),
@@ -83,11 +83,11 @@ def matches_sdv_of_path(references: ValueAssertion[Sequence[SymbolReference]],
                        symbol_table_from_none_or_value(symbols))
 
 
-def matches_sdv_of_file_matcher(references: ValueAssertion[Sequence[SymbolReference]] = asrt.anything_goes(),
-                                primitive_value: ValueAssertion[FileMatcher] = asrt.anything_goes(),
+def matches_sdv_of_file_matcher(references: Assertion[Sequence[SymbolReference]] = asrt.anything_goes(),
+                                primitive_value: Assertion[FileMatcher] = asrt.anything_goes(),
                                 symbols: Optional[SymbolTable] = None,
                                 tcds: TestCaseDs = fake_tcds(),
-                                ) -> ValueAssertion[SymbolDependentValue]:
+                                ) -> Assertion[SymbolDependentValue]:
     return matches_matcher_sdv(
         primitive_value,
         references,
@@ -95,11 +95,11 @@ def matches_sdv_of_file_matcher(references: ValueAssertion[Sequence[SymbolRefere
         tcds)
 
 
-def matches_sdv_of_files_matcher(references: ValueAssertion[Sequence[SymbolReference]] = asrt.anything_goes(),
-                                 primitive_value: ValueAssertion[FilesMatcher] = asrt.anything_goes(),
+def matches_sdv_of_files_matcher(references: Assertion[Sequence[SymbolReference]] = asrt.anything_goes(),
+                                 primitive_value: Assertion[FilesMatcher] = asrt.anything_goes(),
                                  symbols: Optional[SymbolTable] = None,
                                  tcds: TestCaseDs = fake_tcds(),
-                                 ) -> ValueAssertion[SymbolDependentValue]:
+                                 ) -> Assertion[SymbolDependentValue]:
     return matches_matcher_sdv(
         primitive_value,
         references,
@@ -107,11 +107,11 @@ def matches_sdv_of_files_matcher(references: ValueAssertion[Sequence[SymbolRefer
         tcds)
 
 
-def matches_sdv_of_line_matcher(references: ValueAssertion[Sequence[SymbolReference]] = asrt.anything_goes(),
-                                primitive_value: ValueAssertion[LineMatcher] = asrt.anything_goes(),
+def matches_sdv_of_line_matcher(references: Assertion[Sequence[SymbolReference]] = asrt.anything_goes(),
+                                primitive_value: Assertion[LineMatcher] = asrt.anything_goes(),
                                 symbols: Optional[SymbolTable] = None,
                                 tcds: TestCaseDs = fake_tcds(),
-                                ) -> ValueAssertion[SymbolDependentValue]:
+                                ) -> Assertion[SymbolDependentValue]:
     return matches_matcher_sdv(
         primitive_value,
         references,
@@ -119,11 +119,11 @@ def matches_sdv_of_line_matcher(references: ValueAssertion[Sequence[SymbolRefere
         tcds)
 
 
-def matches_sdv_of_string_matcher(references: ValueAssertion[Sequence[SymbolReference]] = asrt.anything_goes(),
-                                  primitive_value: ValueAssertion[StringMatcher] = asrt.anything_goes(),
+def matches_sdv_of_string_matcher(references: Assertion[Sequence[SymbolReference]] = asrt.anything_goes(),
+                                  primitive_value: Assertion[StringMatcher] = asrt.anything_goes(),
                                   symbols: Optional[SymbolTable] = None,
                                   tcds: TestCaseDs = fake_tcds(),
-                                  ) -> ValueAssertion[SymbolDependentValue]:
+                                  ) -> Assertion[SymbolDependentValue]:
     return matches_matcher_sdv(
         primitive_value,
         references,
@@ -132,10 +132,10 @@ def matches_sdv_of_string_matcher(references: ValueAssertion[Sequence[SymbolRefe
 
 
 def matches_sdv_of_files_condition_constant(
-        references: ValueAssertion[Sequence[SymbolReference]] = asrt.anything_goes(),
-        primitive_value: ValueAssertion[FilesCondition] = asrt.anything_goes(),
+        references: Assertion[Sequence[SymbolReference]] = asrt.anything_goes(),
+        primitive_value: Assertion[FilesCondition] = asrt.anything_goes(),
         symbols: SymbolTable = None
-) -> ValueAssertion[SymbolDependentValue]:
+) -> Assertion[SymbolDependentValue]:
     return matches_sdv(
         asrt.is_instance(FilesConditionSdv),
         references,
@@ -151,10 +151,10 @@ def matches_sdv_of_files_condition_constant(
 
 
 def matches_sdv_of_string_transformer_constant(
-        references: ValueAssertion[Sequence[SymbolReference]] = asrt.anything_goes(),
-        primitive_value: ValueAssertion[StringTransformer] = asrt.anything_goes(),
+        references: Assertion[Sequence[SymbolReference]] = asrt.anything_goes(),
+        primitive_value: Assertion[StringTransformer] = asrt.anything_goes(),
         symbols: SymbolTable = None
-) -> ValueAssertion[SymbolDependentValue]:
+) -> Assertion[SymbolDependentValue]:
     return matches_sdv(
         asrt.is_instance(StringTransformerSdv),
         references,
@@ -169,10 +169,10 @@ def matches_sdv_of_string_transformer_constant(
     )
 
 
-def matches_sdv_of_program(references: ValueAssertion[Sequence[SymbolReference]],
-                           primitive_value: Callable[[TestCaseDs], ValueAssertion[Program]],
+def matches_sdv_of_program(references: Assertion[Sequence[SymbolReference]],
+                           primitive_value: Callable[[TestCaseDs], Assertion[Program]],
                            symbols: Optional[SymbolTable] = None
-                           ) -> ValueAssertion[SymbolDependentValue]:
+                           ) -> Assertion[SymbolDependentValue]:
     return matches_sdv(
         asrt.is_instance(ProgramSdv),
         references,
@@ -187,10 +187,10 @@ def matches_sdv_of_program(references: ValueAssertion[Sequence[SymbolReference]]
     )
 
 
-def matches_sdv_of_program_constant(references: ValueAssertion[Sequence[SymbolReference]],
-                                    primitive_value: ValueAssertion[Program],
+def matches_sdv_of_program_constant(references: Assertion[Sequence[SymbolReference]],
+                                    primitive_value: Assertion[Program],
                                     symbols: Optional[SymbolTable] = None
-                                    ) -> ValueAssertion[SymbolDependentValue]:
+                                    ) -> Assertion[SymbolDependentValue]:
     return matches_sdv_of_program(
         references,
         lambda tcds: primitive_value,

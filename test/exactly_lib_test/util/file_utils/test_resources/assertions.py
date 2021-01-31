@@ -2,10 +2,10 @@ import unittest
 from typing import Union, TextIO
 
 from exactly_lib.util.file_utils.std import ProcessExecutionFile
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import AssertionBase, MessageBuilder
 
 
-class IsProcessExecutionFileWIthContents(ValueAssertionBase[ProcessExecutionFile]):
+class IsProcessExecutionFileWIthContents(AssertionBase[ProcessExecutionFile]):
     def __init__(self, expected: str):
         self._expected = expected
 

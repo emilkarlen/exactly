@@ -12,14 +12,14 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.test_resources.hard_error_assertion import RaisesHardErrorAsLastAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder, \
-    ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import AssertionBase, MessageBuilder, \
+    Assertion
 from exactly_lib_test.type_val_prims.string_source.test_resources import properties_access
 from exactly_lib_test.type_val_prims.string_source.test_resources.properties_access import \
     get_may_depend_on_external_resources, ContentsAsStrGetter
 
 
-class StringSourceContentsLinesAreValidAssertion(ValueAssertionBase[StringSourceContents]):
+class StringSourceContentsLinesAreValidAssertion(AssertionBase[StringSourceContents]):
     def _apply(self,
                put: unittest.TestCase,
                value: StringSourceContents,
@@ -35,8 +35,8 @@ class StringSourceContentsLinesAreValidAssertion(ValueAssertionBase[StringSource
                 pass
 
 
-class WithLinesCheck(ValueAssertionBase[StringSourceContents]):
-    def __init__(self, on_checked_model: ValueAssertion[StringSourceContents]):
+class WithLinesCheck(AssertionBase[StringSourceContents]):
+    def __init__(self, on_checked_model: Assertion[StringSourceContents]):
         self._on_checked_model = on_checked_model
 
     def _apply(self,
@@ -115,9 +115,9 @@ class StringSourceContentsThatThatChecksLines(StringSourceContents):
             self._put.fail('Non-last line: last char is not new-line: ' + repr(line))
 
 
-def matches__lines(lines: ValueAssertion[Sequence[str]],
-                   may_depend_on_external_resources: ValueAssertion[bool],
-                   ) -> ValueAssertion[StringSourceContents]:
+def matches__lines(lines: Assertion[Sequence[str]],
+                   may_depend_on_external_resources: Assertion[bool],
+                   ) -> Assertion[StringSourceContents]:
     return asrt.and_([
         external_dependencies(may_depend_on_external_resources),
         actual_contents__w_lines_check(
@@ -126,9 +126,9 @@ def matches__lines(lines: ValueAssertion[Sequence[str]],
     ])
 
 
-def matches__str(contents: ValueAssertion[str],
-                 may_depend_on_external_resources: ValueAssertion[bool] = asrt.anything_goes(),
-                 ) -> ValueAssertion[StringSourceContents]:
+def matches__str(contents: Assertion[str],
+                 may_depend_on_external_resources: Assertion[bool] = asrt.anything_goes(),
+                 ) -> Assertion[StringSourceContents]:
     return asrt.and_([
         external_dependencies(may_depend_on_external_resources),
         actual_contents__w_lines_check(
@@ -137,21 +137,21 @@ def matches__str(contents: ValueAssertion[str],
     ])
 
 
-def actual_contents(expectation: ValueAssertion[StringSourceContents]
-                    ) -> ValueAssertion[StringSourceContents]:
+def actual_contents(expectation: Assertion[StringSourceContents]
+                    ) -> Assertion[StringSourceContents]:
     return asrt.named(
         'actual contents',
         expectation,
     )
 
 
-def actual_contents__w_lines_check(expectation: ValueAssertion[StringSourceContents]
-                                   ) -> ValueAssertion[StringSourceContents]:
+def actual_contents__w_lines_check(expectation: Assertion[StringSourceContents]
+                                   ) -> Assertion[StringSourceContents]:
     return actual_contents(WithLinesCheck(expectation))
 
 
 def actual_contents_matches__lines__check_just_as_lines(lines: Sequence[str],
-                                                        ) -> ValueAssertion[StringSourceContents]:
+                                                        ) -> Assertion[StringSourceContents]:
     return WithLinesCheck(
         asrt.sub_component(
             'as_lines',
@@ -161,8 +161,8 @@ def actual_contents_matches__lines__check_just_as_lines(lines: Sequence[str],
     )
 
 
-def contents_raises_hard_error(may_depend_on_external_resources: ValueAssertion[bool],
-                               ) -> ValueAssertion[StringSourceContents]:
+def contents_raises_hard_error(may_depend_on_external_resources: Assertion[bool],
+                               ) -> Assertion[StringSourceContents]:
     return asrt.and_([
         external_dependencies(may_depend_on_external_resources),
         actual_contents(
@@ -177,7 +177,7 @@ def contents_raises_hard_error(may_depend_on_external_resources: ValueAssertion[
     ])
 
 
-def contents_raises_hard_error__including_ext_deps() -> ValueAssertion[StringSourceContents]:
+def contents_raises_hard_error__including_ext_deps() -> Assertion[StringSourceContents]:
     return asrt.and_([
         asrt.named(
             'may_have_external_dependencies',
@@ -197,19 +197,19 @@ def contents_raises_hard_error__including_ext_deps() -> ValueAssertion[StringSou
     ])
 
 
-def ext_dependencies_raises_hard_error() -> ValueAssertion[StringSourceContents]:
+def ext_dependencies_raises_hard_error() -> Assertion[StringSourceContents]:
     return asrt.named(
         'may_depend_on_external_resources',
         RaisesHardErrorAsLastAction(properties_access.get_may_depend_on_external_resources),
     )
 
 
-def external_dependencies__const(expected: bool) -> ValueAssertion[StringSourceContents]:
+def external_dependencies__const(expected: bool) -> Assertion[StringSourceContents]:
     return external_dependencies(asrt.equals(expected))
 
 
-def external_dependencies(expectation: ValueAssertion[bool] = asrt.anything_goes()
-                          ) -> ValueAssertion[StringSourceContents]:
+def external_dependencies(expectation: Assertion[bool] = asrt.anything_goes()
+                          ) -> Assertion[StringSourceContents]:
     return asrt.sub_component(
         'may_depend_on_external_resources',
         get_may_depend_on_external_resources,
@@ -217,7 +217,7 @@ def external_dependencies(expectation: ValueAssertion[bool] = asrt.anything_goes
     )
 
 
-def actual_contents_variants_assertion__str(expected: ValueAssertion[str]) -> ValueAssertion[StringSourceContents]:
+def actual_contents_variants_assertion__str(expected: Assertion[str]) -> Assertion[StringSourceContents]:
     return asrt.and_([
         asrt.sub_component(
             variant.name,
@@ -228,8 +228,8 @@ def actual_contents_variants_assertion__str(expected: ValueAssertion[str]) -> Va
     ])
 
 
-def actual_contents_variants_assertion__lines(expected: ValueAssertion[Sequence[str]]
-                                              ) -> ValueAssertion[StringSourceContents]:
+def actual_contents_variants_assertion__lines(expected: Assertion[Sequence[str]]
+                                              ) -> Assertion[StringSourceContents]:
     return asrt.and_([
         asrt.sub_component(
             variant.name,
@@ -242,9 +242,9 @@ def actual_contents_variants_assertion__lines(expected: ValueAssertion[Sequence[
 
 class Expectation:
     def __init__(self,
-                 contents: ValueAssertion[str],
-                 may_depend_on_external_resources: ValueAssertion[StringSourceContents] = external_dependencies(),
-                 hard_error: Optional[ValueAssertion[TextRenderer]] = None
+                 contents: Assertion[str],
+                 may_depend_on_external_resources: Assertion[StringSourceContents] = external_dependencies(),
+                 hard_error: Optional[Assertion[TextRenderer]] = None
                  ):
         self.contents = contents
         self.may_depend_on_external_resources = may_depend_on_external_resources
@@ -252,7 +252,7 @@ class Expectation:
 
     @staticmethod
     def equals(contents: str,
-               may_depend_on_external_resources: ValueAssertion[bool],
+               may_depend_on_external_resources: Assertion[bool],
                ) -> 'Expectation':
         return Expectation(
             contents=asrt.equals(contents),
@@ -260,8 +260,8 @@ class Expectation:
         )
 
     @staticmethod
-    def hard_error(expected: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text(),
-                   may_depend_on_external_resources: ValueAssertion[StringSourceContents] = external_dependencies(),
+    def hard_error(expected: Assertion[TextRenderer] = asrt_text_doc.is_any_text(),
+                   may_depend_on_external_resources: Assertion[StringSourceContents] = external_dependencies(),
                    ) -> 'Expectation':
         return Expectation(
             contents=asrt.anything_goes(),
@@ -270,7 +270,7 @@ class Expectation:
         )
 
 
-class ActualContentsVariantsSequenceAssertion(ValueAssertionBase[StringSourceContents], ABC):
+class ActualContentsVariantsSequenceAssertion(AssertionBase[StringSourceContents], ABC):
     def __init__(self,
                  expectation: Expectation,
                  contents_getters_cases: Sequence[NameAndValue[ContentsAsStrGetter]],

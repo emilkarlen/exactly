@@ -3,12 +3,12 @@ from typing import Any, Sequence
 
 from exactly_lib.util.line_source import Line, LineSequence, line_sequence_from_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 ARBITRARY_LINE_SEQUENCE = LineSequence(10, ('arbitrary line sequence',))
 
 
-def equals_line(expected: Line) -> ValueAssertion[Any]:
+def equals_line(expected: Line) -> Assertion[Any]:
     return asrt.is_instance_with(Line,
                                  asrt.And([
                                      asrt.sub_component('line_number',
@@ -20,7 +20,7 @@ def equals_line(expected: Line) -> ValueAssertion[Any]:
                                  ]))
 
 
-def is_line(description: str = '') -> ValueAssertion[Any]:
+def is_line(description: str = '') -> Assertion[Any]:
     return asrt.is_instance_with(Line,
                                  asrt.And([
                                      asrt.sub_component('line_number',
@@ -33,7 +33,7 @@ def is_line(description: str = '') -> ValueAssertion[Any]:
                                  description)
 
 
-def is_line_sequence(description: str = '') -> ValueAssertion[LineSequence]:
+def is_line_sequence(description: str = '') -> Assertion[LineSequence]:
     return asrt.is_instance_with(LineSequence,
                                  asrt.And([
                                      asrt.sub_component('line_number',
@@ -46,9 +46,9 @@ def is_line_sequence(description: str = '') -> ValueAssertion[LineSequence]:
                                  description)
 
 
-def matches_line_sequence(first_line_number: ValueAssertion[int] = asrt.anything_goes(),
-                          lines: ValueAssertion[Sequence[str]] = asrt.anything_goes(),
-                          ) -> ValueAssertion[LineSequence]:
+def matches_line_sequence(first_line_number: Assertion[int] = asrt.anything_goes(),
+                          lines: Assertion[Sequence[str]] = asrt.anything_goes(),
+                          ) -> Assertion[LineSequence]:
     return asrt.is_instance_with(LineSequence,
                                  asrt.and_([
                                      asrt.sub_component('first_line_number',
@@ -60,7 +60,7 @@ def matches_line_sequence(first_line_number: ValueAssertion[int] = asrt.anything
                                  ]))
 
 
-def equals_line_sequence(expected: LineSequence) -> ValueAssertion[LineSequence]:
+def equals_line_sequence(expected: LineSequence) -> Assertion[LineSequence]:
     return matches_line_sequence(first_line_number=asrt.equals(expected.first_line_number),
                                  lines=asrt.equals_sequence(expected.lines,
                                                             asrt.equals))

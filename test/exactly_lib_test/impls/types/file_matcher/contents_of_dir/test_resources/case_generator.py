@@ -18,7 +18,7 @@ from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRe
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, DirContents, Dir
 from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.test_utils import NExArr
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.test_resources.files_matcher import is_reference_to_files_matcher
 
 
@@ -85,7 +85,7 @@ class Helper:
     def files_matcher_sym_ref_arg(self) -> FilesMatcherArg:
         return fms_args.SymbolReference(self.files_matcher_name)
 
-    def files_matcher_sym_assertion(self) -> ValueAssertion[SymbolReference]:
+    def files_matcher_sym_assertion(self) -> Assertion[SymbolReference]:
         return is_reference_to_files_matcher(self.files_matcher_name)
 
     def tcds_arrangement_for_contents_of_checked_dir(self,
@@ -115,7 +115,7 @@ class TestCaseGenerator(ABC):
         pass
 
     @abstractmethod
-    def expected_symbols(self) -> Sequence[ValueAssertion[SymbolReference]]:
+    def expected_symbols(self) -> Sequence[Assertion[SymbolReference]]:
         pass
 
 

@@ -18,10 +18,10 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
 from exactly_lib_test.test_resources import actions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import AssertionBase
 
 
-class Phase2step2recordedValueAssertion(ValueAssertionBase):
+class Phase2step2recordedAssertion(AssertionBase):
     """ Custom comparison for better error messages. """
 
     def __init__(self,

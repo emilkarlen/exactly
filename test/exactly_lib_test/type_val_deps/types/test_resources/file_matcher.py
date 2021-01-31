@@ -12,7 +12,7 @@ from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
@@ -20,12 +20,12 @@ from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertio
 IS_FILE_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILE_MATCHER)
 
 
-def is_reference_to_file_matcher__usage(symbol_name: str) -> ValueAssertion[SymbolUsage]:
+def is_reference_to_file_matcher__usage(symbol_name: str) -> Assertion[SymbolUsage]:
     return asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
                                             IS_FILE_REFERENCE_RESTRICTION)
 
 
-def is_reference_to_file_matcher(symbol_name: str) -> ValueAssertion[SymbolReference]:
+def is_reference_to_file_matcher(symbol_name: str) -> Assertion[SymbolReference]:
     return asrt.is_instance_with(
         SymbolReference,
         asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
@@ -69,7 +69,7 @@ class FileMatcherSymbolValueContext(MatcherSymbolValueContext[FileMatcherModel])
     def value_type(self) -> ValueType:
         return ValueType.FILE_MATCHER
 
-    def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+    def reference_assertion(self, symbol_name: str) -> Assertion[SymbolReference]:
         return is_reference_to_file_matcher(symbol_name)
 
 

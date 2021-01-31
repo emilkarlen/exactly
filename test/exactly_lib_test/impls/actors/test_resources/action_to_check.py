@@ -26,7 +26,7 @@ from exactly_lib_test.test_case.test_resources.command_executors import CommandE
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 
@@ -36,7 +36,7 @@ class TestCaseSourceSetup:
                  home_act_dir_contents: DirContents = empty_dir_contents(),
                  environ: Optional[Mapping[str, str]] = None,
                  symbols: Optional[SymbolTable] = None,
-                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                 symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                  ):
         self.symbols = symbol_table_from_none_or_value(symbols)
         self.home_act_dir_contents = home_act_dir_contents

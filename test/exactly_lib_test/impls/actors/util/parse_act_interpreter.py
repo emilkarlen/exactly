@@ -21,9 +21,9 @@ from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_rest
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.dir_dep_value_assertions import \
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.ddv_w_deps_assertions import \
     matches_dir_dependent_value
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.sdv_assertions import matches_sdv
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
@@ -140,7 +140,7 @@ class Case:
     def __init__(self,
                  name: str,
                  source: ArgumentElementsRenderer,
-                 expected_command_driver: Callable[[TestCaseDs], ValueAssertion[CommandDriver]],
+                 expected_command_driver: Callable[[TestCaseDs], Assertion[CommandDriver]],
                  symbols: Sequence[SymbolContext] = (),
                  ):
         self.name = name
@@ -150,9 +150,9 @@ class Case:
 
     def sdv_assertion(self,
                       tcds: TestCaseDs,
-                      arguments: ValueAssertion[Sequence[str]],
+                      arguments: Assertion[Sequence[str]],
                       arguments_symbols: Sequence[SymbolContext] = (),
-                      ) -> ValueAssertion[SymbolDependentValue]:
+                      ) -> Assertion[SymbolDependentValue]:
         expected_command = asrt_command.matches_command(
             driver=self.expected_command_driver(tcds),
             arguments=arguments
@@ -252,9 +252,9 @@ class ArgumentsCase:
         self.symbols = symbols
 
 
-def constant_assertion(constant: ValueAssertion[CommandDriver]) -> Callable[
-    [TestCaseDs], ValueAssertion[CommandDriver]]:
-    def ret_val(tcds: TestCaseDs) -> ValueAssertion[CommandDriver]:
+def constant_assertion(constant: Assertion[CommandDriver]) -> Callable[
+    [TestCaseDs], Assertion[CommandDriver]]:
+    def ret_val(tcds: TestCaseDs) -> Assertion[CommandDriver]:
         return constant
 
     return ret_val

@@ -5,19 +5,19 @@ from exactly_lib.util.description_tree.tree import Detail, Node, PreFormattedStr
     HeaderAndValueDetail, TreeDetail, NODE_DATA, IndentedDetail
 from exactly_lib.util.str_.str_constructor import ToStringObject
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder
 from exactly_lib_test.util.test_resources import to_string_assertions as asrt_to_string
 
 
-def matches_node(header: ValueAssertion[str] = asrt.anything_goes(),
-                 data: ValueAssertion = asrt.anything_goes(),
-                 details: ValueAssertion[Sequence[Detail]] = asrt.anything_goes(),
-                 children: ValueAssertion[Sequence[Node]] = asrt.anything_goes()) -> ValueAssertion[Node]:
+def matches_node(header: Assertion[str] = asrt.anything_goes(),
+                 data: Assertion = asrt.anything_goes(),
+                 details: Assertion[Sequence[Detail]] = asrt.anything_goes(),
+                 children: Assertion[Sequence[Node]] = asrt.anything_goes()) -> Assertion[Node]:
     return _MatchesNode(header, data, details, children)
 
 
-def equals_node(expected: Node) -> ValueAssertion[Node]:
+def equals_node(expected: Node) -> Assertion[Node]:
     return matches_node(
         header=asrt.equals(expected.header),
         data=asrt.equals(expected.data),
@@ -26,14 +26,14 @@ def equals_node(expected: Node) -> ValueAssertion[Node]:
     )
 
 
-def equals_nodes(expected: Sequence[Node]) -> ValueAssertion[Sequence[Node]]:
+def equals_nodes(expected: Sequence[Node]) -> Assertion[Sequence[Node]]:
     return asrt.matches_sequence([
         equals_node(n)
         for n in expected
     ])
 
 
-def header_data_and_children_equal_as(node: Node[NODE_DATA]) -> ValueAssertion[Node[NODE_DATA]]:
+def header_data_and_children_equal_as(node: Node[NODE_DATA]) -> Assertion[Node[NODE_DATA]]:
     return matches_node(
         header=asrt.equals(node.header),
         data=asrt.equals(node.data),
@@ -44,19 +44,19 @@ def header_data_and_children_equal_as(node: Node[NODE_DATA]) -> ValueAssertion[N
     )
 
 
-def equals_detail(expected: Detail) -> ValueAssertion[Detail]:
+def equals_detail(expected: Detail) -> Assertion[Detail]:
     return _EqualsDetailAssertion(expected)
 
 
-def equals_details(expected: Sequence[Detail]) -> ValueAssertion[Sequence[Detail]]:
+def equals_details(expected: Sequence[Detail]) -> Assertion[Sequence[Detail]]:
     return asrt.matches_sequence([
         equals_detail(d)
         for d in expected
     ])
 
 
-def is_string_detail(to_string_object: ValueAssertion[ToStringObject] = asrt.anything_goes(),
-                     ) -> ValueAssertion[Detail]:
+def is_string_detail(to_string_object: Assertion[ToStringObject] = asrt.anything_goes(),
+                     ) -> Assertion[Detail]:
     return asrt.is_instance_with__many(
         StringDetail,
         [
@@ -71,9 +71,9 @@ def is_string_detail(to_string_object: ValueAssertion[ToStringObject] = asrt.any
     )
 
 
-def is_pre_formatted_string_detail(to_string_object: ValueAssertion[ToStringObject] = asrt.anything_goes(),
-                                   string_is_line_ended: ValueAssertion[bool] = asrt.anything_goes(),
-                                   ) -> ValueAssertion[Detail]:
+def is_pre_formatted_string_detail(to_string_object: Assertion[ToStringObject] = asrt.anything_goes(),
+                                   string_is_line_ended: Assertion[bool] = asrt.anything_goes(),
+                                   ) -> Assertion[Detail]:
     return asrt.is_instance_with__many(
         PreFormattedStringDetail,
         [
@@ -89,9 +89,9 @@ def is_pre_formatted_string_detail(to_string_object: ValueAssertion[ToStringObje
     )
 
 
-def is_header_and_value_detail(header: ValueAssertion[ToStringObject] = asrt.anything_goes(),
-                               values: ValueAssertion[Sequence[Detail]] = asrt.is_sequence_of(asrt.is_instance(Detail)),
-                               ) -> ValueAssertion[Detail]:
+def is_header_and_value_detail(header: Assertion[ToStringObject] = asrt.anything_goes(),
+                               values: Assertion[Sequence[Detail]] = asrt.is_sequence_of(asrt.is_instance(Detail)),
+                               ) -> Assertion[Detail]:
     return asrt.is_instance_with__many(
         HeaderAndValueDetail,
         [
@@ -107,8 +107,8 @@ def is_header_and_value_detail(header: ValueAssertion[ToStringObject] = asrt.any
     )
 
 
-def is_indented_detail(details: ValueAssertion[Sequence[Detail]] = asrt.is_sequence_of(asrt.is_instance(Detail)),
-                       ) -> ValueAssertion[Detail]:
+def is_indented_detail(details: Assertion[Sequence[Detail]] = asrt.is_sequence_of(asrt.is_instance(Detail)),
+                       ) -> Assertion[Detail]:
     return asrt.is_instance_with__many(
         IndentedDetail,
         [
@@ -120,8 +120,8 @@ def is_indented_detail(details: ValueAssertion[Sequence[Detail]] = asrt.is_seque
     )
 
 
-def is_tree_detail(tree: ValueAssertion[Node[Any]] = asrt.anything_goes(),
-                   ) -> ValueAssertion[Detail]:
+def is_tree_detail(tree: Assertion[Node[Any]] = asrt.anything_goes(),
+                   ) -> Assertion[Detail]:
     return asrt.is_instance_with__many(
         TreeDetail,
         [
@@ -133,11 +133,11 @@ def is_tree_detail(tree: ValueAssertion[Node[Any]] = asrt.anything_goes(),
     )
 
 
-def is_any_detail() -> ValueAssertion[Detail]:
+def is_any_detail() -> Assertion[Detail]:
     return _IS_ANY_DETAIL
 
 
-class _IsAnyDetail(asrt.ValueAssertionBase[Detail]):
+class _IsAnyDetail(asrt.AssertionBase[Detail]):
     def _apply(self,
                put: unittest.TestCase,
                value: Detail,
@@ -237,7 +237,7 @@ class _EqualsDetailChecker(DetailVisitor[None]):
         expectation.apply(self._put, self._actual, self._message_builder)
 
 
-class _EqualsDetailAssertion(ValueAssertionBase[Detail]):
+class _EqualsDetailAssertion(AssertionBase[Detail]):
     def __init__(self, expected: Detail):
         self._expected = expected
 
@@ -249,15 +249,15 @@ class _EqualsDetailAssertion(ValueAssertionBase[Detail]):
         self._expected.accept(checker)
 
 
-class _MatchesNode(ValueAssertionBase[Node]):
+class _MatchesNode(AssertionBase[Node]):
     _HEADER_IS_STR = asrt.sub_component('header', Node.header.fget, asrt.is_instance(str))
     _IS_SEQUENCE_OF_DETAIL = asrt.every_element('details', is_any_detail())
 
     def __init__(self,
-                 header: ValueAssertion[str] = asrt.anything_goes(),
-                 data: ValueAssertion = asrt.anything_goes(),
-                 details: ValueAssertion[Sequence[Detail]] = asrt.anything_goes(),
-                 children: ValueAssertion[Sequence[Node]] = asrt.anything_goes(),
+                 header: Assertion[str] = asrt.anything_goes(),
+                 data: Assertion = asrt.anything_goes(),
+                 details: Assertion[Sequence[Detail]] = asrt.anything_goes(),
+                 children: Assertion[Sequence[Node]] = asrt.anything_goes(),
                  ):
         self._header = header
         self._data = data

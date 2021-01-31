@@ -13,7 +13,7 @@ from exactly_lib.test_case.phases.setup.settings_handler import SetupSettingsHan
 from exactly_lib_test.execution.partial_execution.test_resources import settings_handlers
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class Arrangement:
@@ -35,7 +35,7 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 full_result: ValueAssertion[FullExeResult] = asrt.anything_goes()):
+                 full_result: Assertion[FullExeResult] = asrt.anything_goes()):
         self.full_result = full_result
 
 

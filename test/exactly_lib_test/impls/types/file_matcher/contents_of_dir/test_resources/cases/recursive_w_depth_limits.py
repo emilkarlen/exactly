@@ -31,7 +31,7 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, File
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
     equals_data_type_reference_restrictions
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringIntConstantSymbolContext
@@ -82,7 +82,7 @@ class SymbolReferencesShouldBeReported(SingleCaseGenerator):
             ),
         ])
 
-    def expected_symbols(self) -> Sequence[ValueAssertion[SymbolReference]]:
+    def expected_symbols(self) -> Sequence[Assertion[SymbolReference]]:
         return [
             asrt_sym_ref.matches_reference_2(
                 self.min_depth.name,
@@ -297,7 +297,7 @@ class SelectorShouldBeApplied(MultipleExecutionCasesGenerator):
             )
         )
 
-    def expected_symbols(self) -> Sequence[ValueAssertion[SymbolReference]]:
+    def expected_symbols(self) -> Sequence[Assertion[SymbolReference]]:
         return ()
 
     def execution_cases(self) -> Sequence[NExArr[ExecutionResult, Arrangement]]:
@@ -319,7 +319,7 @@ class _ValidationPreSdsShouldFailWhenLimitsAreNotExpressionsThatEvaluatesToAnInt
     def __init__(self,
                  depth_args: DepthArgs,
                  symbols: SymbolTable,
-                 symbol_references: Sequence[ValueAssertion[SymbolReference]],
+                 symbol_references: Sequence[Assertion[SymbolReference]],
                  ):
         super().__init__()
         self._depth_args = depth_args
@@ -341,7 +341,7 @@ class _ValidationPreSdsShouldFailWhenLimitsAreNotExpressionsThatEvaluatesToAnInt
     def tcds_arrangement(self) -> Optional[TcdsArrangement]:
         return None
 
-    def expected_symbols(self) -> Sequence[ValueAssertion[SymbolReference]]:
+    def expected_symbols(self) -> Sequence[Assertion[SymbolReference]]:
         return self._symbol_references
 
     def execution_result(self) -> ExecutionResult:
@@ -368,7 +368,7 @@ class _ValidationPreSdsShouldFailWhenLimitsAreIntegerOutOfRange(SingleCaseGenera
     def tcds_arrangement(self) -> Optional[TcdsArrangement]:
         return None
 
-    def expected_symbols(self) -> Sequence[ValueAssertion[SymbolReference]]:
+    def expected_symbols(self) -> Sequence[Assertion[SymbolReference]]:
         return ()
 
     def execution_result(self) -> ExecutionResult:
@@ -407,7 +407,7 @@ class _TestFilesOfModel(SingleCaseGenerator):
             self._checked_dir_contents,
         )
 
-    def expected_symbols(self) -> Sequence[ValueAssertion[SymbolReference]]:
+    def expected_symbols(self) -> Sequence[Assertion[SymbolReference]]:
         return [
             self._helper.files_matcher_sym_assertion(),
         ]

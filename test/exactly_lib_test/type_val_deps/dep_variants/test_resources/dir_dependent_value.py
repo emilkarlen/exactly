@@ -6,33 +6,33 @@ from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import Depen
     MultiDependenciesDdv
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 
 T = TypeVar('T')
 
 
 def matches_single_dir_dependent_value(expected: Max1DependencyDdv,
-                                       value_assertion: Callable[[T], ValueAssertion[T]] = asrt.equals
-                                       ) -> ValueAssertion[DependenciesAwareDdv[T]]:
-    return SingleDirDependentValueAssertion(Max1DependencyDdv,
-                                            expected,
-                                            value_assertion)
+                                       value_assertion: Callable[[T], Assertion[T]] = asrt.equals
+                                       ) -> Assertion[DependenciesAwareDdv[T]]:
+    return SingleDirDependentAssertion(Max1DependencyDdv,
+                                       expected,
+                                       value_assertion)
 
 
 def matches_multi_dir_dependent_value(expected: MultiDependenciesDdv,
                                       value_assertion_from_expected:
-                                      Callable[[T], ValueAssertion[T]] = asrt.equals
-                                      ) -> ValueAssertion[DependenciesAwareDdv[T]]:
-    return MultiDirDependentValueAssertion(MultiDependenciesDdv,
-                                           expected,
-                                           value_assertion_from_expected)
+                                      Callable[[T], Assertion[T]] = asrt.equals
+                                      ) -> Assertion[DependenciesAwareDdv[T]]:
+    return MultiDirDependentAssertion(MultiDependenciesDdv,
+                                      expected,
+                                      value_assertion_from_expected)
 
 
-class DirDependentValueAssertionBase(ValueAssertionBase[DependenciesAwareDdv[T]]):
+class DirDependentAssertionBase(AssertionBase[DependenciesAwareDdv[T]]):
     def __init__(self,
                  expected_type,
                  expected: DependenciesAwareDdv,
-                 value_assertion_from_expected: Callable[[T], ValueAssertion[T]]):
+                 value_assertion_from_expected: Callable[[T], Assertion[T]]):
         self._expected_type = expected_type
         self._expected = expected
         self._value_assertion_from_expected = value_assertion_from_expected
@@ -113,11 +113,11 @@ class DirDependentValueAssertionBase(ValueAssertionBase[DependenciesAwareDdv[T]]
                         message_builder.for_sub_component('value_of_any_dependency'))
 
 
-class SingleDirDependentValueAssertion(DirDependentValueAssertionBase):
+class SingleDirDependentAssertion(DirDependentAssertionBase):
     def __init__(self,
                  expected_type,
                  expected: Max1DependencyDdv,
-                 value_assertion_from_expected: Callable[[T], ValueAssertion[T]] = asrt.equals):
+                 value_assertion_from_expected: Callable[[T], Assertion[T]] = asrt.equals):
         super().__init__(expected_type, expected, value_assertion_from_expected)
         self._expected_single_dep_value = expected
 
@@ -153,11 +153,11 @@ class SingleDirDependentValueAssertion(DirDependentValueAssertionBase):
         pass
 
 
-class MultiDirDependentValueAssertion(DirDependentValueAssertionBase):
+class MultiDirDependentAssertion(DirDependentAssertionBase):
     def __init__(self,
                  expected_type,
                  expected: MultiDependenciesDdv,
-                 value_assertion_from_expected: Callable[[T], ValueAssertion[T]] = asrt.equals):
+                 value_assertion_from_expected: Callable[[T], Assertion[T]] = asrt.equals):
         super().__init__(expected_type, expected, value_assertion_from_expected)
         self._expected_multi_dep_value = expected
 

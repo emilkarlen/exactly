@@ -9,7 +9,7 @@ from exactly_lib_test.impls.types.integer.test_resources.integer_sdv import \
     is_reference_to_symbol_in_expression
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 
 
@@ -18,7 +18,7 @@ class IntegerValidationCase:
                  case_name: str,
                  integer_expr_string: str,
                  symbols: List[SymbolContext],
-                 reference_assertions: List[ValueAssertion[SymbolReference]],
+                 reference_assertions: List[Assertion[SymbolReference]],
                  expectations: Expectation,
                  assertions: ValidationAssertions,
                  ):
@@ -34,7 +34,7 @@ class IntegerValidationCase:
         return SymbolContext.symbol_table_of_contexts(self.symbols)
 
     @property
-    def symbol_references_expectation(self) -> ValueAssertion[Sequence[SymbolReference]]:
+    def symbol_references_expectation(self) -> Assertion[Sequence[SymbolReference]]:
         return asrt.matches_sequence(self.reference_assertions)
 
 

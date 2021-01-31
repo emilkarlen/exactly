@@ -5,17 +5,17 @@ from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import Max1D
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib_test.tcfs.test_resources.path_relativity import equals_path_relativity
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.dir_dependent_value import \
-    SingleDirDependentValueAssertion
+    SingleDirDependentAssertion
 from exactly_lib_test.type_val_deps.types.path.test_resources.path_part_assertions import equals_path_part
 
 
-def equals_path(expected: PathDdv) -> ValueAssertion:
+def equals_path(expected: PathDdv) -> Assertion:
     return _AssertPathHasSpecifiedProperties(expected)
 
 
-class _AssertPathHasSpecifiedProperties(SingleDirDependentValueAssertion):
+class _AssertPathHasSpecifiedProperties(SingleDirDependentAssertion):
     def __init__(self, expected: PathDdv):
         super().__init__(PathDdv, expected)
         self._expected = expected

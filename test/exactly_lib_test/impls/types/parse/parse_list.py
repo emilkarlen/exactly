@@ -19,7 +19,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
     is_any_data_type_reference_restrictions
 from exactly_lib_test.type_val_deps.data.test_resources.data_symbol_utils import symbol_reference
@@ -298,8 +298,8 @@ class TestMultipleElementList(unittest.TestCase):
 class Expectation:
     def __init__(self,
                  elements: List[ElementSdv],
-                 source: ValueAssertion[ParseSource],
-                 references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+                 source: Assertion[ParseSource],
+                 references: Assertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                  ):
         self.elements = elements
         self.source = source

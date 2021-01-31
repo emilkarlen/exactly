@@ -6,13 +6,13 @@ from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock,
     ElementProperties, LineObject, PreFormattedStringLineObject, StringLineObject, StringLinesObject, \
     ELEMENT_PROPERTIES__NEUTRAL, LineObjectVisitor, Indentation, TextStyle
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, MessageBuilder
 
 
 def matches_indentation(
-        level: ValueAssertion[int] = asrt.anything_goes(),
-        suffix: ValueAssertion[str] = asrt.anything_goes(),
-) -> ValueAssertion[Indentation]:
+        level: Assertion[int] = asrt.anything_goes(),
+        suffix: Assertion[str] = asrt.anything_goes(),
+) -> Assertion[Indentation]:
     return asrt.is_instance_with__many(Indentation,
                                        [
                                            asrt.sub_component('level',
@@ -26,7 +26,7 @@ def matches_indentation(
                                        ])
 
 
-def equals_indentation(expected: Indentation) -> ValueAssertion[Indentation]:
+def equals_indentation(expected: Indentation) -> Assertion[Indentation]:
     return matches_indentation(
         level=asrt.equals(expected.level),
         suffix=asrt.equals(expected.suffix),
@@ -34,9 +34,9 @@ def equals_indentation(expected: Indentation) -> ValueAssertion[Indentation]:
 
 
 def matches_text_style(
-        color: ValueAssertion[Optional[ForegroundColor]] = asrt.is_none_or_instance(ForegroundColor),
-        font_style: ValueAssertion[Optional[FontStyle]] = asrt.is_none_or_instance(FontStyle),
-) -> ValueAssertion[TextStyle]:
+        color: Assertion[Optional[ForegroundColor]] = asrt.is_none_or_instance(ForegroundColor),
+        font_style: Assertion[Optional[FontStyle]] = asrt.is_none_or_instance(FontStyle),
+) -> Assertion[TextStyle]:
     return asrt.is_instance_with__many(TextStyle,
                                        [
                                            asrt.sub_component('color',
@@ -50,7 +50,7 @@ def matches_text_style(
                                        ])
 
 
-def equals_text_style(expected: TextStyle) -> ValueAssertion[TextStyle]:
+def equals_text_style(expected: TextStyle) -> Assertion[TextStyle]:
     return matches_text_style(
         color=asrt.equals(expected.color),
         font_style=asrt.equals(expected.font_style),
@@ -58,9 +58,9 @@ def equals_text_style(expected: TextStyle) -> ValueAssertion[TextStyle]:
 
 
 def matches_element_properties(
-        indentation: ValueAssertion[Indentation] = matches_indentation(),
-        text_style: ValueAssertion[Optional[TextStyle]] = matches_text_style(),
-) -> ValueAssertion[ElementProperties]:
+        indentation: Assertion[Indentation] = matches_indentation(),
+        text_style: Assertion[Optional[TextStyle]] = matches_text_style(),
+) -> Assertion[ElementProperties]:
     return asrt.is_instance_with__many(ElementProperties,
                                        [
                                            asrt.sub_component('indentation',
@@ -74,14 +74,14 @@ def matches_element_properties(
                                        ])
 
 
-def equals_element_properties(expected: ElementProperties) -> ValueAssertion[ElementProperties]:
+def equals_element_properties(expected: ElementProperties) -> Assertion[ElementProperties]:
     return matches_element_properties(
         indentation=equals_indentation(expected.indentation),
         text_style=equals_text_style(expected.text_style),
     )
 
 
-def matches_document(major_blocks: ValueAssertion[Sequence[MajorBlock]]) -> ValueAssertion[Document]:
+def matches_document(major_blocks: Assertion[Sequence[MajorBlock]]) -> Assertion[Document]:
     return asrt.is_instance_with(Document,
                                  asrt.sub_component(
                                      'major blocks',
@@ -91,9 +91,9 @@ def matches_document(major_blocks: ValueAssertion[Sequence[MajorBlock]]) -> Valu
                                  )
 
 
-def matches_major_block(minor_blocks: ValueAssertion[Sequence[MinorBlock]] = asrt.anything_goes(),
-                        properties: ValueAssertion[ElementProperties] = matches_element_properties()
-                        ) -> ValueAssertion[MajorBlock]:
+def matches_major_block(minor_blocks: Assertion[Sequence[MinorBlock]] = asrt.anything_goes(),
+                        properties: Assertion[ElementProperties] = matches_element_properties()
+                        ) -> Assertion[MajorBlock]:
     return asrt.is_instance_with__many(MajorBlock, [
         asrt.sub_component(
             'minor blocks',
@@ -111,17 +111,17 @@ def matches_major_block(minor_blocks: ValueAssertion[Sequence[MinorBlock]] = asr
     ])
 
 
-def matches_major_block__w_plain_properties(minor_blocks: ValueAssertion[Sequence[MinorBlock]],
-                                            ) -> ValueAssertion[MajorBlock]:
+def matches_major_block__w_plain_properties(minor_blocks: Assertion[Sequence[MinorBlock]],
+                                            ) -> Assertion[MajorBlock]:
     return matches_major_block(
         minor_blocks=minor_blocks,
         properties=equals_element_properties(ELEMENT_PROPERTIES__NEUTRAL),
     )
 
 
-def matches_minor_block(line_elements: ValueAssertion[Sequence[LineElement]],
-                        properties: ValueAssertion[ElementProperties] = matches_element_properties()
-                        ) -> ValueAssertion[MinorBlock]:
+def matches_minor_block(line_elements: Assertion[Sequence[LineElement]],
+                        properties: Assertion[ElementProperties] = matches_element_properties()
+                        ) -> Assertion[MinorBlock]:
     return asrt.is_instance_with__many(MinorBlock, [
         asrt.sub_component(
             'line elements',
@@ -139,17 +139,17 @@ def matches_minor_block(line_elements: ValueAssertion[Sequence[LineElement]],
     ])
 
 
-def matches_minor_block__w_plain_properties(line_elements: ValueAssertion[Sequence[LineElement]],
-                                            ) -> ValueAssertion[MinorBlock]:
+def matches_minor_block__w_plain_properties(line_elements: Assertion[Sequence[LineElement]],
+                                            ) -> Assertion[MinorBlock]:
     return matches_minor_block(
         line_elements=line_elements,
         properties=equals_element_properties(ELEMENT_PROPERTIES__NEUTRAL),
     )
 
 
-def matches_line_element(line_object: ValueAssertion[LineObject],
-                         properties: ValueAssertion[ElementProperties] = matches_element_properties()
-                         ) -> ValueAssertion[LineElement]:
+def matches_line_element(line_object: Assertion[LineObject],
+                         properties: Assertion[ElementProperties] = matches_element_properties()
+                         ) -> Assertion[LineElement]:
     return asrt.is_instance_with__many(LineElement, [
         asrt.sub_component(
             'line object',
@@ -164,17 +164,17 @@ def matches_line_element(line_object: ValueAssertion[LineObject],
     ])
 
 
-def matches_line_element__w_plain_properties(line_object: ValueAssertion[LineObject]
-                                             ) -> ValueAssertion[LineElement]:
+def matches_line_element__w_plain_properties(line_object: Assertion[LineObject]
+                                             ) -> Assertion[LineElement]:
     return matches_line_element(
         line_object=line_object,
         properties=equals_element_properties(ELEMENT_PROPERTIES__NEUTRAL)
     )
 
 
-def is_pre_formatted_string(string: ValueAssertion[str] = asrt.anything_goes(),
-                            string_is_line_ended: ValueAssertion[bool] = asrt.anything_goes()
-                            ) -> ValueAssertion[LineObject]:
+def is_pre_formatted_string(string: Assertion[str] = asrt.anything_goes(),
+                            string_is_line_ended: Assertion[bool] = asrt.anything_goes()
+                            ) -> Assertion[LineObject]:
     return asrt.is_instance_with__many(
         PreFormattedStringLineObject,
         [
@@ -190,9 +190,9 @@ def is_pre_formatted_string(string: ValueAssertion[str] = asrt.anything_goes(),
     )
 
 
-def is_string(string: ValueAssertion[str] = asrt.anything_goes(),
-              string_is_line_ended: ValueAssertion[bool] = asrt.anything_goes()
-              ) -> ValueAssertion[LineObject]:
+def is_string(string: Assertion[str] = asrt.anything_goes(),
+              string_is_line_ended: Assertion[bool] = asrt.anything_goes()
+              ) -> Assertion[LineObject]:
     return asrt.is_instance_with__many(
         StringLineObject,
         [
@@ -208,16 +208,16 @@ def is_string(string: ValueAssertion[str] = asrt.anything_goes(),
     )
 
 
-def is_string__not_line_ended(string: ValueAssertion[str] = asrt.anything_goes(),
-                              ) -> ValueAssertion[LineObject]:
+def is_string__not_line_ended(string: Assertion[str] = asrt.anything_goes(),
+                              ) -> Assertion[LineObject]:
     return is_string(
         string,
         string_is_line_ended=asrt.equals(False),
     )
 
 
-def is_string_lines(strings: ValueAssertion[Sequence[str]] = asrt.anything_goes(),
-                    ) -> ValueAssertion[LineObject]:
+def is_string_lines(strings: Assertion[Sequence[str]] = asrt.anything_goes(),
+                    ) -> Assertion[LineObject]:
     return asrt.is_instance_with__many(
         StringLinesObject,
         [
@@ -231,7 +231,7 @@ def is_string_lines(strings: ValueAssertion[Sequence[str]] = asrt.anything_goes(
     )
 
 
-def is_any_line_object() -> ValueAssertion[LineObject]:
+def is_any_line_object() -> Assertion[LineObject]:
     return _IS_ANY_LINE_OBJECT
 
 
@@ -246,7 +246,7 @@ class _LineObjectChecker(LineObjectVisitor[unittest.TestCase, None]):
         is_string_lines().apply_without_message(put, x)
 
 
-class _IsAnyLineObject(asrt.ValueAssertionBase[LineObject]):
+class _IsAnyLineObject(asrt.AssertionBase[LineObject]):
     _LINE_OBJECT_CHECKER = _LineObjectChecker()
 
     def _apply(self,

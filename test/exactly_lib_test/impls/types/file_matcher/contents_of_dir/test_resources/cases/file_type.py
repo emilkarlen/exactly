@@ -14,7 +14,7 @@ from exactly_lib_test.impls.types.files_matcher.models.test_resources import mod
 from exactly_lib_test.impls.types.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def file_type_detection__recursive__depth_0() -> Sequence[NameAndValue[SingleCaseGenerator]]:
@@ -100,7 +100,7 @@ class _TestTypeTypeDetection(SingleCaseGenerator):
             self._checked_dir_contents,
         )
 
-    def expected_symbols(self) -> Sequence[ValueAssertion[SymbolReference]]:
+    def expected_symbols(self) -> Sequence[Assertion[SymbolReference]]:
         return [
             self._helper.files_matcher_sym_assertion(),
         ]

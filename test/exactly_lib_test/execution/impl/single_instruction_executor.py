@@ -16,7 +16,7 @@ from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_t
 from exactly_lib_test.section_document.test_resources.elements import new_ls_from_line
 from exactly_lib_test.test_case.result.test_resources import failure_details_assertions as asrt_failure_details
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite() -> unittest.TestSuite:
@@ -127,7 +127,7 @@ class Test(unittest.TestCase):
     def _check_failure_result(self,
                               expected_status: ExecutionFailureStatus,
                               result: SingleInstructionExecutionFailure,
-                              expected_failure_details: ValueAssertion[FailureDetails]):
+                              expected_failure_details: Assertion[FailureDetails]):
         self.assertIsNotNone(result,
                              'Failure information is expected')
         self.assertEqual(result.status,

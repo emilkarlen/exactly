@@ -23,7 +23,7 @@ from exactly_lib_test.test_resources.source import abs_stx_utils
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions.process_result_info_assertions import \
     process_result_for_exit_value
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import RelOptPathAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as program_abs_stx
@@ -49,7 +49,7 @@ def suite() -> unittest.TestSuite:
 
 
 class StdinOfActPhaseShouldBeEmptyWhenNotSetInSetupPhase(SetupWithoutPreprocessorAndDefaultActor):
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def test_case(self) -> str:
@@ -63,7 +63,7 @@ class StdinOfActPhaseShouldBeEmptyWhenNotSetInSetupPhase(SetupWithoutPreprocesso
 
 
 class StdinOfActPhaseShouldBeValueSetInSetupPhase(SetupWithoutPreprocessorAndDefaultActor):
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def test_case(self) -> str:
@@ -82,7 +82,7 @@ class StdinOfActPhaseShouldBeValueSetInSetupPhase(SetupWithoutPreprocessorAndDef
 
 
 class StdinOfActPhaseShouldBeLastValueSetInSetupPhaseWhenSetMultipleTimes(SetupWithoutPreprocessorAndDefaultActor):
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def test_case(self) -> str:
@@ -104,7 +104,7 @@ class StdinOfActPhaseShouldBeLastValueSetInSetupPhaseWhenSetMultipleTimes(SetupW
 
 class StdinShouldBeValidWhen1stSetToInvalidBut2ndSetToValidInSetupPhaseWhenSetMultipleTimes(
     SetupWithoutPreprocessorAndDefaultActor):
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def test_case(self) -> str:
@@ -127,7 +127,7 @@ class StdinShouldBeValidWhen1stSetToInvalidBut2ndSetToValidInSetupPhaseWhenSetMu
 
 
 class ResultShouldBeHardErrorWhenSetupPhaseSetsStdinToNonExistingFileInSds(SetupWithoutPreprocessorAndDefaultActor):
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__HARD_ERROR)
 
     def test_case(self) -> str:

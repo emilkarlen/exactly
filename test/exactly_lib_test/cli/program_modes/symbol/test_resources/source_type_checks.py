@@ -6,13 +6,13 @@ from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_argument
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
 from exactly_lib_test.test_resources.process import SubProcessResult
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def check_case_and_suite(put: unittest.TestCase,
                          symbol_command_arguments: List[str],
                          arrangement: Arrangement,
-                         expectation: ValueAssertion[SubProcessResult]):
+                         expectation: Assertion[SubProcessResult]):
     """
     Runs one test with arguments for test-case and one for test-suite.
 

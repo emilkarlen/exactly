@@ -14,7 +14,7 @@ from exactly_lib_test.impls.instructions.setup.test_resources.instruction_check 
 from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite() -> unittest.TestSuite:
@@ -41,7 +41,7 @@ class ConfigurationForTheSetupPhase(SetupConfigurationBase, test_impl.Configurat
         return Expectation(main_result=asrt_sh.is_hard_error())
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
+                                             assertion_on_error_message: Assertion[str] = asrt.anything_goes()):
         return Expectation(
             post_validation_result=svh_assertions.is_validation_error(
                 asrt_text_doc.is_string_for_test(assertion_on_error_message)

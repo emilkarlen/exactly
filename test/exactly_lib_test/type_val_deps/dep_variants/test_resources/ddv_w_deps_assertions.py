@@ -8,7 +8,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import Depen
     MultiDependenciesDdv, DirDependencies, resolving_dependencies_from_dir_dependencies, DirDependentValue
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.application_environment import \
     application_environment_for_test
 
@@ -16,33 +16,33 @@ T = TypeVar('T')
 
 
 def matches_single_dir_dependent_value(resolving_dependency: Optional[DirectoryStructurePartition],
-                                       resolved_value: Callable[[TestCaseDs], ValueAssertion[T]]
-                                       ) -> ValueAssertion[DependenciesAwareDdv[T]]:
-    return SingleDirDependentValueAssertion(resolving_dependency,
-                                            resolved_value)
+                                       resolved_value: Callable[[TestCaseDs], Assertion[T]]
+                                       ) -> Assertion[DependenciesAwareDdv[T]]:
+    return SingleDirDependentAssertion(resolving_dependency,
+                                       resolved_value)
 
 
 def matches_multi_dir_dependent_value(dir_dependencies: DirDependencies,
-                                      resolved_value: Callable[[TestCaseDs], ValueAssertion[T]],
+                                      resolved_value: Callable[[TestCaseDs], Assertion[T]],
                                       tcds: TestCaseDs = fake_tcds(),
-                                      ) -> ValueAssertion[DependenciesAwareDdv[T]]:
-    return MultiDirDependentValueAssertion(dir_dependencies,
-                                           resolved_value,
-                                           tcds)
+                                      ) -> Assertion[DependenciesAwareDdv[T]]:
+    return MultiDirDependentAssertion(dir_dependencies,
+                                      resolved_value,
+                                      tcds)
 
 
-def matches_dir_dependent_value(resolved_value: Callable[[TestCaseDs], ValueAssertion[T]],
+def matches_dir_dependent_value(resolved_value: Callable[[TestCaseDs], Assertion[T]],
                                 tcds: TestCaseDs = fake_tcds(),
-                                ) -> ValueAssertion[DirDependentValue[T]]:
+                                ) -> Assertion[DirDependentValue[T]]:
     return _DirDependentValueAssertion(resolved_value,
                                        tcds)
 
 
 def matches_dir_dependent_value__with_adv(
-        primitive_value: Callable[[TestCaseDs], ValueAssertion[T]],
+        primitive_value: Callable[[TestCaseDs], Assertion[T]],
         tcds: TestCaseDs = fake_tcds(),
-) -> ValueAssertion[DirDependentValue[ApplicationEnvironmentDependentValue[T]]]:
-    def adv_assertion(tcds_: TestCaseDs) -> ValueAssertion[DirDependentValue[ApplicationEnvironmentDependentValue[T]]]:
+) -> Assertion[DirDependentValue[ApplicationEnvironmentDependentValue[T]]]:
+    def adv_assertion(tcds_: TestCaseDs) -> Assertion[DirDependentValue[ApplicationEnvironmentDependentValue[T]]]:
         ae = application_environment_for_test()
         return asrt.is_instance_with(
             ApplicationEnvironmentDependentValue,
@@ -56,10 +56,10 @@ def matches_dir_dependent_value__with_adv(
                                        tcds)
 
 
-class DirDependentValueAssertionBase(Generic[T], ValueAssertionBase[DependenciesAwareDdv[T]]):
+class DirDependentAssertionBase(Generic[T], AssertionBase[DependenciesAwareDdv[T]]):
     def __init__(self,
-                 resolving_dependencies: ValueAssertion[Set[DirectoryStructurePartition]],
-                 resolved_value: Callable[[TestCaseDs], ValueAssertion[T]],
+                 resolving_dependencies: Assertion[Set[DirectoryStructurePartition]],
+                 resolved_value: Callable[[TestCaseDs], Assertion[T]],
                  tcds: TestCaseDs,
                  ):
         self.resolving_dependencies = resolving_dependencies
@@ -126,10 +126,10 @@ class DirDependentValueAssertionBase(Generic[T], ValueAssertionBase[Dependencies
                                           message_builder.for_sub_component('resolved primitive value'))
 
 
-class SingleDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
+class SingleDirDependentAssertion(DirDependentAssertionBase[T]):
     def __init__(self,
                  resolving_dependency: Optional[DirectoryStructurePartition],
-                 resolved_value: Callable[[TestCaseDs], ValueAssertion[T]],
+                 resolved_value: Callable[[TestCaseDs], Assertion[T]],
                  tcds: TestCaseDs = fake_tcds(),
                  ):
         resolving_dependencies = asrt.is_empty if resolving_dependency is None else asrt.equals({resolving_dependency})
@@ -165,10 +165,10 @@ class SingleDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
                                               message_builder.for_sub_component('value_post_sds'))
 
 
-class MultiDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
+class MultiDirDependentAssertion(DirDependentAssertionBase[T]):
     def __init__(self,
                  dir_dependencies: DirDependencies,
-                 resolved_value: Callable[[TestCaseDs], ValueAssertion[T]],
+                 resolved_value: Callable[[TestCaseDs], Assertion[T]],
                  tcds: TestCaseDs = fake_tcds(),
                  ):
         super().__init__(asrt.equals(resolving_dependencies_from_dir_dependencies(dir_dependencies)),
@@ -192,9 +192,9 @@ class MultiDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
                                                   message_builder.for_sub_component('dir_dependencies'))
 
 
-class _DirDependentValueAssertion(ValueAssertionBase[T]):
+class _DirDependentValueAssertion(Generic[T], AssertionBase[T]):
     def __init__(self,
-                 resolved_value: Callable[[TestCaseDs], ValueAssertion[T]],
+                 resolved_value: Callable[[TestCaseDs], Assertion[T]],
                  tcds: TestCaseDs = fake_tcds(),
                  ):
         self.resolved_value = resolved_value

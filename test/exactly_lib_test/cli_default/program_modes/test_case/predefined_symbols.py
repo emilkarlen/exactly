@@ -25,7 +25,7 @@ from exactly_lib_test.test_resources.process import SubProcessResultInfo
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.value_assertions.process_result_info_assertions import \
     process_result_for_exit_value
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite_that_requires_main_program_runner_with_default_setup(main_program_runner) -> unittest.TestSuite:
@@ -33,7 +33,7 @@ def suite_that_requires_main_program_runner_with_default_setup(main_program_runn
 
 
 class AllBuiltinStringSymbolsShouldBeAvailableInTheSetupPhase(SetupWithoutPreprocessorAndDefaultActor):
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def test_case(self) -> str:
@@ -52,7 +52,7 @@ class AllBuiltinStringSymbolsShouldBeAvailableInTheSetupPhase(SetupWithoutPrepro
 
 
 class AllPredefinedTestCaseDirSymbolsShouldBeAvailableInTheSetupPhase(SetupWithoutPreprocessorAndDefaultActor):
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def test_case(self) -> str:
@@ -80,7 +80,7 @@ class TestStringValueEqualsBuiltinBase(SetupWithoutPreprocessorAndDefaultActor, 
         self._py_pgm_that_writes_expected_to_stdout = py_pgm_that_writes_expected_to_stdout
         self._name_of_checked_symbol = name_of_checked_symbol
 
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> List[FileSystemElement]:

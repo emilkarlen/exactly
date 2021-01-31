@@ -18,7 +18,7 @@ from exactly_lib_test.test_resources.files.file_structure import File, DirConten
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.source.abstract_syntax_impls import OptionallyOnNewLine
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as program_abs_stx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
@@ -205,7 +205,7 @@ class TestNonZeroExitCode(unittest.TestCase):
     def _check_exit_codes(self,
                           exit_code_cases: List[int],
                           ignore_exit_code: bool,
-                          expected_primitive: Callable[[str], ValueAssertion[StringSource]],
+                          expected_primitive: Callable[[str], Assertion[StringSource]],
                           ):
         # ARRANGE #
 
@@ -287,7 +287,7 @@ class TestNonZeroExitCode(unittest.TestCase):
                         ),
 
     @staticmethod
-    def _contents_access_raises_hard_error(contents_on_output_channel: str) -> ValueAssertion[StringSource]:
+    def _contents_access_raises_hard_error(contents_on_output_channel: str) -> Assertion[StringSource]:
         return asrt_string_source.pre_post_freeze(
             asrt_str_src_contents.contents_raises_hard_error(
                 may_depend_on_external_resources=asrt.equals(True)
@@ -296,7 +296,7 @@ class TestNonZeroExitCode(unittest.TestCase):
         )
 
     @staticmethod
-    def _contents_is_output_from_program(contents_on_output_channel: str) -> ValueAssertion[StringSource]:
+    def _contents_is_output_from_program(contents_on_output_channel: str) -> Assertion[StringSource]:
         return asrt_string_source.pre_post_freeze__matches_str__const_2(
             contents_on_output_channel,
             may_depend_on_external_resources=True,

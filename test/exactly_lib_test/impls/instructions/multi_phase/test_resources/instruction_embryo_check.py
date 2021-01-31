@@ -32,7 +32,7 @@ from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class PostActionCheck:
@@ -63,17 +63,17 @@ class Expectation(Generic[T]):
     def __init__(self,
                  validation_pre_sds: ValidationResultAssertion = asrt.is_none,
                  validation_post_sds: ValidationResultAssertion = asrt.is_none,
-                 main_result: ValueAssertion[T] = asrt.anything_goes(),
+                 main_result: Assertion[T] = asrt.anything_goes(),
                  main_raises_hard_error: bool = False,
-                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
-                 symbols_after_main: ValueAssertion[SymbolTable] = asrt.anything_goes(),
-                 main_side_effects_on_sds: ValueAssertion[SandboxDs] = asrt.anything_goes(),
-                 side_effects_on_tcds: ValueAssertion[TestCaseDs] = asrt.anything_goes(),
-                 side_effects_on_hds: ValueAssertion[pathlib.Path] = asrt.anything_goes(),
-                 source: ValueAssertion[ParseSource] = asrt.anything_goes(),
-                 main_side_effect_on_environment_variables: ValueAssertion[Dict[str, str]] = asrt.anything_goes(),
+                 symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                 symbols_after_main: Assertion[SymbolTable] = asrt.anything_goes(),
+                 main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+                 side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+                 side_effects_on_hds: Assertion[pathlib.Path] = asrt.anything_goes(),
+                 source: Assertion[ParseSource] = asrt.anything_goes(),
+                 main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
                  assertion_on_instruction_environment:
-                 ValueAssertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
+                 Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
                  ):
         self.validation_pre_sds = validation_pre_sds
         self.validation_post_sds = validation_post_sds
@@ -92,16 +92,16 @@ class Expectation(Generic[T]):
 class MultiSourceExpectation(Generic[T]):
     def __init__(self,
                  validation: ValidationAssertions = ValidationAssertions.all_passes(),
-                 main_result: ValueAssertion[T] = asrt.anything_goes(),
+                 main_result: Assertion[T] = asrt.anything_goes(),
                  main_raises_hard_error: bool = False,
-                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
-                 symbols_after_main: ValueAssertion[SymbolTable] = asrt.anything_goes(),
-                 main_side_effects_on_sds: ValueAssertion[SandboxDs] = asrt.anything_goes(),
-                 side_effects_on_tcds: ValueAssertion[TestCaseDs] = asrt.anything_goes(),
-                 side_effects_on_hds: ValueAssertion[pathlib.Path] = asrt.anything_goes(),
-                 main_side_effect_on_environment_variables: ValueAssertion[Dict[str, str]] = asrt.anything_goes(),
+                 symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                 symbols_after_main: Assertion[SymbolTable] = asrt.anything_goes(),
+                 main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+                 side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+                 side_effects_on_hds: Assertion[pathlib.Path] = asrt.anything_goes(),
+                 main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
                  instruction_environment:
-                 ValueAssertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
+                 Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
                  ):
         self.validation = validation
         self.main_result = main_result
@@ -114,7 +114,7 @@ class MultiSourceExpectation(Generic[T]):
         self.main_side_effect_on_environment_variables = main_side_effect_on_environment_variables
         self.instruction_application_environment = instruction_environment
 
-    def as_w_source(self, source: ValueAssertion[ParseSource]) -> Expectation:
+    def as_w_source(self, source: Assertion[ParseSource]) -> Expectation:
         return Expectation(
             self.validation.pre_sds,
             self.validation.post_sds,
@@ -132,17 +132,17 @@ class MultiSourceExpectation(Generic[T]):
 
 
 def expectation(validation: ValidationAssertions = validation_utils.ValidationAssertions.all_passes(),
-                main_result: ValueAssertion[T] = asrt.anything_goes(),
+                main_result: Assertion[T] = asrt.anything_goes(),
                 main_raises_hard_error: bool = False,
-                symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
-                symbols_after_main: ValueAssertion[SymbolTable] = asrt.anything_goes(),
-                main_side_effects_on_sds: ValueAssertion[SandboxDs] = asrt.anything_goes(),
-                side_effects_on_tcds: ValueAssertion[TestCaseDs] = asrt.anything_goes(),
-                side_effects_on_home: ValueAssertion[pathlib.Path] = asrt.anything_goes(),
-                source: ValueAssertion[ParseSource] = asrt.anything_goes(),
-                main_side_effect_on_environment_variables: ValueAssertion[Dict[str, str]] = asrt.anything_goes(),
+                symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                symbols_after_main: Assertion[SymbolTable] = asrt.anything_goes(),
+                main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+                side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+                side_effects_on_home: Assertion[pathlib.Path] = asrt.anything_goes(),
+                source: Assertion[ParseSource] = asrt.anything_goes(),
+                main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
                 assertion_on_instruction_environment:
-                ValueAssertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
+                Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
                 ) -> Expectation[T]:
     return Expectation(
         validation_pre_sds=validation.pre_sds,
@@ -273,7 +273,7 @@ class Executor(Generic[T]):
                  put: unittest.TestCase,
                  arrangement: ArrangementWithSds,
                  expectation: Expectation[T],
-                 extra_source_expectation: ValueAssertion[ParseSource] = asrt.anything_goes(),
+                 extra_source_expectation: Assertion[ParseSource] = asrt.anything_goes(),
                  ):
         self.put = put
         self.arrangement = arrangement

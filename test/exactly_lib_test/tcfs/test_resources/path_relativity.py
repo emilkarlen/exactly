@@ -1,9 +1,9 @@
 from exactly_lib.tcfs.path_relativity import PathRelativityVariants, SpecificPathRelativity
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
-def equals_path_relativity(expected: SpecificPathRelativity) -> ValueAssertion:
+def equals_path_relativity(expected: SpecificPathRelativity) -> Assertion:
     return asrt.is_instance_with(SpecificPathRelativity,
                                  asrt.and_([
                                      asrt.sub_component('is_absolute',
@@ -19,7 +19,7 @@ def equals_path_relativity(expected: SpecificPathRelativity) -> ValueAssertion:
                                  )
 
 
-def path_relativity_variants_equals(expected: PathRelativityVariants) -> ValueAssertion:
+def path_relativity_variants_equals(expected: PathRelativityVariants) -> Assertion:
     return asrt.is_instance_with(PathRelativityVariants,
                                  asrt.And([
                                      asrt.sub_component('rel_option_types',

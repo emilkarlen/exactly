@@ -19,7 +19,7 @@ from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorTha
 from exactly_lib_test.test_case.actor.test_resources.actors import dummy_actor
 from exactly_lib_test.test_resources.functions import Sequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import AssertionBase
 
 
 def suite() -> unittest.TestSuite:
@@ -161,7 +161,7 @@ class SetEnvironmentVariableViaInstructionArguments:
         environment.proc_exe_settings.environ[self.variable_name] = 'value that is not used by the test'
 
 
-class AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(ValueAssertionBase):
+class AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(AssertionBase):
     def __init__(self,
                  phases_that_contains_the_environment_variable: set):
         self.phases_that_contains_the_environment_variable = phases_that_contains_the_environment_variable

@@ -8,7 +8,7 @@ from exactly_lib.type_val_deps.types.string_.strings_ddvs import string_ddv_of_s
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources.data_symbol_utils import symbol_reference
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_assertions as sut
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
@@ -236,7 +236,7 @@ class MatchesCase:
     def __init__(self,
                  name: str,
                  expected: lr.ListDdv,
-                 expected_references: ValueAssertion,
+                 expected_references: Assertion,
                  actual: lr.ListSdv,
                  symbols: SymbolTable = None):
         self.name = name

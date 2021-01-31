@@ -17,7 +17,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arra
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
@@ -65,7 +65,7 @@ def check_non_full_and_full(
 def check_non_full_and_full__multi(
         put: unittest.TestCase,
         files_condition_argument: FilesConditionArg,
-        symbol_references: ValueAssertion[Sequence[SymbolReference]],
+        symbol_references: Assertion[Sequence[SymbolReference]],
         model: ModelConstructor,
         execution: Sequence[NExArr[PrimAndExeExpectation[FilesMatcher, bool],
                                    Arrangement]],

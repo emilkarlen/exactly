@@ -1,7 +1,7 @@
 import unittest
 from typing import TypeVar, Callable
 
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class TestException(Exception):
@@ -18,7 +18,7 @@ def test_case_with_failure_exception_set_to_test_exception() -> unittest.TestCas
 T = TypeVar('T')
 
 
-def assert_that_assertion_fails(assertion: ValueAssertion[T],
+def assert_that_assertion_fails(assertion: Assertion[T],
                                 actual: T):
     put = test_case_with_failure_exception_set_to_test_exception()
     with put.assertRaises(TestException):

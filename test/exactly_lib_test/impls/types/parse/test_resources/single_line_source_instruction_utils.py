@@ -11,13 +11,13 @@ from exactly_lib_test.test_resources.source import layout as tokens_layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.test_utils import NEA, NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class SourceCase(tuple):
     def __new__(cls,
                 source: ParseSource,
-                expectation: ValueAssertion[ParseSource],
+                expectation: Assertion[ParseSource],
                 ):
         return tuple.__new__(cls, (source,
                                    expectation))
@@ -27,7 +27,7 @@ class SourceCase(tuple):
         return self[0]
 
     @property
-    def expectation(self) -> ValueAssertion[ParseSource]:
+    def expectation(self) -> Assertion[ParseSource]:
         return self[1]
 
 
@@ -35,7 +35,7 @@ class NSourceCase(tuple):
     def __new__(cls,
                 name: str,
                 source: ParseSource,
-                expectation: ValueAssertion[ParseSource],
+                expectation: Assertion[ParseSource],
                 ):
         return tuple.__new__(cls, (name, source, expectation))
 
@@ -48,7 +48,7 @@ class NSourceCase(tuple):
         return self[1]
 
     @property
-    def expectation(self) -> ValueAssertion[ParseSource]:
+    def expectation(self) -> Assertion[ParseSource]:
         return self[2]
 
 
@@ -175,7 +175,7 @@ def equivalent_source_variants_for_consume_until_end_of_last_line(
 
 def equivalent_source_variants_for_consume_until_end_of_last_line2(
         arguments: Arguments
-) -> List[NIE[ParseSource, ValueAssertion[ParseSource]]]:
+) -> List[NIE[ParseSource, Assertion[ParseSource]]]:
     return [
         NIE(
             repr(extra_lines),
@@ -189,7 +189,7 @@ def equivalent_source_variants_for_consume_until_end_of_last_line2(
 
 def equivalent_source_variants_for_consume_until_end_of_last_line_3(
         arguments: str
-) -> List[NIE[ParseSource, ValueAssertion[ParseSource]]]:
+) -> List[NIE[ParseSource, Assertion[ParseSource]]]:
     return [
         NIE(
             'following_lines={}'.format(repr(extra_lines)),
@@ -240,7 +240,7 @@ T = TypeVar('T')
 
 def equivalent_source_variants__for_expression_parser_2(
         original_arguments: Arguments,
-) -> List[NEA[ValueAssertion[ParseSource], ParseSource]]:
+) -> List[NEA[Assertion[ParseSource], ParseSource]]:
     num_lines = original_arguments.num_lines
     return [
         NEA(
@@ -259,7 +259,7 @@ def equivalent_source_variants__for_expression_parser_2(
 
 def equivalent_source_variants__for_expression_parser_3(
         original_source: str,
-) -> List[NEA[ValueAssertion[ParseSource], ParseSource]]:
+) -> List[NEA[Assertion[ParseSource], ParseSource]]:
     return equivalent_source_variants__for_expression_parser_2(
         Arguments.of_preformatted(original_source)
     )
@@ -267,7 +267,7 @@ def equivalent_source_variants__for_expression_parser_3(
 
 def equivalent_source_variants__for_expression_parser_3__nie(
         original_source: str,
-) -> List[NIE[ParseSource, ValueAssertion[ParseSource]]]:
+) -> List[NIE[ParseSource, Assertion[ParseSource]]]:
     return [
         NIE(nea.name, nea.expected, nea.actual)
         for nea in equivalent_source_variants__for_expression_parser_3(original_source)
@@ -283,7 +283,7 @@ def equivalent_source_variants__for_expr_parse__s__nsc(original_source: str) -> 
 
 def equivalent_source_variants__with_source_check__for_full_line_expression_parser(
         original_arguments: Arguments,
-) -> List[NEA[ValueAssertion[ParseSource], ParseSource]]:
+) -> List[NEA[Assertion[ParseSource], ParseSource]]:
     num_lines = original_arguments.num_lines
     return [
         NEA(
@@ -322,7 +322,7 @@ def equivalent_source_variants(put: unittest.TestCase,
 
 def equivalent_source_variants_with_assertion(put: unittest.TestCase,
                                               instruction_argument: str,
-                                              ) -> Iterator[Tuple[ParseSource, ValueAssertion[ParseSource]]]:
+                                              ) -> Iterator[Tuple[ParseSource, Assertion[ParseSource]]]:
     for following_lines, source_assertion in _SOURCE_VARIANT_TEST_CASES:
         with put.subTest(following_lines=repr(following_lines)):
             source = remaining_source(instruction_argument, following_lines)
@@ -330,7 +330,7 @@ def equivalent_source_variants_with_assertion(put: unittest.TestCase,
 
 
 def _source_variant_test_cases__multi_line(num_source_lines: int
-                                           ) -> List[Tuple[List[str], ValueAssertion[ParseSource]]]:
+                                           ) -> List[Tuple[List[str], Assertion[ParseSource]]]:
     return [
         ([], asrt_source.source_is_at_end),
         (['following line'], asrt_source.is_at_beginning_of_line(num_source_lines + 1)),
@@ -340,7 +340,7 @@ def _source_variant_test_cases__multi_line(num_source_lines: int
 
 def _source_variants_with_accepted_following_content_on_same_line(
         num_source_lines: int
-) -> List[Tuple[Arguments, ValueAssertion[ParseSource]]]:
+) -> List[Tuple[Arguments, Assertion[ParseSource]]]:
     return [
         (Arguments('', []), asrt_source.is_at_end_of_line(num_source_lines)),
         (Arguments('', ['following line']), asrt_source.is_at_end_of_line(num_source_lines)),
@@ -350,7 +350,7 @@ def _source_variants_with_accepted_following_content_on_same_line(
 
 def _equivalent_source_variants_for_consume_until_end_of_last_line(
         num_expression_lines: int = 1
-) -> List[Tuple[List[str], ValueAssertion[ParseSource]]]:
+) -> List[Tuple[List[str], Assertion[ParseSource]]]:
     source_expectation = asrt_source.is_at_end_of_line(num_expression_lines)
     return [
         ([],
@@ -367,7 +367,7 @@ def _equivalent_source_variants_for_consume_until_end_of_last_line(
 
 
 def _source_variants_with__for_expression_parser(num_expression_lines: int = 1
-                                                 ) -> List[Tuple[Arguments, ValueAssertion[ParseSource]]]:
+                                                 ) -> List[Tuple[Arguments, Assertion[ParseSource]]]:
     space = '  '
     following_argument = 'argumentOfOthers'
     return [
@@ -384,7 +384,7 @@ def _source_variants_with__for_expression_parser(num_expression_lines: int = 1
 
 
 def _source_variants_with__for_full_line_expression_parser(num_expression_lines: int = 1
-                                                           ) -> List[Tuple[List[str], ValueAssertion[ParseSource]]]:
+                                                           ) -> List[Tuple[List[str], Assertion[ParseSource]]]:
     source_expectation = asrt_source.is_at_end_of_line(num_expression_lines)
     return [
         ([], source_expectation),

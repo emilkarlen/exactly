@@ -7,7 +7,7 @@ from exactly_lib_test.impls.types.string_transformer.filter.line_numbers.test_re
 from exactly_lib_test.impls.types.string_transformer.test_resources import argument_building as args
 from exactly_lib_test.impls.types.string_transformer.test_resources import may_dep_on_ext_resources
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite() -> unittest.TestSuite:
@@ -26,7 +26,7 @@ class TestMayDependOnExternalResourcesShouldBeThatOfSourceModel(
         ]
         return model_constructor.of_lines(self, model_lines, may_depend_on_external_resources)
 
-    def expected_output_lines_for_model(self) -> ValueAssertion[List[str]]:
+    def expected_output_lines_for_model(self) -> Assertion[List[str]]:
         return asrt.anything_goes()
 
     def argument_cases(self) -> List[str]:

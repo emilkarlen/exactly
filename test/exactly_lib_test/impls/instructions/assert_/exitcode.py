@@ -26,7 +26,7 @@ from exactly_lib_test.test_case.test_resources.act_result import ActResultProduc
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import \
     IntegerMatcherSymbolContextOfPrimitiveConstant
@@ -248,7 +248,7 @@ class CaseWithSymbols:
         return SymbolContext.symbol_table_of_contexts(self.symbol_contexts)
 
     @property
-    def reference_assertions__string_made_up_of_just_strings(self) -> List[ValueAssertion[SymbolReference]]:
+    def reference_assertions__string_made_up_of_just_strings(self) -> List[Assertion[SymbolReference]]:
         return [
             symbol_context.reference_assertion__string_made_up_of_just_strings
             for symbol_context in self.symbol_contexts

@@ -25,7 +25,7 @@ from exactly_lib_test.test_resources.argument_renderer import SequenceOfArgument
     OptionArgument
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 PARSER = sut.parser.Parser()
 
@@ -104,8 +104,8 @@ def _mk_tcds_arrangement_post_act(tcds: Optional[TcdsArrangement]) -> TcdsArrang
 _NEUTRAL_TCDS_POST_ACT = TcdsArrangementPostAct()
 
 
-def _symbol_usages_assertion(reference_assertions: Sequence[ValueAssertion[SymbolReference]]
-                             ) -> ValueAssertion[Sequence[SymbolUsage]]:
+def _symbol_usages_assertion(reference_assertions: Sequence[Assertion[SymbolReference]]
+                             ) -> Assertion[Sequence[SymbolUsage]]:
     return asrt.matches_sequence([
         asrt.is_instance_with(SymbolReference, sr)
         for sr in reference_assertions
@@ -140,7 +140,7 @@ def _arguments(model_file: ModelFile,
     ])
 
 
-def _mk_validation_assertion(passes: bool) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
+def _mk_validation_assertion(passes: bool) -> Assertion[svh.SuccessOrValidationErrorOrHardError]:
     return (
         asrt_svh.is_success()
         if passes

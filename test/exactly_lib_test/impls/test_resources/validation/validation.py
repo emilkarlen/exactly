@@ -4,9 +4,9 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
-ValidationResultAssertion = ValueAssertion[Optional[TextRenderer]]
+ValidationResultAssertion = Assertion[Optional[TextRenderer]]
 
 
 def is_arbitrary_validation_failure() -> ValidationResultAssertion:
@@ -17,7 +17,7 @@ def is_validation_success() -> ValidationResultAssertion:
     return asrt.is_none
 
 
-def matches_validation_failure(message: ValueAssertion[str]) -> ValidationResultAssertion:
+def matches_validation_failure(message: Assertion[str]) -> ValidationResultAssertion:
     return asrt_text_doc.is_string_for_test(message)
 
 
@@ -88,7 +88,7 @@ class ValidationAssertions:
         )
 
     @staticmethod
-    def pre_sds_fails(expected_err_msg: ValueAssertion[str] = asrt.anything_goes()
+    def pre_sds_fails(expected_err_msg: Assertion[str] = asrt.anything_goes()
                       ) -> 'ValidationAssertions':
         return ValidationAssertions(
             pre_sds=asrt.is_not_none_and(asrt_text_doc.is_string_for_test(expected_err_msg)),
@@ -96,7 +96,7 @@ class ValidationAssertions:
         )
 
     @staticmethod
-    def post_sds_fails(expected_err_msg: ValueAssertion[str] = asrt.anything_goes()
+    def post_sds_fails(expected_err_msg: Assertion[str] = asrt.anything_goes()
                        ) -> 'ValidationAssertions':
         return ValidationAssertions(
             pre_sds=asrt.is_none,

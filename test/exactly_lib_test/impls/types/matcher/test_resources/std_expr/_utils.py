@@ -26,7 +26,7 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.symbol.test_resources.types import LOGIC_VALUE_TYPE_2_VALUE_TYPE
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
@@ -90,7 +90,7 @@ class AssertionsHelper(Generic[MODEL]):
     def __init__(self, configuration: MatcherConfiguration[MODEL]):
         self.conf = configuration
 
-    def is_sym_ref_to(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+    def is_sym_ref_to(self, symbol_name: str) -> Assertion[SymbolReference]:
         restriction_expectation = is_value_type_restriction(
             LOGIC_VALUE_TYPE_2_VALUE_TYPE[self.conf.logic_type()]
         )
@@ -98,7 +98,7 @@ class AssertionsHelper(Generic[MODEL]):
         return asrt_sym_usage.matches_reference__ref(asrt.equals(symbol_name),
                                                      restriction_expectation)
 
-    def is_sym_refs_to(self, symbol_names: List[str]) -> ValueAssertion[Sequence[SymbolReference]]:
+    def is_sym_refs_to(self, symbol_names: List[str]) -> Assertion[Sequence[SymbolReference]]:
         return asrt.matches_sequence([
             self.is_sym_ref_to(operand_symbol_name)
             for operand_symbol_name in symbol_names
@@ -187,7 +187,7 @@ class BinaryOperatorValidationCheckHelper(Generic[MODEL]):
         op = ' ' + self.operator + ' '
         return Arguments(op.join(self.operands))
 
-    def symbol_references_expectation(self) -> ValueAssertion[Sequence[SymbolReference]]:
+    def symbol_references_expectation(self) -> Assertion[Sequence[SymbolReference]]:
         return self.helper.is_sym_refs_to(self.operands)
 
     def failing_validation_cases(self) -> Sequence[NExArr[PrimAndExeExpectation[MatcherWTrace[MODEL],
@@ -400,5 +400,5 @@ class _MatcherThatShouldBeIgnoredDueToLaziness(Generic[MODEL], MatcherWTrace[MOD
         self._put.fail(self._name + ': This matcher must not be applied, due to laziness')
 
 
-def trace_equals(expected: Node[bool]) -> ValueAssertion[NodeRenderer[bool]]:
+def trace_equals(expected: Node[bool]) -> Assertion[NodeRenderer[bool]]:
     return asrt_trace_rendering.matches_node_renderer(asrt_d_tree.equals_node(expected))

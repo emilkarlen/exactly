@@ -10,7 +10,7 @@ from exactly_lib_test.test_resources.main_program import main_program_check_base
 from exactly_lib_test.test_resources.main_program.main_program_runner_utils import ARGUMENTS_FOR_TEST_INTERPRETER
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class SetupBase(ABC):
@@ -45,7 +45,7 @@ class SetupBase(ABC):
         expectation.apply_with_message(put, actual, 'stdout')
 
     @abstractmethod
-    def stdout_expectation(self, root_path: pathlib.Path) -> ValueAssertion[str]:
+    def stdout_expectation(self, root_path: pathlib.Path) -> Assertion[str]:
         pass
 
     def _translate_actual_stdout_before_assertion(self, output_on_stdout: str) -> str:
@@ -64,7 +64,7 @@ class SetupWStdoutLinesCheckBase(SetupBase, ABC):
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         pass
 
-    def stdout_expectation(self, root_path: pathlib.Path) -> ValueAssertion[str]:
+    def stdout_expectation(self, root_path: pathlib.Path) -> Assertion[str]:
         expected_lines = self.expected_stdout_lines(root_path)
         expected_str = lines_content(expected_lines)
         return asrt.equals(expected_str)

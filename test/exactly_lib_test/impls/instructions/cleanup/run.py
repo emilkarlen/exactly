@@ -10,7 +10,7 @@ from exactly_lib_test.impls.instructions.multi_phase.run_program.test_resources.
     suite_for, Configuration
 from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite() -> unittest.TestSuite:
@@ -23,7 +23,7 @@ class TheConfiguration(CleanupConfigurationBase, Configuration):
 
     def expect_failure_because_specified_file_under_sds_is_missing(
             self,
-            symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+            symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
     ):
         return Expectation(main_result=asrt_sh.is_hard_error(),
                            symbol_usages=symbol_usages)

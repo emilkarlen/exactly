@@ -21,7 +21,7 @@ from exactly_lib_test.execution.impl.symbols_handling.symbol_validation import R
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext, ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources import data_type_reference_visitor
 from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_satisfied, is_failure_of_direct_reference, \
@@ -154,7 +154,7 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
     def _check_direct_with_satisfied_variants_for_restriction_on_every_node(
             self,
             restriction_on_direct_node: vr.ValueRestriction,
-            expected_result: ValueAssertion[Optional[Failure]]):
+            expected_result: Assertion[Optional[Failure]]):
         symbol_to_check = StringConstantSymbolContext('symbol_name')
         restriction_on_every_cases = [
             NameAndValue(
@@ -647,10 +647,10 @@ class TestDataSymbolValueContext(DataSymbolValueContext[DataTypeSdvForTest]):
         return self._data_value_type
 
     @property
-    def assert_equals_sdv(self) -> ValueAssertion[SymbolDependentValue]:
+    def assert_equals_sdv(self) -> Assertion[SymbolDependentValue]:
         raise NotImplementedError('unsupported')
 
-    def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+    def reference_assertion(self, symbol_name: str) -> Assertion[SymbolReference]:
         raise NotImplementedError('unsupported')
 
 
@@ -706,7 +706,7 @@ class TestLogicSymbolValueContext(LogicSymbolValueContext[FullDepsSdvForTest]):
                                            logic_value_type,
                                            definition_source)
 
-    def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+    def reference_assertion(self, symbol_name: str) -> Assertion[SymbolReference]:
         raise NotImplementedError('unsupported')
 
     @property

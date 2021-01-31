@@ -5,11 +5,11 @@ from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget, CrossReferenceId
 from exactly_lib_test.definitions.test_resources import cross_reference_id_va
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import AssertionBase
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 
-class _IsSeeAlsoItemVa(ValueAssertionBase):
+class _IsSeeAlsoItemAssertion(AssertionBase):
     _class_assertion = asrt.IsInstance(struct.SeeAlsoItem)
 
     def _apply(self,
@@ -40,7 +40,7 @@ class _IsSeeAlsoItem(struct.SeeAlsoItemVisitor):
         assertion.apply(self.put, x, self.message_builder)
 
 
-class _IsSeeAlsoTarget(ValueAssertionBase):
+class _IsSeeAlsoTarget(AssertionBase):
     def _apply(self,
                put: unittest.TestCase,
                value,
@@ -67,7 +67,7 @@ is_see_also_url_info = asrt.is_instance_with(struct.SeeAlsoUrlInfo,
                                                                     struct.SeeAlsoUrlInfo.url.fget,
                                                                     asrt.is_instance(str)),
                                              ]))
-is_see_also_item = _IsSeeAlsoItemVa()
+is_see_also_item = _IsSeeAlsoItemAssertion()
 
 is_see_also_item_list = asrt.is_list_of(is_see_also_item)
 

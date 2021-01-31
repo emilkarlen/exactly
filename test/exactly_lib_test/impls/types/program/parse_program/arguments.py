@@ -25,7 +25,7 @@ from exactly_lib_test.impls.types.test_resources import relativity_options
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
     is_reference_restrictions__to_type_convertible_to_string
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
@@ -238,7 +238,7 @@ class TestShellArgumentsAndSymbolReferences(unittest.TestCase):
             StringLiteralAbsStx(command_line_syntax_str)
         )
 
-        def expected_program(env: AssertionResolvingEnvironment) -> ValueAssertion[Program]:
+        def expected_program(env: AssertionResolvingEnvironment) -> Assertion[Program]:
             return asrt_pgm_val.matches_program(
                 command=asrt_command.equals_shell_command(
                     command_line=command_line_str,
@@ -309,7 +309,7 @@ class TestShellArgumentsAndSymbolReferences(unittest.TestCase):
             ]
         )
 
-        def expected_program(env: AssertionResolvingEnvironment) -> ValueAssertion[Program]:
+        def expected_program(env: AssertionResolvingEnvironment) -> Assertion[Program]:
             return asrt_pgm_val.matches_program(
                 command=asrt_command.equals_shell_command(
                     command_line=shell_command_line_of_referenced_program,

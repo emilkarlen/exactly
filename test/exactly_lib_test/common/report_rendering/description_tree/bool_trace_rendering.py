@@ -8,7 +8,7 @@ from exactly_lib.util.simple_textstruct.structure import ElementProperties, INDE
     Indentation, TEXT_STYLE__NEUTRAL
 from exactly_lib_test.common.report_rendering.description_tree.test_resources import ConstantNodeRendererTestImpl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct
 
 
@@ -66,7 +66,7 @@ class Test(unittest.TestCase):
 
 def _check(put: unittest.TestCase,
            rendered_node: Node[bool],
-           expectation: ValueAssertion[s.MajorBlock],
+           expectation: Assertion[s.MajorBlock],
            ):
     renderer = sut.BoolTraceRenderer(ConstantNodeRendererTestImpl(rendered_node))
 
@@ -79,7 +79,7 @@ def _check(put: unittest.TestCase,
     expectation.apply_without_message(put, actual)
 
 
-def _matches_header_line_element(node: Node[bool]) -> ValueAssertion[s.LineElement]:
+def _matches_header_line_element(node: Node[bool]) -> Assertion[s.LineElement]:
     return asrt_struct.matches_line_element(
         line_object=asrt_struct.is_string__not_line_ended(
             asrt.equals(_expected_header_str(node))
@@ -96,7 +96,7 @@ def _expected_header_style(node: Node[bool]) -> ElementProperties:
                              )
 
 
-def _matches_string_detail_line_element(detail: StringDetail, depth: int) -> ValueAssertion[s.LineElement]:
+def _matches_string_detail_line_element(detail: StringDetail, depth: int) -> Assertion[s.LineElement]:
     return asrt_struct.matches_line_element(
         line_object=asrt_struct.is_string__not_line_ended(
             asrt.equals(str(detail.string))),

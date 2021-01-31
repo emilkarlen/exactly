@@ -27,7 +27,7 @@ from exactly_lib_test.test_resources.source import layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class SourceArrangement:
@@ -46,17 +46,17 @@ class SourceArrangement:
 class Expectation:
     def __init__(
             self,
-            validation_post_sds: ValueAssertion[svh.SuccessOrValidationErrorOrHardError] =
+            validation_post_sds: Assertion[svh.SuccessOrValidationErrorOrHardError] =
             svh_assertions.is_success(),
 
-            validation_pre_sds: ValueAssertion[svh.SuccessOrValidationErrorOrHardError] =
+            validation_pre_sds: Assertion[svh.SuccessOrValidationErrorOrHardError] =
             svh_assertions.is_success(),
 
-            main_result: ValueAssertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
-            symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
-            main_side_effects_on_sds: ValueAssertion[SandboxDs] = asrt.anything_goes(),
-            main_side_effects_on_tcds: ValueAssertion[TestCaseDs] = asrt.anything_goes(),
-            source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+            main_result: Assertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
+            symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+            main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+            main_side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+            source: Assertion[ParseSource] = asrt.anything_goes(),
     ):
         self.validation_post_sds = validation_post_sds
         self.validation_pre_sds = validation_pre_sds
@@ -70,8 +70,8 @@ class Expectation:
 class ParseExpectation:
     def __init__(
             self,
-            source: ValueAssertion[ParseSource] = asrt.anything_goes(),
-            symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+            source: Assertion[ParseSource] = asrt.anything_goes(),
+            symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
     ):
         self.source = source
         self.symbol_usages = symbol_usages
@@ -80,15 +80,15 @@ class ParseExpectation:
 class ExecutionExpectation:
     def __init__(
             self,
-            validation_post_sds: ValueAssertion[svh.SuccessOrValidationErrorOrHardError] =
+            validation_post_sds: Assertion[svh.SuccessOrValidationErrorOrHardError] =
             svh_assertions.is_success(),
 
-            validation_pre_sds: ValueAssertion[svh.SuccessOrValidationErrorOrHardError] =
+            validation_pre_sds: Assertion[svh.SuccessOrValidationErrorOrHardError] =
             svh_assertions.is_success(),
 
-            main_result: ValueAssertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
-            main_side_effects_on_sds: ValueAssertion[SandboxDs] = asrt.anything_goes(),
-            main_side_effects_on_tcds: ValueAssertion[TestCaseDs] = asrt.anything_goes(),
+            main_result: Assertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
+            main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+            main_side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
     ):
         self.validation_post_sds = validation_post_sds
         self.validation_pre_sds = validation_pre_sds
@@ -108,7 +108,7 @@ class Expectation2:
 
 class MultiSourceExpectation:
     def __init__(self,
-                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                 symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                  execution: ExecutionExpectation = ExecutionExpectation(),
                  ):
         self.symbol_usages = symbol_usages
@@ -117,11 +117,11 @@ class MultiSourceExpectation:
 
 def expectation(
         validation: ValidationExpectationSvh = ValidationExpectationSvh.passes(),
-        main_result: ValueAssertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
-        symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
-        main_side_effects_on_sds: ValueAssertion[SandboxDs] = asrt.anything_goes(),
-        main_side_effects_on_tcds: ValueAssertion[TestCaseDs] = asrt.anything_goes(),
-        source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+        main_result: Assertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
+        symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+        main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+        main_side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+        source: Assertion[ParseSource] = asrt.anything_goes(),
 ) -> Expectation:
     return Expectation(
         validation_pre_sds=validation.pre_sds,
@@ -214,7 +214,7 @@ class Checker:
             self,
             put: unittest.TestCase,
             source: SourceArrangement,
-            symbol_usages: ValueAssertion[Sequence[SymbolUsage]],
+            symbol_usages: Assertion[Sequence[SymbolUsage]],
             execution: Sequence[NExArr[ExecutionExpectation, ArrangementPostAct2]],
     ):
         for parse_source in equivalent_source_variants__with_source_check__consume_last_line(

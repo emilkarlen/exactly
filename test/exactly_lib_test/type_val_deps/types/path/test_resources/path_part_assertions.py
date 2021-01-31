@@ -4,21 +4,21 @@ from exactly_lib.type_val_deps.types.path.path_part_ddvs import PathPartDdvAsFix
     PathPartDdvAsNothing, \
     PathPartDdv, PathPartDdvVisitor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 
 
-def equals_path_part_string(file_name: str) -> ValueAssertion:
+def equals_path_part_string(file_name: str) -> Assertion:
     return asrt.is_instance_with(PathPartDdvAsFixedPath,
                                  asrt.sub_component('value',
                                                     lambda x: x.value(),
                                                     asrt.equals(file_name)))
 
 
-def equals_path_part_nothing() -> ValueAssertion:
+def equals_path_part_nothing() -> Assertion:
     return asrt.is_instance(PathPartDdvAsNothing)
 
 
-def equals_path_part(expected: PathPartDdv) -> ValueAssertion:
+def equals_path_part(expected: PathPartDdv) -> Assertion:
     return _EqualsPathPart(expected)
 
 
@@ -38,7 +38,7 @@ class _EqualsPathPartDdvVisitor(PathPartDdvVisitor):
         return equals_path_part_nothing().apply(self.put, self.actual, self.message_builder)
 
 
-class _EqualsPathPart(ValueAssertionBase):
+class _EqualsPathPart(AssertionBase):
     def __init__(self, expected: PathPartDdv):
         self.expected = expected
 

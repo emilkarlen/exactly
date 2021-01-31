@@ -29,7 +29,7 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes__raw import \
     RawSystemCommandLineAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
@@ -79,7 +79,7 @@ class ProgramNameCase:
                  name: str,
                  source_element: RawSystemCommandLineAbsStx,
                  expected_resolved_value: str,
-                 expected_symbol_references: List[ValueAssertion[SymbolReference]]):
+                 expected_symbol_references: List[Assertion[SymbolReference]]):
         self.name = name
         self.source_element = source_element
         self.expected_resolved_value = expected_resolved_value
@@ -91,7 +91,7 @@ class ArgumentsCase:
                  name: str,
                  source_elements: Sequence[ArgumentAbsStx],
                  expected_resolved_values: Callable[[TestCaseDs], List[str]],
-                 expected_symbol_references: List[ValueAssertion[SymbolReference]],
+                 expected_symbol_references: List[Assertion[SymbolReference]],
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                  ):
         self.name = name
@@ -290,7 +290,7 @@ def _check_parsing_of_program(put: unittest.TestCase,
         expected_references_assertion = asrt.matches_sequence(program_case.expected_symbol_references +
                                                               argument_case.expected_symbol_references)
 
-        def expected_program(env: AssertionResolvingEnvironment) -> ValueAssertion[Program]:
+        def expected_program(env: AssertionResolvingEnvironment) -> Assertion[Program]:
             return asrt_pgm_val.matches_program(
                 command=asrt_command.equals_system_program_command(
                     program=program_case.expected_resolved_value,

@@ -28,7 +28,7 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWi
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
 from exactly_lib_test.test_resources.tcds_and_symbols import sds_test, sds_env_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueIsNone
 from exactly_lib_test.type_val_deps.types.path.test_resources.sdv_assertions import matches_path_sdv
@@ -204,11 +204,11 @@ class TestCaseBase(sds_test.TestCaseBase):
                     expectation)
 
 
-def is_success() -> ValueAssertion:
+def is_success() -> Assertion:
     return ValueIsNone()
 
 
-def is_failure() -> ValueAssertion:
+def is_failure() -> Assertion:
     return asrt_renderer.is_renderer_of_major_blocks()
 
 
@@ -247,7 +247,7 @@ class CwdIs(sds_test.PostActionCheck):
                         'Current Working Directory')
 
 
-class CwdAssertion(ValueAssertionBase[TestCaseDs]):
+class CwdAssertion(AssertionBase[TestCaseDs]):
     def __init__(self,
                  expected_location: RelOptionType,
                  expected_base_name: str,
@@ -272,7 +272,7 @@ class CwdAssertion(ValueAssertionBase[TestCaseDs]):
                         message_builder.apply('current directory'))
 
 
-class CwdSdsAssertion(ValueAssertionBase[SandboxDs]):
+class CwdSdsAssertion(AssertionBase[SandboxDs]):
     def __init__(self,
                  expected_location: RelSdsOptionType,
                  expected_base_name: str,

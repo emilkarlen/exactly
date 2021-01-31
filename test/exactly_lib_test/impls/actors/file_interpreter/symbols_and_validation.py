@@ -39,7 +39,7 @@ from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_pr
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext, \
     PathSymbolContext
@@ -400,7 +400,7 @@ class TestArgumentsAreProgramArguments(unittest.TestCase):
             program_arguments.remaining_part_of_current_line_as_literal(text_until_end_of_line),
         ])
 
-        def get_command_assertion(tcds: TestCaseDs) -> ValueAssertion[Command]:
+        def get_command_assertion(tcds: TestCaseDs) -> Assertion[Command]:
             symbols = SymbolTable.empty()
             return asrt_command.matches_command(
                 asrt.anything_goes(),
@@ -477,7 +477,7 @@ class TestArgumentsOfInterpreterAndActAreConcatenated(unittest.TestCase):
             )
         )
 
-        def get_command_assertion(tcds: TestCaseDs) -> ValueAssertion[Command]:
+        def get_command_assertion(tcds: TestCaseDs) -> Assertion[Command]:
             symbols = SymbolTable.empty()
             return asrt_command.matches_command(
                 asrt.anything_goes(),

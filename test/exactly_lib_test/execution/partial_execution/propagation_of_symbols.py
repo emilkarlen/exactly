@@ -484,7 +484,7 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
 def _check_result(put: unittest.TestCase,
                   expected_phase_2_step_2_recorded_value: dict,
                   actual_phase_2_step_2_recorded_value: dict):
-    assertion = psr.Phase2step2recordedValueAssertion(expected_phase_2_step_2_recorded_value)
+    assertion = psr.Phase2step2recordedAssertion(expected_phase_2_step_2_recorded_value)
     assertion.apply_with_message(put,
                                  actual_phase_2_step_2_recorded_value,
                                  'recorded values')

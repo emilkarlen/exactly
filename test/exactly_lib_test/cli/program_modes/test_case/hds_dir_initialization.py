@@ -19,7 +19,7 @@ from exactly_lib_test.test_resources.files.file_structure import file_with_lines
     Dir
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite() -> unittest.TestSuite:
@@ -118,7 +118,8 @@ class TestInitialHdsDirPaths(unittest.TestCase):
 class ConfigPhaseInstructionThatAssertsHdsDirs(ConfigurationPhaseInstruction):
     def __init__(self,
                  put: unittest.TestCase,
-                 assertion: ValueAssertion[Path]):
+                 assertion: Assertion[Path],
+                 ):
         self.put = put
         self.assertion = assertion
 
@@ -133,7 +134,8 @@ class ConfigPhaseInstructionThatAssertsHdsDirs(ConfigurationPhaseInstruction):
 class ConfigPhaseInstructionParserThatAssertsSourceFileLocationInfo(InstructionParser):
     def __init__(self,
                  put: unittest.TestCase,
-                 assertion: ValueAssertion[Path]):
+                 assertion: Assertion[Path],
+                 ):
         self.put = put
         self.assertion = assertion
 
@@ -146,7 +148,7 @@ class ConfigPhaseInstructionParserThatAssertsSourceFileLocationInfo(InstructionP
 
 def test_case_definition_with_config_phase_assertion_instruction(
         put: unittest.TestCase,
-        hds_dir_assertion: ValueAssertion[Path],
+        hds_dir_assertion: Assertion[Path],
 ) -> TestCaseDefinitionForMainProgram:
     return test_case_definition_for(
         InstructionsSetup(

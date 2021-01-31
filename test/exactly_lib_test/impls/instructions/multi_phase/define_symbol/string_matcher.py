@@ -33,7 +33,7 @@ from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYM
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.type_sdv_assertions import \
     matches_sdv_of_string_matcher
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
@@ -238,7 +238,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
                  put: unittest.TestCase,
                  matcher_symbol_name: str,
                  actual_model_contents: str,
-                 expected_matcher_result: ValueAssertion[MatchingResult]):
+                 expected_matcher_result: Assertion[MatchingResult]):
         super().__init__(matcher_symbol_name,
                          expected_matcher_result)
         self.put = put

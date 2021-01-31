@@ -14,7 +14,7 @@ from exactly_lib_test.impls.types.string_source.test_resources.dir_file_space_ge
     dir_file_space_with_existing_dir
 from exactly_lib_test.impls.types.string_transformer.test_resources import freeze_check
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_prims.string_source.test_resources import string_sources
 from exactly_lib_test.type_val_prims.string_source.test_resources.string_sources import StringSourceMethod
 
@@ -242,7 +242,7 @@ class Case:
                  name: str,
                  transformer: Callable[[StringSource], StringSource],
                  source_model_contents: str,
-                 source_model_method_invocations: ValueAssertion[Sequence[StringSourceMethod]],
+                 source_model_method_invocations: Assertion[Sequence[StringSourceMethod]],
                  ):
         self.name = name
         self.transformer = transformer

@@ -9,7 +9,7 @@ from exactly_lib_test.impls.types.line_matcher.test_resources.model_assertions i
 from exactly_lib_test.test_resources.iterator import IteratorWCheckOfMaxNumRequestedElements
 from exactly_lib_test.test_resources.test_utils import ArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 LineAndModel = Tuple[str, LineMatcherLine]
 
@@ -17,7 +17,7 @@ LineAndModel = Tuple[str, LineMatcherLine]
 class ExecutionExpectation:
     def __init__(self,
                  max_num_lines_from_iter: int,
-                 result: ValueAssertion[Sequence[LineAndModel]],
+                 result: Assertion[Sequence[LineAndModel]],
                  ):
         self.max_num_lines_from_iter = max_num_lines_from_iter
         self.result = result
@@ -57,13 +57,13 @@ class ModelSetup:
     def matches_lines(self,
                       first_line_num: int,
                       last_line_num: int,
-                      ) -> ValueAssertion[Sequence[LineAndModel]]:
+                      ) -> Assertion[Sequence[LineAndModel]]:
         lines_full_contents = self.model[first_line_num - 1:last_line_num]
         return matches_lines(first_line_num, lines_full_contents)
 
     def matches_lines__mb_empty(self,
                                 expected_output_lines: Optional[Tuple[int, int]],
-                                ) -> ValueAssertion[Sequence[LineAndModel]]:
+                                ) -> Assertion[Sequence[LineAndModel]]:
         return (
             asrt.is_empty_sequence
             if expected_output_lines is None
@@ -121,7 +121,7 @@ def _check(put: unittest.TestCase,
            model: Sequence[str],
            interval: IntInterval,
            max_num_lines_from_iter: int,
-           expectation: ValueAssertion[Sequence[LineAndModel]]
+           expectation: Assertion[Sequence[LineAndModel]]
            ):
     # ACT #
     iterator_checker = IteratorWCheckOfMaxNumRequestedElements(put, max_num_lines_from_iter)

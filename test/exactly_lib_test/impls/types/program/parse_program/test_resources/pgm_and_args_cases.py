@@ -19,7 +19,7 @@ from exactly_lib_test.tcfs.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions as asrt_path
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as pgm_abs_stx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import PgmAndArgsAbsStx, \
     ProgramOfSymbolReferenceAbsStx
@@ -32,7 +32,7 @@ class PgmAndArgsCase:
     def __init__(self,
                  name: str,
                  pgm_and_args: PgmAndArgsAbsStx,
-                 expected_command_driver: Callable[[AssertionResolvingEnvironment], ValueAssertion[CommandDriver]],
+                 expected_command_driver: Callable[[AssertionResolvingEnvironment], Assertion[CommandDriver]],
                  symbols: Sequence[SymbolContext] = (),
                  tcds: TcdsPopulator = tcds_populators.empty(),
                  mk_arrangement: Callable[[SymbolTable], Arrangement] =
@@ -48,7 +48,7 @@ class PgmAndArgsCase:
     @staticmethod
     def wo_tcds(name: str,
                 pgm_and_args: PgmAndArgsAbsStx,
-                expected_command_driver: Callable[[AssertionResolvingEnvironment], ValueAssertion[CommandDriver]],
+                expected_command_driver: Callable[[AssertionResolvingEnvironment], Assertion[CommandDriver]],
                 symbols: Sequence[SymbolContext] = (),
                 ) -> 'PgmAndArgsCase':
         return PgmAndArgsCase(
@@ -63,7 +63,7 @@ class PgmAndArgsCase:
     @staticmethod
     def w_tcds(name: str,
                pgm_and_args: PgmAndArgsAbsStx,
-               expected_command_driver: Callable[[AssertionResolvingEnvironment], ValueAssertion[CommandDriver]],
+               expected_command_driver: Callable[[AssertionResolvingEnvironment], Assertion[CommandDriver]],
                tcds: TcdsPopulator,
                symbols: Sequence[SymbolContext] = (),
                ) -> 'PgmAndArgsCase':
@@ -82,11 +82,11 @@ class PgmAndArgsCase:
         return SymbolContext.symbol_table_of_contexts(self.symbols)
 
     @property
-    def references_assertion(self) -> ValueAssertion[Sequence[SymbolReference]]:
+    def references_assertion(self) -> Assertion[Sequence[SymbolReference]]:
         return SymbolContext.references_assertion_of_contexts(self.symbols)
 
     @property
-    def usages_assertion(self) -> ValueAssertion[Sequence[SymbolUsage]]:
+    def usages_assertion(self) -> Assertion[Sequence[SymbolUsage]]:
         return SymbolContext.usages_assertion_of_contexts(self.symbols)
 
 

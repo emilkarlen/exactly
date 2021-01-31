@@ -16,7 +16,7 @@ from exactly_lib_test.test_resources.programs.python_program_execution import \
     PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE
 from exactly_lib_test.test_resources.recording import MaxNumberOfTimesChecker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite() -> unittest.TestSuite:
@@ -220,7 +220,7 @@ class TestCaptureOutputFromProcess(unittest.TestCase):
                              contents_of_stdout_file)
 
 
-def is_open() -> ValueAssertion[sut.SpooledTextFile]:
+def is_open() -> Assertion[sut.SpooledTextFile]:
     return asrt.sub_component(
         'closed',
         sut.SpooledTextFile.closed.fget,
@@ -230,7 +230,7 @@ def is_open() -> ValueAssertion[sut.SpooledTextFile]:
 
 def is_at_pos_with_remaining_contents(position: int,
                                       remaining_contents: str,
-                                      ) -> ValueAssertion[sut.SpooledTextFile]:
+                                      ) -> Assertion[sut.SpooledTextFile]:
     return asrt.and_([
         asrt.sub_component(
             'tell',
@@ -245,7 +245,7 @@ def is_at_pos_with_remaining_contents(position: int,
     ])
 
 
-def contents_from_start(contents: str) -> ValueAssertion[sut.SpooledTextFile]:
+def contents_from_start(contents: str) -> Assertion[sut.SpooledTextFile]:
     return asrt.and_([
         asrt.after_manipulation(
             _seek_to_start,
@@ -313,7 +313,7 @@ def _read_until_eof__via_readlines_ctx_mgr(f: sut.SpooledTextFile) -> str:
         return ''.join(lines)
 
 
-def type_is_mem_buff() -> ValueAssertion[sut.SpooledTextFile]:
+def type_is_mem_buff() -> Assertion[sut.SpooledTextFile]:
     return asrt.and_([
         asrt.sub_component(
             'is_mem_buff',
@@ -328,9 +328,9 @@ def type_is_mem_buff() -> ValueAssertion[sut.SpooledTextFile]:
     ])
 
 
-def type_is_file_on_disk(path_of_file_on_disk: ValueAssertion[pathlib.Path],
-                         fileno: ValueAssertion[int] = asrt.anything_goes(),
-                         ) -> ValueAssertion[sut.SpooledTextFile]:
+def type_is_file_on_disk(path_of_file_on_disk: Assertion[pathlib.Path],
+                         fileno: Assertion[int] = asrt.anything_goes(),
+                         ) -> Assertion[sut.SpooledTextFile]:
     return asrt.and_([
         asrt.sub_component(
             'is_mem_buff',
@@ -357,7 +357,7 @@ def type_is_file_on_disk(path_of_file_on_disk: ValueAssertion[pathlib.Path],
 
 def is_open_mem_buff_with_contents(position: int,
                                    remaining_contents: str,
-                                   full_contents: str) -> ValueAssertion[sut.SpooledTextFile]:
+                                   full_contents: str) -> Assertion[sut.SpooledTextFile]:
     return asrt.and_([
         is_open(),
         type_is_mem_buff(),
@@ -371,10 +371,10 @@ def is_open_mem_buff_with_contents(position: int,
     ])
 
 
-def is_file_on_disk_with_remaining_contents(path_of_file_on_disk: ValueAssertion[pathlib.Path],
+def is_file_on_disk_with_remaining_contents(path_of_file_on_disk: Assertion[pathlib.Path],
                                             position: int,
                                             remaining_contents: str,
-                                            ) -> ValueAssertion[sut.SpooledTextFile]:
+                                            ) -> Assertion[sut.SpooledTextFile]:
     return asrt.and_([
         is_open(),
         type_is_file_on_disk(path_of_file_on_disk),

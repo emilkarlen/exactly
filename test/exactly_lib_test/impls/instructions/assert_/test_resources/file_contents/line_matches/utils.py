@@ -15,7 +15,7 @@ from exactly_lib_test.impls.types.test_resources.negation_argument_handling impo
 from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class TestCaseBase(unittest.TestCase):
@@ -33,7 +33,7 @@ class TestCaseBase(unittest.TestCase):
             quantifier: Quantifier,
             actual_file_contents: str,
             symbols: SymbolTable = None,
-            expected_symbol_usages: ValueAssertion = asrt.is_empty_sequence):
+            expected_symbol_usages: Assertion = asrt.is_empty_sequence):
         for expectation_type in ExpectationType:
             etc = pfh_expectation_type_config(expectation_type)
             with self.subTest(expectation_type=expectation_type,

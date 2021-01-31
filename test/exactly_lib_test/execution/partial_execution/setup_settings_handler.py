@@ -20,7 +20,7 @@ from exactly_lib_test.test_case.test_resources.adv_w_validation_assertions impor
 from exactly_lib_test.test_case.test_resources.os_services_that_raises import OsServicesThatRaises
 from exactly_lib_test.test_case.test_resources.settings_builder_assertions import SettingsBuilderAssertionModel
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder
 
 
@@ -35,8 +35,8 @@ def suite() -> unittest.TestSuite:
 
 class Expectation:
     def __init__(self,
-                 settings_builder: ValueAssertion[SettingsBuilderAssertionModel],
-                 act_execution_info: ValueAssertion[AdvWvAssertionModel],
+                 settings_builder: Assertion[SettingsBuilderAssertionModel],
+                 act_execution_info: Assertion[AdvWvAssertionModel],
                  ):
         self.settings_builder = settings_builder
         self.act_execution_info = act_execution_info
@@ -117,14 +117,14 @@ class TestSetStdinToInvalidValue(unittest.TestCase):
         expectation.apply_without_message(self, actual)
 
 
-class _Assertion(ValueAssertionBase[SetupSettingsHandler]):
+class _Assertion(AssertionBase[SetupSettingsHandler]):
     FAKE_TCDS = fake_tcds()
     ENVIRONMENT = instruction_environment.fake_post_sds_environment()
     OS_SERVICES = OsServicesThatRaises()
 
     def __init__(self,
-                 settings_builder: ValueAssertion[SettingsBuilderAssertionModel],
-                 act_execution_info: ValueAssertion[AdvWvAssertionModel[ActExecutionInput]],
+                 settings_builder: Assertion[SettingsBuilderAssertionModel],
+                 act_execution_info: Assertion[AdvWvAssertionModel[ActExecutionInput]],
                  ):
         self._settings_builder = settings_builder
         self._act_execution_info = act_execution_info
@@ -162,7 +162,7 @@ class _Assertion(ValueAssertionBase[SetupSettingsHandler]):
         )
 
 
-def _resolved_stdin(expectation: ValueAssertion[Optional[StringSource]]) -> ValueAssertion[ActExecutionInput]:
+def _resolved_stdin(expectation: Assertion[Optional[StringSource]]) -> Assertion[ActExecutionInput]:
     return asrt.sub_component(
         'stdin',
         _get_stdin,
@@ -178,7 +178,7 @@ def _get_contents_as_str(x: StringSource) -> str:
     return x.contents().as_str
 
 
-def _contents_as_str_equals(expected: str) -> ValueAssertion[StringSource]:
+def _contents_as_str_equals(expected: str) -> Assertion[StringSource]:
     return asrt.sub_component(
         'contents as str',
         _get_contents_as_str,

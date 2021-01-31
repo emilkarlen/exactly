@@ -7,13 +7,13 @@ from exactly_lib.section_document.parsed_section_element import ParsedSectionEle
     ParsedNonInstructionElement, ParsedFileInclusionDirective
 from exactly_lib.util import line_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence
 
 
-def matches_instruction(source: ValueAssertion[line_source.LineSequence] = asrt.anything_goes(),
-                        instruction_info: ValueAssertion[InstructionInfo] = asrt.anything_goes(),
-                        ) -> ValueAssertion[ParsedSectionElement]:
+def matches_instruction(source: Assertion[line_source.LineSequence] = asrt.anything_goes(),
+                        instruction_info: Assertion[InstructionInfo] = asrt.anything_goes(),
+                        ) -> Assertion[ParsedSectionElement]:
     return asrt.is_instance_with(ParsedInstruction,
                                  asrt.and_([
                                      asrt.sub_component('source',
@@ -25,9 +25,9 @@ def matches_instruction(source: ValueAssertion[line_source.LineSequence] = asrt.
                                  ]))
 
 
-def matches_non_instruction(source: ValueAssertion[line_source.LineSequence] = asrt.anything_goes(),
-                            element_type: ValueAssertion[ElementType] = asrt.anything_goes(),
-                            ) -> ValueAssertion[ParsedSectionElement]:
+def matches_non_instruction(source: Assertion[line_source.LineSequence] = asrt.anything_goes(),
+                            element_type: Assertion[ElementType] = asrt.anything_goes(),
+                            ) -> Assertion[ParsedSectionElement]:
     return asrt.is_instance_with(ParsedNonInstructionElement,
                                  asrt.and_([
                                      asrt.sub_component('source',
@@ -39,25 +39,25 @@ def matches_non_instruction(source: ValueAssertion[line_source.LineSequence] = a
                                  ]))
 
 
-def equals_non_instruction(expected: ParsedNonInstructionElement) -> ValueAssertion[ParsedSectionElement]:
+def equals_non_instruction(expected: ParsedNonInstructionElement) -> Assertion[ParsedSectionElement]:
     return matches_non_instruction(equals_line_sequence(expected.source),
                                    asrt.equals(expected.element_type))
 
 
-def equals_empty_element(source: line_source.LineSequence) -> ValueAssertion[ParsedSectionElement]:
+def equals_empty_element(source: line_source.LineSequence) -> Assertion[ParsedSectionElement]:
     return matches_non_instruction(equals_line_sequence(source),
                                    asrt.equals(ElementType.EMPTY))
 
 
-def equals_comment_element(source: line_source.LineSequence) -> ValueAssertion[ParsedSectionElement]:
+def equals_comment_element(source: line_source.LineSequence) -> Assertion[ParsedSectionElement]:
     return matches_non_instruction(equals_line_sequence(source),
                                    asrt.equals(ElementType.COMMENT))
 
 
 def matches_file_inclusion_directive(
-        source: ValueAssertion[line_source.LineSequence] = asrt.anything_goes(),
-        files_to_include: ValueAssertion[Sequence[pathlib.Path]] = asrt.anything_goes(),
-) -> ValueAssertion[ParsedSectionElement]:
+        source: Assertion[line_source.LineSequence] = asrt.anything_goes(),
+        files_to_include: Assertion[Sequence[pathlib.Path]] = asrt.anything_goes(),
+) -> Assertion[ParsedSectionElement]:
     return asrt.is_instance_with(ParsedFileInclusionDirective,
                                  asrt.and_([
                                      asrt.sub_component('source',
@@ -70,7 +70,7 @@ def matches_file_inclusion_directive(
 
 
 def equals_file_inclusion_directive(expected: ParsedFileInclusionDirective
-                                    ) -> ValueAssertion[ParsedSectionElement]:
+                                    ) -> Assertion[ParsedSectionElement]:
     return matches_file_inclusion_directive(equals_line_sequence(expected.source),
                                             asrt.equals(expected.files_to_include))
 
@@ -82,8 +82,8 @@ def doc_to_mapping(doc: model.Document) -> Mapping[str, Sequence[model.SectionCo
     }
 
 
-def matches_document(expected: Mapping[str, Sequence[ValueAssertion[model.SectionContentElement]]]
-                     ) -> ValueAssertion[model.Document]:
+def matches_document(expected: Mapping[str, Sequence[Assertion[model.SectionContentElement]]]
+                     ) -> Assertion[model.Document]:
     expected_section_2_assertion = {
         section: asrt.matches_sequence(expected[section])
         for section in expected.keys()

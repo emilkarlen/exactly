@@ -4,19 +4,19 @@ from typing import Sequence
 from exactly_lib.util.description_tree.renderer import NodeRenderer, DetailsRenderer
 from exactly_lib.util.description_tree.tree import Node, Detail
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions
 
 
-def matches_node_renderer(rendered_node: ValueAssertion[Node] = described_tree_assertions.matches_node()
-                          ) -> ValueAssertion[NodeRenderer]:
+def matches_node_renderer(rendered_node: Assertion[Node] = described_tree_assertions.matches_node()
+                          ) -> Assertion[NodeRenderer]:
     return _MatchesNodeRendererAssertion(rendered_node)
 
 
-class _MatchesNodeRendererAssertion(ValueAssertionBase[NodeRenderer]):
+class _MatchesNodeRendererAssertion(AssertionBase[NodeRenderer]):
     def __init__(self,
-                 rendered_node: ValueAssertion[Node]):
+                 rendered_node: Assertion[Node]):
         self._rendered_node = rendered_node
 
     def _apply(self,
@@ -35,14 +35,14 @@ class _MatchesNodeRendererAssertion(ValueAssertionBase[NodeRenderer]):
 
 
 def matches_details_renderer(
-        rendered_details: ValueAssertion[Sequence[Detail]]
+        rendered_details: Assertion[Sequence[Detail]]
         = asrt.is_sequence_of(described_tree_assertions.is_any_detail())
-) -> ValueAssertion[DetailsRenderer]:
+) -> Assertion[DetailsRenderer]:
     return _MatchesDetailsRendererAssertion(rendered_details)
 
 
-class _MatchesDetailsRendererAssertion(ValueAssertionBase[DetailsRenderer]):
-    def __init__(self, rendered_details: ValueAssertion[Sequence[Detail]]):
+class _MatchesDetailsRendererAssertion(AssertionBase[DetailsRenderer]):
+    def __init__(self, rendered_details: Assertion[Sequence[Detail]]):
         self._rendered_details = rendered_details
 
     def _apply(self,

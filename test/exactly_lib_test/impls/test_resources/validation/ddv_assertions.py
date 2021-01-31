@@ -3,11 +3,11 @@ import unittest
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions, Expectation
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder, \
-    ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import AssertionBase, MessageBuilder, \
+    Assertion
 
 
-class DdvValidationAssertion(ValueAssertionBase[DdvValidator]):
+class DdvValidationAssertion(AssertionBase[DdvValidator]):
     def __init__(self,
                  tcds: TestCaseDs,
                  expectation: ValidationAssertions,
@@ -18,7 +18,7 @@ class DdvValidationAssertion(ValueAssertionBase[DdvValidator]):
     @staticmethod
     def of_expectation(expectation: Expectation,
                        tcds: TestCaseDs,
-                       ) -> ValueAssertion[DdvValidator]:
+                       ) -> Assertion[DdvValidator]:
         return DdvValidationAssertion(tcds, ValidationAssertions.of_expectation(expectation))
 
     def _apply(self,

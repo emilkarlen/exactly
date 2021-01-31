@@ -31,7 +31,7 @@ from exactly_lib_test.impls.types.test_resources import relativity_options
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
@@ -96,7 +96,7 @@ class ArgumentAccumulationTestExecutor(TestExecutorBase, ABC):
                 additional_argument
         )
 
-        def expected_program(env: AssertionResolvingEnvironment) -> ValueAssertion[Program]:
+        def expected_program(env: AssertionResolvingEnvironment) -> Assertion[Program]:
             return asrt_pgm_val.matches_program(
                 asrt_command.matches_command(
                     driver=command_driver.expected_command_driver(env),
@@ -147,7 +147,7 @@ class SymbolReferencesCase:
     def __init__(self,
                  name: str,
                  source: AbstractSyntax,
-                 references_expectation: ValueAssertion[Sequence[SymbolReference]],
+                 references_expectation: Assertion[Sequence[SymbolReference]],
                  expected_additional_arguments: List[str],
                  ):
         self.name = name
@@ -215,7 +215,7 @@ class SymbolReferencesTestExecutor(TestExecutorBase, ABC):
             ),
         ]
         for case in cases:
-            def expected_program(env: AssertionResolvingEnvironment) -> ValueAssertion[Program]:
+            def expected_program(env: AssertionResolvingEnvironment) -> Assertion[Program]:
                 return asrt_pgm_val.matches_program(
                     command=asrt_command.equals_system_program_command(
                         program=referenced_system_program_name,

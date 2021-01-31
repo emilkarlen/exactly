@@ -23,7 +23,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.test_utils import NEA, NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformer_assertions import \
@@ -472,7 +472,7 @@ class ValidationShouldFailWhenRegexIsInvalid(unittest.TestCase):
 
 def expectation_of_successful_replace_execution(
         output_lines: List[str],
-        symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.anything_goes(),
+        symbol_references: Assertion[Sequence[SymbolReference]] = asrt.anything_goes(),
 ) -> StExpectation:
     return integration_check.expectation_of_successful_execution_2(
         output_lines,

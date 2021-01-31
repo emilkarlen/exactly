@@ -5,14 +5,14 @@ from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentVal
 from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependentValue
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 
 
-def matches_sdv(sdv_type: ValueAssertion[SymbolDependentValue],
-                references: ValueAssertion[Sequence[SymbolReference]],
-                resolved_value: ValueAssertion[DirDependentValue],
-                custom: ValueAssertion[SymbolDependentValue] = asrt.anything_goes(),
-                symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentValue]:
+def matches_sdv(sdv_type: Assertion[SymbolDependentValue],
+                references: Assertion[Sequence[SymbolReference]],
+                resolved_value: Assertion[DirDependentValue],
+                custom: Assertion[SymbolDependentValue] = asrt.anything_goes(),
+                symbols: Optional[SymbolTable] = None) -> Assertion[SymbolDependentValue]:
     return _MatchesSdv(sdv_type,
                        references,
                        resolved_value,
@@ -20,14 +20,14 @@ def matches_sdv(sdv_type: ValueAssertion[SymbolDependentValue],
                        symbol_table_from_none_or_value(symbols))
 
 
-class _MatchesSdv(ValueAssertionBase[SymbolDependentValue]):
+class _MatchesSdv(AssertionBase[SymbolDependentValue]):
     """Implements as class to make it possible to set break points"""
 
     def __init__(self,
-                 sdv_type: ValueAssertion[SymbolDependentValue],
-                 references: ValueAssertion[Sequence[SymbolReference]],
-                 ddv: ValueAssertion[DirDependentValue],
-                 custom: ValueAssertion[SymbolDependentValue],
+                 sdv_type: Assertion[SymbolDependentValue],
+                 references: Assertion[Sequence[SymbolReference]],
+                 ddv: Assertion[DirDependentValue],
+                 custom: Assertion[SymbolDependentValue],
                  symbols: SymbolTable):
         self.sdv_type = sdv_type
         self.references = references

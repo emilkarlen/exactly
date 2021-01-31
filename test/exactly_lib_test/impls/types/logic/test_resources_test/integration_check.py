@@ -57,7 +57,7 @@ from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import sds_2_tcds_assertion
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils, \
     symbol_structure_assertions as asrt_sym
 from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as sym_asrt
@@ -85,7 +85,7 @@ CONFIGURATION = MatcherPropertiesConfiguration()
 
 
 class _CustomMatcherPropertiesConfiguration(MatcherPropertiesConfiguration):
-    def __init__(self, application_output: ValueAssertion[MatchingResult]):
+    def __init__(self, application_output: Assertion[MatchingResult]):
         super().__init__()
         self._application_output = application_output
 
@@ -576,7 +576,7 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
 class MatcherSdvThatAssertsThatSymbolsAreAsExpected(Generic[MODEL], MatcherSdv[MODEL]):
     def __init__(self,
                  put: unittest.TestCase,
-                 expectation: ValueAssertion[SymbolTable]):
+                 expectation: Assertion[SymbolTable]):
         self._put = put
         self._expectation = expectation
 
@@ -626,14 +626,14 @@ PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION 
 _MATCHER_THAT_MATCHES = sdv_ddv.sdv_from_primitive_value()
 
 
-def dir_is_empty(tcds_dir: RelOptionType) -> ValueAssertion[TestCaseDs]:
+def dir_is_empty(tcds_dir: RelOptionType) -> Assertion[TestCaseDs]:
     return asrt.sub_component(str(tcds_dir),
                               REL_OPTIONS_MAP[tcds_dir].root_resolver.from_tcds,
                               file_assertions.dir_is_empty())
 
 
 def parser_of_matcher_that_is_an_assertion_on_tcds(put: unittest.TestCase,
-                                                   assertion: ValueAssertion[TestCaseDs],
+                                                   assertion: Assertion[TestCaseDs],
                                                    ) -> Parser[MatcherSdv[int]]:
     return _constant_line_matcher_type_parser_of_matcher_ddv(
         _MatcherDdvThatIsAssertionOnTcds(put, assertion)
@@ -690,7 +690,7 @@ class _MatcherDdvThatIsAssertionOnTcds(MatcherDdv[int]):
 
     def __init__(self,
                  put: unittest.TestCase,
-                 assertion: ValueAssertion[TestCaseDs],
+                 assertion: Assertion[TestCaseDs],
                  ):
         self._put = put
         self._assertion = assertion

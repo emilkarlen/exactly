@@ -8,7 +8,7 @@ from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.file_utils.std import StdFiles, ProcessExecutionFile
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.test_resources.recording import MaxNumberOfTimesChecker
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class CommandExecutorWInitialAction(CommandExecutor):
@@ -102,7 +102,7 @@ class CommandExecutorThatRaisesHardError(CommandExecutor):
 class CommandExecutorThatChecksStdin(CommandExecutor):
     def __init__(self,
                  put: unittest.TestCase,
-                 expectation: ValueAssertion[ProcessExecutionFile],
+                 expectation: Assertion[ProcessExecutionFile],
                  exit_code: int = 0,
                  ):
         self._put = put

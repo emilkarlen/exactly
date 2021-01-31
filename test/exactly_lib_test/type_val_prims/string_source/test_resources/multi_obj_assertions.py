@@ -11,7 +11,7 @@ from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, MessageBuilder
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 from exactly_lib_test.type_val_prims.string_source.test_resources import contents_assertions as asrt_str_src_contents
 from exactly_lib_test.type_val_prims.string_source.test_resources import properties_access
@@ -53,9 +53,9 @@ class SourceConstructors:
 class ExpectationOnUnFrozenAndFrozen:
     def __init__(self,
                  un_frozen: Expectation,
-                 frozen_may_depend_on_external_resources: ValueAssertion[StringSourceContents]
+                 frozen_may_depend_on_external_resources: Assertion[StringSourceContents]
                  = asrt_str_src_contents.external_dependencies(asrt.is_instance(bool)),
-                 structure: ValueAssertion[NodeRenderer]
+                 structure: Assertion[NodeRenderer]
                  = asrt_trace_rendering.matches_node_renderer(),
                  ):
         self.structure = structure
@@ -64,9 +64,9 @@ class ExpectationOnUnFrozenAndFrozen:
 
     @staticmethod
     def equals(contents: str,
-               may_depend_on_external_resources: ValueAssertion[bool],
-               frozen_may_depend_on_external_resources: ValueAssertion[bool],
-               structure: ValueAssertion[NodeRenderer]
+               may_depend_on_external_resources: Assertion[bool],
+               frozen_may_depend_on_external_resources: Assertion[bool],
+               structure: Assertion[NodeRenderer]
                = asrt_trace_rendering.matches_node_renderer(),
                ) -> 'ExpectationOnUnFrozenAndFrozen':
         return ExpectationOnUnFrozenAndFrozen(
@@ -76,10 +76,10 @@ class ExpectationOnUnFrozenAndFrozen:
         )
 
     @staticmethod
-    def hard_error(expected: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text(),
-                   may_depend_on_external_resources: ValueAssertion[StringSourceContents]
+    def hard_error(expected: Assertion[TextRenderer] = asrt_text_doc.is_any_text(),
+                   may_depend_on_external_resources: Assertion[StringSourceContents]
                    = asrt_str_src_contents.external_dependencies(asrt.is_instance(bool)),
-                   structure: ValueAssertion[NodeRenderer]
+                   structure: Assertion[NodeRenderer]
                    = asrt_trace_rendering.matches_node_renderer(),
                    ) -> 'ExpectationOnUnFrozenAndFrozen':
         return ExpectationOnUnFrozenAndFrozen(
@@ -96,7 +96,7 @@ class ExpectationOnUnFrozenAndFrozen:
 
 
 def assertion_of_sequence_permutations(expectation: ExpectationOnUnFrozenAndFrozen,
-                                       ) -> ValueAssertion[SourceConstructors]:
+                                       ) -> Assertion[SourceConstructors]:
     return _SourceAssertionOnUnFrozenAndFrozen(
         expectation,
         properties_access.contents_cases__all_permutations(),
@@ -104,7 +104,7 @@ def assertion_of_sequence_permutations(expectation: ExpectationOnUnFrozenAndFroz
 
 
 def assertion_of_first_access_is_not_write_to(expectation: ExpectationOnUnFrozenAndFrozen,
-                                              ) -> ValueAssertion[SourceConstructors]:
+                                              ) -> Assertion[SourceConstructors]:
     return _SourceAssertionOnUnFrozenAndFrozen(
         expectation,
         properties_access.contents_cases__first_access_is_not_write_to(),
@@ -112,18 +112,18 @@ def assertion_of_first_access_is_not_write_to(expectation: ExpectationOnUnFrozen
 
 
 def assertion_of_2_seq_w_file_first_and_last(expectation: ExpectationOnUnFrozenAndFrozen,
-                                             ) -> ValueAssertion[SourceConstructors]:
+                                             ) -> Assertion[SourceConstructors]:
     return _SourceAssertionOnUnFrozenAndFrozen(
         expectation,
         properties_access.contents_cases__2_seq_w_file_first_and_last(),
     )
 
 
-class _SourceWithContentsVariantsAssertion(asrt.ValueAssertionBase[SourceConstructor], ABC):
+class _SourceWithContentsVariantsAssertion(asrt.AssertionBase[SourceConstructor], ABC):
     def __init__(self,
                  expectation: Expectation,
                  contents_access_sequence_cases: Sequence[NameAndValue[List[NameAndValue[ContentsAsStrGetter]]]],
-                 structure: ValueAssertion[NodeRenderer]
+                 structure: Assertion[NodeRenderer]
                  = asrt_trace_rendering.matches_node_renderer(),
                  ):
         self.structure = structure
@@ -217,7 +217,7 @@ class _SourceWithContentsVariantsAssertion(asrt.ValueAssertionBase[SourceConstru
             pass
 
 
-class _SourceAssertionOnUnFrozenAndFrozen(asrt.ValueAssertionBase[SourceConstructors]):
+class _SourceAssertionOnUnFrozenAndFrozen(asrt.AssertionBase[SourceConstructors]):
     def __init__(self,
                  expectation: ExpectationOnUnFrozenAndFrozen,
                  contents_cases_: Sequence[NameAndValue[List[NameAndValue[ContentsAsStrGetter]]]],

@@ -14,7 +14,7 @@ from exactly_lib_test.test_resources.main_program.main_program_check_base import
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import xml_etree as asrt_xml
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.test_suite.reporters.junit import suite_xml, successful_test_case_xml, replace_xml_variables
 
 
@@ -48,7 +48,7 @@ class SuiteWithSingleEmptyTestCase(main_program_check_base.SetupWithoutPreproces
             File('the.case', ''),
         ])
 
-    def stdout_expectation(self, root_path: pathlib.Path) -> ValueAssertion[str]:
+    def stdout_expectation(self, root_path: pathlib.Path) -> Assertion[str]:
         expected_xml = suite_xml(
             attributes={
                 'name': 'main.suite',

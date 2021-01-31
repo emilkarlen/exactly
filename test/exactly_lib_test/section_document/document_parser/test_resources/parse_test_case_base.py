@@ -6,7 +6,7 @@ from exactly_lib.section_document import model
 from exactly_lib.section_document.document_parser import DocumentParser
 from exactly_lib_test.section_document.test_resources.document_assertions import matches_document
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 EXPECTED_SOURCE_FILE_PATH = pathlib.Path.cwd()
 
@@ -22,7 +22,7 @@ class ParseTestBase(unittest.TestCase):
     def _parse_and_check(self,
                          parser: DocumentParser,
                          lines: Sequence[str],
-                         expected_document: Dict[str, Sequence[ValueAssertion[model.SectionContentElement]]]):
+                         expected_document: Dict[str, Sequence[Assertion[model.SectionContentElement]]]):
         # ACT #
         actual_document = self._parse_lines(parser, lines)
         # ASSERT #

@@ -7,10 +7,10 @@ from exactly_lib.impls.file_properties import FileType
 from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import AssertionBase, MessageBuilder
 
 
-class FilesMatcherModelContentsAssertion(ValueAssertionBase[FilesMatcherModel]):
+class FilesMatcherModelContentsAssertion(AssertionBase[FilesMatcherModel]):
     def __init__(self,
                  contents_root: pathlib.Path,
                  expected_paths__rel_root: List[pathlib.Path],

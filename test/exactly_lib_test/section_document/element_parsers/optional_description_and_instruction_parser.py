@@ -15,7 +15,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source, source_is_at_end
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite() -> unittest.TestSuite:
@@ -276,21 +276,21 @@ class TestParseWithDescription(unittest.TestCase):
 
 class Expectation(tuple):
     def __new__(cls,
-                description: ValueAssertion[str] = asrt.anything_goes(),
-                instruction: ValueAssertion[model.Instruction] = asrt.anything_goes(),
-                source: ValueAssertion[ParseSource] = asrt.anything_goes()):
+                description: Assertion[str] = asrt.anything_goes(),
+                instruction: Assertion[model.Instruction] = asrt.anything_goes(),
+                source: Assertion[ParseSource] = asrt.anything_goes()):
         return tuple.__new__(cls, (description, instruction, source))
 
     @property
-    def description(self) -> ValueAssertion:
+    def description(self) -> Assertion:
         return self[0]
 
     @property
-    def instruction(self) -> ValueAssertion:
+    def instruction(self) -> Assertion:
         return self[1]
 
     @property
-    def source(self) -> ValueAssertion:
+    def source(self) -> Assertion:
         return self[2]
 
     def apply(self, put: unittest.TestCase,
@@ -338,7 +338,7 @@ def check(put: unittest.TestCase,
 
 
 def assert_instruction(first_line_number: int,
-                       source_string: str) -> ValueAssertion:
+                       source_string: str) -> Assertion:
     return asrt.And([
         asrt.sub_component('first_line_number', Instruction.first_line_number.fget,
                            asrt.Equals(first_line_number)),

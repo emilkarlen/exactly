@@ -35,8 +35,8 @@ from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorTha
 from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import T, MessageBuilder, ValueAssertion, \
-    ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import T, MessageBuilder, Assertion, \
+    AssertionBase
 from exactly_lib_test.test_suite.test_resources.test_suite_definition import test_suite_definition_without_instructions
 
 
@@ -86,7 +86,7 @@ class Arrangement:
 class Expectation:
     def __init__(self,
                  exit_vale: ExitValue,
-                 output_assertion_for_sds_dir_name: Callable[[str], ValueAssertion[str]]
+                 output_assertion_for_sds_dir_name: Callable[[str], Assertion[str]],
                  ):
         self.exit_vale = exit_vale
         self.output_assertion_for_sds_dir_name = output_assertion_for_sds_dir_name
@@ -526,18 +526,18 @@ SVH_HARD_ERROR = do_return(svh.new_svh_hard_error__str('hard error msg'))
 SH_HARD_ERROR = do_return(sh.new_sh_hard_error__str('hard error msg'))
 
 
-def output_is_sds_which_should_be_preserved(sds_dir_name: str) -> ValueAssertion[str]:
+def output_is_sds_which_should_be_preserved(sds_dir_name: str) -> Assertion[str]:
     return asrt.and_([
         IsExistingDir(sds_dir_name),
         asrt.equals(sds_dir_name + '\n'),
     ])
 
 
-def output_is_empty(sds_dir_name: str) -> ValueAssertion[str]:
+def output_is_empty(sds_dir_name: str) -> Assertion[str]:
     return asrt.equals('')
 
 
-class IsExistingDir(ValueAssertionBase[Any]):
+class IsExistingDir(AssertionBase[Any]):
     def __init__(self, path_name: str):
         self.path_name = path_name
 

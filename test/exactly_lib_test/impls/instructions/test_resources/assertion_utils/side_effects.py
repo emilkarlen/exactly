@@ -5,10 +5,10 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import AssertionBase
 
 
-class AssertCwdIsSubDirOf(ValueAssertionBase):
+class AssertCwdIsSubDirOf(AssertionBase):
     def __init__(self, relativity: RelOptionType,
                  expected_sub_dir_of_act_dir: pathlib.PurePath):
         self.relativity = relativity

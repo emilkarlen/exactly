@@ -39,7 +39,7 @@ from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSynta
 from exactly_lib_test.test_resources.source.layout import LayoutSpec
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
     CommonPropertiesConfiguration, CommonExecutionPropertiesChecker, OUTPUT, INPUT, PRIMITIVE, Applier
 from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
@@ -204,7 +204,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
             parse_source: ParseSource,
             input_: INPUT,
             arrangement: Arrangement,
-            expectation__source: ValueAssertion[ParseSource],
+            expectation__source: Assertion[ParseSource],
             expectation_: MultiSourceExpectation[PRIMITIVE, OUTPUT],
     ):
         # ACT #
@@ -314,7 +314,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
     def check_multi__w_source_variants(self,
                                        put: unittest.TestCase,
                                        arguments: Arguments,
-                                       symbol_references: ValueAssertion[Sequence[SymbolReference]],
+                                       symbol_references: Assertion[Sequence[SymbolReference]],
                                        input_: INPUT,
                                        execution: Sequence[NExArr[PrimAndExeExpectation[PRIMITIVE, OUTPUT],
                                                                   Arrangement]],
@@ -332,7 +332,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
             put: unittest.TestCase,
             arguments: Arguments,
             input_: INPUT,
-            symbol_references: ValueAssertion[Sequence[SymbolReference]],
+            symbol_references: Assertion[Sequence[SymbolReference]],
             execution: Sequence[NExArr[PrimAndExeExpectation[PRIMITIVE, OUTPUT],
                                        Arrangement]],
     ):
@@ -373,9 +373,9 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
     def _check_multi__w_source_variants(
             self,
             put: unittest.TestCase,
-            symbol_references: ValueAssertion[Sequence[SymbolReference]],
+            symbol_references: Assertion[Sequence[SymbolReference]],
             input_: INPUT,
-            source_cases: Sequence[NEA[ValueAssertion[ParseSource], ParseSource]],
+            source_cases: Sequence[NEA[Assertion[ParseSource], ParseSource]],
             execution: Sequence[NExArr[PrimAndExeExpectation[PRIMITIVE, OUTPUT],
                                        Arrangement]],
     ):
@@ -404,7 +404,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
     def _check_sdv(self,
                    put: unittest.TestCase,
                    parsed_object,
-                   symbol_references: ValueAssertion[Sequence[SymbolReference]],
+                   symbol_references: Assertion[Sequence[SymbolReference]],
                    ):
         message_builder = asrt.MessageBuilder('parsed object')
         asrt.is_instance(FullDepsSdv).apply(put,
@@ -486,7 +486,7 @@ T = TypeVar('T')
 
 class _ValueAssertionApplier:
     def __init__(self,
-                 assertion: ValueAssertion[T],
+                 assertion: Assertion[T],
                  value: T,
                  message_builder: asrt.MessageBuilder,
                  ):
@@ -506,8 +506,8 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                  model_constructor: INPUT,
                  arrangement: Arrangement,
                  adv: Callable[[AssertionResolvingEnvironment],
-                               ValueAssertion[ApplicationEnvironmentDependentValue[PRIMITIVE]]],
-                 primitive: Callable[[AssertionResolvingEnvironment], ValueAssertion[PRIMITIVE]],
+                               Assertion[ApplicationEnvironmentDependentValue[PRIMITIVE]]],
+                 primitive: Callable[[AssertionResolvingEnvironment], Assertion[PRIMITIVE]],
                  execution: ExecutionExpectation[OUTPUT],
                  applier: Applier[PRIMITIVE, INPUT, OUTPUT],
                  common_properties:

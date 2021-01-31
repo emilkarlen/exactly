@@ -14,7 +14,7 @@ from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
     StringSymbolContext
 
@@ -158,8 +158,8 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 return_value: ValueAssertion = asrt.anything_goes(),
-                 environment: ValueAssertion = asrt.anything_goes(),
+                 return_value: Assertion = asrt.anything_goes(),
+                 environment: Assertion = asrt.anything_goes(),
                  ):
         self.return_value = return_value
         self.environment = environment
@@ -182,7 +182,7 @@ def symbol_of(name: str) -> StringSymbolContext:
     return StringConstantSymbolContext(name)
 
 
-def error_with_status(expected: PartialControlledFailureEnum) -> ValueAssertion:
+def error_with_status(expected: PartialControlledFailureEnum) -> Assertion:
     return asrt.is_not_none_and_instance_with(PartialInstructionControlledFailureInfo,
                                               asrt.sub_component('status',
                                                                  PartialInstructionControlledFailureInfo.status.fget,
@@ -192,15 +192,15 @@ def error_with_status(expected: PartialControlledFailureEnum) -> ValueAssertion:
 is_success = asrt.is_none
 
 
-def symbol_table_contains_exactly_names(names: Set[str]) -> ValueAssertion[InstructionEnvironmentForPreSdsStep]:
+def symbol_table_contains_exactly_names(names: Set[str]) -> Assertion[InstructionEnvironmentForPreSdsStep]:
     return _symbol_table_names_set(asrt.equals(names))
 
 
-def symbol_table_is_empty() -> ValueAssertion[InstructionEnvironmentForPreSdsStep]:
+def symbol_table_is_empty() -> Assertion[InstructionEnvironmentForPreSdsStep]:
     return _symbol_table_names_set(asrt.len_equals(0))
 
 
-def _symbol_table_names_set(assertion: ValueAssertion[Set[str]]) -> ValueAssertion[InstructionEnvironmentForPreSdsStep]:
+def _symbol_table_names_set(assertion: Assertion[Set[str]]) -> Assertion[InstructionEnvironmentForPreSdsStep]:
     return asrt.sub_component('symbols',
                               InstructionEnvironmentForPreSdsStep.symbols.fget,
                               asrt.sub_component('names_set',

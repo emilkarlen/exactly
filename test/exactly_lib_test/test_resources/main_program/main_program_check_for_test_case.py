@@ -6,14 +6,14 @@ from exactly_lib_test.processing.test_resources import preprocessor_utils
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents, FileSystemElement
 from exactly_lib_test.test_resources.main_program import main_program_check_base
 from exactly_lib_test.test_resources.process import SubProcessResult, SubProcessResultInfo
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class SetupForTestCaseBase(main_program_check_base.SetupBase):
     def test_case(self) -> str:
         raise NotImplementedError()
 
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         raise NotImplementedError()
 
     def check(self,

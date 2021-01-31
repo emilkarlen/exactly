@@ -3,10 +3,10 @@ import unittest
 
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import *
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 
 
-class _IsCrossReferenceId(ValueAssertionBase):
+class _IsCrossReferenceId(AssertionBase):
     def _apply(self,
                put: unittest.TestCase,
                value,
@@ -14,7 +14,7 @@ class _IsCrossReferenceId(ValueAssertionBase):
         self._assertion_for(value).apply(put, value, message_builder)
 
     @staticmethod
-    def _assertion_for(value) -> ValueAssertion:
+    def _assertion_for(value) -> Assertion:
         try:
             return _IS_CROSS_REFERENCE_ID_ASSERTION_GETTER.visit(value)
         except TypeError:
@@ -50,7 +50,7 @@ class _IsCrossReferenceTargetAssertionGetter(CrossReferenceTargetVisitor):
         return equals_predefined_contents_part(x)
 
 
-def _is_str(component_name: str, component_getter: types.FunctionType) -> ValueAssertion:
+def _is_str(component_name: str, component_getter: types.FunctionType) -> Assertion:
     return asrt.sub_component(component_name, component_getter, asrt.IsInstance(str))
 
 
@@ -66,7 +66,7 @@ entity_is_valid = asrt.And([
 ])
 
 
-def is_entity_for_type(entity_type_name: str) -> ValueAssertion:
+def is_entity_for_type(entity_type_name: str) -> Assertion:
     return asrt.And([
         is_entity,
         asrt.sub_component('entity type name',
@@ -75,7 +75,7 @@ def is_entity_for_type(entity_type_name: str) -> ValueAssertion:
     ])
 
 
-def equals_predefined_contents_part(x: PredefinedHelpContentsPartReference) -> ValueAssertion[CrossReferenceId]:
+def equals_predefined_contents_part(x: PredefinedHelpContentsPartReference) -> Assertion[CrossReferenceId]:
     return asrt.is_instance_with(PredefinedHelpContentsPartReference,
                                  asrt.sub_component('part',
                                                     PredefinedHelpContentsPartReference.part.fget,
@@ -100,16 +100,16 @@ custom_is_valid = _is_str('target name', CustomCrossReferenceId.target_name.fget
 url_is_valid = _is_str('url', UrlCrossReferenceTarget.url.fget)
 
 
-def _assertion_on_properties_of(x, properties_assertion: ValueAssertion) -> ValueAssertion:
+def _assertion_on_properties_of(x, properties_assertion: Assertion) -> Assertion:
     return asrt.with_transformed_message(asrt.append_to_message(':' + str(type(x)) + ':'),
                                          properties_assertion)
 
 
-def equals(expected: CrossReferenceId) -> ValueAssertion:
+def equals(expected: CrossReferenceId) -> Assertion:
     return _CrossReferenceIdEquals(expected)
 
 
-class _CrossReferenceIdEquals(ValueAssertionBase):
+class _CrossReferenceIdEquals(AssertionBase):
     def __init__(self, expected: CrossReferenceId):
         self.expected = expected
 

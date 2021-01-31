@@ -27,7 +27,7 @@ from exactly_lib_test.test_case.test_resources.instruction_environment import In
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction, tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def arrangement(pre_contents_population_action: TcdsAction = TcdsAction(),
@@ -53,13 +53,13 @@ def arrangement(pre_contents_population_action: TcdsAction = TcdsAction(),
 
 class Expectation(ExpectationBase):
     def __init__(self,
-                 validation_pre_sds: ValueAssertion = svh_assertions.is_success(),
-                 validation_post_setup: ValueAssertion = svh_assertions.is_success(),
-                 main_result: ValueAssertion = sh_assertions.is_success(),
-                 symbol_usages: ValueAssertion = asrt.is_empty_sequence,
-                 main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
-                 main_side_effects_on_tcds: ValueAssertion = asrt.anything_goes(),
-                 source: ValueAssertion = asrt.anything_goes(),
+                 validation_pre_sds: Assertion = svh_assertions.is_success(),
+                 validation_post_setup: Assertion = svh_assertions.is_success(),
+                 main_result: Assertion = sh_assertions.is_success(),
+                 symbol_usages: Assertion = asrt.is_empty_sequence,
+                 main_side_effects_on_sds: Assertion = asrt.anything_goes(),
+                 main_side_effects_on_tcds: Assertion = asrt.anything_goes(),
+                 source: Assertion = asrt.anything_goes(),
                  ):
         super().__init__(validation_pre_sds,
                          main_side_effects_on_sds,
@@ -103,7 +103,7 @@ class Executor(InstructionExecutionBase):
 
     def _check(self,
                component: str,
-               assertion: ValueAssertion,
+               assertion: Assertion,
                actual):
         assertion.apply(self.put,
                         actual,

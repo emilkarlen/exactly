@@ -21,7 +21,7 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementBa
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class ConfigurationBase:
@@ -78,14 +78,14 @@ class ConfigurationBase:
         raise NotImplementedError()
 
     def expect_success(self,
-                       main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
-                       symbol_usages: ValueAssertion = asrt.is_empty_sequence,
-                       source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+                       main_side_effects_on_sds: Assertion = asrt.anything_goes(),
+                       symbol_usages: Assertion = asrt.is_empty_sequence,
+                       source: Assertion[ParseSource] = asrt.anything_goes(),
                        ):
         raise NotImplementedError()
 
     def expect_failure_of_main(self,
-                               assertion_on_error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
+                               assertion_on_error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()
                                ):
         """
         Expectation that the result should be HARD_ERROR for non-assertions and FAIL for assertions.
@@ -93,7 +93,7 @@ class ConfigurationBase:
         raise NotImplementedError()
 
     def expect_hard_error_of_main(self,
-                                  assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()
+                                  assertion_on_error_message: Assertion[str] = asrt.anything_goes()
                                   ):
         """
         Expectation that the result should be HARD_ERROR,
@@ -111,11 +111,11 @@ class ConfigurationBase:
         return self.expect_failure_of_main()
 
     def expect_failing_validation_pre_sds(self,
-                                          error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()):
+                                          error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()):
         raise NotImplementedError()
 
     def expect_failing_validation_post_setup(self,
-                                             error_message: ValueAssertion[TextRenderer] = asrt.anything_goes()):
+                                             error_message: Assertion[TextRenderer] = asrt.anything_goes()):
         raise NotImplementedError()
 
 

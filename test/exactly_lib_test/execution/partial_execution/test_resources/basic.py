@@ -28,7 +28,7 @@ from exactly_lib_test.execution.test_resources.test_case_generation import TestC
     instruction_line_constructor
 from exactly_lib_test.test_case.actor.test_resources.actors import dummy_actor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class Result(tuple):
@@ -55,10 +55,10 @@ class Result(tuple):
         return self[1]
 
 
-def result_assertion(hds: ValueAssertion[HomeDs] = asrt.anything_goes(),
-                     sds: ValueAssertion[SandboxDs] = asrt.anything_goes(),
-                     partial_result: ValueAssertion[PartialExeResult] = asrt.anything_goes(),
-                     ) -> ValueAssertion[Result]:
+def result_assertion(hds: Assertion[HomeDs] = asrt.anything_goes(),
+                     sds: Assertion[SandboxDs] = asrt.anything_goes(),
+                     partial_result: Assertion[PartialExeResult] = asrt.anything_goes(),
+                     ) -> Assertion[Result]:
     return asrt.and_([
         asrt.sub_component('hds',
                            Result.hds.fget,
@@ -182,7 +182,7 @@ def test(put: unittest.TestCase,
 def test__va(put: unittest.TestCase,
              test_case: TestCase,
              arrangement: Arrangement,
-             assertions_on_result: ValueAssertion[Result],
+             assertions_on_result: Assertion[Result],
              is_keep_sandbox_during_assertions: bool = False):
     with preserved_cwd():
         result = _execute(test_case,

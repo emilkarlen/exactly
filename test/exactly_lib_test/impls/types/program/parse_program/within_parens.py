@@ -16,7 +16,7 @@ from exactly_lib_test.test_resources.source.abstract_syntax_impls import WithinP
     CustomAbsStx
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 from exactly_lib_test.type_val_prims.program.test_resources import program_assertions as asrt_pgm_val
@@ -34,7 +34,7 @@ class TestValidSyntax(unittest.TestCase):
         # ARRANGE #
         program_ref_case = pgm_and_args_cases.program_reference__w_argument_list()
 
-        def expected_program(env: AssertionResolvingEnvironment) -> ValueAssertion[Program]:
+        def expected_program(env: AssertionResolvingEnvironment) -> Assertion[Program]:
             return asrt_pgm_val.matches_program(
                 asrt_command.matches_command(
                     driver=program_ref_case.expected_command_driver(env),

@@ -28,7 +28,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.test_resources import symbol_syntax
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.test_resources import line_matcher
 from exactly_lib_test.type_val_deps.types.test_resources.line_matcher import LineMatcherSymbolContext, \
     LineMatcherSymbolContextOfPrimitiveConstant
@@ -401,7 +401,7 @@ def sub_string_line_matcher(sub_string: str) -> LineMatcher:
 
 
 def expectation_of_successful_filter_execution(output_lines: List[str],
-                                               symbol_references: ValueAssertion[Sequence[SymbolReference]],
+                                               symbol_references: Assertion[Sequence[SymbolReference]],
                                                ) -> StExpectation:
     return integration_check.expectation_of_successful_execution(
         output_lines,

@@ -18,7 +18,7 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPo
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 
@@ -39,9 +39,9 @@ class AssertConfigurationBase(ConfigurationBase):
             process_execution_settings=proc_exe_env_for_test(timeout_in_seconds=timeout_in_seconds))
 
     def expect_success(self,
-                       main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
-                       symbol_usages: ValueAssertion = asrt.is_empty_sequence,
-                       source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+                       main_side_effects_on_sds: Assertion = asrt.anything_goes(),
+                       symbol_usages: Assertion = asrt.is_empty_sequence,
+                       source: Assertion[ParseSource] = asrt.anything_goes(),
                        ):
         return Expectation(
             source=source,
@@ -50,14 +50,14 @@ class AssertConfigurationBase(ConfigurationBase):
         )
 
     def expect_failure_of_main(self,
-                               assertion_on_error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
+                               assertion_on_error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()
                                ):
         return Expectation(
             main_result=pfh_assertions.is_fail(assertion_on_error_message)
         )
 
     def expect_hard_error_of_main(self,
-                                  assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
+                                  assertion_on_error_message: Assertion[str] = asrt.anything_goes()):
         return Expectation(main_result=pfh_assertions.is_hard_error(
             asrt_text_doc.is_string_for_test(assertion_on_error_message)
         ))
@@ -68,13 +68,13 @@ class AssertConfigurationBase(ConfigurationBase):
         ))
 
     def expect_failing_validation_pre_sds(self,
-                                          error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()):
+                                          error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()):
         return Expectation(
             validation_pre_sds=svh_assertions.is_validation_error(error_message)
         )
 
     def expect_failing_validation_post_setup(self,
-                                             error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()):
+                                             error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()):
         return Expectation(
             validation_post_sds=svh_assertions.is_validation_error(error_message)
         )

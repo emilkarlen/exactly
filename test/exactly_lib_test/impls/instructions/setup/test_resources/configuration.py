@@ -18,7 +18,7 @@ from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 
@@ -35,9 +35,9 @@ class SetupConfigurationBase(ConfigurationBase):
         return False
 
     def expect_success(self,
-                       main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
-                       symbol_usages: ValueAssertion = asrt.is_empty_sequence,
-                       source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+                       main_side_effects_on_sds: Assertion = asrt.anything_goes(),
+                       symbol_usages: Assertion = asrt.is_empty_sequence,
+                       source: Assertion[ParseSource] = asrt.anything_goes(),
                        ):
         return ic.Expectation(
             source=source,
@@ -46,20 +46,20 @@ class SetupConfigurationBase(ConfigurationBase):
         )
 
     def expect_failure_of_main(self,
-                               assertion_on_error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
+                               assertion_on_error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()
                                ):
         return ic.Expectation(
             main_result=asrt_sh.is_hard_error(assertion_on_error_message)
         )
 
     def expect_failing_validation_pre_sds(self,
-                                          error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()):
+                                          error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()):
         return ic.Expectation(
             pre_validation_result=svh_assertions.is_validation_error(error_message)
         )
 
     def expect_failing_validation_post_setup(self,
-                                             error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()):
+                                             error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()):
         return ic.Expectation(
             post_validation_result=svh_assertions.is_validation_error(error_message)
         )

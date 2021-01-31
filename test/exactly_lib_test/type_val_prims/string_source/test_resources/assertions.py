@@ -7,15 +7,15 @@ from exactly_lib.type_val_prims.string_source.structure_builder import StringSou
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib_test.test_case.test_resources.hard_error_assertion import RaisesHardErrorAsLastAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder, \
-    ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import AssertionBase, MessageBuilder, \
+    Assertion
 from exactly_lib_test.type_val_prims.string_source.test_resources import contents_assertions as asrt_str_src_contents
 from exactly_lib_test.type_val_prims.string_source.test_resources import properties_access, contents_assertions
 from exactly_lib_test.type_val_prims.string_source.test_resources.string_source_base import StringSourceTestImplBase
 from exactly_lib_test.util.description_tree.test_resources import rendering_assertions as asrt_trace_rendering
 
 
-class StringSourceLinesAreValidAssertion(ValueAssertionBase[StringSource]):
+class StringSourceLinesAreValidAssertion(AssertionBase[StringSource]):
     def _apply(self,
                put: unittest.TestCase,
                value: StringSource,
@@ -50,11 +50,11 @@ class StringSourceThatThatChecksLines(StringSourceTestImplBase):
         return contents_assertions.StringSourceContentsThatThatChecksLines(self._put, self._checked.contents())
 
 
-def matches__str(contents: ValueAssertion[str],
-                 may_depend_on_external_resources: ValueAssertion[bool] = asrt.anything_goes(),
-                 structure: ValueAssertion[NodeRenderer]
+def matches__str(contents: Assertion[str],
+                 may_depend_on_external_resources: Assertion[bool] = asrt.anything_goes(),
+                 structure: Assertion[NodeRenderer]
                  = asrt_trace_rendering.matches_node_renderer(),
-                 ) -> ValueAssertion[StringSource]:
+                 ) -> Assertion[StringSource]:
     return asrt.and_([
         has_structure_description(structure),
         contents_matches(
@@ -69,9 +69,9 @@ def matches__str(contents: ValueAssertion[str],
 
 
 def matches__lines__check_just_as_lines(lines: Sequence[str],
-                                        structure: ValueAssertion[NodeRenderer]
+                                        structure: Assertion[NodeRenderer]
                                         = asrt_trace_rendering.matches_node_renderer(),
-                                        ) -> ValueAssertion[StringSource]:
+                                        ) -> Assertion[StringSource]:
     return asrt.and_([
         has_structure_description(structure),
         contents_matches(
@@ -86,10 +86,10 @@ def matches__lines__check_just_as_lines(lines: Sequence[str],
     ])
 
 
-def contents_raises_hard_error(may_depend_on_external_resources: ValueAssertion[bool],
-                               structure: ValueAssertion[NodeRenderer]
+def contents_raises_hard_error(may_depend_on_external_resources: Assertion[bool],
+                               structure: Assertion[NodeRenderer]
                                = asrt_trace_rendering.matches_node_renderer(),
-                               ) -> ValueAssertion[StringSource]:
+                               ) -> Assertion[StringSource]:
     return asrt.and_([
         has_structure_description(structure),
         contents_matches(
@@ -108,9 +108,9 @@ def contents_raises_hard_error(may_depend_on_external_resources: ValueAssertion[
     ])
 
 
-def contents_and_ext_dep_raises_hard_error(structure: ValueAssertion[NodeRenderer]
+def contents_and_ext_dep_raises_hard_error(structure: Assertion[NodeRenderer]
                                            = asrt_trace_rendering.matches_node_renderer(),
-                                           ) -> ValueAssertion[StringSource]:
+                                           ) -> Assertion[StringSource]:
     return asrt.and_([
         has_structure_description(structure),
         contents_matches(
@@ -130,7 +130,7 @@ def contents_and_ext_dep_raises_hard_error(structure: ValueAssertion[NodeRendere
     ])
 
 
-def has_structure_description(expectation: ValueAssertion[NodeRenderer]) -> ValueAssertion[StringSource]:
+def has_structure_description(expectation: Assertion[NodeRenderer]) -> Assertion[StringSource]:
     return asrt.sub_component(
         'structure',
         properties_access.get_structure,
@@ -138,11 +138,11 @@ def has_structure_description(expectation: ValueAssertion[NodeRenderer]) -> Valu
     )
 
 
-def has_valid_structure_description() -> ValueAssertion[StringSource]:
+def has_valid_structure_description() -> Assertion[StringSource]:
     return has_structure_description(asrt_trace_rendering.matches_node_renderer())
 
 
-def contents_matches(expectation: ValueAssertion[StringSourceContents]) -> ValueAssertion[StringSource]:
+def contents_matches(expectation: Assertion[StringSourceContents]) -> Assertion[StringSource]:
     return asrt.sub_component(
         'contents',
         properties_access.get_string_source_contents,
@@ -150,9 +150,9 @@ def contents_matches(expectation: ValueAssertion[StringSourceContents]) -> Value
     )
 
 
-def pre_post_freeze(before_freeze: ValueAssertion[StringSourceContents],
-                    after_freeze: ValueAssertion[StringSourceContents],
-                    ) -> ValueAssertion[StringSource]:
+def pre_post_freeze(before_freeze: Assertion[StringSourceContents],
+                    after_freeze: Assertion[StringSourceContents],
+                    ) -> Assertion[StringSource]:
     return asrt.and_([
         has_valid_structure_description(),
         asrt.named(
@@ -169,24 +169,24 @@ def pre_post_freeze(before_freeze: ValueAssertion[StringSourceContents],
     ])
 
 
-def pre_post_freeze__identical(expectation: ValueAssertion[StringSourceContents],
-                               ) -> ValueAssertion[StringSource]:
+def pre_post_freeze__identical(expectation: Assertion[StringSourceContents],
+                               ) -> Assertion[StringSource]:
     return pre_post_freeze(expectation, expectation)
 
 
-def pre_post_freeze__matches_lines(lines: ValueAssertion[Sequence[str]],
-                                   may_depend_on_external_resources: ValueAssertion[bool],
-                                   frozen_may_depend_on_external_resources: ValueAssertion[bool],
-                                   ) -> ValueAssertion[StringSource]:
+def pre_post_freeze__matches_lines(lines: Assertion[Sequence[str]],
+                                   may_depend_on_external_resources: Assertion[bool],
+                                   frozen_may_depend_on_external_resources: Assertion[bool],
+                                   ) -> Assertion[StringSource]:
     return pre_post_freeze(
         asrt_str_src_contents.matches__lines(lines, may_depend_on_external_resources),
         asrt_str_src_contents.matches__lines(lines, frozen_may_depend_on_external_resources),
     )
 
 
-def pre_post_freeze__matches_lines__any_frozen_ext_deps(lines: ValueAssertion[Sequence[str]],
-                                                        may_depend_on_external_resources: ValueAssertion[bool],
-                                                        ) -> ValueAssertion[StringSource]:
+def pre_post_freeze__matches_lines__any_frozen_ext_deps(lines: Assertion[Sequence[str]],
+                                                        may_depend_on_external_resources: Assertion[bool],
+                                                        ) -> Assertion[StringSource]:
     return pre_post_freeze__matches_lines(
         lines,
         may_depend_on_external_resources,
@@ -194,18 +194,18 @@ def pre_post_freeze__matches_lines__any_frozen_ext_deps(lines: ValueAssertion[Se
     )
 
 
-def pre_post_freeze__matches_lines__identical(lines: ValueAssertion[Sequence[str]],
-                                              may_depend_on_external_resources: ValueAssertion[bool],
-                                              ) -> ValueAssertion[StringSource]:
+def pre_post_freeze__matches_lines__identical(lines: Assertion[Sequence[str]],
+                                              may_depend_on_external_resources: Assertion[bool],
+                                              ) -> Assertion[StringSource]:
     return pre_post_freeze__identical(
         asrt_str_src_contents.matches__lines(lines, may_depend_on_external_resources)
     )
 
 
-def pre_post_freeze__matches_str(contents: ValueAssertion[str],
-                                 may_depend_on_external_resources: ValueAssertion[bool],
-                                 frozen_may_depend_on_external_resources: ValueAssertion[bool],
-                                 ) -> ValueAssertion[StringSource]:
+def pre_post_freeze__matches_str(contents: Assertion[str],
+                                 may_depend_on_external_resources: Assertion[bool],
+                                 frozen_may_depend_on_external_resources: Assertion[bool],
+                                 ) -> Assertion[StringSource]:
     return pre_post_freeze(
         asrt_str_src_contents.matches__str(contents, may_depend_on_external_resources),
         asrt_str_src_contents.matches__str(contents, frozen_may_depend_on_external_resources),
@@ -214,7 +214,7 @@ def pre_post_freeze__matches_str(contents: ValueAssertion[str],
 
 def pre_post_freeze__matches_str__const(contents: str,
                                         may_depend_on_external_resources: bool,
-                                        ) -> ValueAssertion[StringSource]:
+                                        ) -> Assertion[StringSource]:
     return pre_post_freeze__matches_str(
         asrt.equals(contents),
         asrt.equals(may_depend_on_external_resources),
@@ -224,8 +224,8 @@ def pre_post_freeze__matches_str__const(contents: str,
 
 def pre_post_freeze__matches_str__const_2(contents: str,
                                           may_depend_on_external_resources: bool,
-                                          frozen_may_depend_on_external_resources: ValueAssertion[bool],
-                                          ) -> ValueAssertion[StringSource]:
+                                          frozen_may_depend_on_external_resources: Assertion[bool],
+                                          ) -> Assertion[StringSource]:
     return pre_post_freeze__matches_str(
         asrt.equals(contents),
         asrt.equals(may_depend_on_external_resources),

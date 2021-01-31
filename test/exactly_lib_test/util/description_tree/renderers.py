@@ -4,7 +4,7 @@ from exactly_lib.util.description_tree import renderers as sut
 from exactly_lib.util.description_tree.renderer import NodeRenderer, NODE_DATA
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 
@@ -90,7 +90,7 @@ class _ConstRendererThatRaisesExceptionOn2ndInvokation(NodeRenderer[NODE_DATA]):
         return self._constant
 
 
-def _equals_empty_node(expected: Node) -> ValueAssertion[Node]:
+def _equals_empty_node(expected: Node) -> Assertion[Node]:
     return asrt_d_tree.matches_node(
         header=asrt.equals(expected.header),
         data=asrt.equals(expected.data),

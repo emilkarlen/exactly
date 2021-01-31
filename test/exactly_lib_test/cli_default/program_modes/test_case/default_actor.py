@@ -16,7 +16,7 @@ from exactly_lib_test.test_resources.main_program.main_program_runner import Mai
 from exactly_lib_test.test_resources.process import SubProcessResultInfo
 from exactly_lib_test.test_resources.value_assertions.process_result_info_assertions import \
     process_result_for_exit_value
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
@@ -38,7 +38,7 @@ def suite() -> unittest.TestSuite:
 
 
 class DefaultActorConfShouldSucceedWhenActPhaseIsEmpty(SetupWithoutPreprocessorAndDefaultActor):
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def test_case(self) -> str:
@@ -46,7 +46,7 @@ class DefaultActorConfShouldSucceedWhenActPhaseIsEmpty(SetupWithoutPreprocessorA
 
 
 class DefaultActorConfShouldSucceedWhenActPhaseIsJustSpace(SetupWithoutPreprocessorAndDefaultActor):
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def test_case(self) -> str:
@@ -58,7 +58,7 @@ class DefaultActorConfShouldSucceedWhenActPhaseIsJustSpace(SetupWithoutPreproces
 
 
 class DefaultActorConfShouldSucceedWhenActPhaseIsJustSpaceOrComments(SetupWithoutPreprocessorAndDefaultActor):
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def test_case(self) -> str:
@@ -70,7 +70,7 @@ class DefaultActorConfShouldSucceedWhenActPhaseIsJustSpaceOrComments(SetupWithou
 
 class DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHdsAct(
     SetupWithoutPreprocessorAndDefaultActor):
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> List[FileSystemElement]:
@@ -84,7 +84,7 @@ class DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutabl
 
 
 class DefaultActorConfShouldFailWhenActPhaseIsMultipleCommandLines(SetupWithoutPreprocessorAndDefaultActor):
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__SYNTAX_ERROR)
 
     def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> List[FileSystemElement]:
@@ -100,7 +100,7 @@ class DefaultActorConfShouldFailWhenActPhaseIsMultipleCommandLines(SetupWithoutP
 
 class DefaultActorConfShouldBeInvalidWhenActPhaseIsASingleCommandLineOfNonExistingExeFile(
     SetupWithoutPreprocessorAndDefaultActor):
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__VALIDATION_ERROR)
 
     def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> List[FileSystemElement]:

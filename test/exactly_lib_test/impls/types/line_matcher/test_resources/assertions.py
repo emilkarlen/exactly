@@ -1,10 +1,10 @@
 import unittest
 
 from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import AssertionBase, MessageBuilder
 
 
-class LineMatcherModelIsValid(ValueAssertionBase[LineMatcherLine]):
+class LineMatcherModelIsValid(AssertionBase[LineMatcherLine]):
     def _apply(self,
                put: unittest.TestCase,
                value: LineMatcherLine,

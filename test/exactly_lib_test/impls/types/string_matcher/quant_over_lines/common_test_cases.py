@@ -28,7 +28,7 @@ from exactly_lib_test.impls.types.string_source.test_resources import model_cons
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.test_resources.line_matcher import successful_matcher_with_validation, \
     LineMatcherSymbolContext, is_reference_to_line_matcher, \
     LineMatcherSymbolContextOfPrimitiveConstant
@@ -239,7 +239,7 @@ class _TestSymbolReferencesBase(_TestCaseBase):
     def _check_expectation_variants(self,
                                     common_arguments: CommonArgumentsConstructor,
                                     line_matcher: str,
-                                    expected_symbols: ValueAssertion[Sequence[SymbolReference]]):
+                                    expected_symbols: Assertion[Sequence[SymbolReference]]):
         parser = sut.parsers().full
 
         for expectation_type in ExpectationType:

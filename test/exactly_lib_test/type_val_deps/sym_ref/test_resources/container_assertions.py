@@ -7,18 +7,18 @@ from exactly_lib.symbol.value_type import ValueType, TypeCategory, LogicValueTyp
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.section_document.test_resources import source_location_assertions as asrt_source_loc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.test_resources import line_source_assertions as asrt_line_source
 
 
-def matches_container(value_type: ValueAssertion[ValueType],
-                      type_category: ValueAssertion[TypeCategory],
-                      sdv: ValueAssertion[SymbolDependentValue],
-                      data_value_type__if_is_data_type: Optional[ValueAssertion[DataValueType]] = None,
-                      logic_value_type__if_is_logic_type: Optional[ValueAssertion[LogicValueType]] = None,
-                      definition_source: ValueAssertion[LineSequence] = asrt_line_source.is_line_sequence(),
-                      source_location: ValueAssertion[Optional[SourceLocationInfo]] = asrt.anything_goes(),
-                      ) -> ValueAssertion[SymbolContainer]:
+def matches_container(value_type: Assertion[ValueType],
+                      type_category: Assertion[TypeCategory],
+                      sdv: Assertion[SymbolDependentValue],
+                      data_value_type__if_is_data_type: Optional[Assertion[DataValueType]] = None,
+                      logic_value_type__if_is_logic_type: Optional[Assertion[LogicValueType]] = None,
+                      definition_source: Assertion[LineSequence] = asrt_line_source.is_line_sequence(),
+                      source_location: Assertion[Optional[SourceLocationInfo]] = asrt.anything_goes(),
+                      ) -> Assertion[SymbolContainer]:
     components = [
         asrt.sub_component('value_type',
                            SymbolContainer.value_type.fget,
@@ -59,9 +59,9 @@ def matches_container(value_type: ValueAssertion[ValueType],
 
 def matches_container_of_logic_type(
         logic_value_type: LogicValueType,
-        sdv: ValueAssertion[SymbolDependentValue],
-        definition_source: ValueAssertion[LineSequence] = asrt_line_source.is_line_sequence(),
-) -> ValueAssertion[SymbolContainer]:
+        sdv: Assertion[SymbolDependentValue],
+        definition_source: Assertion[LineSequence] = asrt_line_source.is_line_sequence(),
+) -> Assertion[SymbolContainer]:
     return matches_container(
         value_type=asrt.is_(LOGIC_TYPE_2_VALUE_TYPE[logic_value_type]),
         type_category=asrt.is_(TypeCategory.LOGIC),
@@ -75,9 +75,9 @@ def matches_container_of_logic_type(
 
 def matches_container_of_data_type(
         data_value_type: DataValueType,
-        sdv: ValueAssertion[SymbolDependentValue],
-        definition_source: ValueAssertion[LineSequence] = asrt_line_source.is_line_sequence(),
-) -> ValueAssertion[SymbolContainer]:
+        sdv: Assertion[SymbolDependentValue],
+        definition_source: Assertion[LineSequence] = asrt_line_source.is_line_sequence(),
+) -> Assertion[SymbolContainer]:
     return matches_container(
         value_type=asrt.is_(DATA_TYPE_2_VALUE_TYPE[data_value_type]),
         type_category=asrt.is_(TypeCategory.DATA),

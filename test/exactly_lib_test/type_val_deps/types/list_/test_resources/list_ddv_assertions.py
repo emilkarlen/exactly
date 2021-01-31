@@ -5,17 +5,17 @@ from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import Multi
 from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
 from exactly_lib.type_val_deps.types.string_.string_ddv import StringDdv
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.dir_dependent_value import \
-    MultiDirDependentValueAssertion
+    MultiDirDependentAssertion
 from exactly_lib_test.type_val_deps.types.string.test_resources import ddv_assertions as asrt_sv
 
 
-def equals_list_ddv(expected: ListDdv) -> ValueAssertion:
+def equals_list_ddv(expected: ListDdv) -> Assertion:
     return _AssertListValueHasSpecifiedProperties(expected)
 
 
-class _AssertListValueHasSpecifiedProperties(MultiDirDependentValueAssertion):
+class _AssertListValueHasSpecifiedProperties(MultiDirDependentAssertion):
     def __init__(self, expected: ListDdv):
         super().__init__(ListDdv, expected)
         self._expected = expected

@@ -11,7 +11,7 @@ from exactly_lib_test.impls.types.program.parse_program.test_resources.integrati
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as str_src_abs_stx
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import FullProgramAbsStx, \
     PgmAndArgsWArgumentsAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx
@@ -56,7 +56,7 @@ class TestPgmAndArgs(unittest.TestCase):
 
             symbols = list(pgm_and_args_case.symbols) + [transformer_symbol]
 
-            def expected_program(env: AssertionResolvingEnvironment) -> ValueAssertion[Program]:
+            def expected_program(env: AssertionResolvingEnvironment) -> Assertion[Program]:
                 return asrt_pgm_val.matches_program(
                     asrt_command.matches_command(
                         driver=pgm_and_args_case.expected_command_driver(env),
@@ -111,7 +111,7 @@ class TestShellCommandLine(unittest.TestCase):
 
         symbols = list(pgm_and_args_case.symbols) + [transformer_symbol]
 
-        def expected_program(env: AssertionResolvingEnvironment) -> ValueAssertion[Program]:
+        def expected_program(env: AssertionResolvingEnvironment) -> Assertion[Program]:
             return asrt_pgm_val.matches_program(
                 asrt_command.matches_command(
                     driver=pgm_and_args_case.expected_command_driver(env),

@@ -6,13 +6,13 @@ from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_t
 from exactly_lib_test.impls.test_resources.validation.validation import Expectation, ValidationActual
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_resources.test_utils import NEA
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class ValidationExpectationSvh:
     def __init__(self,
-                 pre_sds: ValueAssertion[svh.SuccessOrValidationErrorOrHardError],
-                 post_sds: ValueAssertion[svh.SuccessOrValidationErrorOrHardError],
+                 pre_sds: Assertion[svh.SuccessOrValidationErrorOrHardError],
+                 post_sds: Assertion[svh.SuccessOrValidationErrorOrHardError],
                  ):
         self._pre_sds = pre_sds
         self._post_sds = post_sds
@@ -32,7 +32,7 @@ class ValidationExpectationSvh:
         )
 
     @staticmethod
-    def fails__pre_sds(error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
+    def fails__pre_sds(error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()
                        ) -> 'ValidationExpectationSvh':
         return ValidationExpectationSvh(
             pre_sds=asrt_svh.is_validation_error(error_message),
@@ -40,7 +40,7 @@ class ValidationExpectationSvh:
         )
 
     @staticmethod
-    def fails__post_sds(error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
+    def fails__post_sds(error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()
                         ) -> 'ValidationExpectationSvh':
         return ValidationExpectationSvh(
             pre_sds=asrt_svh.is_success(),
@@ -48,7 +48,7 @@ class ValidationExpectationSvh:
         )
 
     @staticmethod
-    def hard_error__post_sds(error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
+    def hard_error__post_sds(error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()
                              ) -> 'ValidationExpectationSvh':
         return ValidationExpectationSvh(
             pre_sds=asrt_svh.is_success(),
@@ -56,11 +56,11 @@ class ValidationExpectationSvh:
         )
 
     @property
-    def pre_sds(self) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
+    def pre_sds(self) -> Assertion[svh.SuccessOrValidationErrorOrHardError]:
         return self._pre_sds
 
     @property
-    def post_sds(self) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
+    def post_sds(self) -> Assertion[svh.SuccessOrValidationErrorOrHardError]:
         return self._post_sds
 
 
@@ -80,7 +80,7 @@ def failing_validation_cases__svh() -> Sequence[NEA[ValidationExpectationSvh, Va
     ]
 
 
-def _svh_from_bool(passes_validation: bool) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
+def _svh_from_bool(passes_validation: bool) -> Assertion[svh.SuccessOrValidationErrorOrHardError]:
     return (
         asrt_svh.is_success()
         if passes_validation

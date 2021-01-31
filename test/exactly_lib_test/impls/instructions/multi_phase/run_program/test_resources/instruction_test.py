@@ -30,14 +30,14 @@ from exactly_lib_test.test_resources.files.file_structure import python_executab
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_1st_value_on_command_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 
 
 class Configuration(ConfigurationBase):
     def expect_failure_because_specified_file_under_sds_is_missing(
             self,
-            symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+            symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
     ):
         raise NotImplementedError()
 

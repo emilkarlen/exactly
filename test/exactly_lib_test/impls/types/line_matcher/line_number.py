@@ -22,7 +22,7 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext, \
     StringIntConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import \
@@ -58,7 +58,7 @@ class IntegrationCheckCase:
                  line_num_of_model: int,
                  operator: comparators.ComparisonOperator,
                  int_expr: str,
-                 result: ValueAssertion[MatchingResult],
+                 result: Assertion[MatchingResult],
                  symbols: List[SymbolContext]):
         self.name = name
         self.line_num_of_model = line_num_of_model

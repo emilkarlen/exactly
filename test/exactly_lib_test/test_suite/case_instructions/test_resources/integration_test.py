@@ -34,7 +34,7 @@ from exactly_lib_test.test_resources.files.file_structure import File, DirConten
 from exactly_lib_test.test_resources.files.str_std_out_files import null_output_reporting_environment
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.test_suite.test_resources.list_recording_instructions import \
     instruction_setup_with_single_phase_with_single_recording_instruction, Recording, matches_recording
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ProcessingReporterThatDoesNothing
@@ -171,20 +171,20 @@ class ExpectedRecordingsAssertionConstructor:
         self.case_1_file_name = case_1_file_name
         self.containing_suite_file_name = containing_suite_file_name
 
-    def assertion(self, cwd_dir_abs_path: Path) -> ValueAssertion[Sequence[Recording]]:
+    def assertion(self, cwd_dir_abs_path: Path) -> Assertion[Sequence[Recording]]:
         raise NotImplementedError('abstract method')
 
-    def _matches_instruction_in_containing_suite(self, cwd_dir_abs_path: Path) -> ValueAssertion[Recording]:
+    def _matches_instruction_in_containing_suite(self, cwd_dir_abs_path: Path) -> Assertion[Recording]:
         return self._matches_recording_of(cwd_dir_abs_path,
                                           INSTRUCTION_MARKER_IN_CONTAINING_SUITE,
                                           Path(self.containing_suite_file_name))
 
-    def _matches_instruction_in_case_1(self, cwd_dir_abs_path: Path) -> ValueAssertion[Recording]:
+    def _matches_instruction_in_case_1(self, cwd_dir_abs_path: Path) -> Assertion[Recording]:
         return self._matches_recording_of(cwd_dir_abs_path,
                                           INSTRUCTION_MARKER_IN_CASE_1,
                                           Path(self.case_1_file_name))
 
-    def _matches_instruction_in_case_2(self, cwd_dir_abs_path: Path) -> ValueAssertion[Recording]:
+    def _matches_instruction_in_case_2(self, cwd_dir_abs_path: Path) -> Assertion[Recording]:
         return self._matches_recording_of(cwd_dir_abs_path,
                                           INSTRUCTION_MARKER_IN_CASE_2,
                                           Path(self.case_2_file_name))
@@ -192,7 +192,7 @@ class ExpectedRecordingsAssertionConstructor:
     @staticmethod
     def _matches_recording_of(cwd_dir_abs_path: Path,
                               string: str,
-                              file_path_rel_referrer: Path) -> ValueAssertion[Recording]:
+                              file_path_rel_referrer: Path) -> Assertion[Recording]:
         return matches_recording(
             string=asrt.equals(string),
             file_location_info=matches_file_location_info(
@@ -204,7 +204,7 @@ class ExpectedRecordingsAssertionConstructor:
 
 
 class ExpectSuiteInstructionsBeforeCaseInstructions(ExpectedRecordingsAssertionConstructor):
-    def assertion(self, cwd_dir_abs_path: Path) -> ValueAssertion[Sequence[Recording]]:
+    def assertion(self, cwd_dir_abs_path: Path) -> Assertion[Sequence[Recording]]:
         return asrt.matches_sequence([
             # First test case
             self._matches_instruction_in_containing_suite(cwd_dir_abs_path),
@@ -217,7 +217,7 @@ class ExpectSuiteInstructionsBeforeCaseInstructions(ExpectedRecordingsAssertionC
 
 
 class ExpectCaseInstructionsBeforeSuiteInstructions(ExpectedRecordingsAssertionConstructor):
-    def assertion(self, cwd_dir_abs_path: Path) -> ValueAssertion[Sequence[Recording]]:
+    def assertion(self, cwd_dir_abs_path: Path) -> Assertion[Sequence[Recording]]:
         return asrt.matches_sequence([
             # First test case
             self._matches_instruction_in_case_1(cwd_dir_abs_path),

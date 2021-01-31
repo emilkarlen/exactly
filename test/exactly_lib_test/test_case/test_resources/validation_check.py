@@ -8,7 +8,7 @@ from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.tcfs.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.tcfs.test_resources.ds_construction import tcds_with_act_as_curr_dir_2
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 
 
 class Arrangement:
@@ -49,7 +49,7 @@ def fails_post_sds() -> Expectation:
 
 
 def assert_with_files(arrangement: Arrangement,
-                      expectation: Expectation) -> ValueAssertion[DdvValidator]:
+                      expectation: Expectation) -> Assertion[DdvValidator]:
     return ValidatorAssertion(arrangement, expectation)
 
 
@@ -63,7 +63,7 @@ class ValidationCase:
         self.expectation = expectation
 
 
-class ValidatorAssertion(ValueAssertionBase[DdvValidator]):
+class ValidatorAssertion(AssertionBase[DdvValidator]):
     def __init__(self,
                  arrangement: Arrangement,
                  expectation: Expectation):

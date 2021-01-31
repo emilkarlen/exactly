@@ -38,7 +38,7 @@ from exactly_lib_test.test_resources.process import SubProcessResult, ProcessExe
 from exactly_lib_test.test_resources.source import layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion, \
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, Assertion, \
     StopAssertion
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
@@ -96,11 +96,11 @@ def arrangement_w_tcds(
 
 class PostSdsExpectation:
     def __init__(self,
-                 side_effects_on_files_after_prepare: ValueAssertion[SandboxDs]
+                 side_effects_on_files_after_prepare: Assertion[SandboxDs]
                  = asrt.anything_goes(),
-                 side_effects_on_files_after_execute: ValueAssertion[SandboxDs]
+                 side_effects_on_files_after_execute: Assertion[SandboxDs]
                  = asrt.anything_goes(),
-                 sub_process_result_from_execute: ValueAssertion[SubProcessResult] = asrt.anything_goes(),
+                 sub_process_result_from_execute: Assertion[SubProcessResult] = asrt.anything_goes(),
                  ):
         self.side_effects_on_files_after_prepare = side_effects_on_files_after_prepare
         self.side_effects_on_files_after_execute = side_effects_on_files_after_execute
@@ -108,11 +108,11 @@ class PostSdsExpectation:
 
     @staticmethod
     def constant(
-            side_effects_on_files_after_prepare: ValueAssertion[SandboxDs]
+            side_effects_on_files_after_prepare: Assertion[SandboxDs]
             = asrt.anything_goes(),
-            side_effects_on_files_after_execute: ValueAssertion[SandboxDs]
+            side_effects_on_files_after_execute: Assertion[SandboxDs]
             = asrt.anything_goes(),
-            sub_process_result_from_execute: ValueAssertion[SubProcessResult] = asrt.anything_goes(),
+            sub_process_result_from_execute: Assertion[SubProcessResult] = asrt.anything_goes(),
     ) -> Callable[[SandboxDs], 'PostSdsExpectation']:
         def ret_val(sds: SandboxDs) -> 'PostSdsExpectation':
             return PostSdsExpectation(
@@ -128,15 +128,15 @@ class Expectation:
     def __init__(self,
                  validation: ValidationExpectationSvh
                  = ValidationExpectationSvh.passes(),
-                 prepare: ValueAssertion[sh.SuccessOrHardError]
+                 prepare: Assertion[sh.SuccessOrHardError]
                  = sh_assertions.is_success(),
-                 execute: ValueAssertion[ExitCodeOrHardError]
+                 execute: Assertion[ExitCodeOrHardError]
                  = asrt_eh.is_any_exit_code,
-                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]]
+                 symbol_usages: Assertion[Sequence[SymbolUsage]]
                  = asrt.is_empty_sequence,
                  post_sds: Callable[[SandboxDs], PostSdsExpectation] =
                  lambda sds: PostSdsExpectation(),
-                 after_execution: ValueAssertion[TestCaseDs] =
+                 after_execution: Assertion[TestCaseDs] =
                  asrt.anything_goes(),
                  ):
         self.symbol_usages = symbol_usages
@@ -148,8 +148,8 @@ class Expectation:
 
     @staticmethod
     def hard_error_from_prepare(
-            error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text(),
-            symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+            error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text(),
+            symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
     ) -> 'Expectation':
         return Expectation(
             symbol_usages=symbol_usages,
@@ -158,8 +158,8 @@ class Expectation:
 
     @staticmethod
     def hard_error_from_execute(
-            error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text(),
-            symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+            error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text(),
+            symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
     ) -> 'Expectation':
         return Expectation(
             symbol_usages=symbol_usages,

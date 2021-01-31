@@ -23,7 +23,7 @@ from exactly_lib_test.test_resources.process import SubProcessResultInfo
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, process_result_info_assertions
 from exactly_lib_test.test_resources.value_assertions.process_result_info_assertions import \
     process_result_for_exit_value
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
@@ -37,7 +37,7 @@ def suite() -> unittest.TestSuite:
 
 
 class EmptyTestCaseShouldPass(SetupWithoutPreprocessorAndTestActor):
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def test_case(self) -> str:
@@ -50,7 +50,7 @@ class AllPhasesEmptyShouldPass(SetupWithoutPreprocessorAndTestActor):
                            for phase in phase_identifier.ALL]
         return lines_content(test_case_lines)
 
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
 
@@ -61,7 +61,7 @@ class WhenAPhaseHasInvalidPhaseNameThenExitStatusShouldIndicateThis(SetupWithout
         ]
         return lines_content(test_case_lines)
 
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.NO_EXECUTION__SYNTAX_ERROR)
 
 
@@ -80,14 +80,14 @@ class PathSymbolsAreSetCorrectly(SetupWithoutPreprocessorAndTestActor):
         ]
         return lines_content(test_case_source_lines)
 
-    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> Assertion[SubProcessResultInfo]:
         return asrt.And([
             process_result_info_assertions.is_process_result_for_exit_code(exit_values.EXECUTION__PASS.exit_code),
-            ExpectedTestPathSymbolsAreSetCorrectlyVa(),
+            ExpectedTestPathSymbolsAreSetCorrectlyAssertion(),
         ])
 
 
-class ExpectedTestPathSymbolsAreSetCorrectlyVa(ValueAssertionBase[SubProcessResultInfo]):
+class ExpectedTestPathSymbolsAreSetCorrectlyAssertion(AssertionBase[SubProcessResultInfo]):
     def _apply(self,
                put: unittest.TestCase,
                value: SubProcessResultInfo,

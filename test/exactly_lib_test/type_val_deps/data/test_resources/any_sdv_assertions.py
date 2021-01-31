@@ -7,13 +7,13 @@ from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_assertions import equals_list_sdv
 from exactly_lib_test.type_val_deps.types.path.test_resources.sdv_assertions import equals_path_sdv
 from exactly_lib_test.type_val_deps.types.string.test_resources.sdv_assertions import equals_string_sdv
 
 
-def equals_data_type_sdv(expected: DataTypeSdv) -> ValueAssertion[DataTypeSdv]:
+def equals_data_type_sdv(expected: DataTypeSdv) -> Assertion[DataTypeSdv]:
     return _EqualsSdv(expected)
 
 
@@ -36,7 +36,7 @@ class _EqualsDataTypeSdvVisitor(DataTypeSdvPseudoVisitor):
         return equals_list_sdv(expected).apply(self.put, self.actual, self.message_builder)
 
 
-class _EqualsSdv(ValueAssertionBase[DataTypeSdv]):
+class _EqualsSdv(AssertionBase[DataTypeSdv]):
     def __init__(self, expected: DataTypeSdv):
         self.expected = expected
 

@@ -16,7 +16,7 @@ from exactly_lib_test.impls.types.test_resources import arguments_building as ar
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.argument_renderers import FileOrString
 from exactly_lib_test.test_resources.test_utils import NArrEx
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder
 from exactly_lib_test.util.interval.test_resources import interval_assertion as asrt_interval
 
@@ -91,7 +91,7 @@ class TestLineNumberPrimitive(unittest.TestCase):
         ])
 
     def _check_cases(self,
-                     cases: Sequence[NArrEx[ArgumentElementsRenderer, ValueAssertion[IntIntervalWInversion]]]):
+                     cases: Sequence[NArrEx[ArgumentElementsRenderer, Assertion[IntIntervalWInversion]]]):
         for case in cases:
             with self.subTest(case.name, arguments=case.arrangement.as_str):
                 integration_check.CHECKER__PARSE_SIMPLE.check(
@@ -149,7 +149,7 @@ class TestContentsPrimitive(unittest.TestCase):
         ])
 
     def _check_cases(self,
-                     cases: Sequence[NArrEx[ArgumentElementsRenderer, ValueAssertion[IntIntervalWInversion]]]):
+                     cases: Sequence[NArrEx[ArgumentElementsRenderer, Assertion[IntIntervalWInversion]]]):
         for case in cases:
             with self.subTest(case.name, arguments=case.arrangement.as_str):
                 integration_check.CHECKER__PARSE_SIMPLE.check(
@@ -183,7 +183,7 @@ class TestConstantPrimitive(unittest.TestCase):
         ])
 
     def _check_cases(self,
-                     cases: Sequence[NArrEx[ArgumentElementsRenderer, ValueAssertion[IntIntervalWInversion]]]):
+                     cases: Sequence[NArrEx[ArgumentElementsRenderer, Assertion[IntIntervalWInversion]]]):
         for case in cases:
             with self.subTest(case.name, arguments=case.arrangement.as_str):
                 integration_check.CHECKER__PARSE_SIMPLE.check(
@@ -371,7 +371,7 @@ class TestComposition(unittest.TestCase):
         ])
 
     def _check_cases(self,
-                     cases: Sequence[NArrEx[ArgumentElementsRenderer, ValueAssertion[IntIntervalWInversion]]]):
+                     cases: Sequence[NArrEx[ArgumentElementsRenderer, Assertion[IntIntervalWInversion]]]):
         for case in cases:
             with self.subTest(case.name, arguments=case.arrangement.as_str):
                 integration_check.CHECKER__PARSE_SIMPLE.check(
@@ -389,8 +389,8 @@ class TestComposition(unittest.TestCase):
                 )
 
 
-class IntervalOfMatcherAssertion(ValueAssertionBase[LineMatcher]):
-    def __init__(self, expected: ValueAssertion[IntIntervalWInversion]):
+class IntervalOfMatcherAssertion(AssertionBase[LineMatcher]):
+    def __init__(self, expected: Assertion[IntIntervalWInversion]):
         self._expected = expected
 
     def _apply(self,

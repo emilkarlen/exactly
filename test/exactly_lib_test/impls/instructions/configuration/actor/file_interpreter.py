@@ -9,7 +9,7 @@ from exactly_lib_test.impls.instructions.configuration.actor.test_resources impo
     exe_file_in_interpreter_default_relativity_dir, is_exe_file_command_for_source_file
 from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite() -> unittest.TestSuite:
@@ -23,8 +23,8 @@ class TestFileInterpreterActorForExecutableFile(unittest.TestCase):
             self,
             instruction_argument_source_template: str,
             act_phase_source_lines: List[str],
-            symbol_usages: ValueAssertion[Sequence[SymbolUsage]],
-            expected_command: Callable[[TestCaseDs], ValueAssertion[Command]],
+            symbol_usages: Assertion[Sequence[SymbolUsage]],
+            expected_command: Callable[[TestCaseDs], Assertion[Command]],
             hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
     ):
         self.helper.check_both_single_and_multiple_line_source(

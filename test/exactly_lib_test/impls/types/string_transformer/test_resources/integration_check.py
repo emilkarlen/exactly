@@ -12,7 +12,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expe
 from exactly_lib_test.impls.types.string_transformer.test_resources.transformer_checker import \
     StringTransformerPropertiesConfiguration
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import \
     string_transformer_assertions as asrt_string_transformer
@@ -40,13 +40,13 @@ CHECKER__PARSE_SIMPLE__WO_IMPLICIT_MODEL_EVALUATION = logic_integration_check.In
 
 def expectation_of_successful_execution(output_lines: List[str],
                                         may_depend_on_external_resources: bool,
-                                        frozen_may_depend_on_external_resources: ValueAssertion[bool],
-                                        symbol_references: ValueAssertion[Sequence[SymbolReference]],
+                                        frozen_may_depend_on_external_resources: Assertion[bool],
+                                        symbol_references: Assertion[Sequence[SymbolReference]],
                                         is_identity_transformer: bool = False,
-                                        source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+                                        source: Assertion[ParseSource] = asrt.anything_goes(),
                                         adv: Callable[
                                             [AssertionResolvingEnvironment],
-                                            ValueAssertion[ApplicationEnvironmentDependentValue[StringTransformer]]
+                                            Assertion[ApplicationEnvironmentDependentValue[StringTransformer]]
                                         ] = adv_asrt__any,
                                         ) -> StExpectation:
     return Expectation(
@@ -70,12 +70,12 @@ def expectation_of_successful_execution(output_lines: List[str],
 
 def expectation_of_successful_execution_2(output_lines: List[str],
                                           may_depend_on_external_resources: bool,
-                                          symbol_references: ValueAssertion[Sequence[SymbolReference]],
+                                          symbol_references: Assertion[Sequence[SymbolReference]],
                                           is_identity_transformer: bool = False,
-                                          source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+                                          source: Assertion[ParseSource] = asrt.anything_goes(),
                                           adv: Callable[
                                               [AssertionResolvingEnvironment],
-                                              ValueAssertion[ApplicationEnvironmentDependentValue[StringTransformer]]
+                                              Assertion[ApplicationEnvironmentDependentValue[StringTransformer]]
                                           ] = adv_asrt__any,
                                           ) -> StExpectation:
     return expectation_of_successful_execution(

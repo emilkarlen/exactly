@@ -10,7 +10,7 @@ from exactly_lib_test.common.report_rendering.source_location import matches_sou
     expected_path_line
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct
 
 
@@ -126,7 +126,7 @@ def file_and_line_num_line(file_path: pathlib.Path,
                               source.first_line_number)
 
 
-def _matches_plain_minor_block_w_single_plain_line(line: str) -> ValueAssertion[MinorBlock]:
+def _matches_plain_minor_block_w_single_plain_line(line: str) -> Assertion[MinorBlock]:
     return asrt_struct.matches_minor_block__w_plain_properties(
         asrt.matches_sequence([
             asrt_struct.matches_line_element__w_plain_properties(

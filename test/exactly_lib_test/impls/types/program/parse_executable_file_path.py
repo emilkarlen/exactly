@@ -39,7 +39,7 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import PathStringAbsStx, \
     RelOptPathAbsStx, \
@@ -100,7 +100,7 @@ class Case:
                  name: str,
                  source: str,
                  expectation: ExpectationOnExeFile,
-                 source_after_parse: ValueAssertion[ParseSource]):
+                 source_after_parse: Assertion[ParseSource]):
         self.name = name
         self.source = source
         self.expectation = expectation
@@ -111,7 +111,7 @@ class Case:
            executable_file: PathAbsStx,
            arguments: Sequence[ArgumentAbsStx],
            expectation: ExpectationOnExeFile,
-           source_after_parse: ValueAssertion[ParseSource],
+           source_after_parse: Assertion[ParseSource],
            ) -> 'Case':
         return Case(
             name,
@@ -387,7 +387,7 @@ class TestParseAbsolutePath(unittest.TestCase):
 
     def _check(self,
                arguments_str: str,
-               expected_source_after_parse: ValueAssertion[ParseSource],
+               expected_source_after_parse: Assertion[ParseSource],
                expectation_on_exe_file: ExpectationOnExeFile,
                validator_expectation: validation.Expectation):
         # ARRANGE #
@@ -406,7 +406,7 @@ class TestParseAbsolutePath(unittest.TestCase):
 
     def _check__abs_stx(self,
                         arguments: AbstractSyntax,
-                        expected_source_after_parse: ValueAssertion[ParseSource],
+                        expected_source_after_parse: Assertion[ParseSource],
                         expectation_on_exe_file: ExpectationOnExeFile,
                         validator_expectation: validation.Expectation):
         for layout_spec in STANDARD_LAYOUT_SPECS:
@@ -441,14 +441,14 @@ def path_of_default_relativity(path_suffix: str) -> PathDdv:
                                    path_ddvs.constant_path_part(path_suffix))
 
 
-def has_remaining_part_of_first_line(remaining_part: str) -> ValueAssertion[ParseSource]:
+def has_remaining_part_of_first_line(remaining_part: str) -> Assertion[ParseSource]:
     return asrt_source.source_is_not_at_end(
         current_line_number=asrt.equals(1),
         remaining_part_of_current_line=asrt.equals(remaining_part),
     )
 
 
-def has_remaining_part_of_first_line__re(remaining_part_reg_ex: str) -> ValueAssertion[ParseSource]:
+def has_remaining_part_of_first_line__re(remaining_part_reg_ex: str) -> Assertion[ParseSource]:
     return asrt_source.source_is_not_at_end(
         current_line_number=asrt.equals(1),
         remaining_part_of_current_line=asrt_str.matches_reg_ex(remaining_part_reg_ex),

@@ -21,15 +21,15 @@ from exactly_lib_test.section_document.element_parsers.test_resources.parsing \
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.type_sdv_assertions import matches_sdv_of_line_matcher
 from exactly_lib_test.type_val_prims.matcher.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
 
 
 class Expectation:
     def __init__(self,
-                 sdv: ValueAssertion[SymbolDependentValue],
-                 token_stream: ValueAssertion[TokenStream] = asrt.anything_goes()):
+                 sdv: Assertion[SymbolDependentValue],
+                 token_stream: Assertion[TokenStream] = asrt.anything_goes()):
         self.sdv = sdv
         self.token_stream = token_stream
 
@@ -128,8 +128,8 @@ class TestLineNumberParser(unittest.TestCase):
 
 def resolved_value_is_line_number_matcher(equivalent: MatcherWTrace[LineMatcherLine],
                                           model_infos: List[ModelInfo],
-                                          references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence
-                                          ) -> ValueAssertion[SymbolDependentValue]:
+                                          references: Assertion[Sequence[SymbolReference]] = asrt.is_empty_sequence
+                                          ) -> Assertion[SymbolDependentValue]:
     expected_matcher = is_equivalent_to(equivalent,
                                         model_infos)
     return matches_sdv_of_line_matcher(

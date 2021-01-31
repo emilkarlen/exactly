@@ -6,7 +6,7 @@ from exactly_lib.util.interval.w_inversion import intervals as sut
 from exactly_lib.util.interval.w_inversion.interval import IntIntervalWInversion
 from exactly_lib.util.interval.w_inversion.intervals import Empty, \
     Unlimited
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.interval.test_resources.interval_assertion import matches_empty, \
     matches_point, matches_lower_limit, matches_upper_limit, matches_finite, matches_unlimited, PosNeg
 
@@ -115,8 +115,8 @@ class TestWithCustomInversion(unittest.TestCase):
 
 def _check_single(put: unittest.TestCase,
                   actual: IntIntervalWInversion,
-                  pos: ValueAssertion[IntInterval],
-                  neg: ValueAssertion[IntInterval]):
+                  pos: Assertion[IntInterval],
+                  neg: Assertion[IntInterval]):
     pos.apply_with_message(put, actual, 'positive value')
     neg.apply_with_message(put, actual.inversion, 'inversion')
     pos.apply_with_message(put, actual.inversion.inversion, 'double inversion')

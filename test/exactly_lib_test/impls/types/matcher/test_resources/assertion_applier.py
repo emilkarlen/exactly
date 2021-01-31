@@ -18,7 +18,7 @@ from exactly_lib_test.impls.types.matcher.test_resources import matcher_w_init_a
 from exactly_lib_test.impls.types.matcher.test_resources import matchers
 from exactly_lib_test.impls.types.matcher.test_resources.sdv_ddv import MatcherDdvFromParts2TestImpl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, MessageBuilder
 
 ACTUAL = TypeVar('ACTUAL')
 ACTUAL_PRE_SDS = TypeVar('ACTUAL_PRE_SDS')
@@ -31,7 +31,7 @@ class ApplicationAssertionSetup(Generic[MODEL, ACTUAL], ABC):
     def get_assertion(self, symbols: SymbolTable,
                       tcds: TestCaseDs,
                       env: ApplicationEnvironment,
-                      ) -> ValueAssertion[ACTUAL]:
+                      ) -> Assertion[ACTUAL]:
         pass
 
     @abstractmethod
@@ -41,7 +41,7 @@ class ApplicationAssertionSetup(Generic[MODEL, ACTUAL], ABC):
 
 class ValidationAssertionSetup(Generic[ACTUAL_PRE_SDS, ACTUAL_POST_SDS], ABC):
     @abstractmethod
-    def get_pre_sds_assertion(self, hds: HomeDs) -> ValueAssertion[ACTUAL_PRE_SDS]:
+    def get_pre_sds_assertion(self, hds: HomeDs) -> Assertion[ACTUAL_PRE_SDS]:
         pass
 
     @abstractmethod
@@ -49,7 +49,7 @@ class ValidationAssertionSetup(Generic[ACTUAL_PRE_SDS, ACTUAL_POST_SDS], ABC):
         pass
 
     @abstractmethod
-    def get_post_sds_assertion(self, tcds: TestCaseDs) -> ValueAssertion[ACTUAL_POST_SDS]:
+    def get_post_sds_assertion(self, tcds: TestCaseDs) -> Assertion[ACTUAL_POST_SDS]:
         pass
 
     @abstractmethod
@@ -58,13 +58,13 @@ class ValidationAssertionSetup(Generic[ACTUAL_PRE_SDS, ACTUAL_POST_SDS], ABC):
 
 
 class UnconditionallyPassValidationAssertionSetup(ValidationAssertionSetup):
-    def get_pre_sds_assertion(self, hds: HomeDs) -> ValueAssertion:
+    def get_pre_sds_assertion(self, hds: HomeDs) -> Assertion:
         return asrt.anything_goes()
 
     def get_pre_sds_actual(self, hds: HomeDs):
         return None
 
-    def get_post_sds_assertion(self, tcds: TestCaseDs) -> ValueAssertion:
+    def get_post_sds_assertion(self, tcds: TestCaseDs) -> Assertion:
         return asrt.anything_goes()
 
     def get_post_sds_actual(self, tcds: TestCaseDs):
@@ -72,7 +72,7 @@ class UnconditionallyPassValidationAssertionSetup(ValidationAssertionSetup):
 
 
 class UnconditionallyPassApplicationAssertionSetup(ApplicationAssertionSetup):
-    def get_assertion(self, symbols: SymbolTable, tcds: TestCaseDs, env: ApplicationEnvironment) -> ValueAssertion:
+    def get_assertion(self, symbols: SymbolTable, tcds: TestCaseDs, env: ApplicationEnvironment) -> Assertion:
         return asrt.anything_goes()
 
     def get_actual(self, model: MODEL):

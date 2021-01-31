@@ -12,8 +12,8 @@ from exactly_lib_test.test_resources.actions import do_raise, do_return
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_val_deps.dep_variants.test_resources import dir_dep_value_assertions as sut
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.dep_variants.test_resources import ddv_w_deps_assertions as sut
 
 
 def suite() -> unittest.TestSuite:
@@ -71,7 +71,7 @@ class TestMatchesSingleDirDependentValue(unittest.TestCase):
     @staticmethod
     def _assert_not_matches(actual: Max1DependencyDdv,
                             resolving_dependency: Optional[DirectoryStructurePartition],
-                            resolved_value: ValueAssertion,
+                            resolved_value: Assertion,
                             ):
         assertion = sut.matches_single_dir_dependent_value(resolving_dependency,
                                                            lambda tcds: resolved_value)
@@ -154,7 +154,7 @@ class TestMatchesMultiDirDependentValue(unittest.TestCase):
     @staticmethod
     def _assert_not_matches(actual: MultiDependenciesDdv,
                             dir_dependencies: DirDependencies,
-                            resolved_value: Callable[[TestCaseDs], ValueAssertion[Any]]
+                            resolved_value: Callable[[TestCaseDs], Assertion[Any]]
                             ):
         assertion = sut.matches_multi_dir_dependent_value(dir_dependencies,
                                                           resolved_value)

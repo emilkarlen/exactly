@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.util.interval import int_interval as sut
 from exactly_lib.util.interval.int_interval import IntInterval
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.interval.test_resources.interval_assertion import matches_empty, \
     matches_point, matches_lower_limit, matches_upper_limit, matches_finite, matches_unlimited
 
@@ -74,7 +74,7 @@ class TestFinite(unittest.TestCase):
 
 def _check_single(put: unittest.TestCase,
                   actual: IntInterval,
-                  expectation: ValueAssertion[IntInterval]):
+                  expectation: Assertion[IntInterval]):
     expectation.apply_with_message(put, actual, 'positive value')
 
 

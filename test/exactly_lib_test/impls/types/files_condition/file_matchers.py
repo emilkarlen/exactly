@@ -19,7 +19,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import prim
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.test_utils import NExArr, NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import is_reference_to_file_matcher, \
     FileMatcherSymbolContext, FileMatcherSymbolContextOfPrimitiveConstant
 
@@ -415,7 +415,7 @@ def result_is_single_file_name_w_lazy_conjunction_w_1st_is_applied_before_2nd(
         fm1: NameAndValue[bool],
         fm2: NameAndValue[bool],
         additional_symbols: Sequence[SymbolContext] = (),
-        additional_entries: Optional[Mapping[PurePosixPath, ValueAssertion[Optional[FileMatcher]]]] = None
+        additional_entries: Optional[Mapping[PurePosixPath, Assertion[Optional[FileMatcher]]]] = None
 ) -> NExArr[PrimAndExeExpectation[FilesCondition,
                                   Optional[MatchingResult]],
             Arrangement]:

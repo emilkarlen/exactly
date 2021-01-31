@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class Recording:
@@ -32,9 +32,9 @@ class Recording:
         return self._file_location_info
 
 
-def matches_recording(string: ValueAssertion[str] = asrt.anything_goes(),
-                      file_location_info: ValueAssertion[FileLocationInfo] = asrt.anything_goes()
-                      ) -> ValueAssertion[Recording]:
+def matches_recording(string: Assertion[str] = asrt.anything_goes(),
+                      file_location_info: Assertion[FileLocationInfo] = asrt.anything_goes()
+                      ) -> Assertion[Recording]:
     return asrt.and_([
         asrt.sub_component('string',
                            Recording.string.fget,

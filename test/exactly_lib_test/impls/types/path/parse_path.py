@@ -36,7 +36,7 @@ from exactly_lib_test.symbol.test_resources import symbol_reference_assertions a
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import format_rel_option
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
     is_reference_to_string_made_up_of_just_strings
@@ -86,7 +86,7 @@ class Arrangement:
 class Expectation:
     def __init__(self,
                  path_sdv: PathSdv,
-                 token_stream: ValueAssertion):
+                 token_stream: Assertion):
         assert isinstance(path_sdv, PathSdv)
         self.path_sdv = path_sdv
         self.token_stream = token_stream
@@ -94,8 +94,8 @@ class Expectation:
 
 class Expectation2:
     def __init__(self,
-                 path_sdv: ValueAssertion,
-                 token_stream: ValueAssertion,
+                 path_sdv: Assertion,
+                 token_stream: Assertion,
                  symbol_table_in_with_all_ref_restrictions_are_satisfied: SymbolTable = None):
         self.path_sdv = path_sdv
         self.token_stream = token_stream
@@ -1479,9 +1479,9 @@ def _option_string_for_relativity(relativity: RelOptionType) -> str:
 
 
 def expect(resolved_path: PathDdv,
-           expected_symbol_references: ValueAssertion,
+           expected_symbol_references: Assertion,
            symbol_table: SymbolTable,
-           token_stream: ValueAssertion,
+           token_stream: Assertion,
            ) -> Expectation2:
     return Expectation2(
         path_sdv=matches_path_sdv(resolved_path,

@@ -2,16 +2,16 @@ import shlex
 import unittest
 
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder
 
 
-def matches_single_quotes_str(unquoted: ValueAssertion[str]) -> ValueAssertion[str]:
+def matches_single_quotes_str(unquoted: Assertion[str]) -> Assertion[str]:
     return _SingleQuotedStr(unquoted)
 
 
-class _SingleQuotedStr(ValueAssertionBase[str]):
-    def __init__(self, unquoted: ValueAssertion[str]):
+class _SingleQuotedStr(AssertionBase[str]):
+    def __init__(self, unquoted: Assertion[str]):
         self._unquoted = unquoted
 
     def _apply(self,

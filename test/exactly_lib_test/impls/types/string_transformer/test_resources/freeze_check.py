@@ -9,7 +9,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Asse
 from exactly_lib_test.test_resources.recording import SequenceRecordingMedia
 from exactly_lib_test.test_resources.value_assertions import sequence_assertions as asrt_seq
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder
 from exactly_lib_test.type_val_prims.string_source.test_resources import string_sources, properties_access
 from exactly_lib_test.type_val_prims.string_source.test_resources.string_sources import StringSourceMethod
@@ -20,7 +20,7 @@ def check(put: unittest.TestCase,
           source_may_depend_on_external_resources: bool,
           num_initial_freeze_invocations: int,
           tmp_file_space: DirFileSpace,
-          source_model_method_invocations: ValueAssertion[Sequence[StringSourceMethod]],
+          source_model_method_invocations: Assertion[Sequence[StringSourceMethod]],
           message_builder: asrt.MessageBuilder = asrt.new_message_builder(),
           source_model_contents: str = '1\n2\n3\n',
           ):
@@ -43,23 +43,23 @@ def check(put: unittest.TestCase,
                                           message_builder.for_sub_component('invoked methods of the source model'))
 
 
-def at_least_one_method_invocation_with_freeze_first() -> ValueAssertion[Sequence[StringSourceMethod]]:
+def at_least_one_method_invocation_with_freeze_first() -> Assertion[Sequence[StringSourceMethod]]:
     return asrt_seq.is_non_empty_and_first_element(
         asrt.equals(StringSourceMethod.FREEZE)
     )
 
 
-def single_method_invocation_that_is(method: StringSourceMethod) -> ValueAssertion[Sequence[StringSourceMethod]]:
+def single_method_invocation_that_is(method: StringSourceMethod) -> Assertion[Sequence[StringSourceMethod]]:
     return asrt.equals([method])
 
 
-def exactly_one_method_invocation__and_that_is_not_freeze() -> ValueAssertion[Sequence[StringSourceMethod]]:
+def exactly_one_method_invocation__and_that_is_not_freeze() -> Assertion[Sequence[StringSourceMethod]]:
     return asrt.matches_sequence([asrt.is_not(StringSourceMethod.FREEZE)])
 
 
 def first_invoked_method_of_source_model__is_freeze(
         environment: AssertionResolvingEnvironment
-) -> ValueAssertion[ApplicationEnvironmentDependentValue[StringTransformer]]:
+) -> Assertion[ApplicationEnvironmentDependentValue[StringTransformer]]:
     """Checks freezing.
     Note: An assertion on the ADV (as this is) is not needed for this test -
     a test on the PRIMITIVE = StringTransformer - would do too.
@@ -75,7 +75,7 @@ def first_invoked_method_of_source_model__is_freeze(
 
 def single_access_of_source_model_after_freeze__that_is_not_freeze(
         environment: AssertionResolvingEnvironment
-) -> ValueAssertion[ApplicationEnvironmentDependentValue[StringTransformer]]:
+) -> Assertion[ApplicationEnvironmentDependentValue[StringTransformer]]:
     """Checks freezing.
     Note: An assertion on the ADV (as this is) is not needed for this test -
     a test on the PRIMITIVE = StringTransformer - would do too.
@@ -105,10 +105,10 @@ def _new_recording_media() -> SequenceRecordingMedia[StringSourceMethod]:
 
 
 class SourceModelMethodInvocationsAssertion(
-    ValueAssertionBase[ApplicationEnvironmentDependentValue[StringTransformer]]
+    AssertionBase[ApplicationEnvironmentDependentValue[StringTransformer]]
 ):
     def __init__(self, environment: AssertionResolvingEnvironment,
-                 source_model_method_invocations: ValueAssertion[Sequence[StringSourceMethod]],
+                 source_model_method_invocations: Assertion[Sequence[StringSourceMethod]],
                  ):
         self._environment = environment
         self._source_model_method_invocations = source_model_method_invocations

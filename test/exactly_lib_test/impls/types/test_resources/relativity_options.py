@@ -33,7 +33,7 @@ from exactly_lib_test.test_resources import argument_renderer
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
     equals_path_relativity_restriction
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
@@ -49,16 +49,16 @@ class SymbolsConfiguration:
     Configuration of symbols used by a relativity option (for a path cli argument).
     """
 
-    def reference_expectation_assertions(self) -> List[ValueAssertion[SymbolReference]]:
+    def reference_expectation_assertions(self) -> List[Assertion[SymbolReference]]:
         return []
 
-    def usage_expectation_assertions(self) -> List[ValueAssertion[SymbolUsage]]:
+    def usage_expectation_assertions(self) -> List[Assertion[SymbolUsage]]:
         return self.reference_expectation_assertions()
 
     def contexts_for_arrangement(self) -> List[SymbolContext]:
         return []
 
-    def usages_expectation(self) -> ValueAssertion[Sequence[SymbolUsage]]:
+    def usages_expectation(self) -> Assertion[Sequence[SymbolUsage]]:
         return asrt.matches_sequence(self.reference_expectation_assertions())
 
     def in_arrangement(self) -> SymbolTable:
@@ -355,7 +355,7 @@ class RelativityOptionConfigurationForRelNonHds(RelativityOptionConfiguration, A
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> sds_populator.SdsPopulator:
         raise NotImplementedError()
 
-    def assert_root_dir_contains_exactly(self, contents: DirContents) -> ValueAssertion:
+    def assert_root_dir_contains_exactly(self, contents: DirContents) -> Assertion:
         raise NotImplementedError('abstract method')
 
 
@@ -404,7 +404,7 @@ class RelativityOptionConfigurationForRelNonHdsImpl(RelativityOptionConfiguratio
             relativity_sds = RelSdsOptionType(self.relativity_non_hds.value)
             return sds_populator.contents_in(relativity_sds, contents)
 
-    def assert_root_dir_contains_exactly(self, contents: DirContents) -> ValueAssertion:
+    def assert_root_dir_contains_exactly(self, contents: DirContents) -> Assertion:
         return sds_contents_check.non_hds_dir_contains_exactly(self.root_dir__non_hds,
                                                                contents)
 
@@ -449,7 +449,7 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
                                                                            path_ddvs.empty_path_part()),
                                                    )
 
-    def reference_expectation_assertions(self) -> List[ValueAssertion[SymbolReference]]:
+    def reference_expectation_assertions(self) -> List[Assertion[SymbolReference]]:
         return [
             matches_symbol_reference_with_restriction_on_direct_target(
                 self.symbol_name,

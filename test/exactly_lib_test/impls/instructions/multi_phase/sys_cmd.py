@@ -35,7 +35,7 @@ from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRe
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_rest
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
@@ -64,7 +64,7 @@ class ArgumentsCase:
     def __init__(self,
                  name: str,
                  arguments: ArgumentElementsRenderer,
-                 expected_arguments: ValueAssertion[Sequence[str]],
+                 expected_arguments: Assertion[Sequence[str]],
                  symbols: Sequence[SymbolContext] = (),
                  ):
         self.name = name
@@ -299,8 +299,8 @@ class TestFailingParse(unittest.TestCase):
 def check_successful_execution(put: unittest.TestCase,
                                arguments: ArgumentElementsRenderer,
                                symbols: SymbolTable,
-                               symbol_usages: ValueAssertion[Sequence[SymbolUsage]],
-                               expected_command: ValueAssertion[Command],
+                               symbol_usages: Assertion[Sequence[SymbolUsage]],
+                               expected_command: Assertion[Command],
                                ):
     executor_that_records_arguments = CommandExecutorThatRecordsArguments()
     CHECKER.check__w_source_variants(

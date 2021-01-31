@@ -19,7 +19,7 @@ from exactly_lib_test.impls.types.files_matcher.test_resources import symbol_con
 from exactly_lib_test.section_document.test_resources import source_location_assertions as asrt_source_loc
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolValueContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
 from exactly_lib_test.type_val_deps.types.path.test_resources import path
 from exactly_lib_test.type_val_deps.types.string.test_resources import string
@@ -184,11 +184,11 @@ def _symbol_definition(name: str,
     )
 
 
-def _is_resolved_value_presentation_block() -> ValueAssertion[ReportBlock]:
+def _is_resolved_value_presentation_block() -> Assertion[ReportBlock]:
     return asrt.is_instance(value_presentation.ResolvedValuePresentationBlock)
 
 
-def _matches_reference_source_location_block(expected_name: str) -> ValueAssertion[ReportBlock]:
+def _matches_reference_source_location_block(expected_name: str) -> Assertion[ReportBlock]:
     return asrt.is_instance_with__many(
         sut.ReferenceSourceLocationBlock,
         [
@@ -199,7 +199,7 @@ def _matches_reference_source_location_block(expected_name: str) -> ValueAsserti
     )
 
 
-def _matches_definition_short_info_block(expected: SymbolDefinitionInfo) -> ValueAssertion[ReportBlock]:
+def _matches_definition_short_info_block(expected: SymbolDefinitionInfo) -> Assertion[ReportBlock]:
     return asrt.is_instance_with__many(
         sut.DefinitionShortInfoBlock,
         [
@@ -210,7 +210,7 @@ def _matches_definition_short_info_block(expected: SymbolDefinitionInfo) -> Valu
     )
 
 
-def _matches_definition_source_block(expected: SymbolDefinitionInfo) -> ValueAssertion[ReportBlock]:
+def _matches_definition_source_block(expected: SymbolDefinitionInfo) -> Assertion[ReportBlock]:
     return asrt.is_instance_with__many(
         sut.DefinitionSourceBlock,
         [

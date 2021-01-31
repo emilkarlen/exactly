@@ -14,7 +14,7 @@ from exactly_lib_test.impls.types.files_matcher.models.test_resources.assertion 
 from exactly_lib_test.impls.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolValueContext
 from exactly_lib_test.impls.types.matcher.test_resources import assertion_applier
 from exactly_lib_test.impls.types.matcher.test_resources.assertion_applier import ApplicationAssertionSetup
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def matcher(put: unittest.TestCase,
@@ -46,7 +46,7 @@ class _ModelCheckerAssertionSetup(ApplicationAssertionSetup[FilesMatcherModel, F
                       symbols: SymbolTable,
                       tcds: TestCaseDs,
                       env: ApplicationEnvironment,
-                      ) -> ValueAssertion[FilesMatcherModel]:
+                      ) -> Assertion[FilesMatcherModel]:
         return FilesMatcherModelContentsAssertion(
             self._model_dir.resolve(symbols).value_of_any_dependency(tcds),
             self._expected_contents,

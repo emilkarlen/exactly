@@ -9,7 +9,7 @@ from exactly_lib_test.impls.types.string_source.test_resources.model_constructor
 from exactly_lib_test.impls.types.string_transformer.test_resources import integration_check
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import \
     string_transformer_assertions as asrt_string_transformer
@@ -20,7 +20,7 @@ class TestMayDepOnExtResourcesShouldBeThatOfSourceModelBase(unittest.TestCase, A
     def argument_cases(self) -> List[str]:
         pass
 
-    def expected_output_lines_for_model(self) -> ValueAssertion[Sequence[str]]:
+    def expected_output_lines_for_model(self) -> Assertion[Sequence[str]]:
         return asrt.equals([])
 
     def model(self,

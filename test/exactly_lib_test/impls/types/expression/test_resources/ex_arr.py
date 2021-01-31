@@ -6,7 +6,7 @@ from exactly_lib_test.impls.types.expression.test_resources import test_grammars
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class Arrangement:
@@ -22,7 +22,7 @@ class Arrangement:
 class Expectation:
     def __init__(self,
                  expression: ast.Expr,
-                 source: ValueAssertion[ParseSource],
+                 source: Assertion[ParseSource],
                  ):
         self.expression = expression
         self.source = source
@@ -55,7 +55,7 @@ class SourceExpectation:
         )
 
     @property
-    def assertion(self) -> ValueAssertion[ParseSource]:
+    def assertion(self) -> Assertion[ParseSource]:
         return (
             asrt_source.is_at_end_of_line(self.current_line_number)
             if self.remaining_part_of_current_line is None
@@ -82,7 +82,7 @@ class SourceCase:
         return remaining_source(self.source)
 
     @property
-    def assertion(self) -> ValueAssertion[ParseSource]:
+    def assertion(self) -> Assertion[ParseSource]:
         return self.expectation.assertion
 
     def for_added_empty_first_line(self) -> 'SourceCase':

@@ -13,7 +13,7 @@ from exactly_lib.util.simple_textstruct.structure import ElementProperties, TEXT
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib_test.test_resources.test_utils import NIE, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct
 
 
@@ -467,7 +467,7 @@ class TestTreeDetail(unittest.TestCase):
 
 def _check(put: unittest.TestCase,
            node: Node[bool],
-           expectation: ValueAssertion[s.MajorBlock],
+           expectation: Assertion[s.MajorBlock],
            ):
     renderer = sut.TreeRenderer(RENDERING_CONFIGURATION, node)
 
@@ -502,14 +502,14 @@ RENDERING_CONFIGURATION = RenderingConfiguration(
 
 
 def matches_trace_with_just_single_detail(trace: Node[bool],
-                                          detail: ValueAssertion[s.LineElement],
-                                          ) -> ValueAssertion[s.MajorBlock]:
+                                          detail: Assertion[s.LineElement],
+                                          ) -> Assertion[s.MajorBlock]:
     return matches_trace_with_details(trace, [detail])
 
 
 def matches_trace_with_details(tree: Node[bool],
-                               details: Sequence[ValueAssertion[s.LineElement]],
-                               ) -> ValueAssertion[s.MajorBlock]:
+                               details: Sequence[Assertion[s.LineElement]],
+                               ) -> Assertion[s.MajorBlock]:
     expected_line_elements = asrt.matches_sequence(
         [matches_header_line_element(tree)] +
         list(details)
@@ -523,7 +523,7 @@ def matches_trace_with_details(tree: Node[bool],
     )
 
 
-def matches_header_line_element(node: Node[bool]) -> ValueAssertion[s.LineElement]:
+def matches_header_line_element(node: Node[bool]) -> Assertion[s.LineElement]:
     return asrt_struct.matches_line_element(
         line_object=asrt_struct.is_string__not_line_ended(asrt.equals(_expected_header_line(node))),
         properties=asrt_struct.equals_element_properties(
@@ -532,7 +532,7 @@ def matches_header_line_element(node: Node[bool]) -> ValueAssertion[s.LineElemen
     )
 
 
-def matches_string_detail_line_element(detail: StringDetail, depth: int) -> ValueAssertion[s.LineElement]:
+def matches_string_detail_line_element(detail: StringDetail, depth: int) -> Assertion[s.LineElement]:
     return asrt_struct.matches_line_element(
         line_object=asrt_struct.is_string__not_line_ended(
             asrt.equals(str(detail.string))),
@@ -542,7 +542,7 @@ def matches_string_detail_line_element(detail: StringDetail, depth: int) -> Valu
 
 def matches_detail_line_element(string: str,
                                 depth: int,
-                                text_style: TextStyle = TEXT_STYLE__NEUTRAL) -> ValueAssertion[s.LineElement]:
+                                text_style: TextStyle = TEXT_STYLE__NEUTRAL) -> Assertion[s.LineElement]:
     return asrt_struct.matches_line_element(
         line_object=asrt_struct.is_string__not_line_ended(
             asrt.equals(string)),
@@ -552,7 +552,7 @@ def matches_detail_line_element(string: str,
 
 def matches_pre_formatted_string_detail_line_element(detail: PreFormattedStringDetail,
                                                      depth: int,
-                                                     ) -> ValueAssertion[s.LineElement]:
+                                                     ) -> Assertion[s.LineElement]:
     return asrt_struct.matches_line_element(
         line_object=asrt_struct.is_pre_formatted_string(
             string=asrt.equals(str(detail.object_with_to_string)),
@@ -562,7 +562,7 @@ def matches_pre_formatted_string_detail_line_element(detail: PreFormattedStringD
     )
 
 
-def matches_header_properties(node: Node[bool]) -> ValueAssertion[s.ElementProperties]:
+def matches_header_properties(node: Node[bool]) -> Assertion[s.ElementProperties]:
     return asrt_struct.equals_element_properties(_expected_header_properties(node))
 
 
@@ -600,7 +600,7 @@ def expected_node_properties(depth: int) -> s.ElementProperties:
     )
 
 
-def matches_node_properties(depth: int) -> ValueAssertion[s.ElementProperties]:
+def matches_node_properties(depth: int) -> Assertion[s.ElementProperties]:
     return asrt_struct.equals_element_properties(expected_node_properties(depth))
 
 
@@ -614,7 +614,7 @@ def expected_detail_properties(depth: int,
 
 
 def matches_detail_properties(depth: int,
-                              text_style: TextStyle = TEXT_STYLE__NEUTRAL) -> ValueAssertion[s.ElementProperties]:
+                              text_style: TextStyle = TEXT_STYLE__NEUTRAL) -> Assertion[s.ElementProperties]:
     return asrt_struct.equals_element_properties(expected_detail_properties(depth, text_style))
 
 

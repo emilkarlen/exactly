@@ -7,12 +7,12 @@ from exactly_lib.test_case.error_description import ErrorDescription, ExternalPr
     ErrorDescriptionOfExternalProcessError, ErrorDescriptionOfException, ErrorDescriptionOfMessage
 from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, MessageBuilder
 from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
 
 
-def matches_message(message: ValueAssertion[MinorTextRenderer] = asrt.anything_goes()
-                    ) -> ValueAssertion[ErrorDescription]:
+def matches_message(message: Assertion[MinorTextRenderer] = asrt.anything_goes()
+                    ) -> Assertion[ErrorDescription]:
     return asrt.is_none_or_instance_with(
         err_descr.ErrorDescriptionOfMessage,
         asrt.sub_component_many(
@@ -26,9 +26,9 @@ def matches_message(message: ValueAssertion[MinorTextRenderer] = asrt.anything_g
     )
 
 
-def matches_exception(exception: ValueAssertion[Exception] = asrt.anything_goes(),
-                      message: Optional[ValueAssertion[MinorTextRenderer]] = asrt.anything_goes()
-                      ) -> ValueAssertion[ErrorDescription]:
+def matches_exception(exception: Assertion[Exception] = asrt.anything_goes(),
+                      message: Optional[Assertion[MinorTextRenderer]] = asrt.anything_goes()
+                      ) -> Assertion[ErrorDescription]:
     return asrt.is_none_or_instance_with__many(
         err_descr.ErrorDescriptionOfException,
         [
@@ -52,9 +52,9 @@ def matches_exception(exception: ValueAssertion[Exception] = asrt.anything_goes(
     )
 
 
-def matches_external_process(external_process_error: ValueAssertion[ExternalProcessError] = asrt.anything_goes(),
-                             message: Optional[ValueAssertion[MinorTextRenderer]] = asrt.anything_goes()
-                             ) -> ValueAssertion[ErrorDescription]:
+def matches_external_process(external_process_error: Assertion[ExternalProcessError] = asrt.anything_goes(),
+                             message: Optional[Assertion[MinorTextRenderer]] = asrt.anything_goes()
+                             ) -> Assertion[ErrorDescription]:
     return asrt.is_none_or_instance_with__many(
         err_descr.ErrorDescriptionOfExternalProcessError,
         [
@@ -78,11 +78,11 @@ def matches_external_process(external_process_error: ValueAssertion[ExternalProc
     )
 
 
-def is_any_error_description() -> ValueAssertion[ErrorDescription]:
+def is_any_error_description() -> Assertion[ErrorDescription]:
     return _AnyErrorDescriptionAssertion()
 
 
-class _AnyErrorDescriptionAssertion(asrt.ValueAssertionBase[ErrorDescription]):
+class _AnyErrorDescriptionAssertion(asrt.AssertionBase[ErrorDescription]):
 
     def _apply(self,
                put: unittest.TestCase,

@@ -13,7 +13,7 @@ from exactly_lib_test.impls.types.test_resources.dir_arg_helper import DirArgume
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.test_resources.files_matcher import is_reference_to_files_matcher
 
 
@@ -35,10 +35,10 @@ class IntegrationCheckWFilesMatcherHelperBase(ABC):
         return fms_args.SymbolReference(self.files_matcher_name)
 
     @property
-    def symbol_reference_assertion(self) -> ValueAssertion[SymbolReference]:
+    def symbol_reference_assertion(self) -> Assertion[SymbolReference]:
         return is_reference_to_files_matcher(self.files_matcher_name)
 
-    def symbol_references_expectation(self) -> ValueAssertion[Sequence[SymbolReference]]:
+    def symbol_references_expectation(self) -> Assertion[Sequence[SymbolReference]]:
         return asrt.matches_singleton_sequence(
             self.symbol_reference_assertion
         )

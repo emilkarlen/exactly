@@ -22,7 +22,7 @@ from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import SUB_DIR_RESO
 from exactly_lib_test.tcfs.test_resources.tcds_populators import \
     TcdsPopulator
 from exactly_lib_test.test_resources.files.file_structure import DirContents
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class TestWithRelativityOptionAndNegationBase(TestCaseBase):
@@ -84,7 +84,7 @@ class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfig
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
         return SdsPopulatorForSubDir(SUB_DIR_RESOLVER, contents)
 
-    def assert_root_dir_contains_exactly(self, contents: DirContents) -> ValueAssertion:
+    def assert_root_dir_contains_exactly(self, contents: DirContents) -> Assertion:
         return sub_dir_of_sds_contains_exactly(SUB_DIR_RESOLVER.population_dir,
                                                contents)
 

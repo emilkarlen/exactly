@@ -11,7 +11,7 @@ from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.simple_textstruct.structure import MinorBlock
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct
 from exactly_lib_test.util.simple_textstruct.test_resources.render_to_str import lines_str, blocks_str, LAYOUT, \
     print_line_element, print_line_elements, print_minor_blocks
@@ -401,7 +401,7 @@ class TestSourceLocationPath(unittest.TestCase):
                 self.assertEqual(expected_str, actual_output)
 
 
-def matches_source_code_minor_block(source_code: Sequence[str]) -> ValueAssertion[MinorBlock]:
+def matches_source_code_minor_block(source_code: Sequence[str]) -> Assertion[MinorBlock]:
     return asrt_struct.matches_minor_block(
         line_elements=asrt.matches_sequence([
             asrt_struct.matches_line_element(

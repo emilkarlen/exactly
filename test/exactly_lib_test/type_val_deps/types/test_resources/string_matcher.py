@@ -15,7 +15,7 @@ from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_buildi
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
@@ -39,12 +39,12 @@ def string_matcher_sdv_constant_test_impl(resolved_value: StringMatcher,
 IS_STRING_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.STRING_MATCHER)
 
 
-def is_reference_to_string_matcher__usage(name_of_matcher: str) -> ValueAssertion[SymbolUsage]:
+def is_reference_to_string_matcher__usage(name_of_matcher: str) -> Assertion[SymbolUsage]:
     return asrt_sym_usage.matches_reference(asrt.equals(name_of_matcher),
                                             IS_STRING_MATCHER_REFERENCE_RESTRICTION)
 
 
-def is_reference_to_string_matcher(name_of_matcher: str) -> ValueAssertion[SymbolReference]:
+def is_reference_to_string_matcher(name_of_matcher: str) -> Assertion[SymbolReference]:
     return asrt.is_instance_with(
         SymbolReference,
         asrt_sym_usage.matches_reference(asrt.equals(name_of_matcher),
@@ -85,7 +85,7 @@ class StringMatcherSymbolValueContext(MatcherSymbolValueContext[StringSource]):
     def of_arbitrary_value() -> 'StringMatcherSymbolValueContext':
         return ARBITRARY_SYMBOL_VALUE_CONTEXT
 
-    def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+    def reference_assertion(self, symbol_name: str) -> Assertion[SymbolReference]:
         return is_reference_to_string_matcher(symbol_name)
 
     @property

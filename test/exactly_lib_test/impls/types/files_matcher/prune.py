@@ -41,7 +41,7 @@ from exactly_lib_test.test_resources.files.file_structure import sym_link, Dir, 
 from exactly_lib_test.test_resources.matcher_argument import conjunction, Parenthesis
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr, NIE, EA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.test_resources import files_matcher as files_matcher_test_impl
 from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext, \
     FileMatcherSymbolContextOfPrimitiveConstant
@@ -742,7 +742,7 @@ def _check_multi(
         helper: IntegrationCheckHelper,
         arguments: FilesMatcherArg,
         symbols_common_to_all_cases: Sequence[SymbolContext],
-        symbol_references: ValueAssertion[Sequence[SymbolReference]],
+        symbol_references: Assertion[Sequence[SymbolReference]],
         execution_cases: Sequence[NEA[Sequence[FileSystemElement], Sequence[FileSystemElement]]]):
     integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants(
         put,

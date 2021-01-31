@@ -11,7 +11,7 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite_for(configuration: InstructionTestConfiguration) -> unittest.TestSuite:
@@ -26,8 +26,8 @@ class Case:
     def __init__(self,
                  name: str,
                  source: ParseSource,
-                 source_assertion: ValueAssertion[ParseSource],
-                 main_result_assertion: ValueAssertion[pfh.PassOrFailOrHardError],
+                 source_assertion: Assertion[ParseSource],
+                 main_result_assertion: Assertion[pfh.PassOrFailOrHardError],
                  ):
         self.name = name
         self.source = source

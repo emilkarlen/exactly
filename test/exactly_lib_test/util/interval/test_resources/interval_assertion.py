@@ -2,7 +2,7 @@ from typing import Optional, Generic, TypeVar
 
 from exactly_lib.util.interval.int_interval import IntInterval
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 T = TypeVar('T')
 
@@ -16,7 +16,7 @@ class PosNeg(Generic[T]):
         self.neg = neg
 
 
-def equals_interval(expected: IntInterval) -> ValueAssertion[IntInterval]:
+def equals_interval(expected: IntInterval) -> Assertion[IntInterval]:
     return (
         matches_empty()
         if expected.is_empty
@@ -27,7 +27,7 @@ def equals_interval(expected: IntInterval) -> ValueAssertion[IntInterval]:
 
 def matches_non_empty(lower_limit: Optional[int],
                       upper_limit: Optional[int],
-                      ) -> ValueAssertion[IntInterval]:
+                      ) -> Assertion[IntInterval]:
     return asrt.is_instance_with__many(
         IntInterval,
         [
@@ -48,7 +48,7 @@ def matches_non_empty(lower_limit: Optional[int],
     )
 
 
-def matches_empty() -> ValueAssertion[IntInterval]:
+def matches_empty() -> Assertion[IntInterval]:
     return asrt.is_instance_with(
         IntInterval,
         asrt.sub_component('is_empty',
@@ -58,62 +58,62 @@ def matches_empty() -> ValueAssertion[IntInterval]:
     )
 
 
-def matches_point(n: int) -> ValueAssertion[IntInterval]:
+def matches_point(n: int) -> Assertion[IntInterval]:
     return matches_non_empty(lower_limit=n, upper_limit=n)
 
 
-def matches_lower_limit(n: int) -> ValueAssertion[IntInterval]:
+def matches_lower_limit(n: int) -> Assertion[IntInterval]:
     return matches_non_empty(lower_limit=n, upper_limit=None)
 
 
-def matches_upper_limit(n: int) -> ValueAssertion[IntInterval]:
+def matches_upper_limit(n: int) -> Assertion[IntInterval]:
     return matches_non_empty(lower_limit=None, upper_limit=n)
 
 
-def matches_finite(m: int, n: int) -> ValueAssertion[IntInterval]:
+def matches_finite(m: int, n: int) -> Assertion[IntInterval]:
     return matches_non_empty(lower_limit=m, upper_limit=n)
 
 
-def matches_unlimited() -> ValueAssertion[IntInterval]:
+def matches_unlimited() -> Assertion[IntInterval]:
     return matches_non_empty(lower_limit=None, upper_limit=None)
 
 
-def is_interval_for_eq(point: int) -> PosNeg[ValueAssertion[IntInterval]]:
+def is_interval_for_eq(point: int) -> PosNeg[Assertion[IntInterval]]:
     return PosNeg(
         pos=matches_point(point),
         neg=matches_unlimited(),
     )
 
 
-def is_interval_for_ne(point: int) -> PosNeg[ValueAssertion[IntInterval]]:
+def is_interval_for_ne(point: int) -> PosNeg[Assertion[IntInterval]]:
     return PosNeg(
         pos=matches_unlimited(),
         neg=matches_point(point),
     )
 
 
-def is_interval_for_lt(n: int) -> PosNeg[ValueAssertion[IntInterval]]:
+def is_interval_for_lt(n: int) -> PosNeg[Assertion[IntInterval]]:
     return PosNeg(
         pos=matches_upper_limit(n - 1),
         neg=matches_lower_limit(n),
     )
 
 
-def is_interval_for_lte(n: int) -> PosNeg[ValueAssertion[IntInterval]]:
+def is_interval_for_lte(n: int) -> PosNeg[Assertion[IntInterval]]:
     return PosNeg(
         pos=matches_upper_limit(n),
         neg=matches_lower_limit(n + 1),
     )
 
 
-def is_interval_for_gt(n: int) -> PosNeg[ValueAssertion[IntInterval]]:
+def is_interval_for_gt(n: int) -> PosNeg[Assertion[IntInterval]]:
     return PosNeg(
         pos=matches_lower_limit(n + 1),
         neg=matches_upper_limit(n),
     )
 
 
-def is_interval_for_gte(n: int) -> PosNeg[ValueAssertion[IntInterval]]:
+def is_interval_for_gte(n: int) -> PosNeg[Assertion[IntInterval]]:
     return PosNeg(
         pos=matches_lower_limit(n),
         neg=matches_upper_limit(n - 1),

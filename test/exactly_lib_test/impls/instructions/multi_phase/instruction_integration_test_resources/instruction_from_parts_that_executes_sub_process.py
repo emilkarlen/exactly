@@ -37,7 +37,7 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.test_resources import py_program as py
 
 
@@ -69,7 +69,7 @@ class Configuration(ConfigurationBase):
         return self.instruction_from_parts_parser(parts_parser)
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
+                                             assertion_on_error_message: Assertion[str] = asrt.anything_goes()):
         raise NotImplementedError()
 
     def expectation_for_non_zero_exitcode(self) -> Expectation:

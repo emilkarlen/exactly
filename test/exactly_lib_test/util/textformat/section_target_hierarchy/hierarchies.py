@@ -11,7 +11,7 @@ from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.textformat.constructor.test_resources import equals_custom_cross_ref_test_impl, \
     CrossReferenceTextConstructorTestImpl, CustomCrossReferenceTargetTestImpl
 from exactly_lib_test.util.textformat.section_target_hierarchy.test_resources.misc import \
@@ -35,8 +35,8 @@ class TestBase(unittest.TestCase):
     def _act_and_assert(self,
                         object_to_test: generator.SectionHierarchyGenerator,
                         target_factory: TargetInfoFactory,
-                        target_info_node_assertion: ValueAssertion[TargetInfoNode],
-                        section_item_assertion: ValueAssertion[docs.SectionItem]):
+                        target_info_node_assertion: Assertion[TargetInfoNode],
+                        section_item_assertion: Assertion[docs.SectionItem]):
         # ACT #
         section_renderer_node = object_to_test.generate(target_factory)
         actual_target_info_node = section_renderer_node.target_info_node()

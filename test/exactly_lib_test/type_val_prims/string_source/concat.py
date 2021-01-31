@@ -14,7 +14,7 @@ from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, Assertion
 from exactly_lib_test.type_val_prims.string_source.test_resources import multi_obj_assertions
 from exactly_lib_test.type_val_prims.string_source.test_resources.source_constructors import \
     SourceConstructorWAppEnvForTest
@@ -259,7 +259,7 @@ class TestAsLinesShouldBeLazy(unittest.TestCase):
         )
 
 
-def _matches_structure_root(children: Sequence[ValueAssertion[Node]]) -> ValueAssertion[NodeRenderer]:
+def _matches_structure_root(children: Sequence[Assertion[Node]]) -> Assertion[NodeRenderer]:
     matches_root_node = asrt_d_tree.matches_node(
         header=asrt.equals(string_source.CONCAT_NAME),
         data=asrt.is_none,
@@ -292,7 +292,7 @@ class StringSourcePartConstructor:
             self._new_structure_builder,
         )
 
-    def expected_structure(self) -> ValueAssertion[Node]:
+    def expected_structure(self) -> Assertion[Node]:
         return asrt_d_tree.matches_node(
             header=asrt.equals(self.header),
             data=asrt.is_none,

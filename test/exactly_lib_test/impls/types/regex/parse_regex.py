@@ -27,7 +27,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
@@ -55,10 +55,10 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 pattern: ValueAssertion[Pattern] = asrt.anything_goes(),
-                 token_stream: ValueAssertion[TokenStream] = asrt.anything_goes(),
+                 pattern: Assertion[Pattern] = asrt.anything_goes(),
+                 token_stream: Assertion[TokenStream] = asrt.anything_goes(),
                  validation: ValidationAssertions = ValidationAssertions.all_passes(),
-                 references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+                 references: Assertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                  ):
         self.pattern = pattern
         self.references = references
@@ -67,8 +67,8 @@ class Expectation:
 
     def matches_regex_sdv(self,
                           symbols: SymbolTable,
-                          tcds: TestCaseDs) -> ValueAssertion[RegexSdv]:
-        def on_primitive_value(tcds: TestCaseDs) -> ValueAssertion[Pattern]:
+                          tcds: TestCaseDs) -> Assertion[RegexSdv]:
+        def on_primitive_value(tcds: TestCaseDs) -> Assertion[Pattern]:
             return self.pattern
 
         return matches_regex_sdv(primitive_value=on_primitive_value,
@@ -81,22 +81,22 @@ class Expectation:
 class OptionCase:
     def __init__(self,
                  source_prefix: str,
-                 expectation: ValueAssertion[Pattern]):
+                 expectation: Assertion[Pattern]):
         self.source_prefix = source_prefix
         self.expectation = expectation
 
 
-def option_case_for_no_option(expectation: ValueAssertion[Pattern]) -> OptionCase:
+def option_case_for_no_option(expectation: Assertion[Pattern]) -> OptionCase:
     return OptionCase('', expectation)
 
 
-def option_case_for_ignore_case(expectation: ValueAssertion[Pattern]) -> OptionCase:
+def option_case_for_ignore_case(expectation: Assertion[Pattern]) -> OptionCase:
     return OptionCase(IGNORE_CASE_OPTION_FOLLOWED_BY_SPACE, expectation)
 
 
 class ExpectationExceptPattern:
     def __init__(self,
-                 references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+                 references: Assertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                  validation: ValidationAssertions = ValidationAssertions.all_passes(),
                  ):
         self.references = references
@@ -568,7 +568,7 @@ class TestResolvingOfSymbolReferences(unittest.TestCase):
                                                     matching_string: str,
                                                     non_matching_string: str,
                                                     symbols: SymbolTable):
-        def equals_expected_pattern_string(tcds: TestCaseDs) -> ValueAssertion[Pattern]:
+        def equals_expected_pattern_string(tcds: TestCaseDs) -> Assertion[Pattern]:
             return _AssertPattern(
                 pattern_string=expected_pattern_string,
                 matching_strings=[matching_string],
@@ -645,7 +645,7 @@ def matches_for_case_insensitive(matches_for_case_sensitive: List[str]) -> List[
     ]
 
 
-class _AssertPattern(ValueAssertionBase[Pattern]):
+class _AssertPattern(AssertionBase[Pattern]):
     def __init__(self,
                  pattern_string: str,
                  matching_strings: List[str],

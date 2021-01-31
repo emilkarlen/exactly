@@ -36,7 +36,7 @@ from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSynta
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction, tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class Arrangement(ArrangementWithSds):
@@ -73,23 +73,23 @@ class Expectation:
     """
 
     def __init__(self,
-                 pre_validation_result: ValueAssertion[svh.SuccessOrValidationErrorOrHardError]
+                 pre_validation_result: Assertion[svh.SuccessOrValidationErrorOrHardError]
                  = svh_assertions.is_success(),
-                 main_result: ValueAssertion[sh.SuccessOrHardError]
+                 main_result: Assertion[sh.SuccessOrHardError]
                  = sh_assertions.is_success(),
-                 post_validation_result: ValueAssertion[svh.SuccessOrValidationErrorOrHardError]
+                 post_validation_result: Assertion[svh.SuccessOrValidationErrorOrHardError]
                  = svh_assertions.is_success(),
-                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]]
+                 symbol_usages: Assertion[Sequence[SymbolUsage]]
                  = asrt.is_empty_sequence,
-                 main_side_effects_on_sds: ValueAssertion[SandboxDs]
+                 main_side_effects_on_sds: Assertion[SandboxDs]
                  = asrt.anything_goes(),
-                 main_side_effects_on_tcds: ValueAssertion[TestCaseDs]
+                 main_side_effects_on_tcds: Assertion[TestCaseDs]
                  = asrt.anything_goes(),
-                 settings_builder: ValueAssertion[SettingsBuilderAssertionModel]
+                 settings_builder: Assertion[SettingsBuilderAssertionModel]
                  = asrt_settings.stdin_is_not_present(),
-                 source: ValueAssertion[ParseSource]
+                 source: Assertion[ParseSource]
                  = asrt.anything_goes(),
-                 symbols_after_main: ValueAssertion[Sequence[SymbolUsage]]
+                 symbols_after_main: Assertion[Sequence[SymbolUsage]]
                  = asrt.anything_goes(),
                  ):
         self.pre_validation_result = pre_validation_result
@@ -113,17 +113,17 @@ class MultiSourceExpectation:
     def __init__(self,
                  validation: ValidationExpectationSvh
                  = ValidationExpectationSvh.passes(),
-                 main_result: ValueAssertion[sh.SuccessOrHardError]
+                 main_result: Assertion[sh.SuccessOrHardError]
                  = sh_assertions.is_success(),
-                 symbols_after_parse: ValueAssertion[Sequence[SymbolUsage]]
+                 symbols_after_parse: Assertion[Sequence[SymbolUsage]]
                  = asrt.is_empty_sequence,
-                 main_side_effects_on_sds: ValueAssertion[SandboxDs]
+                 main_side_effects_on_sds: Assertion[SandboxDs]
                  = asrt.anything_goes(),
-                 main_side_effects_on_tcds: ValueAssertion[TestCaseDs]
+                 main_side_effects_on_tcds: Assertion[TestCaseDs]
                  = asrt.anything_goes(),
-                 settings_builder: ValueAssertion[SettingsBuilderAssertionModel]
+                 settings_builder: Assertion[SettingsBuilderAssertionModel]
                  = asrt_settings.stdin_is_not_present(),
-                 symbols_after_main: ValueAssertion[Sequence[SymbolUsage]]
+                 symbols_after_main: Assertion[Sequence[SymbolUsage]]
                  = asrt.anything_goes(),
                  ):
         self.validation = validation
@@ -134,7 +134,7 @@ class MultiSourceExpectation:
         self.symbols_after_parse = symbols_after_parse
         self.symbols_after_main = symbols_after_main
 
-    def as_expectation_w_source(self, source: ValueAssertion[ParseSource] = asrt.anything_goes()) -> Expectation:
+    def as_expectation_w_source(self, source: Assertion[ParseSource] = asrt.anything_goes()) -> Expectation:
         return Expectation(
             self.validation.pre_sds,
             self.main_result,

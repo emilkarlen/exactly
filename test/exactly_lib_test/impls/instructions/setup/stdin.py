@@ -20,7 +20,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Fi
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringHereDocAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
@@ -284,7 +284,7 @@ PARSE_CHECKER = parse_checker.Checker(sut.Parser())
 
 def _stdin_is_present_and_valid(expected: str,
                                 may_depend_on_external_resources: bool,
-                                ) -> ValueAssertion[SettingsBuilderAssertionModel]:
+                                ) -> Assertion[SettingsBuilderAssertionModel]:
     return asrt_settings.stdin_is_present_and_valid(
         asrt_string_source.matches__str(
             contents=asrt.equals(expected),

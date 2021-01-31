@@ -8,7 +8,7 @@ from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.logic_types import ExpectationType, from_is_negated
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
@@ -46,7 +46,7 @@ class Case:
     def __init__(self,
                  expectation_type: ExpectationType,
                  negation_arguments: List,
-                 main_result_assertion: ValueAssertion[pfh.PassOrFailOrHardError]):
+                 main_result_assertion: Assertion[pfh.PassOrFailOrHardError]):
         self.expectation_type = expectation_type
         self.negation_arguments = negation_arguments
         self.main_result_assertion = main_result_assertion
@@ -89,16 +89,16 @@ class ExpectationTypeConfig(Generic[RET_TYPE], ABC):
         return self._value([], [logic.NOT_OPERATOR_NAME])
 
     @property
-    def pass__if_positive__fail__if_negative(self) -> ValueAssertion[RET_TYPE]:
+    def pass__if_positive__fail__if_negative(self) -> Assertion[RET_TYPE]:
         return self.main_result(PassOrFail.PASS)
 
     @property
-    def fail__if_positive__pass_if_negative(self) -> ValueAssertion[RET_TYPE]:
+    def fail__if_positive__pass_if_negative(self) -> Assertion[RET_TYPE]:
         return self.main_result(PassOrFail.FAIL)
 
     @abstractmethod
     def main_result(self, expected_result_of_positive_test: PassOrFail
-                    ) -> ValueAssertion[RET_TYPE]:
+                    ) -> Assertion[RET_TYPE]:
         pass
 
     def instruction_arguments(self, instruction_arguments_without_not_option: str) -> str:
@@ -113,13 +113,13 @@ class ExpectationTypeConfig(Generic[RET_TYPE], ABC):
 
 class ExpectationTypeConfigForPfh(ExpectationTypeConfig[pfh.PassOrFailOrHardError]):
     def main_result(self, expected_result_of_positive_test: PassOrFail
-                    ) -> ValueAssertion[pfh.PassOrFailOrHardError]:
+                    ) -> Assertion[pfh.PassOrFailOrHardError]:
         return _MAIN_RESULT_ASSERTION_FOR_PFH[self._expectation_type_of_test_case][expected_result_of_positive_test]
 
 
 class ExpectationTypeConfigForNoneIsSuccess(ExpectationTypeConfig[MatchingResult]):
     def main_result(self, expected_result_of_positive_test: PassOrFail
-                    ) -> ValueAssertion[MatchingResult]:
+                    ) -> Assertion[MatchingResult]:
         return _MAIN_RESULT_ASSERTION__FROM_PASS_OR_FAIL[self._expectation_type_of_test_case][
             expected_result_of_positive_test]
 

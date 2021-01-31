@@ -21,7 +21,7 @@ from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRe
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.test_resources.files_matcher import is_reference_to_files_matcher__usage
 
 
@@ -44,7 +44,7 @@ class _HelperBase(ABC):
     def files_matcher_reference_argument(self) -> ArgumentElementsRenderer:
         return SymbolReferenceArgument(self.name_of_referenced_symbol)
 
-    def expected_symbol_usages(self) -> ValueAssertion[Sequence[SymbolUsage]]:
+    def expected_symbol_usages(self) -> Assertion[Sequence[SymbolUsage]]:
         return asrt.matches_singleton_sequence(
             is_reference_to_files_matcher__usage(self.name_of_referenced_symbol)
         )

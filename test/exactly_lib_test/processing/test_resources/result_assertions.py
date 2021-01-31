@@ -7,12 +7,12 @@ from exactly_lib.test_case.error_description import ErrorDescription
 from exactly_lib_test.execution.full_execution.test_resources import result_assertions as asrt_full_exe_result
 from exactly_lib_test.section_document.test_resources import source_location_assertions as asrt_source_loc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
-def error_info_matches(description: ValueAssertion[Optional[ErrorDescription]] = asrt.anything_goes(),
-                       source_location_path: ValueAssertion[Optional[SourceLocationPath]] = asrt.anything_goes(),
-                       section_name: ValueAssertion[Optional[str]] = asrt.anything_goes()) -> ValueAssertion[ErrorInfo]:
+def error_info_matches(description: Assertion[Optional[ErrorDescription]] = asrt.anything_goes(),
+                       source_location_path: Assertion[Optional[SourceLocationPath]] = asrt.anything_goes(),
+                       section_name: Assertion[Optional[str]] = asrt.anything_goes()) -> Assertion[ErrorInfo]:
     return asrt.is_instance_with__many(
         ErrorInfo,
         [
@@ -48,11 +48,11 @@ def error_info_matches(description: ValueAssertion[Optional[ErrorDescription]] =
     )
 
 
-def result_matches(status: ValueAssertion[Status] = asrt.anything_goes(),
-                   error_info: ValueAssertion[Optional[ErrorInfo]] = asrt.anything_goes(),
-                   access_error_type: ValueAssertion[Optional[AccessErrorType]] = asrt.anything_goes(),
-                   execution_result: ValueAssertion[Optional[FullExeResult]] = asrt.anything_goes()
-                   ) -> ValueAssertion[Result]:
+def result_matches(status: Assertion[Status] = asrt.anything_goes(),
+                   error_info: Assertion[Optional[ErrorInfo]] = asrt.anything_goes(),
+                   access_error_type: Assertion[Optional[AccessErrorType]] = asrt.anything_goes(),
+                   execution_result: Assertion[Optional[FullExeResult]] = asrt.anything_goes()
+                   ) -> Assertion[Result]:
     return asrt.is_none_or_instance_with__many(
         Result,
         [
@@ -88,14 +88,14 @@ def result_matches(status: ValueAssertion[Status] = asrt.anything_goes(),
         ])
 
 
-def result_is_access_error(access_error_type: AccessErrorType) -> ValueAssertion[Result]:
+def result_is_access_error(access_error_type: AccessErrorType) -> Assertion[Result]:
     return result_matches(
         status=asrt.equals(Status.ACCESS_ERROR),
         access_error_type=asrt.equals(access_error_type)
     )
 
 
-def result_for_executed_status_matches(full_result_status: FullExeResultStatus) -> ValueAssertion[Result]:
+def result_for_executed_status_matches(full_result_status: FullExeResultStatus) -> Assertion[Result]:
     def get_full_result_status(result: Result) -> FullExeResultStatus:
         return result.execution_result.status
 

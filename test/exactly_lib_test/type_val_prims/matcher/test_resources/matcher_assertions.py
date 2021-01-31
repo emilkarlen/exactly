@@ -3,7 +3,7 @@ from typing import List, Generic, TypeVar, Callable
 
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 
 MODEL = TypeVar('MODEL')
 
@@ -21,11 +21,11 @@ class ModelInfo(Generic[MODEL]):
 
 
 def is_equivalent_to(expected_equivalent: MatcherWTrace[MODEL],
-                     model_infos: List[ModelInfo[MODEL]]) -> ValueAssertion[MatcherWTrace[MODEL]]:
+                     model_infos: List[ModelInfo[MODEL]]) -> Assertion[MatcherWTrace[MODEL]]:
     return MatcherEquivalenceAssertion(expected_equivalent, model_infos)
 
 
-class MatcherEquivalenceAssertion(Generic[MODEL], ValueAssertionBase[MatcherWTrace[MODEL]]):
+class MatcherEquivalenceAssertion(Generic[MODEL], AssertionBase[MatcherWTrace[MODEL]]):
     def __init__(self,
                  expected_equivalent: MatcherWTrace[MODEL],
                  model_infos: List[ModelInfo[MODEL]]):
@@ -59,7 +59,7 @@ class MatcherEquivalenceAssertion(Generic[MODEL], ValueAssertionBase[MatcherWTra
         application_assertions.apply(put, value, message_builder.for_sub_component('application'))
 
 
-class MatcherEquivalenceOfCaseAssertion(Generic[MODEL], ValueAssertionBase[MatcherWTrace[MODEL]]):
+class MatcherEquivalenceOfCaseAssertion(Generic[MODEL], AssertionBase[MatcherWTrace[MODEL]]):
     def __init__(self,
                  expected_equivalent: MatcherWTrace[MODEL],
                  model_info: ModelInfo[MODEL]):

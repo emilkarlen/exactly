@@ -13,29 +13,29 @@ from exactly_lib_test.impls.test_resources.validation.ddv_assertions import \
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
     is_any_data_type_reference_restrictions
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
     is_reference_to_data_type_symbol
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.dir_dep_value_assertions import \
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.ddv_w_deps_assertions import \
     matches_multi_dir_dependent_value
 
 
 def matches_regex_sdv(
-        primitive_value: Callable[[TestCaseDs], ValueAssertion[Pattern]] = lambda tcds: asrt.anything_goes(),
-        references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+        primitive_value: Callable[[TestCaseDs], Assertion[Pattern]] = lambda tcds: asrt.anything_goes(),
+        references: Assertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
         dir_dependencies: DirDependencies = DirDependencies.NONE,
         validation: ValidationAssertions = ValidationAssertions.all_passes(),
         symbols: symbol_table.SymbolTable = None,
         tcds: TestCaseDs = fake_tcds(),
-) -> ValueAssertion[RegexSdv]:
+) -> Assertion[RegexSdv]:
     symbols = symbol_table.symbol_table_from_none_or_value(symbols)
 
     def resolve_value(sdv: RegexSdv):
         return sdv.resolve(symbols)
 
-    def on_resolve_primitive_value(tcds_: TestCaseDs) -> ValueAssertion[Pattern]:
+    def on_resolve_primitive_value(tcds_: TestCaseDs) -> Assertion[Pattern]:
         return asrt.is_instance_with(RE_PATTERN_TYPE,
                                      primitive_value(tcds_))
 
@@ -83,9 +83,9 @@ def matches_regex_sdv(
 RE_PATTERN_TYPE = type(re.compile(''))
 
 
-def is_reference_to_valid_regex_string_part(symbol_name: str) -> ValueAssertion[SymbolReference]:
+def is_reference_to_valid_regex_string_part(symbol_name: str) -> Assertion[SymbolReference]:
     return is_reference_to_data_type_symbol(symbol_name)
 
 
-def is_regex_reference_restrictions() -> ValueAssertion[ReferenceRestrictions]:
+def is_regex_reference_restrictions() -> Assertion[ReferenceRestrictions]:
     return is_any_data_type_reference_restrictions()

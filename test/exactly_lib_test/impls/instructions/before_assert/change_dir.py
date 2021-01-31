@@ -8,7 +8,7 @@ from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_tes
     Configuration, suite_for
 from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite() -> unittest.TestSuite:
@@ -20,8 +20,8 @@ class TheConfiguration(BeforeAssertConfigurationBase, Configuration):
         return sut.setup('instruction name')
 
     def expect_successful_execution_with_side_effect(self,
-                                                     side_effects_check: ValueAssertion,
-                                                     symbol_usages: ValueAssertion = asrt.is_empty_sequence):
+                                                     side_effects_check: Assertion,
+                                                     symbol_usages: Assertion = asrt.is_empty_sequence):
         return Expectation(main_side_effects_on_tcds=side_effects_check,
                            symbol_usages=symbol_usages)
 

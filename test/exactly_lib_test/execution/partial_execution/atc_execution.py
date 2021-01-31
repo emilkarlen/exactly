@@ -52,7 +52,7 @@ from exactly_lib_test.test_resources.files.file_checks import FileChecker
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir, tmp_dir_as_cwd
 from exactly_lib_test.test_resources.value_assertions import file_assertions as fa
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 def suite() -> unittest.TestSuite:
@@ -206,19 +206,19 @@ class TestExecute(unittest.TestCase):
                                                     expected_contents_of_stdin)
 
 
-def _exit_code_result_file_contains(expected_contents: str) -> ValueAssertion:
+def _exit_code_result_file_contains(expected_contents: str) -> Assertion:
     return asrt.sub_component('file for exit code',
                               lambda sds: sds.result.exitcode_file,
                               fa.path_is_file_with_contents(expected_contents))
 
 
-def _stdout_result_file_contains(expected_contents: str) -> ValueAssertion:
+def _stdout_result_file_contains(expected_contents: str) -> Assertion:
     return asrt.sub_component('file for stdout',
                               lambda sds: sds.result.stdout_file,
                               fa.path_is_file_with_contents(expected_contents))
 
 
-def _stderr_result_file_contains(expected_contents: str) -> ValueAssertion:
+def _stderr_result_file_contains(expected_contents: str) -> Assertion:
     return asrt.sub_component('file for stderr',
                               lambda sds: sds.result.stderr_file,
                               fa.path_is_file_with_contents(expected_contents))

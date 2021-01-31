@@ -10,7 +10,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 
 
 def single_line_source() -> ParseSource:
@@ -47,7 +47,7 @@ class TestCaseBase(unittest.TestCase):
         raise NotImplementedError()
 
 
-class RaisesTestError(ValueAssertionBase):
+class RaisesTestError(AssertionBase):
     def _apply(self,
                put: unittest.TestCase,
                value,
@@ -55,7 +55,7 @@ class RaisesTestError(ValueAssertionBase):
         raise TestError()
 
 
-def raises_test_error() -> ValueAssertion:
+def raises_test_error() -> Assertion:
     return RaisesTestError()
 
 

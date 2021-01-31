@@ -37,7 +37,7 @@ from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions as f_asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as program_abs_stx
@@ -126,7 +126,7 @@ class ProgramCase:
     def __init__(self,
                  name: str,
                  source: PgmAndArgsAbsStx,
-                 expected_reference: List[ValueAssertion[SymbolReference]]):
+                 expected_reference: List[Assertion[SymbolReference]]):
         self.name = name
         self.source = source
         self.expected_references = expected_reference
@@ -172,7 +172,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(unittest.TestCase)
               expected_file_contents: str,
               make_arguments: Callable[[TransformableProgramAbsStxBuilder], ProgramAbsStx],
               additional_symbols: Dict[str, SymbolContainer],
-              additional_symbol_references: List[ValueAssertion[SymbolReference]],
+              additional_symbol_references: List[Assertion[SymbolReference]],
               ):
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
 
@@ -331,7 +331,7 @@ class TestNonZeroExitCode(unittest.TestCase):
     def _check_exit_codes(self,
                           exit_code_cases: List[int],
                           ignore_exit_code: bool,
-                          main_result: ValueAssertion[Optional[TextRenderer]],
+                          main_result: Assertion[Optional[TextRenderer]],
                           expected_output_dir_contents: Callable[[str, str], DirContents],
                           ):
         # ARRANGE #

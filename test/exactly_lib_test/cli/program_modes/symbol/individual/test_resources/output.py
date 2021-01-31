@@ -6,7 +6,7 @@ from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib_test.cli.program_modes.symbol.test_resources import output
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class LineInFilePosition:
@@ -49,7 +49,7 @@ class Reference:
 
 def definition_of_builtin_symbol(name: str,
                                  value_type: ValueType,
-                                 num_refs: int) -> ValueAssertion[str]:
+                                 num_refs: int) -> Assertion[str]:
     summary_line = output.summary_of_single(output.SymbolSummary(name,
                                                                  value_type,
                                                                  num_refs))

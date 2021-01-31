@@ -28,7 +28,7 @@ from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import SdsAc
     mk_dir_and_change_to_it_inside_of_sds_but_outside_of_any_of_the_relativity_option_dirs
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_test import Arrangement, Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.path.test_resources.path_part_assertions import equals_path_part_string
 from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
 
@@ -149,11 +149,11 @@ class TestCaseForCheckOfArgumentBase(sds_test.TestCaseBase):
                     expectation)
 
 
-def is_success() -> ValueAssertion:
+def is_success() -> Assertion:
     return asrt.ValueIsNone()
 
 
-def is_failure() -> ValueAssertion:
+def is_failure() -> Assertion:
     return asrt_renderer.is_renderer_of_major_blocks()
 
 

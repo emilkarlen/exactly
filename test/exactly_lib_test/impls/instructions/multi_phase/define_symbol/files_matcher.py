@@ -36,7 +36,7 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWi
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
@@ -251,7 +251,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
     def __init__(self,
                  matcher_symbol_name: str,
                  actual_dir_contents: DirContents,
-                 expected_matcher_result: ValueAssertion[MatchingResult],
+                 expected_matcher_result: Assertion[MatchingResult],
                  ):
         super().__init__(matcher_symbol_name,
                          expected_matcher_result)

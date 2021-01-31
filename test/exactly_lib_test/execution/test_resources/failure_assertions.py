@@ -6,15 +6,15 @@ from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, AssertionBase
 
 
-class _ExpectedFailure(ValueAssertionBase[Optional[Failure]]):
+class _ExpectedFailure(AssertionBase[Optional[Failure]]):
     def __init__(self,
                  failure_status: Optional[ExecutionFailureStatus],
-                 line: ValueAssertion[SourceLocationPath],
-                 failure_details: ValueAssertion[FailureDetails]):
+                 line: Assertion[SourceLocationPath],
+                 failure_details: Assertion[FailureDetails]):
         self._failure_status = failure_status
         self._line = line
         self._failure_details = failure_details
@@ -47,13 +47,13 @@ class _ExpectedFailure(ValueAssertionBase[Optional[Failure]]):
                                                      'failure_details')
 
 
-def is_not_present() -> ValueAssertion[Optional[Failure]]:
+def is_not_present() -> Assertion[Optional[Failure]]:
     return asrt.is_none
 
 
 def is_present_with(status: ExecutionFailureStatus,
-                    line: ValueAssertion[SourceLocationPath],
-                    failure_details: ValueAssertion[FailureDetails]) -> ValueAssertion[Optional[Failure]]:
+                    line: Assertion[SourceLocationPath],
+                    failure_details: Assertion[FailureDetails]) -> Assertion[Optional[Failure]]:
     if status is None:
         raise ValueError('{} is not a failure', status)
     return asrt.is_not_none_and_instance_with(Failure,

@@ -9,7 +9,7 @@ from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.string_.strings_ddvs import string_ddv_of_single_string
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
     is_any_data_type_reference_restrictions
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_context import DataSymbolValueContext, \
@@ -65,10 +65,10 @@ class ListSymbolValueContext(DataSymbolValueContext[ListSdv]):
         return DataValueType.LIST
 
     @property
-    def assert_equals_sdv(self) -> ValueAssertion[SymbolDependentValue]:
+    def assert_equals_sdv(self) -> Assertion[SymbolDependentValue]:
         return asrt_list.equals_list_sdv(self.sdv)
 
-    def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+    def reference_assertion(self, symbol_name: str) -> Assertion[SymbolReference]:
         return asrt_sym_ref.matches_reference_2(
             symbol_name,
             is_any_data_type_reference_restrictions())

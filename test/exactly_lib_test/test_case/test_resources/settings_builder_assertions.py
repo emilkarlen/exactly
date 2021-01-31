@@ -10,7 +10,7 @@ from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib_test.test_case.test_resources import adv_w_validation_assertions as asrt_adv_w_validation
 from exactly_lib_test.test_case.test_resources.adv_w_validation_assertions import AdvWvAssertionModel, T
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder
 
 
@@ -35,8 +35,8 @@ class SettingsBuilderAssertionModel(tuple):
         return self[2]
 
 
-def stdin(expectation: ValueAssertion[Optional[AdvWvAssertionModel[StringSource]]]
-          ) -> ValueAssertion[SettingsBuilderAssertionModel]:
+def stdin(expectation: Assertion[Optional[AdvWvAssertionModel[StringSource]]]
+          ) -> Assertion[SettingsBuilderAssertionModel]:
     return _OptionalSettingsBuilderComponentAssertion(
         'stdin',
         _get_stdin,
@@ -44,28 +44,28 @@ def stdin(expectation: ValueAssertion[Optional[AdvWvAssertionModel[StringSource]
     )
 
 
-def stdin_is_not_present() -> ValueAssertion[SettingsBuilderAssertionModel]:
+def stdin_is_not_present() -> Assertion[SettingsBuilderAssertionModel]:
     return stdin(asrt.is_none)
 
 
-def stdin_is_present_but_invalid() -> ValueAssertion[SettingsBuilderAssertionModel]:
+def stdin_is_present_but_invalid() -> Assertion[SettingsBuilderAssertionModel]:
     return stdin(
         asrt.is_not_none_and(asrt_adv_w_validation.is_invalid())
     )
 
 
-def stdin_is_present_and_valid(expected: ValueAssertion[StringSource]
-                               ) -> ValueAssertion[SettingsBuilderAssertionModel]:
+def stdin_is_present_and_valid(expected: Assertion[StringSource]
+                               ) -> Assertion[SettingsBuilderAssertionModel]:
     return stdin(
         asrt.is_not_none_and(asrt_adv_w_validation.is_valid(expected))
     )
 
 
-class _OptionalSettingsBuilderComponentAssertion(ValueAssertionBase[SettingsBuilderAssertionModel]):
+class _OptionalSettingsBuilderComponentAssertion(AssertionBase[SettingsBuilderAssertionModel]):
     def __init__(self,
                  name: str,
                  component_getter: Callable[[SetupSettingsBuilder], Optional[AdvWValidation[T]]],
-                 component: ValueAssertion[Optional[AdvWvAssertionModel[T]]],
+                 component: Assertion[Optional[AdvWvAssertionModel[T]]],
                  ):
         self._name = name
         self._component_getter = component_getter

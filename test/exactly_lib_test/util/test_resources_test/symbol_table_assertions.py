@@ -4,7 +4,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.symbol_table import ASymbolTableValue
 from exactly_lib_test.util.test_resources import symbol_table_assertions as sut
 
@@ -156,7 +156,7 @@ class TestSymbolTableKeysEquals(unittest.TestCase):
                 assert_that_assertion_fails(assertion, actual_symbol_table)
 
 
-def assert_string_value_equals(expected_value: str) -> ValueAssertion:
+def assert_string_value_equals(expected_value: str) -> Assertion:
     return asrt.sub_component('value',
                               ASymbolTableValue.value.fget,
                               asrt.equals(expected_value))

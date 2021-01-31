@@ -4,10 +4,10 @@ import unittest
 from exactly_lib_test.test_resources.files import file_structure
 from exactly_lib_test.test_resources.files.file_checks import FileChecker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 
 
-def name_matches(name: ValueAssertion[str]) -> ValueAssertion[pathlib.Path]:
+def name_matches(name: Assertion[str]) -> Assertion[pathlib.Path]:
     return asrt.sub_component(
         'name',
         _get_name,
@@ -15,7 +15,7 @@ def name_matches(name: ValueAssertion[str]) -> ValueAssertion[pathlib.Path]:
     )
 
 
-def name_equals(name: str) -> ValueAssertion[pathlib.Path]:
+def name_equals(name: str) -> Assertion[pathlib.Path]:
     return asrt.sub_component(
         'name',
         _get_name,
@@ -23,49 +23,49 @@ def name_equals(name: str) -> ValueAssertion[pathlib.Path]:
     )
 
 
-def str_as_path(path: ValueAssertion[pathlib.Path]) -> ValueAssertion[str]:
+def str_as_path(path: Assertion[pathlib.Path]) -> Assertion[str]:
     return asrt.on_transformed(
         pathlib.Path,
         path,
     )
 
 
-def path_as_str(path: ValueAssertion[str]) -> ValueAssertion[pathlib.Path]:
+def path_as_str(path: Assertion[str]) -> Assertion[pathlib.Path]:
     return asrt.on_transformed(
         str,
         path,
     )
 
 
-def path_is_file_with_contents(expected_contents: str) -> ValueAssertion[pathlib.Path]:
+def path_is_file_with_contents(expected_contents: str) -> Assertion[pathlib.Path]:
     """
     Assumes that the actual value is a pathlib.Path
     """
     return _PathIsFileWithContents(expected_contents)
 
 
-def dir_contains_exactly(expected_contents: file_structure.DirContents) -> ValueAssertion[pathlib.Path]:
+def dir_contains_exactly(expected_contents: file_structure.DirContents) -> Assertion[pathlib.Path]:
     """
     Assumes that the actual value is a pathlib.Path
     """
     return DirContainsExactly(expected_contents)
 
 
-def dir_is_empty() -> ValueAssertion[pathlib.Path]:
+def dir_is_empty() -> Assertion[pathlib.Path]:
     """
     Assumes that the actual value is a pathlib.Path
     """
     return DirContainsExactly(file_structure.empty_dir_contents())
 
 
-def dir_contains_at_least(expected_contents: file_structure.DirContents) -> ValueAssertion[pathlib.Path]:
+def dir_contains_at_least(expected_contents: file_structure.DirContents) -> Assertion[pathlib.Path]:
     """
     Assumes that the actual value is a pathlib.Path
     """
     return _DirContainsAtLeast(expected_contents)
 
 
-class PathAssertionBase(ValueAssertionBase[pathlib.Path]):
+class PathAssertionBase(AssertionBase[pathlib.Path]):
     def _apply(self,
                put: unittest.TestCase,
                value,

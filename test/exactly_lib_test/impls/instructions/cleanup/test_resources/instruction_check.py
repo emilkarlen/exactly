@@ -27,7 +27,7 @@ from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction, tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class Arrangement(ArrangementWithSds):
@@ -58,12 +58,12 @@ class Arrangement(ArrangementWithSds):
 class Expectation(ExpectationBase):
     def __init__(self,
                  act_result: SubProcessResult = SubProcessResult(),
-                 validate_pre_sds_result: ValueAssertion = svh_assertions.is_success(),
-                 main_result: ValueAssertion = sh_assertions.is_success(),
-                 symbol_usages: ValueAssertion = asrt.is_empty_sequence,
-                 main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
-                 main_side_effects_on_tcds: ValueAssertion = asrt.anything_goes(),
-                 source: ValueAssertion = asrt.anything_goes(),
+                 validate_pre_sds_result: Assertion = svh_assertions.is_success(),
+                 main_result: Assertion = sh_assertions.is_success(),
+                 symbol_usages: Assertion = asrt.is_empty_sequence,
+                 main_side_effects_on_sds: Assertion = asrt.anything_goes(),
+                 main_side_effects_on_tcds: Assertion = asrt.anything_goes(),
+                 source: Assertion = asrt.anything_goes(),
                  ):
         super().__init__(validate_pre_sds_result,
                          main_side_effects_on_sds,

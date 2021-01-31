@@ -28,7 +28,7 @@ from exactly_lib_test.test_resources.files.file_structure import File
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.sequence_assertions import matches_elements_except_last
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, MessageBuilder
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 
 
@@ -51,10 +51,10 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 sub_process_result_from_execute: ValueAssertion[SubProcessResult] = asrt.anything_goes(),
-                 source_after_parse: ValueAssertion[ParseSource] = asrt.anything_goes(),
-                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
-                 after_execution: ValueAssertion[TestCaseDs] = asrt.anything_goes(),
+                 sub_process_result_from_execute: Assertion[SubProcessResult] = asrt.anything_goes(),
+                 source_after_parse: Assertion[ParseSource] = asrt.anything_goes(),
+                 symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                 after_execution: Assertion[TestCaseDs] = asrt.anything_goes(),
                  ):
         self.sub_process_result_from_execute = sub_process_result_from_execute
         self.source_after_parse = source_after_parse
@@ -103,10 +103,10 @@ def file_in_hds_act_dir(file_name: str) -> hds_populators.HdsPopulator:
                                       fs.DirContents([File.empty(file_name)]))
 
 
-class ExecutedCommandAssertion(asrt.ValueAssertionBase[TestCaseDs]):
+class ExecutedCommandAssertion(asrt.AssertionBase[TestCaseDs]):
     def __init__(self,
                  command_executor: CommandExecutorThatRecordsArguments,
-                 get_command_assertion: Callable[[TestCaseDs], ValueAssertion[Command]],
+                 get_command_assertion: Callable[[TestCaseDs], Assertion[Command]],
                  ):
         self.command_executor = command_executor
         self.get_command_assertion = get_command_assertion
@@ -139,8 +139,8 @@ class CheckHelper:
             put: unittest.TestCase,
             first_source_line_instruction_argument_source_template: str,
             act_phase_source_lines: List[str],
-            symbol_usages: ValueAssertion[Sequence[SymbolUsage]],
-            expected_command: Callable[[TestCaseDs], ValueAssertion[Command]],
+            symbol_usages: Assertion[Sequence[SymbolUsage]],
+            expected_command: Callable[[TestCaseDs], Assertion[Command]],
             hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
     ):
         instruction_argument_source = first_source_line_instruction_argument_source_template.format_map(
@@ -163,7 +163,7 @@ class CheckHelper:
             check_actor_execution(put, arrangement, expectation)
 
 
-def equals_with_last_element_removed(expected: list) -> ValueAssertion:
+def equals_with_last_element_removed(expected: list) -> Assertion:
     return asrt.sub_component('all elements except last',
                               lambda l: l[:-1],
                               asrt.Equals(expected))
@@ -178,8 +178,8 @@ def exe_file_in_interpreter_default_relativity_dir(file_name: str) -> hds_popula
 def is_exe_file_command_for_source_file(interpreter_exe_file: str,
                                         source_file_relative_hds_name: str,
                                         arguments: List[str],
-                                        ) -> Callable[[TestCaseDs], ValueAssertion[Command]]:
-    def ret_val(tcds: TestCaseDs) -> ValueAssertion[Command]:
+                                        ) -> Callable[[TestCaseDs], Assertion[Command]]:
+    def ret_val(tcds: TestCaseDs) -> Assertion[Command]:
         return asrt_command.matches_command(
             asrt_command.matches_executable_file_command_driver(
                 asrt.equals(tcds.hds.case_dir / interpreter_exe_file)
@@ -192,8 +192,8 @@ def is_exe_file_command_for_source_file(interpreter_exe_file: str,
 
 def is_exe_file_command_for_source(interpreter_exe_file: str,
                                    arguments: List[str],
-                                   ) -> Callable[[TestCaseDs], ValueAssertion[Command]]:
-    def ret_val(tcds: TestCaseDs) -> ValueAssertion[Command]:
+                                   ) -> Callable[[TestCaseDs], Assertion[Command]]:
+    def ret_val(tcds: TestCaseDs) -> Assertion[Command]:
         return asrt_command.matches_command(
             asrt_command.matches_executable_file_command_driver(
                 asrt.equals(tcds.hds.case_dir / interpreter_exe_file)
@@ -204,8 +204,8 @@ def is_exe_file_command_for_source(interpreter_exe_file: str,
     return ret_val
 
 
-def expected_cmd_and_args__const(expected: ValueAssertion[Command]) -> Callable[[TestCaseDs], ValueAssertion[Command]]:
-    def ret_val(tcds: TestCaseDs) -> ValueAssertion[Command]:
+def expected_cmd_and_args__const(expected: Assertion[Command]) -> Callable[[TestCaseDs], Assertion[Command]]:
+    def ret_val(tcds: TestCaseDs) -> Assertion[Command]:
         return expected
 
     return ret_val

@@ -7,7 +7,7 @@ from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib_test.impls.types.matcher.test_resources.matchers import MODEL, STRUCTURE_FOR_TEST, ACTUAL
 from exactly_lib_test.test_resources.recording import SequenceRecordingMedia
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, MessageBuilder
 from exactly_lib_test.type_val_prims.matcher.test_resources import matching_result
 
 
@@ -36,7 +36,7 @@ class MatcherWInitialAction(Generic[MODEL], MatcherWTrace[MODEL]):
 
 
 def matcher_that_applies_assertion(put: unittest.TestCase,
-                                   assertion: ValueAssertion[ACTUAL],
+                                   assertion: Assertion[ACTUAL],
                                    get_actual: Callable[[MODEL], ACTUAL],
                                    message_builder: MessageBuilder,
                                    result: bool,
@@ -56,7 +56,7 @@ def matcher_that_applies_assertion(put: unittest.TestCase,
 class ActionThatAppliesAssertion(Generic[MODEL, ACTUAL]):
     def __init__(self,
                  put: unittest.TestCase,
-                 assertion: ValueAssertion[ACTUAL],
+                 assertion: Assertion[ACTUAL],
                  get_actual: Callable[[MODEL], ACTUAL],
                  message_builder: MessageBuilder,
                  ):
@@ -77,7 +77,7 @@ class ActionThatAppliesAssertion(Generic[MODEL, ACTUAL]):
 class ActionThatAppliesAssertion2(Generic[MODEL]):
     def __init__(self,
                  put: unittest.TestCase,
-                 assertion: ValueAssertion[MODEL],
+                 assertion: Assertion[MODEL],
                  message_builder: MessageBuilder,
                  ):
         self.put = put
