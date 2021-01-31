@@ -21,7 +21,7 @@ from ..path.rel_opts_configuration import RelOptionsConfiguration, RelOptionArgu
 
 
 def default_parser_for(phase_is_after_act: bool,
-                       default_relativity: RelOptionType = RelOptionType.REL_CWD,
+                       default_relativity: RelOptionType = RelOptionType.REL_HDS_CASE,
                        ) -> Parser[StringSourceSdv]:
     return string_source_parser(
         defs.src_rel_opt_arg_conf_for_phase(phase_is_after_act, default_relativity).options

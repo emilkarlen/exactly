@@ -1,0 +1,12 @@
+[setup]
+
+def string ACTUAL = 'the actual value'
+
+file actual.txt = @[ACTUAL]@
+file expected.txt = @[ACTUAL]@
+
+[assert]
+
+contents actual.txt
+         equals
+         -file -rel-act expected.txt

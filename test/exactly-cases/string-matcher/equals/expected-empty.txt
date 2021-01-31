@@ -1,0 +1,8 @@
+[setup]
+
+file actual-empty.txt
+
+[assert]
+
+contents actual-empty.txt
+  equals -file expected-empty.txt

@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.impls.types.string_matcher.parse.equality import \
-    EXPECTED_FILE_REL_OPT_ARG_CONFIG
+    REL_OPT_CONFIG
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
@@ -82,10 +82,10 @@ _RELATIVITY_OPTION_CONFIGURATIONS_FOR_EXPECTED_FILE = [
     rel_opt.default_conf_rel_any(RelOptionType.REL_HDS_CASE),
     rel_opt.symbol_conf_rel_any(RelOptionType.REL_TMP,
                                 'EXPECTED_FILE_SYMBOL',
-                                EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants),
+                                REL_OPT_CONFIG.accepted_relativity_variants),
     rel_opt.symbol_conf_rel_any(RelOptionType.REL_HDS_CASE,
                                 'EXPECTED_FILE_SYMBOL',
-                                EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants),
+                                REL_OPT_CONFIG.accepted_relativity_variants),
 ]
 
 _TRANSFORMER_SYMBOL_NAME = 'the_transformer'

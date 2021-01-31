@@ -1,0 +1,9 @@
+[setup]
+
+def string ACTUAL = 'the actual value'
+
+file actual.txt = @[ACTUAL]@
+
+[assert]
+
+contents actual.txt equals @[ACTUAL]@

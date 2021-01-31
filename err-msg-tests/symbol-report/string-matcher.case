@@ -11,8 +11,11 @@ def string-matcher QUANT_LINE_A = every line : LINE_NUM
 def string-matcher EMPTY       = empty
 def string-matcher NOT_EMPTY   = ! EMPTY
 
-def string-matcher EQUALS      = equals 'hello'
-def string-matcher NOT_EQUALS  = ! EQUALS
+def string-matcher EQUALS         = equals 'hello'
+def string-matcher EQUALS_NOT     = ! EQUALS
+def string-matcher EQUALS_FILE    = equals -file expected.txt
+def string-matcher EQUALS_PROGRAM = equals -stdout-from
+                                    -python -c :> print('hello')
 
 def string-matcher MATCHES         = matches [a-z]+
 def string-matcher MATCHES_FULL    = matches -full [a-z]+

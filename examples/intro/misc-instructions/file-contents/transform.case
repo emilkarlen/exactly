@@ -14,7 +14,7 @@ EOF
 [before-assert]
 
 
-file great-bikes.txt  = -file bike-ratings.txt
+file great-bikes.txt  = -file -rel-act bike-ratings.txt
                         -transformed-by filter contents matches '^great'
 
 [assert]

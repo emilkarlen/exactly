@@ -1,0 +1,16 @@
+[conf]
+
+status = FAIL
+
+[setup]
+
+def string ACTUAL = 'the actual value'
+
+file actual.txt = @[ACTUAL]@
+file expected.txt = @[ACTUAL]@-followed-by-unexpected
+
+[assert]
+
+contents actual.txt
+         equals
+         -file -rel-act expected.txt

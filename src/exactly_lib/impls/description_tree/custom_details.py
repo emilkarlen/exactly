@@ -27,8 +27,8 @@ STRING__EXTRA_TO_READ_FOR_ERROR_MESSAGES = STRING__DEFAULT_DISPLAY_LEN
 
 HAS_MORE_DATA_MARKER = '...'
 
-_EXPECTED = 'Expected'
-_ACTUAL = 'Actual'
+EXPECTED = 'Expected'
+ACTUAL = 'Actual'
 _MATCH = 'Match'
 _DIFF = 'Diff'
 
@@ -41,12 +41,17 @@ _REGEX_IGNORE_CASE = 'Case insensitive'
 
 
 def expected(value: DetailsRenderer) -> DetailsRenderer:
-    return HeaderAndValue(_EXPECTED, value,
+    return HeaderAndValue(EXPECTED, value,
+                          layout__detail.STANDARD_HEADER_TEXT_STYLE)
+
+
+def expected__custom(header: ToStringObject, value: DetailsRenderer) -> DetailsRenderer:
+    return HeaderAndValue(header, value,
                           layout__detail.STANDARD_HEADER_TEXT_STYLE)
 
 
 def actual(value: DetailsRenderer) -> DetailsRenderer:
-    return HeaderAndValue(_ACTUAL, value,
+    return HeaderAndValue(ACTUAL, value,
                           layout__detail.STANDARD_HEADER_TEXT_STYLE)
 
 

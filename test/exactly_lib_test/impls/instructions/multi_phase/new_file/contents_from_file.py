@@ -203,8 +203,8 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                         src_file)
 
                     with self.subTest(phase_is_after_act=phase_is_after_act,
-                                      dst_relativity=dst_rel_opt_conf.option_argument,
-                                      src_relativity=src_rel_opt_conf.option_argument):
+                                      relativity_dst=dst_rel_opt_conf.option_argument.as_str,
+                                      relativity_src=src_rel_opt_conf.option_argument.as_str):
                         # ACT & ASSERT #
                         checker.check__abs_stx__std_layouts_and_source_variants(
                             self,
@@ -361,8 +361,9 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                                    src_file_rel_opt_conf: RelativityOptionConfiguration,
                                    src_file: fs.File
                                    ) -> Assertion:
-        if dst_file_rel_opt_conf.option_argument_str == src_file_rel_opt_conf.option_string or \
-                (dst_file_rel_opt_conf.is_rel_cwd and src_file_rel_opt_conf.is_rel_cwd):
+        if ((dst_file_rel_opt_conf.option_argument_str == src_file_rel_opt_conf.option_string and
+             src_file_rel_opt_conf.option_string != '') or
+                (dst_file_rel_opt_conf.is_rel_cwd and src_file_rel_opt_conf.is_rel_cwd)):
             return dst_file_rel_opt_conf.assert_root_dir_contains_exactly(fs.DirContents([dst_file,
                                                                                           src_file]))
         else:

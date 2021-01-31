@@ -1,8 +1,10 @@
+[setup]
+
+file actual.txt = 'the actual contents'
+
 [assert]
 
-
-stdout -from $ echo "unexpected contents"
-equals <<EOF
-expected contents
-EOF
-
+contents actual.txt
+    equals
+    -stdout-from
+      -python -c :> print('the expected contents')

@@ -27,7 +27,6 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import RelOptPathAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as program_abs_stx
-from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntaxes as str_abs_stx
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
 
 
@@ -149,7 +148,7 @@ def _stdout_equals(expected: str) -> AbstractSyntax:
     return NamedInstruction(
         instruction_names.CONTENTS_OF_STDOUT_INSTRUCTION_NAME,
         sm_abs_stx.EqualsAbsStx(
-            str_abs_stx.StringLiteralAbsStx(expected, QuoteType.HARD),
+            str_src_abs_stx.StringSourceOfStringAbsStx.of_str(expected, QuoteType.HARD),
         )
     )
 

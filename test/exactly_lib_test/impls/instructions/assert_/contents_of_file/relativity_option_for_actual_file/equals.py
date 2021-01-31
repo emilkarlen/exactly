@@ -131,7 +131,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
 
     def runTest(self):
         from exactly_lib.impls.types.string_matcher.parse.equality import \
-            EXPECTED_FILE_REL_OPT_ARG_CONFIG
+            REL_OPT_CONFIG
 
         expected_file_relativity_symbol = 'EXPECTED_RELATIVITY_SYMBOL_NAME'
         path_symbol = PathDdvSymbolContext.of_no_suffix(
@@ -146,7 +146,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
             expected_file_relativity_symbol,
             equals_path_relativity_restriction(
                 PathRelativityRestriction(
-                    EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants)))
+                    REL_OPT_CONFIG.accepted_relativity_variants)))
 
         expected_symbol_usages = asrt.matches_sequence(
             self.rel_opt.symbols.usage_expectation_assertions() +

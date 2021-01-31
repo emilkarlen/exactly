@@ -38,6 +38,7 @@ with exception of a "0." prefix until version 1 is released.
  - Type `string-transformer` - `filter`/`LINE-MATCHER` - Optimize by deriving interval of applicable lines
  - Type `string-transformer` - Case converters - Replaces builtin symbols with primitive
  - Type `string-transformer` - TCDS dir replacement - Replaces builtin symbol with primitive
+ - Type `string-matcher` - `equals` - Expected value is `STRING-SOURCE`
  - Interpreter actors - interpreter `EXECUTABLE [ARGUMENT]...` requires `EXECUTABLE` to be a file
  - Actor - `file interpreter` - arguments to source file are `PROGRAM-ARGUMENT`
  - Exit codes - rename `IMPLEMENTATION_ERROR` -> `INTERNAL_ERROR`

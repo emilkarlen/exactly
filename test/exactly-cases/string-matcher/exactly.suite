@@ -3,6 +3,7 @@
 [suites]
 
 matches
+equals
 any-every-line
 on-transformed
 run

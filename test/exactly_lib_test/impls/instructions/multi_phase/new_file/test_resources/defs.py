@@ -3,7 +3,7 @@ from typing import Sequence, Set
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelSdsOptionType, RelNonHdsOptionType, RelOptionType, \
     PathRelativityVariants
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_hds, conf_rel_sds, conf_rel_non_hds, \
-    default_conf_rel_non_hds, RelativityOptionConfiguration
+    default_conf_rel_non_hds, RelativityOptionConfiguration, default_conf_rel_hds
 
 ALLOWED_SRC_FILE_RELATIVITIES__BEFORE_ACT = [
     conf_rel_hds(RelHdsOptionType.REL_HDS_CASE),
@@ -11,7 +11,7 @@ ALLOWED_SRC_FILE_RELATIVITIES__BEFORE_ACT = [
     conf_rel_sds(RelSdsOptionType.REL_ACT),
     conf_rel_sds(RelSdsOptionType.REL_TMP),
     conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
-    default_conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
+    default_conf_rel_hds(RelHdsOptionType.REL_HDS_CASE),
 ]
 
 DISALLOWED_DST_RELATIVITIES = [

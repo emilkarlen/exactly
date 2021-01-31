@@ -75,7 +75,7 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.Primitive[StringMatch
         ),
         NameAndValue(
             matcher_options.EQUALS_ARGUMENT,
-            grammar.Primitive(equality.parse,
+            grammar.Primitive(equality.EqualsParser().parse_from_token_parser,
                               equality.Description())
         ),
         NameAndValue(

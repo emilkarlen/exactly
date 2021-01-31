@@ -2,8 +2,8 @@ from exactly_lib.definitions.primitives import matcher
 from exactly_lib.impls.types.string_matcher import matcher_options
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringAbsStx
 from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.abstract_syntax import StringMatcherAbsStx
+from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
 
 
 class RunProgramAbsStx(StringMatcherAbsStx):
@@ -19,8 +19,7 @@ class RunProgramAbsStx(StringMatcherAbsStx):
 
 
 class EqualsAbsStx(StringMatcherAbsStx):
-    # NOTE Argument should be STRING-OR-PATH!
-    def __init__(self, expected: StringAbsStx):
+    def __init__(self, expected: StringSourceAbsStx):
         self._expected = expected
 
     def tokenization(self) -> TokenSequence:

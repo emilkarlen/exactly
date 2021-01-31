@@ -1,0 +1,6 @@
+[assert]
+
+stdout -from $ echo "unexpected contents"
+equals <<EOF
+expected contents
+EOF

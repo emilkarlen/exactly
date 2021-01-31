@@ -1,0 +1,18 @@
+[setup]
+
+
+file checked-file.txt = <<EOF
+actual
+actual
+actual
+actual different
+EOF
+
+
+[assert]
+
+
+contents checked-file.txt
+  every line :
+    contents equals
+      'actual'

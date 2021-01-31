@@ -95,9 +95,9 @@ class Documentation(SyntaxElementDocumentation):
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return [
             rel_path_doc.path_element_2(
-                defs.src_rel_opt_arg_conf_for_phase(True),
+                defs.src_rel_opt_arg_conf_for_phase(False),  # TODO -rel-result - see comment below
                 docs.paras(path_syntax.the_path_of_an_existing_file(FileType.REGULAR, final_dot=True)),
-                self._tp.fnap(_RELATIVITIES_BEFORE_ACT)
+                (),  # self._tp.fnap(_RELATIVITIES_BEFORE_ACT) TODO -rel-result - see comment below
             ),
             self._transformation_sed(),
         ]
@@ -140,6 +140,12 @@ The contents of an existing file.
 {Sym_refs_are_not_substituted}
 """
 
-_RELATIVITIES_BEFORE_ACT = """\
-{Note} {rel_result_option} is only available in phases after {phase[act]:syntax}.
-"""
+# TODO (2021-01-31) Make -rel-result available in phases after act
+# - in all contexts.
+# Now, it is not available in all contexts even after act.
+# This will be fixed via refactoring of path validation - move
+# from parsing step to validate-pre-sds step.
+#
+# _RELATIVITIES_BEFORE_ACT = """\
+# {Note} {rel_result_option} is only available in phases after {phase[act]:syntax}.
+# """

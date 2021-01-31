@@ -7,7 +7,7 @@ file original.txt =
 
 def string-transformer REMOVE_SPACE_CHARS = replace '\s' ''
 
-file transformed.txt = -file original.txt
+file transformed.txt = -file -rel-cd original.txt
                        -transformed-by REMOVE_SPACE_CHARS
 
 [assert]

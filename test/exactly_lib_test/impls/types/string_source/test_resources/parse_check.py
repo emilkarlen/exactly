@@ -6,10 +6,10 @@ from exactly_lib_test.section_document.element_parsers.test_resources.parsing im
 from exactly_lib_test.section_document.test_resources import parse_checker
 
 
-def rel_opts_conf_of_single(relativity: RelOptionType) -> RelOptionsConfiguration:
+def rel_opts_conf_of_single(default_relativity: RelOptionType) -> RelOptionsConfiguration:
     return RelOptionsConfiguration(
-        PathRelativityVariants({relativity}, False),
-        relativity,
+        PathRelativityVariants({default_relativity}, False),
+        default_relativity,
     )
 
 

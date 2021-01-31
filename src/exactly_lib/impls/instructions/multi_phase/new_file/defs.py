@@ -8,5 +8,5 @@ CONTENTS_ASSIGNMENT_TOKEN = instruction_arguments.ASSIGNMENT_OPERATOR
 
 def src_rel_opt_arg_conf_for_phase(phase_is_after_act: bool,
                                    ) -> RelOptionsConfiguration:
-    return source_file_relativities.src_rel_opt_conf_for_phase(RelOptionType.REL_CWD,
+    return source_file_relativities.src_rel_opt_conf_for_phase(RelOptionType.REL_HDS_CASE,
                                                                phase_is_after_act)
