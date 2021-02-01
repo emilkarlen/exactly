@@ -562,6 +562,7 @@ class TestCheckForSymLink(TestCaseBase):
 
 EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(
     {RelOptionType.REL_CWD,
+     RelOptionType.REL_HDS_CASE,
      RelOptionType.REL_HDS_ACT,
      RelOptionType.REL_ACT,
      RelOptionType.REL_TMP},
