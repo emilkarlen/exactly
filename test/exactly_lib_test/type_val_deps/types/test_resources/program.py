@@ -4,6 +4,7 @@ from exactly_lib.impls.types.program.sdvs import program_symbol_sdv
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.symbol.value_type import ValueType
+from exactly_lib.type_val_deps.types.program.sdv.accumulated_components import AccumulatedComponents
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib_test.impls.types.program.test_resources.program_sdvs import \
     arbitrary__without_symbol_references
@@ -14,6 +15,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.type_val_deps.logic.test_resources.symbol_context import LogicSymbolValueContext, \
     LogicTypeSymbolContext
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
 
 NON_EXISTING_SYSTEM_PROGRAM = 'a-non-existing-system-program'
 
@@ -87,7 +89,12 @@ class ProgramSymbolContext(LogicTypeSymbolContext[ProgramSdv]):
 
     @property
     def reference_sdv(self) -> ProgramSdv:
-        return program_symbol_sdv.ProgramSdvForSymbolReference(self.name)
+        return program_symbol_sdv.ProgramSdvForSymbolReference(self.name,
+                                                               AccumulatedComponents.empty())
+
+    @property
+    def abstract_syntax(self) -> ProgramOfSymbolReferenceAbsStx:
+        return ProgramOfSymbolReferenceAbsStx(self.name)
 
 
 ARBITRARY_SYMBOL_VALUE_CONTEXT = ProgramSymbolValueContext.of_sdv(arbitrary__without_symbol_references())

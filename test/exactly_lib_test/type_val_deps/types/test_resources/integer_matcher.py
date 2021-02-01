@@ -16,6 +16,8 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.abstract_syntax import \
+    IntegerMatcherSymbolReferenceAbsStx
 
 IS_INTEGER_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.INTEGER_MATCHER)
 
@@ -116,6 +118,10 @@ class IntegerMatcherSymbolContext(MatcherTypeSymbolContext[int]):
     @property
     def argument(self) -> IntegerMatcherArg:
         return matcher_argument.SymbolReferenceWReferenceSyntax(self.name)
+
+    @property
+    def abstract_syntax(self) -> IntegerMatcherSymbolReferenceAbsStx:
+        return IntegerMatcherSymbolReferenceAbsStx(self.name)
 
 
 class IntegerMatcherSymbolContextOfPrimitiveConstant(IntegerMatcherSymbolContext):

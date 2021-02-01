@@ -3,6 +3,7 @@ from typing import Generic, Optional
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib_test.symbol.test_resources.symbol_context import SDV_TYPE, SymbolValueContext, SymbolContext
+from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 
 
 class LogicSymbolValueContext(Generic[SDV_TYPE], SymbolValueContext[SDV_TYPE], ABC):
@@ -25,4 +26,9 @@ class LogicTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):
     @property
     @abstractmethod
     def reference_sdv(self) -> SDV_TYPE:
+        pass
+
+    @property
+    @abstractmethod
+    def abstract_syntax(self) -> AbstractSyntax:
         pass

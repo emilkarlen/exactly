@@ -48,7 +48,7 @@ class TestParsingAndSymbolReferences(unittest.TestCase):
         for pgm_and_args_case in pgm_and_args_cases.cases_w_and_wo_argument_list__including_program_reference():
             program_w_transformer = FullProgramAbsStx(
                 pgm_and_args_case.pgm_and_args,
-                transformation=transformer.abs_stx_of_reference
+                transformation=transformer.abstract_syntax
             )
 
             symbols = list(pgm_and_args_case.symbols) + [transformer]
@@ -117,7 +117,7 @@ class TestParsingAndSymbolReferences(unittest.TestCase):
                         referenced_program.name,
                         [ArgumentOfStringAbsStx.of_str(arg) for arg in arguments_case.value]
                     ),
-                    transformation=transformer__in_source.abs_stx_of_reference
+                    transformation=transformer__in_source.abstract_syntax
                 )
 
                 expected_primitive = asrt_pgm_val.matches_program(
@@ -172,7 +172,7 @@ class TestValidation(unittest.TestCase):
             for validation_case in validation_cases.failing_validation_cases():
                 program_w_transformer = FullProgramAbsStx(
                     pgm_and_args_case.pgm_and_args,
-                    transformation=validation_case.value.symbol_context.abs_stx_of_reference,
+                    transformation=validation_case.value.symbol_context.abstract_syntax,
                 )
 
                 symbols = list(pgm_and_args_case.symbols) + [validation_case.value.symbol_context]
@@ -226,7 +226,7 @@ class TestValidation(unittest.TestCase):
                     ProgramOfSymbolReferenceAbsStx(
                         referenced_program.name,
                     ),
-                    transformation=invalid_transformer_location_case.accumulated.abs_stx_of_reference,
+                    transformation=invalid_transformer_location_case.accumulated.abstract_syntax,
                 )
                 symbols__all = [referenced_program,
                                 valid_transformer,
@@ -267,7 +267,7 @@ class TestTransformerShouldBeParsedAsSimpleExpression(unittest.TestCase):
         after_bin_op = 'after bin op'
         after_bin_op_syntax = CustomStringTransformerAbsStx.of_str(after_bin_op)
         composition_string_transformer = StringTransformerCompositionAbsStx(
-            [transformer.abs_stx_of_reference, after_bin_op_syntax],
+            [transformer.abstract_syntax, after_bin_op_syntax],
             within_parens=False,
             allow_elements_on_separate_lines=False,
         )

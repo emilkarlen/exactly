@@ -102,7 +102,7 @@ class StringTransformerSymbolContext(LogicTypeSymbolContext[StringTransformerSdv
         return self._value
 
     @property
-    def abs_stx_of_reference(self) -> StringTransformerSymbolReferenceAbsStx:
+    def abstract_syntax(self) -> StringTransformerSymbolReferenceAbsStx:
         return StringTransformerSymbolReferenceAbsStx(self.name)
 
 

@@ -82,7 +82,7 @@ class TestSuccessfulExecution(unittest.TestCase):
             string_source_abs_stx.StringSourceOfFileAbsStx(
                 src_rel_opt_conf.path_abs_stx_of_name(src_file.name)
             ),
-            to_upper_transformer.abs_stx_of_reference,
+            to_upper_transformer.abstract_syntax,
         )
 
         symbols = to_upper_transformer.symbol_table
@@ -132,8 +132,8 @@ class TestSymbolReferences(unittest.TestCase):
             path_relativity_variants,
         )
         string_source_syntax = string_source_abs_stx.TransformedStringSourceAbsStx(
-            string_source_abs_stx.StringSourceOfFileAbsStx(src_file_symbol.abs_stx_of_reference),
-            to_upper_transformer.abs_stx_of_reference,
+            string_source_abs_stx.StringSourceOfFileAbsStx(src_file_symbol.abstract_syntax),
+            to_upper_transformer.abstract_syntax,
         )
         symbol_table = SymbolContext.symbol_table_of_contexts([
             src_file_symbol,
@@ -249,7 +249,7 @@ class TestValidation(unittest.TestCase):
         )
         for actual_src_file_variant in self.src_file_variants:
             for contents_arguments in contents_builder.with_and_without_transformer_cases(
-                    transformer.abs_stx_of_reference):
+                    transformer.abstract_syntax):
                 with self.subTest(src_file_variant=actual_src_file_variant.name,
                                   contents=contents_arguments.name,
                                   relativity_of_src_path=src_file_rel_conf.option_argument):
@@ -284,7 +284,7 @@ class TestSyntax(unittest.TestCase):
         str_trans__unused = StringTransformerSymbolReferenceAbsStx('UNUSED_TRANSFORMER')
         transformation_w_infix_op = str_trans_abs_stx.StringTransformerCompositionAbsStx(
             [
-                to_upper_transformer.abs_stx_of_reference,
+                to_upper_transformer.abstract_syntax,
                 str_trans__unused,
             ],
             within_parens=False,

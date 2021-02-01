@@ -64,7 +64,7 @@ class TestSymbolReferences(unittest.TestCase):
                         text_printed_by_program.name__sym_ref_syntax
                     )
                 ),
-                transformation=to_upper_transformer.abs_stx_of_reference,
+                transformation=to_upper_transformer.abstract_syntax,
             )
         )
         symbols = SymbolContext.symbol_table_of_contexts([
@@ -181,7 +181,7 @@ class TestFailingValidation(unittest.TestCase):
                 program_abs_stx.ProgramOfSystemCommandLineAbsStx.of_str(
                     'a-system-command'
                 ),
-                transformation=transformer_symbol.abs_stx_of_reference,
+                transformation=transformer_symbol.abstract_syntax,
             )
             string_source_syntax = string_source_abs_stx.StringSourceOfProgramAbsStx(
                 ProcOutputFile.STDOUT,
@@ -219,7 +219,7 @@ class TestSyntax(unittest.TestCase):
             ProgramOfSymbolReferenceAbsStx(sym_ref_program_syntax.symbol_name),
             transformation=str_trans_abs_stx.StringTransformerCompositionAbsStx(
                 [
-                    TO_UPPER_TRANSFORMER_SYMBOL.abs_stx_of_reference,
+                    TO_UPPER_TRANSFORMER_SYMBOL.abstract_syntax,
                     str_trans__unused,
                 ],
                 within_parens=False,

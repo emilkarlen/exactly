@@ -97,11 +97,11 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                 src_file_rel_opt_conf.accepted_relativity_variants,
             )
             transformed_file_contents = string_source_abs_stx.TransformedStringSourceAbsStx(
-                string_source_abs_stx.StringSourceOfFileAbsStx(src_file_symbol.abs_stx_of_reference),
+                string_source_abs_stx.StringSourceOfFileAbsStx(src_file_symbol.abstract_syntax),
                 StringTransformerSymbolReferenceAbsStx(to_upper_transformer.name)
             )
             instruction_syntax = instr_abs_stx.with_explicit_contents(
-                dst_file_symbol.abs_stx_of_reference,
+                dst_file_symbol.abstract_syntax,
                 transformed_file_contents,
             )
             symbols = SymbolContext.symbol_table_of_contexts([
@@ -149,7 +149,7 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
             ),
             NameAndValue(
                 'contents of existing file / with transformation',
-                file_contents_builder.with_transformation(arbitrary_transformer_symbol.abs_stx_of_reference)
+                file_contents_builder.with_transformation(arbitrary_transformer_symbol.abstract_syntax)
             ),
         ]
 
@@ -245,7 +245,7 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
             string_source_abs_stx.StringSourceOfFileAbsStx(
                 src_rel_opt_conf.path_abs_stx_of_name(src_file.name)
             ),
-            to_upper_transformer.abs_stx_of_reference,
+            to_upper_transformer.abstract_syntax,
         )
         instruction_syntax = instr_abs_stx.with_explicit_contents(
             dst_rel_opt_conf.path_abs_stx_of_name(expected_file.file_name),
@@ -334,7 +334,7 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                 )
                 for actual_src_file_variant in self.src_file_variants:
                     for contents_arguments in contents_builder.with_and_without_transformer_cases(
-                            transformer.abs_stx_of_reference):
+                            transformer.abstract_syntax):
                         instruction_syntax = instr_abs_stx.with_explicit_contents(
                             dst_file_rel_conf.path_abs_stx_of_name('dst-file.txt'),
                             contents_arguments.value,
@@ -402,7 +402,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(
             NameAndValue(
                 'contents of existing file / with transformation',
                 ExplicitContentsVariantAbsStx(
-                    contents_abs_stx_builder.with_transformation(arbitrary_transformer.abs_stx_of_reference)
+                    contents_abs_stx_builder.with_transformation(arbitrary_transformer.abstract_syntax)
                 )
             ),
         ]

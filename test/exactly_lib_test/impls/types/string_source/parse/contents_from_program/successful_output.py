@@ -47,7 +47,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(unittest.TestCase)
         self._test(
             text_printed_by_program=text_printed_by_program,
             expected_file_contents=text_printed_by_program.upper(),
-            make_arguments=lambda tcc: tcc.with_transformation(transformer.abs_stx_of_reference),
+            make_arguments=lambda tcc: tcc.with_transformation(transformer.abstract_syntax),
             additional_symbols={transformer.name: transformer.symbol_table_container},
             additional_symbol_references=[transformer.reference_assertion]
         )

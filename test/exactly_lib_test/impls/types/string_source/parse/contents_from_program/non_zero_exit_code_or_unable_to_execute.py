@@ -46,7 +46,7 @@ class TestUnableToExecute(unittest.TestCase):
         transformer = TO_UPPER_TRANSFORMER_SYMBOL
         symbols = transformer.symbol_table
 
-        cases = failing_program_builder.with_and_without_transformer_cases(transformer.abs_stx_of_reference)
+        cases = failing_program_builder.with_and_without_transformer_cases(transformer.abstract_syntax)
 
         for ignore_exit_code in [False, True]:
             for transformation_case in cases:
@@ -135,7 +135,7 @@ class TestNonZeroExitCode(unittest.TestCase):
             ),
             ProgramAndSymbolsCase(
                 'with transformation',
-                program_builder.with_transformation(transformer.abs_stx_of_reference),
+                program_builder.with_transformation(transformer.abstract_syntax),
                 [transformer],
                 adapt_expected_program_output=str.upper
             ),
@@ -228,12 +228,12 @@ class TestNonZeroExitCode(unittest.TestCase):
             ),
             ProgramAndSymbolsCase(
                 'with transformation',
-                program_builder.with_transformation(transformer.abs_stx_of_reference),
+                program_builder.with_transformation(transformer.abstract_syntax),
                 [transformer],
                 adapt_expected_program_output=str.upper
             ),
         ]
-        program_builder.with_and_without_transformer_cases(transformer.abs_stx_of_reference)
+        program_builder.with_and_without_transformer_cases(transformer.abstract_syntax)
 
         py_file_rel_conf = rel_opt.conf_rel_any(RelOptionType.REL_HDS_CASE)
 

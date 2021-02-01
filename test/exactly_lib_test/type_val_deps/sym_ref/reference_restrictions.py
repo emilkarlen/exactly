@@ -18,7 +18,10 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.impl.symbols_handling.symbol_validation import RestrictionThatIsAlwaysSatisfied
+from exactly_lib_test.symbol.test_resources import token_sequences as symbol_tok_seq
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext, ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
+from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
+from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
@@ -738,6 +741,18 @@ class TestLogicSymbolContext(LogicTypeSymbolContext[FullDepsSdvForTest]):
     @property
     def reference_sdv(self) -> FullDepsSdvForTest:
         raise ValueError('cannot create a reference of test impl')
+
+    @property
+    def abstract_syntax(self) -> AbstractSyntax:
+        raise NotImplementedError('cannot create a reference of test impl')
+
+
+class SymbolReferenceAbsStx(AbstractSyntax):
+    def __init__(self, symbol_name: str):
+        self.symbol_name = symbol_name
+
+    def tokenization(self) -> TokenSequence:
+        return symbol_tok_seq.SymbolReferenceAsEitherPlainNameOrReferenceSyntax(self.symbol_name)
 
 
 def reference_to(symbol: SymbolContext, restrictions: ReferenceRestrictions) -> SymbolReference:

@@ -15,6 +15,8 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.type_val_deps.logic.test_resources.symbol_context import LogicSymbolValueContext, \
     LogicTypeSymbolContext
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.type_val_deps.types.files_condition.test_resources.abstract_syntax import \
+    FilesConditionSymbolReferenceAbsStx
 
 IS_FILES_CONDITION_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILES_CONDITION)
 
@@ -95,6 +97,10 @@ class FilesConditionSymbolContext(LogicTypeSymbolContext[FilesConditionSdv]):
     @property
     def argument(self) -> FilesConditionArg:
         return args.SymbolReferenceWReferenceSyntax(self.name)
+
+    @property
+    def abstract_syntax(self) -> FilesConditionSymbolReferenceAbsStx:
+        return FilesConditionSymbolReferenceAbsStx(self.name)
 
 
 ARBITRARY_SYMBOL_VALUE_CONTEXT = FilesConditionSymbolValueContext.of_sdv(arbitrary_sdv())

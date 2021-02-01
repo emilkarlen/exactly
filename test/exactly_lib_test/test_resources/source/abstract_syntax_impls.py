@@ -87,15 +87,17 @@ class InfixOperatorAbsStx(AbstractSyntax):
                  within_parens: bool,
                  allow_elements_on_separate_lines: bool,
                  ):
-        self._operator = operator
-        self._operands = operands
+        if len(operands) < 2:
+            raise ValueError('Infix operator: number of operands < 2: ' + str(len(operands)))
+        self.operator = operator
+        self.operands = operands
         self._within_parens = within_parens
         self._allow_elements_on_separate_lines = allow_elements_on_separate_lines
 
     def tokenization(self) -> TokenSequence:
-        operands = [operand.tokenization() for operand in self._operands]
+        operands = [operand.tokenization() for operand in self.operands]
         return token_sequences.maybe_within_parens(
-            token_sequences.InfixOperator(self._operator,
+            token_sequences.InfixOperator(self.operator,
                                           operands,
                                           self._allow_elements_on_separate_lines),
             self._within_parens

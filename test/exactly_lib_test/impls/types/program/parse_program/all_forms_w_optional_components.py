@@ -51,7 +51,7 @@ class TestPgmAndArgs(unittest.TestCase):
                     [ArgumentOfStringAbsStx.of_str(arg) for arg in arguments],
                 ),
                 stdin=stdin_syntax,
-                transformation=transformer_symbol.abs_stx_of_reference,
+                transformation=transformer_symbol.abstract_syntax,
             )
 
             symbols = list(pgm_and_args_case.symbols) + [transformer_symbol]
@@ -106,7 +106,7 @@ class TestShellCommandLine(unittest.TestCase):
         program_w_stdin = FullProgramAbsStx(
             pgm_and_args_case.pgm_and_args,
             stdin=stdin_syntax,
-            transformation=transformer_symbol.abs_stx_of_reference,
+            transformation=transformer_symbol.abstract_syntax,
         )
 
         symbols = list(pgm_and_args_case.symbols) + [transformer_symbol]

@@ -13,6 +13,8 @@ from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
+from exactly_lib_test.type_val_deps.types.files_matcher.test_resources.abstract_syntax import \
+    FilesMatcherSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.test_resources.files_matcher import is_reference_to_files_matcher
 
 
@@ -100,6 +102,10 @@ class FilesMatcherSymbolContext(MatcherTypeSymbolContext[FilesMatcherModel]):
     @property
     def argument(self) -> FilesMatcherArg:
         return args.SymbolReferenceWReferenceSyntax(self.name)
+
+    @property
+    def abstract_syntax(self) -> FilesMatcherSymbolReferenceAbsStx:
+        return FilesMatcherSymbolReferenceAbsStx(self.name)
 
 
 class FilesMatcherSymbolContextOfPrimitiveConstant(FilesMatcherSymbolContext):

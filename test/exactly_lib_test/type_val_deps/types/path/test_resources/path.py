@@ -203,7 +203,7 @@ class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
         return self._value
 
     @property
-    def abs_stx_of_reference(self) -> PathSymbolReferenceAbsStx:
+    def abstract_syntax(self) -> PathSymbolReferenceAbsStx:
         return PathSymbolReferenceAbsStx(self.name)
 
     def reference_sdv__path_or_string(self, default_relativity: RelOptionType) -> PathSdv:

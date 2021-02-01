@@ -16,6 +16,8 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.abstract_syntax import \
+    FileMatcherSymbolReferenceAbsStx
 
 IS_FILE_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILE_MATCHER)
 
@@ -116,6 +118,10 @@ class FileMatcherSymbolContext(MatcherTypeSymbolContext[FileMatcherModel]):
     @property
     def argument(self) -> FileMatcherArg:
         return args.SymbolReferenceWReferenceSyntax(self.name)
+
+    @property
+    def abstract_syntax(self) -> FileMatcherSymbolReferenceAbsStx:
+        return FileMatcherSymbolReferenceAbsStx(self.name)
 
 
 class FileMatcherSymbolContextOfPrimitiveConstant(FileMatcherSymbolContext):

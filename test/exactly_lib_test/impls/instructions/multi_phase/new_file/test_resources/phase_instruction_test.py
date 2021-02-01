@@ -163,7 +163,7 @@ class TestContentsFromExistingFile_Successfully(TestCaseWithConfiguration):
         transformed_file_syntax = string_source_abs_stx.TransformedStringSourceAbsStx(
             string_source_abs_stx.StringSourceOfFileAbsStx(
                 src_rel_opt_conf.path_abs_stx_of_name(src_file.name)),
-            to_upper_transformer.abs_stx_of_reference,
+            to_upper_transformer.abstract_syntax,
         )
         instruction_syntax = instr_abs_stx.with_explicit_contents(
             dst_rel_opt_conf.path_abs_stx_of_name(expected_file.name),
@@ -220,7 +220,7 @@ class TestContentsFromOutputOfProgram_Successfully(TestCaseWithConfiguration):
                         text_printed_by_program
                     )
                 ),
-                transformation=to_upper_transformer.abs_stx_of_reference,
+                transformation=to_upper_transformer.abstract_syntax,
             )
         )
         instruction_syntax = instr_abs_stx.with_explicit_contents(
@@ -282,7 +282,7 @@ class TestContentsFromOutputOfProgram_SuccessfullyWithIgnoredNonZeroExitCode(Tes
                 program_abs_stx.ProgramOfPythonInterpreterAbsStx.of_execute_python_src_file(
                     py_src_file_rel_opt_conf.path_abs_stx_of_name(py_file.name)
                 ),
-                transformation=to_upper_transformer.abs_stx_of_reference,
+                transformation=to_upper_transformer.abstract_syntax,
             ),
             ignore_exit_code=True,
         )

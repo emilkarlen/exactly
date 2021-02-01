@@ -120,7 +120,7 @@ class TestSymbolReferences(unittest.TestCase):
                                                              ACCEPTED_DST_RELATIVITY_VARIANTS)
         string_value = str_abs_stx.StringHereDocAbsStx('single line in here doc\n')
         instruction_syntax = instr_abs_stx.with_explicit_contents(
-            dst_path_symbol.abs_stx_of_reference,
+            dst_path_symbol.abstract_syntax,
             string_source_abs_stx.StringSourceOfStringAbsStx(string_value),
         )
 

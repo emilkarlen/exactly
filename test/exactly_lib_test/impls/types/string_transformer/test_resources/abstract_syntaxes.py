@@ -22,7 +22,7 @@ class CustomStringTransformerAbsStx(StringTransformerAbsStx):
 
 
 def symbol_reference_followed_by_superfluous_string_on_same_line(
-        symbol_name: str = 'STRING_TRANSFORMER_SYMBOL',
+        symbol_name: str = 'STRING_TRANSFORMER_SYMBOL_NAME',
 ) -> StringTransformerAbsStx:
     return CustomStringTransformerAbsStx(
         TokenSequence.concat([
@@ -44,7 +44,7 @@ class RunProgramAbsStx(StringTransformerAbsStx):
         ])
 
 
-class StringTransformerCompositionAbsStx(abstract_syntax_impls.DelegateAbsStx,
+class StringTransformerCompositionAbsStx(abstract_syntax_impls.InfixOperatorAbsStx,
                                          StringTransformerAbsStx):
     def __init__(self,
                  transformers: Sequence[StringTransformerAbsStx],
@@ -52,11 +52,10 @@ class StringTransformerCompositionAbsStx(abstract_syntax_impls.DelegateAbsStx,
                  allow_elements_on_separate_lines: bool,
                  ):
         super().__init__(
-            abstract_syntax_impls.InfixOperatorAbsStx(
-                self.operator_name(),
-                transformers,
-                within_parens,
-                allow_elements_on_separate_lines)
+            self.operator_name(),
+            transformers,
+            within_parens,
+            allow_elements_on_separate_lines,
         )
 
     @staticmethod

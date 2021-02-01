@@ -90,11 +90,11 @@ class TestSymbolUsages(unittest.TestCase):
                         text_printed_by_program.name__sym_ref_syntax
                     )
                 ),
-                transformation=to_upper_transformer.abs_stx_of_reference,
+                transformation=to_upper_transformer.abstract_syntax,
             )
         )
         instruction_syntax = instr_abs_stx.with_explicit_contents(
-            dst_file_symbol.abs_stx_of_reference,
+            dst_file_symbol.abstract_syntax,
             transformed_program_output_contents_syntax
         )
         symbols = SymbolContext.symbol_table_of_contexts([
@@ -152,7 +152,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(unittest.TestCase)
         self._test(
             text_printed_by_program=text_printed_by_program,
             expected_file_contents=text_printed_by_program.upper(),
-            make_arguments=lambda tcc: tcc.with_transformation(transformer.abs_stx_of_reference),
+            make_arguments=lambda tcc: tcc.with_transformation(transformer.abstract_syntax),
             additional_symbols={transformer.name: transformer.symbol_table_container},
             additional_symbol_references=[transformer.reference_assertion]
         )
@@ -284,7 +284,7 @@ class TestUnableToExecute(unittest.TestCase):
         transformer = TO_UPPER_TRANSFORMER_SYMBOL
         symbols = transformer.symbol_table
 
-        cases = failing_program_builder.with_and_without_transformer_cases(transformer.abs_stx_of_reference)
+        cases = failing_program_builder.with_and_without_transformer_cases(transformer.abstract_syntax)
 
         for transformation_case in cases:
             instruction_syntax = instr_abs_stx.with_explicit_contents(
@@ -356,12 +356,12 @@ class TestNonZeroExitCode(unittest.TestCase):
             ),
             ProgramAndSymbolsCase(
                 'with transformation',
-                program_builder.with_transformation(transformer.abs_stx_of_reference),
+                program_builder.with_transformation(transformer.abstract_syntax),
                 [transformer],
                 adapt_expected_program_output=str.upper
             ),
         ]
-        program_builder.with_and_without_transformer_cases(transformer.abs_stx_of_reference)
+        program_builder.with_and_without_transformer_cases(transformer.abstract_syntax)
 
         py_file_rel_conf = rel_opt.conf_rel_any(RelOptionType.REL_HDS_CASE)
         dst_file_rel_conf = ARBITRARY_ALLOWED_DST_FILE_RELATIVITY
@@ -454,7 +454,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(
                 'contents of output from shell command / with transformation',
                 _mk_explicit_contents(
                     shell_contents_arguments_constructor.with_transformation(
-                        arbitrary_transformer.abs_stx_of_reference)
+                        arbitrary_transformer.abstract_syntax)
                 )
             ),
         ]
