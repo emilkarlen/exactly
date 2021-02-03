@@ -1,0 +1,75 @@
+#
+# The "filter" transformer keeps lines that match a given LINE-MATCHER,
+#
+# all other lines are discarded.
+#
+
+
+[setup]
+
+
+file input.txt = <<EOF
+1st
+2nd
+3rd
+EOF
+
+
+[assert]
+
+
+contents input.txt
+    -transformed-by ( filter contents matches '2nd' )
+    equals <<EOF
+2nd
+EOF
+
+contents input.txt
+    -transformed-by ( filter line-num == 2 )
+    equals <<EOF
+2nd
+EOF
+
+contents input.txt
+    -transformed-by ( filter line-num <= 2 )
+    equals <<EOF
+1st
+2nd
+EOF
+
+contents input.txt
+    -transformed-by
+      filter ( line-num == 1 || contents equals '3rd' )
+    equals <<EOF
+1st
+3rd
+EOF
+
+contents input.txt
+    -transformed-by ( filter contents ~ '2nd' )
+    equals <<EOF
+2nd
+EOF
+
+contents input.txt
+    -transformed-by filter ( contents equals '1st' || contents equals '3rd' )
+    equals <<EOF
+1st
+3rd
+EOF
+
+contents input.txt
+    -transformed-by ( filter ! contents matches '2nd' )
+    equals <<EOF
+1st
+3rd
+EOF
+
+
+def line-matcher EQUALS_THIRD = contents equals '3rd'
+
+contents input.txt
+    -transformed-by filter EQUALS_THIRD
+    equals <<EOF
+3rd
+EOF

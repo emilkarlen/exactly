@@ -1,0 +1,118 @@
+#
+# The "filter -line-nums" transformer keeps lines who's line number match LINE-NUMBER-RANGEs,
+#
+# all other lines are discarded.
+#
+# The syntax resembles that of Python slices.
+#
+# The list of LINE-NUMBER-RANGE continue until end-of-line
+# (so an ")" for example, must be put on a separate line).
+#
+
+
+[setup]
+
+
+file input.txt = <<EOF
+1st
+2nd
+3rd
+4th
+EOF
+
+
+[assert]
+
+
+contents input.txt
+    -transformed-by
+      filter -line-nums 2
+    equals <<EOF
+2nd
+EOF
+
+contents input.txt
+    -transformed-by
+      filter -line-nums -1
+    equals <<EOF
+4th
+EOF
+
+contents input.txt
+    -transformed-by
+      filter -line-nums 3:
+    equals <<EOF
+3rd
+4th
+EOF
+
+contents input.txt
+    -transformed-by
+      filter -line-nums -2:
+    equals <<EOF
+3rd
+4th
+EOF
+
+contents input.txt
+    -transformed-by
+      filter -line-nums :3
+    equals <<EOF
+1st
+2nd
+3rd
+EOF
+
+contents input.txt
+    -transformed-by
+      filter -line-nums :-3
+    equals <<EOF
+1st
+2nd
+EOF
+
+contents input.txt
+    -transformed-by
+      filter -line-nums 2:4
+    equals <<EOF
+2nd
+3rd
+4th
+EOF
+
+contents input.txt
+    -transformed-by
+      filter -line-nums -3:-1
+    equals <<EOF
+2nd
+3rd
+4th
+EOF
+
+contents input.txt
+    -transformed-by
+      filter -line-nums 1 4
+    equals <<EOF
+1st
+4th
+EOF
+
+
+contents input.txt
+    -transformed-by
+      filter -line-nums 4 1
+    equals <<EOF
+1st
+4th
+EOF
+
+
+contents input.txt
+    -transformed-by
+      filter -line-nums 1:2 -2:
+    equals <<EOF
+1st
+2nd
+3rd
+4th
+EOF
