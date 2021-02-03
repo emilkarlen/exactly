@@ -46,7 +46,7 @@ and is able to find the email of a person::
     pablo@gauss.org
     EOF
 
-    stderr empty
+    stderr is-empty
 
 
 If the file 'contacts.case' contains this test case, then Exactly can execute it:
@@ -135,7 +135,7 @@ appropriate directory::
 
     [assert]
 
-    dir-contents input        empty
+    dir-contents input        is-empty
 
     dir-contents output/good  matches -full { a.txt : type file }
 
@@ -306,7 +306,7 @@ Program values can be defined for reuse using ``def`` and run using ``@``::
 
     stdout -from
            @ EXECUTE_SQL "select * from my_table"
-           ! empty
+           ! is-empty
 
     [cleanup]
 

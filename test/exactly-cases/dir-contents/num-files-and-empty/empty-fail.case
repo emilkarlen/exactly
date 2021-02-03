@@ -13,4 +13,4 @@ dir empty-dir
 [assert]
 
 
-dir-contents empty-dir ! empty
+dir-contents empty-dir ! is-empty

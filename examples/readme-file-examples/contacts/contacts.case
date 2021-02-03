@@ -14,4 +14,4 @@ stdout equals <<EOF
 pablo@gauss.org
 EOF
 
-stderr empty
+stderr is-empty

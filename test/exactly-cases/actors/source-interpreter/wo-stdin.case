@@ -13,6 +13,6 @@ for line in sys.stdin.readlines():
 
 exit-code == 0
 
-stdout empty
+stdout is-empty
 
-stderr empty
+stderr is-empty

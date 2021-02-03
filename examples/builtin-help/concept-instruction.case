@@ -12,4 +12,4 @@ run % python -c :> import sys; sys.stdout.write("Hello world")
 
 [assert]
 
-stdout empty
+stdout is-empty

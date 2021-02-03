@@ -9,4 +9,4 @@ file a-dir/3-empty.txt
 [assert]
 
 
-dir-contents a-dir ! every file : contents empty
+dir-contents a-dir ! every file : contents is-empty

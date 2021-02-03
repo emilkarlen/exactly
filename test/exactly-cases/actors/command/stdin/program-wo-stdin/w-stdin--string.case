@@ -12,4 +12,4 @@ exit-code == 0
 
 stdout equals 'the stdin'
 
-stderr empty
+stderr is-empty

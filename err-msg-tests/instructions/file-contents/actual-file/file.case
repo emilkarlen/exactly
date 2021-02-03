@@ -9,4 +9,4 @@ EOF
 [assert]
 
 
-contents checked-file empty
+contents checked-file is-empty

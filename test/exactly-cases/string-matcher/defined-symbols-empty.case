@@ -1,9 +1,9 @@
 [setup]
 
 
-def string-matcher IS_EMPTY               = empty
+def string-matcher IS_EMPTY               = is-empty
 
-def string-matcher IS_NOT_EMPTY           = ! empty
+def string-matcher IS_NOT_EMPTY           = ! is-empty
 
 def string-matcher IS_NOT_EMPTY__WITH_REF = ! IS_EMPTY
 

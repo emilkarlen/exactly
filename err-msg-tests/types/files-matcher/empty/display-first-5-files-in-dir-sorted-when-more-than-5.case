@@ -15,4 +15,4 @@ file file-1
 [assert]
 
 
-dir-contents -rel-act checked-dir empty
+dir-contents -rel-act checked-dir is-empty

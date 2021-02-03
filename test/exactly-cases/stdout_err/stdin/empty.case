@@ -1,7 +1,7 @@
 [assert]
 
 stdout -from @ COPY_STDIN_2_STDOUT
-       empty
+       is-empty
 
 stderr -from @ COPY_STDIN_2_STDERR
-       empty
+       is-empty

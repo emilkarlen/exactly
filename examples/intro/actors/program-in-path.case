@@ -4,6 +4,6 @@
 
 [assert]
 
-stdout ! empty
+stdout ! is-empty
 
-stderr empty
+stderr is-empty

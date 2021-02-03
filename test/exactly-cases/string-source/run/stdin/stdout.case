@@ -23,7 +23,7 @@ file s2.txt = -stdout-from @ OUTPUT_S1_S2
 [assert]
 
 
-contents s0.txt empty
+contents s0.txt is-empty
 
 contents s1.txt equals @[S1]@
 

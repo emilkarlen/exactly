@@ -15,18 +15,18 @@ file the-dir/empty-2.txt
 
 
 dir-contents the-dir
-             any file : contents empty
+             any file : contents is-empty
 
 dir-contents the-dir
              -selection name empty*.txt
-             any file : contents empty
+             any file : contents is-empty
 
 dir-contents the-dir
-             any file : contents ! empty
+             any file : contents ! is-empty
 
 dir-contents the-dir
              -selection name non-empty*.txt
-             any file : contents ! empty
+             any file : contents ! is-empty
 
 dir-contents the-dir
              -selection name non-empty*.txt

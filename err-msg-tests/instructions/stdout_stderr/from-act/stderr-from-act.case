@@ -4,4 +4,4 @@
 [assert]
 
 
-stderr ! empty
+stderr ! is-empty

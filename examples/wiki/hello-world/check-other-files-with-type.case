@@ -9,4 +9,4 @@ exists output.txt : type file
 contents output.txt
          every line : contents matches 'Hello'
 
-stderr empty
+stderr is-empty

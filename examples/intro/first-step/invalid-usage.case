@@ -6,4 +6,4 @@ hello-world some unaccepted arguments
 
 exit-code != 0
 
-stdout empty
+stdout is-empty

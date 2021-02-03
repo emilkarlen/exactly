@@ -8,4 +8,4 @@ file checked-file.txt
 
 
 dir-contents . every file :
-               contents empty
+               contents is-empty

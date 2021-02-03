@@ -1,7 +1,7 @@
 [setup]
 
 
-def files-matcher EMPTY = empty
+def files-matcher EMPTY = is-empty
 
 def files-matcher NUM_FILES_EQ_1 = num-files == 1
 

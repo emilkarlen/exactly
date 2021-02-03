@@ -15,4 +15,4 @@ file the-dir/empty-2.txt
 
 
 dir-contents the-dir
-             any file : contents ! empty
+             any file : contents ! is-empty

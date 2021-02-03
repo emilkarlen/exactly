@@ -1,7 +1,7 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.util.cli_syntax.elements import argument as a
 
-EMPTINESS_CHECK_ARGUMENT = 'empty'
+EMPTINESS_CHECK_ARGUMENT = 'is-empty'
 
 RECURSIVE_OPTION = a.option('recursive')
 

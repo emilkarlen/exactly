@@ -14,7 +14,7 @@ system-under-test
 
 stdout -from
        @ EXECUTE_SQL "select * from my_table"
-       ! empty
+       ! is-empty
 
 [cleanup]
 

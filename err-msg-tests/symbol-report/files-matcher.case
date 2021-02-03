@@ -6,24 +6,24 @@ def files-matcher NUM_FILES = num-files == 1
 
 def files-matcher NEGATION = ! NUM_FILES
 
-def files-matcher EMPTY = empty
+def files-matcher EMPTY = is-empty
 
 def files-matcher FOR_ALL = every file : type dir
 
-def files-matcher EXISTS = any file : contents empty
+def files-matcher EXISTS = any file : contents is-empty
 
 def files-matcher SELECTION = -selection type file
-                               empty
+                               is-empty
 
 def files-matcher PRUNE     = -with-pruned type symlink
-                               empty
+                               is-empty
 
 def files-matcher EQUALS_EMPTY  = matches -full { }
 
 def files-matcher EQUALS_N_EMPTY = matches -full {
   d   : type dir
   b   : type file
-  b   : contents empty
+  b   : contents is-empty
   c/f
   e   : dir-contents matches { f }
   a
@@ -34,7 +34,7 @@ def files-matcher CONTAINS_EMPTY  = matches { }
 def files-matcher CONTAINS_N_EMPTY = matches {
   d   : type dir
   b   : type file
-  b   : contents empty
+  b   : contents is-empty
   c/f
   e   : dir-contents matches -full { f }
   a

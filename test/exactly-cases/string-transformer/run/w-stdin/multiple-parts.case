@@ -11,5 +11,5 @@ contents checked-file.txt
          -transformed-by
            run @ ACT_AND_CHECK @[EXPECTED_STDIN]@
                  -stdin @[STDIN_PART_2]@
-         empty
+         is-empty
 

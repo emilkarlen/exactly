@@ -13,7 +13,7 @@ classify-files-by-moving-to-appropriate-dir GOOD input/ output/
 
 [assert]
 
-dir-contents input        empty
+dir-contents input        is-empty
 
 dir-contents output/good  matches -full { a.txt : type file }
 

@@ -2,4 +2,4 @@
 
 stdout
   -from my-assert-helper-program
-  empty
+  is-empty

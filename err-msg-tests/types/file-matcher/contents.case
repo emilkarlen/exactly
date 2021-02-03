@@ -7,5 +7,5 @@ file non-empty.txt = 'contents'
 [assert]
 
 
-exists non-empty.txt : contents empty
+exists non-empty.txt : contents is-empty
 

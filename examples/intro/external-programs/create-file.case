@@ -18,14 +18,14 @@ file stat2.txt  = -stdout-from @ STAT a-file.txt
 
 [assert]
 
-exists a-file.txt : contents ! empty
+exists a-file.txt : contents ! is-empty
 
-exists b-file.txt : contents ! empty
+exists b-file.txt : contents ! is-empty
 
 exists c-file.txt : contents equals <<EOF
 The output
 EOF
 
-exists stat.txt : contents ! empty
+exists stat.txt : contents ! is-empty
 
 exists stat2.txt : contents equals -contents-of @[EXACTLY_ACT]@/stat.txt

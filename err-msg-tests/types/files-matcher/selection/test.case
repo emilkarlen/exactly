@@ -3,4 +3,4 @@
 
 dir-contents .
              -selection type file
-             ! empty
+             ! is-empty

@@ -43,7 +43,7 @@ exit-code == 0
 
 'All files should have been processed'
 
-dir-contents input-files empty
+dir-contents input-files is-empty
 
 
 

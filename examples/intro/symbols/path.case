@@ -60,7 +60,7 @@ exit-code == 0
 
 'All files should have been processed'
 
-dir-contents @[INPUT_DIR]@ empty
+dir-contents @[INPUT_DIR]@ is-empty
 
 
 

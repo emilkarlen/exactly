@@ -14,4 +14,4 @@ file @[CHECKED_FILE]@
 [assert]
 
 
-contents @[CHECKED_FILE]@ ! empty
+contents @[CHECKED_FILE]@ ! is-empty

@@ -18,9 +18,9 @@ dir  d0b/f1b
 def file-matcher DIR_CONTAINS_NON_EMPTY_DIRS =
 
     dir-contents -recursive -min-depth 1 -max-depth 1
-    ! empty
+    ! is-empty
 
 
 dir-contents . -recursive
     -with-pruned DIR_CONTAINS_NON_EMPTY_DIRS
-    empty
+    is-empty

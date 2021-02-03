@@ -33,7 +33,8 @@ with exception of a "0." prefix until version 1 is released.
 
  - Syntax of type expressions in nested expressions - May not contain binary operators (unless inside parentheses)
  - Syntax of type expressions - Precedences of `||` and `&&`
- - Type `files-matcher` - rename `-prune` -> `-with-pruned`
+ - Type `files-matcher` - rename `-prune` -> `-with-pruned` (breaking)
+ - Type `files-matcher` - rename `empty` -> `is-empty` (breaking)
  - Type `file-matcher` - `name` - match base name (also for the GLOB-PATTERN variant)
  - Type `file-matcher` - `name` / `path` - Use `~` for regex matching
  - Type `string-transformer` - `replace` - Include new-lines in processed lines, unless `-preserve-new-lines` is given
@@ -41,6 +42,7 @@ with exception of a "0." prefix until version 1 is released.
  - Type `string-transformer` - Case converters - Replaces builtin symbols with primitive
  - Type `string-transformer` - TCDS dir replacement - Replaces builtin symbol with primitive
  - Type `string-matcher` - `equals` - Expected value is `STRING-SOURCE`
+ - Type `string-matcher` - rename `empty` -> `is-empty` (breaking)
  - Syntax element `STRING-SOURCE` - Option `-file` -> `-contents-of` (breaking)
  - Interpreter actors - interpreter `EXECUTABLE [ARGUMENT]...` requires `EXECUTABLE` to be a file
  - Actor - `file interpreter` - arguments to source file are `PROGRAM-ARGUMENT`

@@ -4,4 +4,4 @@ including my-string.def
 
 [assert]
 
-dir-contents my-dir -selection MY_STRING empty
+dir-contents my-dir -selection MY_STRING is-empty

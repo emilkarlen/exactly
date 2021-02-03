@@ -12,4 +12,4 @@ contents output.txt
          -transformed-by MY_TRANSFORMER
          every line : MY_LINE_MATCHER
 
-stderr empty
+stderr is-empty

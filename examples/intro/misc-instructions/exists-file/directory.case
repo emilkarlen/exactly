@@ -14,12 +14,12 @@ exists actual-file
 
 exists actual-file : type dir
 
-exists actual-file : type dir && dir-contents empty
+exists actual-file : type dir && dir-contents is-empty
 
 exists non-empty-dir :
     type dir &&
     dir-contents (
-      ! empty
+      ! is-empty
       &&
-      every file : ( type dir && dir-contents empty )
+      every file : ( type dir && dir-contents is-empty )
     )

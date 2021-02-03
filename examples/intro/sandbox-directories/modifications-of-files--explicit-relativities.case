@@ -48,7 +48,7 @@ exit-code == 0
 
 'All files should have been processed'
 
-dir-contents -rel-act input-files empty
+dir-contents -rel-act input-files is-empty
 
 
 

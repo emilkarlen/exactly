@@ -7,4 +7,4 @@ dir a-dir/file-to-check-that-is-a-dir
 [assert]
 
 
-dir-contents a-dir every file : contents empty
+dir-contents a-dir every file : contents is-empty

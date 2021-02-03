@@ -4,4 +4,4 @@ dir my-dir
 
 [assert]
 
-dir-contents my-dir empty
+dir-contents my-dir is-empty

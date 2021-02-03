@@ -8,7 +8,7 @@ def string-matcher CONSTANT = constant true
 def string-matcher QUANT_LINE_E = any   line : LINE_NUM
 def string-matcher QUANT_LINE_A = every line : LINE_NUM
 
-def string-matcher EMPTY       = empty
+def string-matcher EMPTY       = is-empty
 def string-matcher NOT_EMPTY   = ! EMPTY
 
 def string-matcher EQUALS         = equals 'hello'

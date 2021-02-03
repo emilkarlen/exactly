@@ -1,4 +1,4 @@
 [assert]
 
 dir-contents .
-             ! empty || ( any file : contents empty ) || ( any file : contents ! empty )
+             ! is-empty || ( any file : contents is-empty ) || ( any file : contents ! is-empty )

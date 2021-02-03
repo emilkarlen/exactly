@@ -14,4 +14,4 @@ exit-code == 0
 
 stdout equals -contents-of -rel-act stdin.txt
 
-stderr empty
+stderr is-empty

@@ -6,4 +6,4 @@
 
 stdout
   -from $ exit
-  ! empty
+  ! is-empty

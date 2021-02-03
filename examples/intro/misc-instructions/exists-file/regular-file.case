@@ -8,4 +8,4 @@ exists actual-file
 
 exists actual-file : type file
 
-exists actual-file : type file && contents empty
+exists actual-file : type file && contents is-empty
