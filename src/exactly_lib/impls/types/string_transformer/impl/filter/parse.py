@@ -103,6 +103,7 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
             '_LINE_MATCHER_': syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.singular_name,
             'FIRST_LINE_NUMBER': line_matcher_type.FIRST_LINE_NUMBER,
             'FIRST_LINE_NUMBER_DESCRIPTION': line_matcher_type.FIRST_LINE_NUMBER_DESCRIPTION,
+            'LINE_SEPARATOR_DESCRIPTION': line_matcher_type.LINE_SEPARATOR_DESCRIPTION,
             'RANGE': names.RANGE_EXPR_SED_NAME,
             'INT': syntax_elements.INTEGER_SYNTAX_ELEMENT.singular_name,
             'RANGE_LIMIT_SEPARATOR': formatting.string_constant(_RANGE_LIMIT_SEPARATOR),
@@ -117,7 +118,11 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
-        return self._tp.fnap(_DESCRIPTION__MAIN) + [self._variants_table()]
+        return (
+                self._tp.fnap(_DESCRIPTION__MAIN) +
+                [self._variants_table()] +
+                self._tp.fnap(_DESCRIPTION__MAIN__EPILOGUE)
+        )
 
     def _variants_table(self) -> ParagraphItem:
         return docs.simple_list_with_space_between_elements_and_content(
@@ -183,6 +188,10 @@ and discards lines not matched.
 
 
 {MATCHER} is one of:
+"""
+
+_DESCRIPTION__MAIN__EPILOGUE = """\
+{Note} {LINE_SEPARATOR_DESCRIPTION}
 """
 
 _DESCRIPTION__LINE_MATCHER = """\

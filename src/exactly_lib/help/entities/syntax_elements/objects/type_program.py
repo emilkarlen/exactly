@@ -170,7 +170,7 @@ class _ProgramWithArgumentList(SyntaxElementDescriptionTree):
 
 def _stdin_description_rest() -> List[ParagraphItem]:
     ret_val = _TEXT_PARSER.fnap(_STDIN_DESCRIPTION)
-    ret_val += _TEXT_PARSER.fnap(_STDIN_TRANSFORMATION_POSITION)
+    ret_val += _TEXT_PARSER.fnap(_STDIN_OR_TRANSFORMATION_POSITION)
     return ret_val
 
 
@@ -190,7 +190,7 @@ def _stdin_sed() -> SyntaxElementDescription:
 
 def _transformation_description_rest() -> List[ParagraphItem]:
     ret_val = _TEXT_PARSER.fnap(_TRANSFORMATION_DESCRIPTION)
-    ret_val += _TEXT_PARSER.fnap(_STDIN_TRANSFORMATION_POSITION)
+    ret_val += _TEXT_PARSER.fnap(_STDIN_OR_TRANSFORMATION_POSITION)
     ret_val += texts.type_expression_has_syntax_of_primitive([
         syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
     ])
@@ -218,7 +218,8 @@ _TEXT_PARSER = TextParser({
     'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
     'hds': concepts.HDS_CONCEPT_INFO.name,
     'TRANSFORMATION': string_transformer.STRING_TRANSFORMATION_ARGUMENT.name,
-    'define_symbol': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
+    'define_symbol': formatting.InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
+    'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
     'SYMBOL_NAME': formatting.syntax_element_(syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT),
     'ARGUMENT': formatting.syntax_element(syntax_elements.PROGRAM_ARGUMENT_SYNTAX_ELEMENT.singular_name),
     'SHELL_COMMAND_LINE': formatting.syntax_element_(syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT),
@@ -258,14 +259,11 @@ An executable program.
 """
 
 _SYM_REF_PROGRAM_DESCRIPTION = """\
-Reference to a program that has been defined using the {define_symbol} instruction.
+Reference to a program that has been defined using the {define_symbol:emphasis} {instruction}.
 
 
-{SYMBOL_NAME} must have been defined as {program_type:a/q}.
-
-
-Arguments and transformations are appended to existing arguments and transformations
-of {SYMBOL_NAME}.
+Arguments, {stdin} and transformations are appended to the arguments, {stdin} and transformations
+of the referenced {program_type}.
 """
 
 _STDIN_DESCRIPTION = """\
@@ -283,10 +281,10 @@ Transforms the output from the program.
 Depending on the context, either stdout or stderr is transformed.
 """
 
-_STDIN_TRANSFORMATION_POSITION = """\
+_STDIN_OR_TRANSFORMATION_POSITION = """\
 {Note} Must appear on a separate line.
 
-If not, it will be interpreted as arguments.
+(If not, it will be interpreted as arguments.)
 """
 
 _DIFFERENT_RELATIVITIES_FOR_PROGRAM_ACTOR = """\

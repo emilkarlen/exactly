@@ -5,6 +5,7 @@ from exactly_lib.definitions.entity import types, syntax_elements, conf_params, 
 from exactly_lib.help.entities.types.contents_structure import TypeWithExpressionGrammarDocumentation, \
     TypeDocumentation
 from exactly_lib.symbol.value_type import TypeCategory
+from exactly_lib.type_val_prims.matcher import line_matcher
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _TP = TextParser({
@@ -15,13 +16,34 @@ _TP = TextParser({
     'os_proc_env_section_header': misc_texts.OS_PROCESS_ENVIRONMENT_SECTION_HEADER,
     'test_case_spec_title': misc_texts.TEST_CASE_SPEC_TITLE,
     'current_OS': misc_texts.CURRENT_OS,
+    'First_line_number': line_matcher.FIRST_LINE_NUMBER_DESCRIPTION,
+    'Line_separator_description': line_matcher.LINE_SEPARATOR_DESCRIPTION,
+    'STRING_SOURCE': syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.singular_name,
 })
 
 _LINE_MATCHER_DESCRIPTION = """\
-The line separator depends on the {current_OS} ('\\n', '\\r\\n', e.g.).
+A line is represented by its
 
 
-Line separator are not included in the line contents.
+  * line number
+  * text contents
+
+
+{First_line_number}
+
+
+The line separator is not included in the text contents.
+
+
+{Line_separator_description}
+"""
+
+_STRING_TRANSFORMER_DESCRIPTION = """\
+The string to transform is given by a {STRING_SOURCE}.
+"""
+
+_STRING_MATCHER_DESCRIPTION = """\
+The string to match is given by a {STRING_SOURCE}.
 """
 
 INTEGER_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
@@ -43,12 +65,16 @@ FILE_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
 STRING_TRANSFORMER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
     TypeCategory.LOGIC,
     types.STRING_TRANSFORMER_TYPE_INFO,
-    syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT)
+    syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
+    _TP.section_contents(_STRING_TRANSFORMER_DESCRIPTION),
+    (syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.cross_reference_target,))
 
 STRING_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
     TypeCategory.LOGIC,
     types.STRING_MATCHER_TYPE_INFO,
-    syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT)
+    syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
+    _TP.section_contents(_STRING_MATCHER_DESCRIPTION),
+    (syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.cross_reference_target,))
 
 FILES_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
     TypeCategory.LOGIC,

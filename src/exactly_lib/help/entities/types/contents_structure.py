@@ -64,18 +64,17 @@ class TypeWithExpressionGrammarDocumentation(TypeDocumentation):
                  name_and_cross_ref_target: TypeNameAndCrossReferenceId,
                  corresponding_syntax_element: SyntaxElementInfo,
                  description: SectionContents = SectionContents.empty(),
+                 custom_see_also: Sequence[SeeAlsoTarget] = (),
                  ):
         super().__init__(type_category_for_help,
                          name_and_cross_ref_target,
                          corresponding_syntax_element,
-                         description)
+                         description,
+                         custom_see_also_targets=custom_see_also)
 
     """
     Documents a type of the type system.
     """
-
-    def see_also_targets(self) -> List[SeeAlsoTarget]:
-        return super().see_also_targets()
 
 
 def types_help(types: Iterable[TypeDocumentation]) -> EntityTypeHelp:

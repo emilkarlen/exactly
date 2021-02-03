@@ -167,6 +167,5 @@ If the {atc} is a {PROGRAM} that itself defines {stdin},
 then the {stdin} set here is appended to the {stdin}
 defined by the {PROGRAM}.
 
-
 (This requires that the {actor} is {run_program_actor}.) 
 """

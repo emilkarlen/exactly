@@ -66,13 +66,13 @@ def name_and_ref_target(value_type: ValueType,
 STRING_TYPE_INFO = name_and_ref_target(
     ValueType.STRING,
     a_name_with_plural_s('string'),
-    'A sequence of characters.',
+    'A sequence of characters',
 )
 
 LIST_TYPE_INFO = name_and_ref_target(
     ValueType.LIST,
     a_name_with_plural_s('list'),
-    'A sequence of zero or more strings.',
+    'A sequence of zero or more strings',
 )
 
 PATH_TYPE_INFO = name_and_ref_target(
@@ -85,43 +85,43 @@ PATH_TYPE_INFO = name_and_ref_target(
 INTEGER_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.INTEGER_MATCHER,
     an_name_with_plural_s('integer-matcher'),
-    'Matches an integer.'
+    'Matches an integer'
 )
 
 LINE_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.LINE_MATCHER,
     a_name_with_plural_s('line-matcher'),
-    'Matches individual text lines of a string.'
+    'Matches individual text lines of a string'
 )
 
 FILE_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.FILE_MATCHER,
     a_name_with_plural_s('file-matcher'),
-    'Matches properties of an existing file - type, name and contents.'
+    'Matches properties of an existing file - type, name and contents'
 )
 
 FILES_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.FILES_MATCHER,
     a_name_with_plural_s('files-matcher'),
-    'Matches a set of files (e.g. the contents of a directory).'
+    'Matches a set of files (e.g. the contents of a directory)'
 )
 
 STRING_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.STRING_MATCHER,
     a_name_with_plural_s('string-matcher'),
-    'Matches a string (a sequence of new-line separated text lines).',
+    'Matches a string (a sequence of characters)',
 )
 
 STRING_TRANSFORMER_TYPE_INFO = name_and_ref_target(
     ValueType.STRING_TRANSFORMER,
     a_name_with_plural_s('string-transformer'),
-    'Transforms a string (a sequence of new-line separated text lines).',
+    'Transforms a string (a sequence of characters)',
 )
 
 PROGRAM_TYPE_INFO = name_and_ref_target(
     ValueType.PROGRAM,
     a_name_with_plural_s('program'),
-    '{:a/u}, with optional arguments, and optional transformation of the output.'.format(
+    '{:a/u}, with optional arguments, and optional transformation of the output'.format(
         misc_texts.EXTERNAL_PROGRAM
     ),
 )

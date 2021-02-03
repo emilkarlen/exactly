@@ -74,7 +74,7 @@ FILES_CONDITION_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.FILES_CONDIT
 
 SHELL_COMMAND_LINE_SYNTAX_ELEMENT = name_and_ref_target(
     'SHELL-COMMAND-LINE',
-    'A shell command line, as the remaining part of the current line.'
+    'A shell command line, as the remaining part of the current line'
 )
 
 SYMBOL_NAME_SYNTAX_ELEMENT = name_and_ref_target(
