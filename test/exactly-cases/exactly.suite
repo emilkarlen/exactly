@@ -36,4 +36,6 @@ run
 
 stdout_err
 
+exit-code
+
 stdin

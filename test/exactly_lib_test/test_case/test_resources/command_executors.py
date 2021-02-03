@@ -118,3 +118,24 @@ class CommandExecutorThatChecksStdin(CommandExecutor):
                                              files.stdin,
                                              'stdin given to command executor')
         return self.exit_code
+
+
+class CommandExecutorThatChecksProcExeSettings(CommandExecutor):
+    def __init__(self,
+                 put: unittest.TestCase,
+                 expectation: Assertion[ProcessExecutionSettings],
+                 exit_code: int = 0,
+                 ):
+        self._put = put
+        self._expectation = expectation
+        self.exit_code = exit_code
+
+    def execute(self,
+                command: Command,
+                settings: ProcessExecutionSettings,
+                files: StdFiles,
+                ) -> int:
+        self._expectation.apply_with_message(self._put,
+                                             settings,
+                                             'settings')
+        return self.exit_code

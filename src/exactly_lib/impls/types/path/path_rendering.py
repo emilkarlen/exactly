@@ -5,7 +5,7 @@ from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive, PathDescriberForDdv
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
-from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement
+from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, ElementProperties
 
 
 class PathRepresentationsRenderers(ABC):
@@ -90,8 +90,10 @@ def path_strings(path: PathDescriberForPrimitive) -> List[str]:
 class PathMinorBlock(Renderer[MinorBlock]):
     def __init__(self,
                  path: PathRepresentationsRenderers,
+                 element_properties: ElementProperties = text_struct.ELEMENT_PROPERTIES__INDENTED
                  ):
         self._path = path
+        self._element_properties = element_properties
 
     def render(self) -> MinorBlock:
         return MinorBlock([
@@ -100,8 +102,15 @@ class PathMinorBlock(Renderer[MinorBlock]):
             )
             for line in self._path.renders()
         ],
-            text_struct.ELEMENT_PROPERTIES__INDENTED,
+            self._element_properties,
         )
+
+
+def minor_block_renderer_of_primitive(path: PathDescriberForPrimitive) -> Renderer[MinorBlock]:
+    return PathMinorBlock(
+        PathRepresentationsRenderersForPrimitive(path),
+        text_struct.ELEMENT_PROPERTIES__NEUTRAL,
+    )
 
 
 class ExplanationMinorBlock(Renderer[MinorBlock]):

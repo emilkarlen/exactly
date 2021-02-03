@@ -213,11 +213,11 @@ class AssertionInstructionFromAssertionPart(Generic[A], AssertPhaseInstruction):
                  err_msg_from_part: TextRenderer
                  ) -> pfh.PassOrFailOrHardError:
         err_msg = err_msg_from_part
-        resolving_env = logic_type_resolving_helper.full_resolving_env_for_instruction_env(
-            os_services,
-            environment
-        )
         if self._failure_message_header:
+            resolving_env = logic_type_resolving_helper.full_resolving_env_for_instruction_env(
+                os_services,
+                environment
+            )
             err_msg = rend_comb.PrependR(
                 self._failure_message_header(resolving_env),
                 err_msg_from_part,

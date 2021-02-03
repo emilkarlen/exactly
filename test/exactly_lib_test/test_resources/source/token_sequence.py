@@ -79,14 +79,14 @@ def _str_fragments_of_tokens(tokens: Sequence[Token], spec: LayoutSpec) -> Seque
     if len(tokens) == 0:
         return []
     elif len(tokens) == 1:
-        return _str_fragments_of_token(tokens[0], spec, frozenset((TokenPosition.FIRST, TokenPosition.LAST)))
+        return str_fragments_of_token(tokens[0], spec, frozenset((TokenPosition.FIRST, TokenPosition.LAST)))
     else:
         ret_val = []
-        ret_val += _str_fragments_of_token(tokens[0], spec, frozenset((TokenPosition.FIRST,)))
+        ret_val += str_fragments_of_token(tokens[0], spec, frozenset((TokenPosition.FIRST,)))
         for token in tokens[1:-1]:
             position = frozenset()
-            ret_val += _str_fragments_of_token(token, spec, position)
-        ret_val += _str_fragments_of_token(tokens[-1], spec, frozenset((TokenPosition.LAST,)))
+            ret_val += str_fragments_of_token(token, spec, position)
+        ret_val += str_fragments_of_token(tokens[-1], spec, frozenset((TokenPosition.LAST,)))
 
         return ret_val
 
@@ -100,7 +100,7 @@ def _non_empty_str_fragments_of_tokens(tokens: Sequence[Token], spec: LayoutSpec
     )
 
 
-def _str_fragments_of_token(token: Token, spec: LayoutSpec, position: AbstractSet[TokenPosition]) -> Sequence[str]:
+def str_fragments_of_token(token: Token, spec: LayoutSpec, position: AbstractSet[TokenPosition]) -> Sequence[str]:
     if isinstance(token, LayoutAble):
         return token.layout(spec, position)
     else:

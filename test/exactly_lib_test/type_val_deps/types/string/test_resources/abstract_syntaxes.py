@@ -1,11 +1,13 @@
+import itertools
 import shlex
-from typing import Optional, Sequence
+from typing import Optional, Sequence, AbstractSet
 
 from exactly_lib.util.parse.token import QuoteType
 from exactly_lib.util.str_ import misc_formatting
 from exactly_lib_test.symbol.test_resources import token_sequences as symbol_tok_seq
-from exactly_lib_test.test_resources.source import layout
-from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
+from exactly_lib_test.test_resources.source import layout, token_sequence
+from exactly_lib_test.test_resources.source.layout import LayoutAble, LayoutSpec, TokenPosition
+from exactly_lib_test.test_resources.source.token_sequence import TokenSequence, Token
 from exactly_lib_test.type_val_deps.types.string.test_resources import here_doc
 from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringAbsStx, \
     NonHereDocStringAbsStx
@@ -36,6 +38,19 @@ class StringLiteralAbsStx(NonHereDocStringAbsStx):
             return quoting.surrounded_by_hard_quotes_str(self.value)
         else:
             raise ValueError('Invalid quoting: ' + str(self.quoting))
+
+
+class StringConcatAbsStx(NonHereDocStringAbsStx):
+    def __init__(self, fragments: Sequence[NonHereDocStringAbsStx]):
+        if not fragments:
+            raise ValueError('Concatenation must contain at least 1 fragment:' + str(len(fragments)))
+        self.fragments = fragments
+
+    def tokenization(self) -> TokenSequence:
+        return _StringConcatTokenSequence([
+            fragment.tokenization()
+            for fragment in self.fragments
+        ])
 
 
 class StringHereDocAbsStx(StringAbsStx):
@@ -72,3 +87,33 @@ class StringSymbolAbsStx(NonHereDocStringAbsStx):
 
     def tokenization(self) -> TokenSequence:
         return symbol_tok_seq.SymbolReferenceAsReferenceSyntax(self.symbol_name)
+
+
+class _StringConcatTokenSequence(TokenSequence):
+    def __init__(self, fragments: Sequence[TokenSequence]):
+        self.fragments = fragments
+
+    @property
+    def tokens(self) -> Sequence[Token]:
+        return [
+            _StringConcatLayoutAble([
+                fragment.tokens
+                for fragment in self.fragments
+            ])]
+
+
+class _StringConcatLayoutAble(LayoutAble):
+    def __init__(self, fragments: Sequence[Sequence[Token]]):
+        self.fragments = tuple(itertools.chain.from_iterable(fragments))
+
+    def layout(self,
+               spec: LayoutSpec,
+               position: AbstractSet[TokenPosition],
+               ) -> Sequence[str]:
+        str_seq_seq = [
+            token_sequence.str_fragments_of_token(token, spec, position)
+            for token in self.fragments
+        ]
+        str_ = ''.join(itertools.chain.from_iterable(str_seq_seq))
+
+        return (str_,)

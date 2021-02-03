@@ -2,6 +2,7 @@ from typing import List
 
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.entity import types, syntax_elements
+from exactly_lib.impls.types.program.help_texts import TRANSFORMATION_ARE_IGNORED__TMPL
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -15,14 +16,10 @@ def run_program_matcher_description(exe_env: List[ParagraphItem]) -> List[Paragr
     return (
             tp.fnap(_HEADER) +
             exe_env +
-            tp.fnap(_TRANSFORMATION)
+            tp.fnap(TRANSFORMATION_ARE_IGNORED__TMPL)
     )
 
 
 _HEADER = """\
 Runs {program:a}, and matches iff its {exit_code} is 0.
-"""
-
-_TRANSFORMATION = """\
-Transformations of the output from {PROGRAM} are ignored.
 """

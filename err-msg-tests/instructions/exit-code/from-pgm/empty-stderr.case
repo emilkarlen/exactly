@@ -1,0 +1,5 @@
+[assert]
+
+exit-code
+  -from -python -c :> exit(0)
+  != 0

@@ -29,6 +29,13 @@ class DdvValidatorThat(DdvValidator):
         self.post_setup_action(tcds)
         return self.post_setup_return_value
 
+    @staticmethod
+    def corresponding_to(result: ValidationActual) -> DdvValidator:
+        return DdvValidatorThat(
+            pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test__optional(result.pre_sds),
+            post_setup_return_value=asrt_text_doc.new_single_string_text_for_test__optional(result.post_sds),
+        )
+
 
 def constant(result: ValidationActual) -> DdvValidator:
     return DdvValidatorThat(

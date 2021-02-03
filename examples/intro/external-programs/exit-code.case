@@ -1,0 +1,5 @@
+[assert]
+
+exit-code
+  -from my-assert-helper-program
+  == 0 || == 2

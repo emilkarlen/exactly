@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.result import svh
@@ -22,6 +22,13 @@ class ValidationExpectationSvh:
         return ValidationExpectationSvh(
             pre_sds=_svh_from_bool(plain.passes_pre_sds),
             post_sds=_svh_from_bool(plain.passes_post_sds),
+        )
+
+    @staticmethod
+    def corresponding_to(actual: ValidationActual) -> 'ValidationExpectationSvh':
+        return ValidationExpectationSvh(
+            pre_sds=_svh_from_actual_for_test_err_msg(actual.pre_sds),
+            post_sds=_svh_from_actual_for_test_err_msg(actual.post_sds),
         )
 
     @staticmethod
@@ -86,4 +93,13 @@ def _svh_from_bool(passes_validation: bool) -> Assertion[svh.SuccessOrValidation
         if passes_validation
         else
         asrt_svh.is_validation_error()
+    )
+
+
+def _svh_from_actual_for_test_err_msg(actual: Optional[str]) -> Assertion[svh.SuccessOrValidationErrorOrHardError]:
+    return (
+        asrt_svh.is_success()
+        if actual is None
+        else
+        asrt_svh.is_validation_error(asrt_text_doc.is_string_for_test_that_equals(actual))
     )

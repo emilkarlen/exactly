@@ -1,0 +1,9 @@
+[conf]
+
+status = FAIL
+
+[assert]
+
+exit-code
+  -from @ EXIT_WITH_ARG 0
+  != 0

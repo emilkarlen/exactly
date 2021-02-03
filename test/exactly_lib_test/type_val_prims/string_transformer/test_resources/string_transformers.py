@@ -1,4 +1,5 @@
 import itertools
+import unittest
 from typing import Callable, Sequence, Iterator
 
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
@@ -236,3 +237,22 @@ class ConstantStringTransformerTestImpl(StringTransformer):
 
     def transform(self, model: StringSource) -> StringSource:
         return self.result
+
+
+class StringTransformerThatFailsTestIfApplied(StringTransformer):
+    def __init__(self, put: unittest.TestCase):
+        self._put = put
+
+    @property
+    def name(self) -> str:
+        return str(type(self))
+
+    def structure(self) -> StructureRenderer:
+        return renderers.header_only(self.name)
+
+    @property
+    def is_identity_transformer(self) -> bool:
+        return False
+
+    def transform(self, model: StringSource) -> StringSource:
+        self._put.fail('This transformer must not be applied')

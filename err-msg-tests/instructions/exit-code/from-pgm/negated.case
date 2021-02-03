@@ -1,0 +1,5 @@
+[assert]
+
+exit-code
+  -from @ EXIT_WITH_ARG 72
+  ! == 72

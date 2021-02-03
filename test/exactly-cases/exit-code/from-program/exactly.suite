@@ -1,0 +1,7 @@
+[cases]
+
+*.case
+
+[setup]
+
+def program EXIT_WITH_ARG = -python -existing-file exit-with-arg.py

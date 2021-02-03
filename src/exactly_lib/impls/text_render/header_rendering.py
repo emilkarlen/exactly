@@ -1,5 +1,5 @@
+from exactly_lib.common.report_rendering import header_blocks
 from exactly_lib.util.render import combinators
-from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
@@ -30,20 +30,18 @@ class UnexpectedAttrOfObjMajorBlockRenderer(Renderer[MajorBlock]):
                  attribute: ToStringObject,
                  object_: ToStringObject,
                  object_description: SequenceRenderer[MinorBlock] = combinators.ConstantSequenceR(()),
+                 attribute_of_object_word: str = 'of',
                  ):
         self._attribute = attribute
+        self._attribute_of_object_word = attribute_of_object_word
         self._object = object_
         self._object_description = object_description
 
     def render(self) -> MajorBlock:
-        minor_blocks = [
-            blocks.MinorBlockOfSingleLineObject(
-                line_objects.StringLineObject(unexpected_attr_of_obj(self._attribute,
-                                                                     self._object))).render()
-        ]
-        minor_blocks += rend_comb.Indented(self._object_description).render_sequence()
-
-        return MajorBlock(minor_blocks)
+        header_str = unexpected_attr_of_obj(self._attribute,
+                                            self._object,
+                                            self._attribute_of_object_word)
+        return header_blocks.w_details(header_str, self._object_description).render()
 
 
 def unexpected(attribute: ToStringObject) -> ToStringObject:
@@ -56,12 +54,16 @@ def unexpected(attribute: ToStringObject) -> ToStringObject:
 
 
 def unexpected_attr_of_obj(attribute: ToStringObject,
-                           object_: ToStringObject) -> ToStringObject:
+                           object_: ToStringObject,
+                           attribute_of_object_word: str = 'of',
+                           ) -> ToStringObject:
     return str_constructor.Concatenate([
         UNEXPECTED,
         ' ',
         attribute,
-        ' of ',
+        ' ',
+        attribute_of_object_word,
+        ' ',
         object_
     ],
     )

@@ -42,15 +42,19 @@ class MinorBlocksOfLineElements(SequenceRenderer[MinorBlock]):
         return renderer.render()
 
 
+def major_block_of_single_minor_block(minor_block: Renderer[MinorBlock]) -> Renderer[MajorBlock]:
+    return comp_rend.MajorBlockR(
+        rend_comb.SingletonSequenceR(minor_block)
+    )
+
+
 class MajorBlockOfSingleLineObject(Renderer[MajorBlock]):
     def __init__(self, line_object_renderer: LineObjectRenderer):
         self._line_object_renderer = line_object_renderer
 
     def render(self) -> MajorBlock:
-        renderer = comp_rend.MajorBlockR(
-            rend_comb.SingletonSequenceR(
-                MinorBlockOfSingleLineObject(self._line_object_renderer)
-            )
+        renderer = major_block_of_single_minor_block(
+            MinorBlockOfSingleLineObject(self._line_object_renderer)
         )
         return renderer.render()
 

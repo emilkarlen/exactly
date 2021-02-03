@@ -74,6 +74,13 @@ class ValidationAssertions:
         self._post_sds = post_sds
 
     @staticmethod
+    def corresponding_to(actual: ValidationActual) -> 'ValidationAssertions':
+        return ValidationAssertions(
+            pre_sds=assertion_from_actual(actual.pre_sds),
+            post_sds=assertion_from_actual(actual.post_sds),
+        )
+
+    @staticmethod
     def all_passes() -> 'ValidationAssertions':
         return ValidationAssertions(
             pre_sds=asrt.is_none,
@@ -132,6 +139,15 @@ class ValidationAssertions:
     @property
     def post_sds(self) -> ValidationResultAssertion:
         return self._post_sds
+
+
+def assertion_from_actual(actual: Optional[str]) -> Assertion[Optional[TextRenderer]]:
+    return (
+        asrt.is_none
+        if actual is None
+        else
+        asrt.is_not_none_and(asrt_text_doc.is_string_for_test(asrt.equals(actual)))
+    )
 
 
 def failing_validation_cases() -> Sequence[NEA[ValidationAssertions, ValidationActual]]:

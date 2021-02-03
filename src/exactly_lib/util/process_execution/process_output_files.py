@@ -1,6 +1,6 @@
 from enum import Enum
 
-EXIT_CODE_FILE_NAME = 'exitcode'
+EXIT_CODE_FILE_NAME = 'exit-code'
 
 STDOUT_FILE_NAME = 'stdout'
 STDERR_FILE_NAME = 'stderr'

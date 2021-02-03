@@ -14,6 +14,7 @@ with exception of a "0." prefix until version 1 is released.
  - Instruction `conf`/`actor` - Ability to set the "null" actor
  - Instruction `%`
  - Instruction `copy` - Available in all phases
+ - Instruction `exit-code` - Option to check exit code from arbitrary program
  - Type `file-matcher` - `path` - matches the absolute path of files
  - Type `file-matcher` - `stem` - matches the "stem" part of file names
  - Type `file-matcher` - `suffixes` - matches the "suffixes" part of file names
@@ -261,4 +262,4 @@ with exception of a "0." prefix until version 1 is released.
  - `[conf]` instructions: `home`, `act-home`: DIR arg is now relative location of source file
  - `--keep`: Prints sandbox dir also in case of error
  - `--act`: Prints output from ATC continuously, and skips phases `[before-assert]` and `[assert]`
- - Improves built in help (mostly related to "actor", ""action to check", "including")
+ - Improves built in help (mostly related to "actor", "action to check", "including")

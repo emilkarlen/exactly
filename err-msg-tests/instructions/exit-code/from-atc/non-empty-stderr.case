@@ -1,0 +1,12 @@
+[conf]
+
+actor = source -python
+
+[act]
+
+import sys
+sys.stderr.write('the output on stderr')
+
+[assert]
+
+exit-code == 1

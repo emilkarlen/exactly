@@ -8,17 +8,21 @@ from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc, text_doc_assertions
 from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationActual
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line, \
     equivalent_source_variants__consume_last_line__s__nsc
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source_of_abs_stx
 from exactly_lib_test.tcfs.test_resources.ds_construction import tcds_with_act_as_curr_dir__post_act
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ArrangementPostAct2
@@ -27,7 +31,7 @@ from exactly_lib_test.test_resources.source import layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, StopAssertion
 
 
 class SourceArrangement:
@@ -57,10 +61,12 @@ class Expectation:
             main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
             main_side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
             source: Assertion[ParseSource] = asrt.anything_goes(),
+            main_raises_hard_error: bool = False,
     ):
         self.validation_post_sds = validation_post_sds
         self.validation_pre_sds = validation_pre_sds
         self.main_result = main_result
+        self.main_raises_hard_error = main_raises_hard_error
         self.main_side_effects_on_sds = main_side_effects_on_sds
         self.main_side_effects_on_tcds = main_side_effects_on_tcds
         self.source = source
@@ -87,20 +93,46 @@ class ExecutionExpectation:
             svh_assertions.is_success(),
 
             main_result: Assertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
+            main_raises_hard_error: bool = False,
             main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
             main_side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
     ):
         self.validation_post_sds = validation_post_sds
         self.validation_pre_sds = validation_pre_sds
         self.main_result = main_result
+        self.main_raises_hard_error = main_raises_hard_error
         self.main_side_effects_on_sds = main_side_effects_on_sds
         self.main_side_effects_on_tcds = main_side_effects_on_tcds
+
+    @staticmethod
+    def of_validation(expectation_: ValidationExpectationSvh) -> 'ExecutionExpectation':
+        return ExecutionExpectation(
+            validation_pre_sds=expectation_.pre_sds,
+            validation_post_sds=expectation_.post_sds,
+        )
+
+    @staticmethod
+    def validation_corresponding_to__post_sds_as_hard_error(actual: ValidationActual) -> 'ExecutionExpectation':
+        if actual.pre_sds is not None:
+            return ExecutionExpectation(
+                validation_pre_sds=svh_assertions.is_validation_error(
+                    asrt_text_doc.is_string_for_test_that_equals(actual.pre_sds),
+                )
+            )
+        elif actual.post_sds is not None:
+            return ExecutionExpectation(
+                main_result=pfh_assertions.is_hard_error(
+                    asrt_text_doc.is_string_for_test_that_equals(actual.post_sds),
+                )
+            )
+        else:
+            return ExecutionExpectation()
 
 
 class Expectation2:
     def __init__(self,
-                 parse: ParseExpectation,
-                 execution: ExecutionExpectation,
+                 parse: ParseExpectation = ParseExpectation(),
+                 execution: ExecutionExpectation = ExecutionExpectation(),
                  ):
         self.parse = parse
         self.execution = execution
@@ -184,6 +216,19 @@ class Checker:
             expectation.execution,
         )
         execution_checker.check(instruction)
+
+    def check__abs_stx(self,
+                       put: unittest.TestCase,
+                       syntax: AbstractSyntax,
+                       arrangement: ArrangementPostAct2,
+                       expectation: Expectation2,
+                       ):
+        self.check_2(
+            put,
+            remaining_source_of_abs_stx(syntax),
+            arrangement,
+            expectation,
+        )
 
     def check__abs_stx__source_variants(self,
                                         put: unittest.TestCase,
@@ -313,6 +358,7 @@ class Executor:
                                            ex.validation_post_sds,
                                            ex.validation_pre_sds,
                                            ex.main_result,
+                                           ex.main_raises_hard_error,
                                            ex.main_side_effects_on_sds,
                                            ex.main_side_effects_on_tcds,
                                        ))
@@ -352,7 +398,10 @@ class ExecutionChecker:
             if not validate_result.is_success:
                 return
 
-            main_result = self._execute_main(environment, instruction)
+            try:
+                main_result = self._execute_main(environment, instruction)
+            except StopAssertion:
+                return
 
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
             self.expectation.main_side_effects_on_tcds.apply(self.put, tcds)
@@ -382,7 +431,18 @@ class ExecutionChecker:
     def _execute_main(self,
                       environment: InstructionEnvironmentForPostSdsStep,
                       instruction: AssertPhaseInstruction) -> pfh.PassOrFailOrHardError:
-        main_result = instruction.main(environment, self.arrangement.process_execution.os_services)
-        self.put.assertIsNotNone(main_result,
-                                 'Result from main method cannot be None')
+        try:
+            main_result = instruction.main(environment, self.arrangement.process_execution.os_services)
+            self.put.assertIsNotNone(main_result,
+                                     'Result from main method cannot be None')
+        except HardErrorException as ex:
+            if self.expectation.main_raises_hard_error:
+                text_doc_assertions.assert_is_valid_text_renderer(self.put, ex.error)
+                raise StopAssertion()
+            else:
+                self.put.fail('unexpected {} from main'.format(HardErrorException))
+
+        if self.expectation.main_raises_hard_error:
+            self.put.fail('main does not raise ' + str(HardErrorException))
+
         return main_result

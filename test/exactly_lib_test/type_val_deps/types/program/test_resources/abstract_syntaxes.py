@@ -22,6 +22,18 @@ class CustomPgmAndArgsAbsStx(PgmAndArgsAbsStx):
     def __init__(self, tokens: TokenSequence):
         self._tokens = tokens
 
+    @staticmethod
+    def empty() -> PgmAndArgsAbsStx:
+        return CustomPgmAndArgsAbsStx(
+            TokenSequence.empty()
+        )
+
+    @staticmethod
+    def of_str(s: str) -> PgmAndArgsAbsStx:
+        return CustomPgmAndArgsAbsStx(
+            TokenSequence.singleton(s)
+        )
+
     def tokenization(self) -> TokenSequence:
         return self._tokens
 

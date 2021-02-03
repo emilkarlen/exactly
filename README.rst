@@ -213,7 +213,7 @@ External programs can help with setup, assertions etc.
 Exactly can run executable files, shell commands and programs in the OS PATH,
 using ``run``, ``$``, ``%``.
 
-The following case shows some examples, but *doesn't make sense* tough::
+The following case shows some examples, but **doesn't make sense** as a realistic test case, tough::
 
     [setup]
 
@@ -228,6 +228,8 @@ The following case shows some examples, but *doesn't make sense* tough::
     def list DB_ARGS = -uu -pp -hlocalhost -Dd
 
     run % mysql @[DB_ARGS]@ --batch --execute "create table my_table(id int)"
+
+    run % mysql @[DB_ARGS]@ --batch --execute :> create table my_table(id int)
 
     def list MYSQL_BATCH = @[DB_ARGS]@ --batch --execute
 
@@ -264,6 +266,12 @@ The following case shows some examples, but *doesn't make sense* tough::
 
     $ test -f root-files.txt
 
+    stdout -from $ echo 'Interesting output'
+           equals "Interesting output@[NEW_LINE]@"
+
+    exit-code -from my-assert-helper-program
+              == 0
+
     exists output.txt : (
            type file
            &&
@@ -271,13 +279,6 @@ The following case shows some examples, but *doesn't make sense* tough::
            &&
            contents run -python @[EXACTLY_HOME]@/my-string-matcher.py arg1 "arg 2"
            )
-
-    stdout -from
-           $ echo 'Interesting output'
-           equals
-    <<EOF
-    Interesting output
-    EOF
 
     [cleanup]
 

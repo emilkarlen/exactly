@@ -56,6 +56,18 @@ sys.exit({exit_code})
            exit_code=exit_code)
 
 
+def py_pgm_with_stdout_stderr_exit_code__single_line(stdout_output: str = '',
+                                                     stderr_output: str = '',
+                                                     exit_code: int = 0) -> str:
+    lines = [
+        'import sys',
+        'sys.stdout.write("""{}""")'.format(stdout_output),
+        'sys.stderr.write("""{}""")'.format(stderr_output),
+        'sys.exit({})'.format(exit_code),
+    ]
+    return ';'.join(lines)
+
+
 def py_pgm_with_stdout_stderr_exit_code_2(exit_code: int,
                                           output: Mapping[ProcOutputFile, str]) -> str:
     return py_pgm_with_stdout_stderr_exit_code(
