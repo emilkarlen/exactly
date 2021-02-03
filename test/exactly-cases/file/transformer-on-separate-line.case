@@ -2,7 +2,7 @@
 
 file string.txt = "some contents"
 
-file transformed.txt = -file -rel-act string.txt
+file transformed.txt = -contents-of -rel-act string.txt
                        -transformed-by
                           char-case -to-upper
 

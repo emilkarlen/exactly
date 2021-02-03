@@ -14,4 +14,4 @@ EOF
 
 
 contents actual-file
-         equals -file -rel-cd expected-file
+         equals -contents-of -rel-cd expected-file

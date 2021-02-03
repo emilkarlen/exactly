@@ -6,7 +6,7 @@ actor = file -python
 
 file stdin.txt = 'the stdin'
 
-stdin = -file -rel-act stdin.txt
+stdin = -contents-of -rel-act stdin.txt
 
 [act]
 
@@ -16,6 +16,6 @@ print-stdin.py
 
 exit-code == 0
 
-stdout equals -file -rel-act stdin.txt
+stdout equals -contents-of -rel-act stdin.txt
 
 stderr empty

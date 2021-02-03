@@ -17,4 +17,4 @@ contents single-line.txt equals <<-
 actual contents line
 -
 
-contents single-line.txt equals -file -rel-cd single-line.txt
+contents single-line.txt equals -contents-of -rel-cd single-line.txt

@@ -1,6 +1,6 @@
 [setup]
 
-stdin = -file some-test-contacts.txt
+stdin = -contents-of some-test-contacts.txt
 
 [act]
 

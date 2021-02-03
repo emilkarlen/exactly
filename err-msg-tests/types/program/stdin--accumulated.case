@@ -6,4 +6,4 @@ def program P = % stat non-existing
 file stdin-contents.txt
 
 run @ P
-    -stdin -file -rel-act stdin-contents.txt
+    -stdin -contents-of -rel-act stdin-contents.txt

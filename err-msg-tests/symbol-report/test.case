@@ -41,7 +41,7 @@ def path PATH_REL_CD       = -rel-cd   @[SUB_DIRS]@/file-rel-cd
 ########################################
 
 
-def line-matcher LINE_MATCHER = line-num < 2 || matches .+
+def line-matcher LINE_MATCHER = line-num < 2 || contents ~ .+
 
 
 ########################################
@@ -49,7 +49,7 @@ def line-matcher LINE_MATCHER = line-num < 2 || matches .+
 ########################################
 
 
-def string-matcher STRING_MATCHER = equals -file expected.txt
+def string-matcher STRING_MATCHER = equals -contents-of expected.txt
 
 
 ########################################

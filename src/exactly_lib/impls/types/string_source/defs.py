@@ -9,7 +9,7 @@ PROGRAM_OUTPUT_OPTIONS = {
     ProcOutputFile.STDOUT: a.OptionName('stdout-from'),
     ProcOutputFile.STDERR: a.OptionName('stderr-from'),
 }
-FILE_OPTION = a.OptionName('file')
+FILE_OPTION = a.OptionName('contents-of')
 IGNORE_EXIT_CODE = program_primitives.WITH_IGNORED_EXIT_CODE_OPTION_NAME
 
 SOURCE_FILE_ARGUMENT_NAME = a.Named('SOURCE-FILE-PATH')

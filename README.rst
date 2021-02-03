@@ -32,7 +32,7 @@ and is able to find the email of a person::
 
     [setup]
 
-    stdin = -file some-test-contacts.txt
+    stdin = -contents-of some-test-contacts.txt
 
     [act]
 
@@ -545,7 +545,7 @@ and ``-rel-act`` to the *act* directory, for example::
 
     contents -rel-act actual.txt
              equals
-             -file -rel-home expected.txt
+             -contents-of -rel-home expected.txt
 
 
 These "relativity" options have defaults designed to minimize the
@@ -570,7 +570,7 @@ The following case does the same thing as the one above::
 
     contents actual.txt
              equals
-             -file expected.txt
+             -contents-of expected.txt
 
 
 ORGANIZING TESTS

@@ -16,4 +16,4 @@ filter-lines "text to find" actual.txt
 
 contents actual.txt
          equals
-         -file expected.txt
+         -contents-of expected.txt

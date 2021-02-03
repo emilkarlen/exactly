@@ -13,4 +13,4 @@ file expected.txt = @[ACTUAL]@-followed-by-unexpected
 
 contents actual.txt
          equals
-         -file -rel-act expected.txt
+         -contents-of -rel-act expected.txt

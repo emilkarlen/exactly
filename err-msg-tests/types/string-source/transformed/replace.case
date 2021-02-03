@@ -2,6 +2,6 @@
 
 run @ EXIT_ERROR
     -stdin (
-      -file -rel-home string-source.txt
+      -contents-of -rel-home string-source.txt
         -transformed-by replace a b
       )

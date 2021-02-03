@@ -27,4 +27,4 @@ do-something-good-with test-file.txt
 
 contents test-file.txt
          equals
-         -file expectation/expected.txt
+         -contents-of expectation/expected.txt

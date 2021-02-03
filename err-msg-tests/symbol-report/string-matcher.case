@@ -13,7 +13,7 @@ def string-matcher NOT_EMPTY   = ! EMPTY
 
 def string-matcher EQUALS         = equals 'hello'
 def string-matcher EQUALS_NOT     = ! EQUALS
-def string-matcher EQUALS_FILE    = equals -file expected.txt
+def string-matcher EQUALS_FILE    = equals -contents-of expected.txt
 def string-matcher EQUALS_PROGRAM = equals -stdout-from
                                     -python -c :> print('hello')
 

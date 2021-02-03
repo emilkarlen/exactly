@@ -49,5 +49,5 @@ do-something-good-with @[TEST_FILE]@
 
 contents @[TEST_FILE]@
          equals
-         -file @[FILE_WITH_EXPECTED_CONTENTS]@
+         -contents-of @[FILE_WITH_EXPECTED_CONTENTS]@
 

@@ -6,4 +6,4 @@ contents -rel-act-home input-file-w-ints.txt
     contents
       -transformed-by
         filter constant true
-        equals -file expected.txt
+        equals -contents-of expected.txt

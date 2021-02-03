@@ -9,7 +9,7 @@ EOF
 file from-program.txt =
     -stdout-from
       -python -c :> import sys; sys.stdout.write(sys.stdin.read()); print('after stdin')
-        -stdin ( -file -rel-act stdin.txt )
+        -stdin ( -contents-of -rel-act stdin.txt )
         -transformed-by char-case -to-upper
 
 # ^ The parentheses around the STRING-SOURCE makes

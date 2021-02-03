@@ -13,5 +13,5 @@ contents f.txt
   -transformed-by
     filter -line-nums -5:
     equals
-      -file -rel-act f.txt
+      -contents-of -rel-act f.txt
 

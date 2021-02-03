@@ -21,7 +21,7 @@ def program STDIN = % system-cmd
                       -stdin 'contents of stdin'
 
 def program STDIN__ACCUMULATED = @ STDIN
-                                 -stdin -file -rel-home stdin-contents.txt
+                                 -stdin -contents-of -rel-home stdin-contents.txt
 
 file py-output.txt = -stdout-from @ PYTHON_FILE
 

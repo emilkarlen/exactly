@@ -2,8 +2,8 @@
 
 def line-matcher CONSTANT = constant false
 
-def line-matcher REGEX    = matches [a-z]+b?c
-def line-matcher REGEX_IC = matches -ignore-case [a-z]+b?c
+def line-matcher REGEX    = contents ~ [a-z]+b?c
+def line-matcher REGEX_IC = contents matches -ignore-case [a-z]+b?c
 
 def line-matcher CONTENTS = contents equals 'Expected'
 

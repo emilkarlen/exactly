@@ -9,6 +9,6 @@ file expected.txt = @[ACTUAL]@
 
 contents actual.txt
          ==
-         -file -rel-act expected.txt
+         -contents-of -rel-act expected.txt
 
 contents actual.txt == @[ACTUAL]@

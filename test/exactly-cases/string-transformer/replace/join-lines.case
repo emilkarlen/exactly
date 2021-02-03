@@ -18,7 +18,7 @@ contents input.txt
     num-lines == 1
 
 file transformed.txt =
-    -file -rel-cd input.txt
+    -contents-of -rel-cd input.txt
     -transformed-by REMOVE_NEW_LINE
 
 contents transformed.txt

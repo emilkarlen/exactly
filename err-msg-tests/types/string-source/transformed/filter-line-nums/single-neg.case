@@ -2,7 +2,7 @@
 
 run @ EXIT_ERROR
     -stdin (
-      -file @[STRING_SOURCE_FILE]@
+      -contents-of @[STRING_SOURCE_FILE]@
         -transformed-by
           filter -line-nums -1
       )

@@ -10,7 +10,7 @@ def string CHARACTER = 'a'
 
 def string-transformer REMOVE_SPACE_CHARS = replace "\s@[CHARACTER]@" 'A'
 
-file transformed.txt = -file -rel-cd original.txt
+file transformed.txt = -contents-of -rel-cd original.txt
                        -transformed-by REMOVE_SPACE_CHARS
 
 [assert]

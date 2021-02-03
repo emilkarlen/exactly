@@ -1,6 +1,6 @@
 [setup]
 
-stdin = -file stdin-contents.txt
+stdin = -contents-of stdin-contents.txt
 
 [act]
 
@@ -8,4 +8,4 @@ stdin = -file stdin-contents.txt
 
 [assert]
 
-stdout equals -file stdin-contents.txt
+stdout equals -contents-of stdin-contents.txt

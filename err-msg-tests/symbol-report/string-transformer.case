@@ -27,7 +27,7 @@ def string-transformer RUN__COMPLEX =
 
     run % my-program arg1 "arg 2"
           -stdin (
-             -file stdin.txt
+             -contents-of stdin.txt
                -transformed-by replace a b
              )
           -transformed-by char-case -to-lower

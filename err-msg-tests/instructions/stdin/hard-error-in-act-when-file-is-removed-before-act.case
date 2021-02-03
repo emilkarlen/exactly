@@ -10,6 +10,6 @@ def path STDIN_FILE = -rel-act stdin.txt
 
 file @[STDIN_FILE]@
 
-stdin = -file @[STDIN_FILE]@
+stdin = -contents-of @[STDIN_FILE]@
 
 run -python -existing-file -rel-home utils/remove-file-as-1st-arg.py @[STDIN_FILE]@

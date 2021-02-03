@@ -6,7 +6,7 @@
 [setup]
 
 
-stdin = -file stdin-contents.txt
+stdin = -contents-of stdin-contents.txt
 
 
 [act]
@@ -18,4 +18,4 @@ copy-stdin-to-stdout
 [assert]
 
 
-stdout equals -file stdin-contents.txt
+stdout equals -contents-of stdin-contents.txt

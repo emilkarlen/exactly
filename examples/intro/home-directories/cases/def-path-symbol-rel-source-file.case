@@ -30,4 +30,4 @@ do-something-good-with test-file.txt
 
 contents test-file.txt
          equals
-         -file @[EXPECTATION_DIR]@/expected.txt
+         -contents-of @[EXPECTATION_DIR]@/expected.txt

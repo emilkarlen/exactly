@@ -1,7 +1,7 @@
 [setup]
 
 file input/a.txt = 'GOOD contents'
-file input/b.txt = -file -rel-home predefined-bad-contents-file.txt
+file input/b.txt = -contents-of -rel-home predefined-bad-contents-file.txt
 
 dir output/good
 dir output/bad

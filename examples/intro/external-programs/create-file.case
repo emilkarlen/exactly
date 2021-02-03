@@ -28,4 +28,4 @@ EOF
 
 exists stat.txt : contents ! empty
 
-exists stat2.txt : contents equals -file @[EXACTLY_ACT]@/stat.txt
+exists stat2.txt : contents equals -contents-of @[EXACTLY_ACT]@/stat.txt

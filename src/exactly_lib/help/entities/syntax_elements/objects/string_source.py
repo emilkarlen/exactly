@@ -4,7 +4,7 @@ from exactly_lib.common.help import headers
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, invokation_variant_from_args, \
     cli_argument_syntax_element_description
-from exactly_lib.definitions import path
+from exactly_lib.definitions import path, file_types
 from exactly_lib.definitions import syntax_descriptions, formatting
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
@@ -37,6 +37,7 @@ class Documentation(SyntaxElementDocumentation):
             'HERE_DOCUMENT': syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name,
             'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
             'program_type': types.PROGRAM_TYPE_INFO.name,
+            'regular_file': file_types.REGULAR,
             'TRANSFORMATION': string_transformer.STRING_TRANSFORMATION_ARGUMENT.name,
             'transformer': syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
             'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
@@ -134,7 +135,7 @@ The output from {program_type:a/q}.
 """
 
 _FILE_DESCRIPTION = """\
-The contents of an existing file.
+The contents of an existing {regular_file}.
 
 
 {Sym_refs_are_not_substituted}

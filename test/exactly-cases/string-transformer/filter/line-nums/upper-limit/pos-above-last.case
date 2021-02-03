@@ -12,4 +12,4 @@ contents f.txt
   -transformed-by
     filter -line-nums :4
     equals
-      -file -rel-act f.txt
+      -contents-of -rel-act f.txt

@@ -15,27 +15,27 @@ def files-matcher EXISTS = any file : contents empty
 def files-matcher SELECTION = -selection type file
                                empty
 
-def files-matcher PRUNE     = -prune type symlink
+def files-matcher PRUNE     = -with-pruned type symlink
                                empty
 
-def files-matcher EQUALS_EMPTY  = equals { }
+def files-matcher EQUALS_EMPTY  = matches -full { }
 
-def files-matcher EQUALS_N_EMPTY = equals {
+def files-matcher EQUALS_N_EMPTY = matches -full {
   d   : type dir
   b   : type file
   b   : contents empty
   c/f
-  e   : dir-contents contains { f }
+  e   : dir-contents matches { f }
   a
 }
 
-def files-matcher CONTAINS_EMPTY  = contains { }
+def files-matcher CONTAINS_EMPTY  = matches { }
 
-def files-matcher CONTAINS_N_EMPTY = contains {
+def files-matcher CONTAINS_N_EMPTY = matches {
   d   : type dir
   b   : type file
   b   : contents empty
   c/f
-  e   : dir-contents equals { f }
+  e   : dir-contents matches -full { f }
   a
 }

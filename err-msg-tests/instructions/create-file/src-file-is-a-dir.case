@@ -1,4 +1,4 @@
 [setup]
 
 
-file dst-file = -file -rel-home a-dir
+file dst-file = -contents-of -rel-home a-dir

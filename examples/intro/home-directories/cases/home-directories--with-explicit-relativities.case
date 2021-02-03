@@ -41,4 +41,4 @@ do-something-good-with test-file.txt
 
 contents test-file.txt
          equals
-         -file -rel-home expectation/expected.txt
+         -contents-of -rel-home expectation/expected.txt

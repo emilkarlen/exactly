@@ -4,7 +4,7 @@ hello-world
 
 [before-assert]
 
-file transformed-output.txt = -file
+file transformed-output.txt = -contents-of
                               -rel-result stdout
                               -transformed-by ( char-case -to-upper | replace '^HELLO, ' '' )
 

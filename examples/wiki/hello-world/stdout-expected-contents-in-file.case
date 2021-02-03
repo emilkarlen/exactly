@@ -4,6 +4,6 @@ hello-world
 
 [assert]
 
-stdout equals -file hello-world-output.txt
+stdout equals -contents-of hello-world-output.txt
 
 exit-code == 0

@@ -2,4 +2,4 @@
 
 def path HERE = -rel-here .
 
-file dst-file = -file -rel HERE src-file-in-home.txt
+file dst-file = -contents-of -rel HERE src-file-in-home.txt
