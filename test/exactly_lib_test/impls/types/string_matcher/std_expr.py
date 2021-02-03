@@ -22,7 +22,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestConstant),
         unittest.makeSuite(TestSymbolReference),
-        unittest.makeSuite(TestParenthesis),
+        unittest.makeSuite(TestParentheses),
         unittest.makeSuite(TestNegation),
         unittest.makeSuite(TestConjunction),
         unittest.makeSuite(TestDisjunction),
@@ -78,7 +78,7 @@ class TestConstant(_WithConfiguration, test_cases.TestConstantBase[StringSource]
     pass
 
 
-class TestParenthesis(_WithConfiguration, test_cases.TestParenthesisBase[StringSource]):
+class TestParentheses(_WithConfiguration, test_cases.TestParenthesesBase[StringSource]):
     # To debug an individual test case - override the test method in the super class
     # and call super.
     pass

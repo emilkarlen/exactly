@@ -6,7 +6,7 @@ from exactly_lib_test.impls.types.expression.test_resources.infix_op_precedence_
     Primitive, POP, PrefixOp, Reference, IOP_1u, InfixOp1u, IOP_2u, InfixOp2u, IOP_1v, InfixOp1v, \
     InfixOp2v, IOP_2v
 from exactly_lib_test.impls.types.expression.test_resources.parse_check_w_precedence import \
-    check__simple_and_full__multi, check__full_and_simple_within_parenthesis__multi
+    check__simple_and_full__multi, check__full_and_simple_within_parentheses__multi
 from exactly_lib_test.test_resources.test_utils import NIE
 
 
@@ -65,7 +65,7 @@ class TestSingleInfixOperator(unittest.TestCase):
                 ),
         ]
         # ACT & ASSERT #
-        check__full_and_simple_within_parenthesis__multi(
+        check__full_and_simple_within_parentheses__multi(
             self,
             cases,
         )
@@ -105,7 +105,7 @@ class TestMultipleInfixOperatorsWithSamePrecedence(unittest.TestCase):
                 ),
         ]
         # ACT & ASSERT #
-        check__full_and_simple_within_parenthesis__multi(
+        check__full_and_simple_within_parentheses__multi(
             self,
             cases,
         )
@@ -167,7 +167,7 @@ class TestInfixOperatorsWithDifferentPrecedences(unittest.TestCase):
                 ),
         ]
         # ACT & ASSERT #
-        check__full_and_simple_within_parenthesis__multi(
+        check__full_and_simple_within_parentheses__multi(
             self,
             cases,
         )

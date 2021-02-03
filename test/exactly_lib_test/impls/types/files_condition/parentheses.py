@@ -6,7 +6,7 @@ from exactly_lib.impls.types.files_condition import parse as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
-from exactly_lib_test.impls.types.expression.test_resources.syntax_cases import TestCaseGeneratorForParenthesis
+from exactly_lib_test.impls.types.expression.test_resources.syntax_cases import TestCaseGeneratorForParentheses
 from exactly_lib_test.impls.types.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.files_condition.test_resources import primitive_assertions as asrt_primitive
 from exactly_lib_test.impls.types.files_condition.test_resources.integration_check import CHECKER
@@ -21,13 +21,13 @@ from exactly_lib_test.type_val_deps.types.test_resources.files_condition import 
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestParenthesisSyntax)
+    return unittest.makeSuite(TestParenthesesSyntax)
 
 
-class TestParenthesisSyntax(unittest.TestCase):
+class TestParenthesesSyntax(unittest.TestCase):
     def test_parse_SHOULD_fail_WHEN_syntax_is_invalid(self):
         # ARRANGE #
-        case_generator = TestCaseGeneratorForParenthesis(
+        case_generator = TestCaseGeneratorForParentheses(
             symbol_syntax.A_VALID_SYMBOL_NAME,
             symbol_syntax.NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME,
         )

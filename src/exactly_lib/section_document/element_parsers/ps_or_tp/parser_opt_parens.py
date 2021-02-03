@@ -7,8 +7,8 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.util.parse import token_matchers
 
 
-class OptionallySurroundedByParenthesisParser(Generic[PARSE_RESULT], ParserFromTokenParserBase[PARSE_RESULT]):
-    """"Parses a value that may be surrounded by parenthesis or not.
+class OptionallySurroundedByParenthesesParser(Generic[PARSE_RESULT], ParserFromTokenParserBase[PARSE_RESULT]):
+    """"Parses a value that may be surrounded by parentheses or not.
 
     Reports error by raising SingleInstructionInvalidArgumentException.
     """
@@ -18,7 +18,7 @@ class OptionallySurroundedByParenthesisParser(Generic[PARSE_RESULT], ParserFromT
 
     def __init__(self, parser_of_plain: Parser[PARSE_RESULT]):
         """
-        :param parser_of_plain: Parses without parenthesis
+        :param parser_of_plain: Parses without parentheses
         """
         super().__init__(False, False)
         self._parser_of_plain = parser_of_plain

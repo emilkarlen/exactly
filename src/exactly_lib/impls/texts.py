@@ -61,5 +61,5 @@ def type_expression_has_syntax_of_primitive(type_names: Sequence[str]) -> List[P
 
 
 _TYPE_EXPRESSION_HAS_SYNTAX_OF_PRIMITIVE = """\
-{Note} {TYPES} may not contain infix operators (unless inside parenthesis).
+{Note} {TYPES} may not contain infix operators (unless inside parentheses).
 """

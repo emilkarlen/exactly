@@ -252,7 +252,7 @@ class TestWithBinaryOperators(unittest.TestCase):
             self,
             args2.Transformed(
                 to_upper_transformer.name,
-                args2.Parenthesis(
+                args2.Parentheses(
                     args2.conjunction([
                         args2.Equals.eq_string(model.transformed),
                         args2.Equals.eq_string(model.original),
@@ -289,7 +289,7 @@ class TestWithBinaryOperators(unittest.TestCase):
         integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             args2.conjunction([
-                args2.Parenthesis(
+                args2.Parentheses(
                     args2.Transformed(
                         to_upper_transformer.name,
                         args2.Equals.eq_string(model.transformed)
@@ -357,14 +357,14 @@ class TestWithBinaryOperators(unittest.TestCase):
             self,
             args2.Transformed(
                 to_upper_transformer.name__sym_ref_syntax,
-                args2.Parenthesis(
+                args2.Parentheses(
                     args2.conjunction([
-                        args2.Parenthesis(
+                        args2.Parentheses(
                             args2.Transformed(keep_line_1.name__sym_ref_syntax,
                                               args2.SymbolReference(equals_1st.name),
                                               )
                         ),
-                        args2.Parenthesis(
+                        args2.Parentheses(
                             args2.Transformed(keep_line_2.name__sym_ref_syntax,
                                               args2.SymbolReference(equals_2nd.name),
                                               )

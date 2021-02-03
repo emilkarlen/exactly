@@ -149,7 +149,7 @@ class Not(StringMatcherArg):
         return [logic.NOT_OPERATOR_NAME] + self.matcher.elements
 
 
-class Parenthesis(StringMatcherArg):
+class Parentheses(StringMatcherArg):
     def __init__(self, string_matcher: StringMatcherArg):
         self.string_matcher = string_matcher
 

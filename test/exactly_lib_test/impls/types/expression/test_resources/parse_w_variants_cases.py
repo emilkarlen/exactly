@@ -174,12 +174,12 @@ class TestSinglePrimitiveExpression(_TextCaseWithParserVariantsBase, ABC):
                 SourceExpectation.is_at_end_of_line(1),
             ),
             SourceCase(
-                'primitive, within parenthesis, with tokens on separate lines',
+                'primitive, within parentheses, with tokens on separate lines',
                 source('( \n {primitive_with_arg} \n {argument} \n )'),
                 SourceExpectation.is_at_end_of_line(4),
             ),
             SourceCase(
-                'primitive, within parenthesis, with expression tokens on separate lines, followed by non-expression',
+                'primitive, within parentheses, with expression tokens on separate lines, followed by non-expression',
                 source('( \n {primitive_with_arg} \n {argument} \n ) {token_after}'),
                 SourceExpectation.source_is_not_at_end(current_line_number=4,
                                                        remaining_part_of_current_line=token_after),

@@ -26,7 +26,7 @@ def check__simple_and_full__multi(put: unittest.TestCase,
                 put.assertEqual(case.expected_value, actual, 'parsed expression')
 
 
-def check__full_and_simple_within_parenthesis__multi(put: unittest.TestCase,
+def check__full_and_simple_within_parentheses__multi(put: unittest.TestCase,
                                                      source_and_expectation_cases: Sequence[NIE[str, Expr]]):
     # ARRANGE #
     expected_source = asrt_source.is_at_end_of_line(1)
@@ -42,7 +42,7 @@ def check__full_and_simple_within_parenthesis__multi(put: unittest.TestCase,
             put.assertEqual(case.expected_value, actual, 'parsed expression')
 
         with put.subTest(case.name,
-                         parser_case='simple, within parenthesis',
+                         parser_case='simple, within parentheses',
                          source=case.input_value):
             source = remaining_source(' '.join(['(', case.input_value, ')']))
             # ACT #

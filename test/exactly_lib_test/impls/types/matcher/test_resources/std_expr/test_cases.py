@@ -9,7 +9,7 @@ from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.types.expression.test_resources.syntax_cases import TestCaseGeneratorForParenthesis
+from exactly_lib_test.impls.types.expression.test_resources.syntax_cases import TestCaseGeneratorForParentheses
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_wo_tcds, \
     ParseExpectation, ExecutionExpectation, PrimAndExeExpectation, Expectation
 from exactly_lib_test.impls.types.logic.test_resources.symbol_ref_syntax import symbol_ref_syntax_cases
@@ -40,11 +40,11 @@ class _TestCaseBase(Generic[MODEL], unittest.TestCase, ABC):
         return AssertionsHelper(self.configuration)
 
 
-class TestParenthesisBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
+class TestParenthesesBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
     def test_parse_SHOULD_fail_WHEN_syntax_is_invalid(self):
         # ARRANGE #
         conf = self.configuration
-        case_generator = TestCaseGeneratorForParenthesis(
+        case_generator = TestCaseGeneratorForParentheses(
             conf.valid_symbol_name_and_not_valid_primitive_or_operator(),
             conf.not_a_valid_symbol_name_nor_valid_primitive_or_operator(),
         )

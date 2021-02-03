@@ -29,7 +29,7 @@ def default_parser_for(phase_is_after_act: bool,
 
 
 def string_source_parser(accepted_file_relativities: RelOptionsConfiguration) -> Parser[StringSourceSdv]:
-    return parser_opt_parens.OptionallySurroundedByParenthesisParser(
+    return parser_opt_parens.OptionallySurroundedByParenthesesParser(
         _StringSourceParserWoParens(accepted_file_relativities)
     )
 

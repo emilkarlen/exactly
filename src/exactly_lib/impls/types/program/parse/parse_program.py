@@ -21,7 +21,7 @@ def program_parser(must_be_on_current_line: bool = False,
                    exe_file_relativity: RelOptionArgumentConfiguration
                    = pgm_syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF,
                    ) -> Parser[ProgramSdv]:
-    parser_for_element_on_arbitrary_line = parser_opt_parens.OptionallySurroundedByParenthesisParser(
+    parser_for_element_on_arbitrary_line = parser_opt_parens.OptionallySurroundedByParenthesesParser(
         _Parser(exe_file_relativity)
     )
     return (

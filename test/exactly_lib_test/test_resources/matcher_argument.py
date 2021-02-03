@@ -70,7 +70,7 @@ def disjunction(operands: Sequence[MatcherArgument]) -> BinaryOperatorMatcher:
     return BinaryOperatorMatcher(logic.OR_OPERATOR_NAME, operands)
 
 
-class Parenthesis(MatcherArgument):
+class Parentheses(MatcherArgument):
     def __init__(self, expression: MatcherArgument):
         self.expression = expression
 

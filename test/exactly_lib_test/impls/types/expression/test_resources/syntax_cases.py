@@ -5,7 +5,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 
 
-class TestCaseGeneratorForParenthesis:
+class TestCaseGeneratorForParentheses:
     def __init__(self,
                  valid_symbol_name_and_not_valid_primitive_or_operator: str,
                  not_a_valid_symbol_name_nor_valid_primitive_or_operator: str,

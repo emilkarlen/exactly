@@ -38,7 +38,7 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.files.file_structure import sym_link, Dir, \
     FileSystemElement, File, DirContents
-from exactly_lib_test.test_resources.matcher_argument import conjunction, Parenthesis
+from exactly_lib_test.test_resources.matcher_argument import conjunction, Parentheses
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr, NIE, EA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
@@ -656,7 +656,7 @@ class TestRecursiveWithPruneAndBinaryOperator(unittest.TestCase):
         ]
 
         arguments = conjunction([
-            Parenthesis(
+            Parentheses(
                 fsm_args.Prune(
                     fm_args.SymbolReference(NAME_STARTS_WITH__P1.name),
                     fsm_args.NumFiles(int_condition(comparators.EQ, 1))

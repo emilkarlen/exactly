@@ -29,11 +29,11 @@ def suite() -> unittest.TestSuite:
 
 
 class TestSuccessfulParsing(unittest.TestCase):
-    def test_wo_parenthesis__from_parse_source(self):
+    def test_wo_parentheses__from_parse_source(self):
         # ARRANGE #
         expected_int = 3
 
-        for source_case in self.cases_wo_parenthesis(expected_int):
+        for source_case in self.cases_wo_parentheses(expected_int):
             with self.subTest(source_case.name):
                 # ACT & ASSERT #
                 _check_parse_from_parse_source(
@@ -43,11 +43,11 @@ class TestSuccessfulParsing(unittest.TestCase):
                     expected_source_after_parse=source_case.expectation,
                 )
 
-    def test_w_parenthesis__from_parse_source(self):
+    def test_w_parentheses__from_parse_source(self):
         # ARRANGE #
         expected_int = 72
 
-        for case in self.cases_w_parenthesis(expected_int):
+        for case in self.cases_w_parentheses(expected_int):
             with self.subTest(case.name):
                 # ACT & ASSERT #
                 _check_parse_from_parse_source(
@@ -57,11 +57,11 @@ class TestSuccessfulParsing(unittest.TestCase):
                     expected_source_after_parse=case.expectation,
                 )
 
-    def test_wo_parenthesis__from_token_parser(self):
+    def test_wo_parentheses__from_token_parser(self):
         # ARRANGE #
         expected_int = 3
 
-        for source_case in self.cases_wo_parenthesis(expected_int):
+        for source_case in self.cases_wo_parentheses(expected_int):
             with self.subTest(source_case.name):
                 # ACT & ASSERT #
                 _check_parse_from_token_parser(
@@ -71,11 +71,11 @@ class TestSuccessfulParsing(unittest.TestCase):
                     expected_source_after_parse=source_case.expectation,
                 )
 
-    def test_w_parenthesis__from_token_parser(self):
+    def test_w_parentheses__from_token_parser(self):
         # ARRANGE #
         expected_int = 72
 
-        for case in self.cases_w_parenthesis(expected_int):
+        for case in self.cases_w_parentheses(expected_int):
             with self.subTest(case.name):
                 # ACT & ASSERT #
                 _check_parse_from_token_parser(
@@ -86,7 +86,7 @@ class TestSuccessfulParsing(unittest.TestCase):
                 )
 
     @staticmethod
-    def cases_wo_parenthesis(expected_int: int) -> List[NSourceCase]:
+    def cases_wo_parentheses(expected_int: int) -> List[NSourceCase]:
         return [
             NSourceCase(
                 'plain int',
@@ -106,8 +106,8 @@ class TestSuccessfulParsing(unittest.TestCase):
         ]
 
     @staticmethod
-    def cases_w_parenthesis(expected_int: int) -> List[NSourceCase]:
-        syntax = _ExprWithinParenthesisAbsStx(str(expected_int))
+    def cases_w_parentheses(expected_int: int) -> List[NSourceCase]:
+        syntax = _ExprWithinParenthesesAbsStx(str(expected_int))
         tokens = syntax.tokenization()
 
         ret_val = []
@@ -139,7 +139,7 @@ class TestFailureOfPlainParse(unittest.TestCase):
     ]
 
     def test_parse_from_parse_source(self):
-        parser = sut.OptionallySurroundedByParenthesisParser(_ParserThatRaisesException())
+        parser = sut.OptionallySurroundedByParenthesesParser(_ParserThatRaisesException())
         for case in self.SOURCE_STR_CASES:
             parse_source = ParseSource(case.value)
             with self.subTest(case.name):
@@ -147,7 +147,7 @@ class TestFailureOfPlainParse(unittest.TestCase):
                     parser.parse(parse_source)
 
     def test_parse_from_token_parser(self):
-        parser = sut.OptionallySurroundedByParenthesisParser(_ParserThatRaisesException())
+        parser = sut.OptionallySurroundedByParenthesesParser(_ParserThatRaisesException())
         for case in self.SOURCE_STR_CASES:
             token_parser = _token_parser_of(case.value)
             with self.subTest(case.name):
@@ -235,7 +235,7 @@ def _check_parse_from_token_parser(put: unittest.TestCase,
     )
 
 
-class _ExprWithinParenthesisAbsStx(AbstractSyntax):
+class _ExprWithinParenthesesAbsStx(AbstractSyntax):
     def __init__(self, plain_expt: str):
         self._plain_expt = plain_expt
 
@@ -253,7 +253,7 @@ def _token_parser_of(source: str) -> TokenParser:
     return TokenParser(TokenStream(source))
 
 
-_SUT_PARSER_OF_INT = sut.OptionallySurroundedByParenthesisParser(_ParserOfInt())
+_SUT_PARSER_OF_INT = sut.OptionallySurroundedByParenthesesParser(_ParserOfInt())
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

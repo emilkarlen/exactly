@@ -24,7 +24,7 @@ class GrammarParsers(Generic[EXPR]):
     @property
     def simple(self) -> Parser[EXPR]:
         """A parser that parses a simple expression - i.e. without binary operators
-        (except when inside parenthesis, of course).
+        (except when inside parentheses, of course).
         """
         return self._simple
 
@@ -77,7 +77,7 @@ class _FullParserOnAnyLineParser(Generic[EXPR], parser_impls.ParserFromTokenPars
         return _Parser(self._grammar, parser).parse(_NEXT_EXPR_ON_ANY_LINE)
 
 
-_IS_INSIDE_PARENTHESIS = 1
+_IS_INSIDE_PARENTHESES = 1
 _NEXT_EXPR_ON_ANY_LINE = 2
 
 
@@ -132,7 +132,7 @@ class _Parser(Generic[EXPR]):
                 infix_ops__curr_level[infix_operator_name],
                 expression,
                 infix_ops__next_levels,
-                is_inside_parens=new_line_ignore is _IS_INSIDE_PARENTHESIS
+                is_inside_parens=new_line_ignore is _IS_INSIDE_PARENTHESES
             )
             infix_operator_name = self.parse_optional_infix_op_name(new_line_ignore is None,
                                                                     infix_op_names__curr_level)
@@ -178,7 +178,7 @@ class _Parser(Generic[EXPR]):
             self.parser.require_is_not_at_eol(self._err_msg_renderer.missing_element())
 
         if self.consume_optional_start_parentheses():
-            expression = self.parse(_IS_INSIDE_PARENTHESIS)
+            expression = self.parse(_IS_INSIDE_PARENTHESES)
             self.consume_mandatory_end_parentheses()
             return expression
         else:
