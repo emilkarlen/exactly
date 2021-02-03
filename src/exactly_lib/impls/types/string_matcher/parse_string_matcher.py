@@ -67,28 +67,29 @@ class _OnTransformedDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyn
 
 
 def _simple_expressions() -> Sequence[NameAndValue[grammar.Primitive[StringMatcherSdv]]]:
+    equals_entry = NameAndValue(
+        matcher_options.EQUALS_ARGUMENT,
+        grammar.Primitive(equality.EqualsParser().parse_from_token_parser,
+                          equality.Description())
+    )
+    matches_entry = NameAndValue(
+        matcher_options.MATCHES_ARGUMENT,
+        grammar.Primitive(matches.parse,
+                          matches.Description())
+    )
+
     ret_val = [
         NameAndValue(
             matcher_options.EMPTY_ARGUMENT,
             grammar.Primitive(emptieness.parse,
                               emptieness.Description())
         ),
-        NameAndValue(
-            matcher_options.EQUALS_ARGUMENT,
-            grammar.Primitive(equality.EqualsParser().parse_from_token_parser,
-                              equality.Description())
-        ),
-        NameAndValue(
-            matcher_options.MATCHES_ARGUMENT,
-            grammar.Primitive(matches.parse,
-                              matches.Description())
-        ),
-        NameAndValue(
-            matcher_options.MATCHES_ARGUMENT__ALIAS,
-            grammar.Primitive(matches.parse,
-                              alias.Description(matcher_options.MATCHES_ARGUMENT,
-                                                matches.Description.ARGUMENT_USAGE_LIST))
-        ),
+        equals_entry,
+        alias.entry(matcher_options.EQUALS_ARGUMENT__ALTERNATIVE,
+                    equals_entry),
+        matches_entry,
+        alias.entry(matcher_options.MATCHES_ARGUMENT__ALTERNATIVE,
+                    matches_entry),
     ]
 
     quantification_setup = parse_quantified_matcher.GrammarSetup(
