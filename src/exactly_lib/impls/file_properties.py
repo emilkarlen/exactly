@@ -272,7 +272,7 @@ class _MustExistBase(FilePropertiesCheck):
             stat_results = os.stat(str(path),
                                    follow_symlinks=self._follow_symlinks)
             return self._for_existing_file(stat_results)
-        except FileNotFoundError:
+        except OSError:
             return CheckResult(False,
                                PropertiesWithNegation(False,
                                                       new_properties_for_existence(self._follow_symlinks,
@@ -306,28 +306,3 @@ class _MustExistAs(_MustExistBase):
                            PropertiesWithNegation(False,
                                                   new_properties_for_type_of_existing_file(self._follow_symlinks,
                                                                                            self._expected_file_type)))
-
-
-class ActualFilePropertiesResolver:
-    def __init__(self,
-                 expected_file_type: FileType,
-                 follow_symlinks: bool = True):
-        self._expected_file_type = expected_file_type
-        self._follow_symlinks = follow_symlinks
-
-    def resolve_failure_info(self, path: pathlib.Path) -> Properties:
-        """
-        :return: None iff file has expected properties
-        """
-        try:
-            stat_results = os.stat(str(path),
-                                   follow_symlinks=self._follow_symlinks)
-            has_expected_type = stat_results_is_of(self._expected_file_type, stat_results)
-            if has_expected_type:
-                return None
-            else:
-                return new_properties_for_type_of_existing_file(self._follow_symlinks,
-                                                                lookup_file_type(stat_results))
-        except FileNotFoundError:
-            return new_properties_for_existence(self._follow_symlinks,
-                                                False)

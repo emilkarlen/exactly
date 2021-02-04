@@ -59,6 +59,12 @@ class TestNegationOf(TestCaseBase):
         self._assert_is_negated(property_check.apply(pathlib.Path()),
                                 is_success=True)
 
+    def test_evaluate_to_true_when_operand_evaluates_to_false__file_under_dir_that_is_a_regular_file(self):
+        property_check = sut.negation_of(FileCheckThatEvaluatesTo(False))
+        with dir_with_file() as file_path:
+            self._assert_is_negated(property_check.apply(file_path / 'non-existing'),
+                                    is_success=True)
+
 
 class TestMustExistWhenFollowSymLinks(TestCaseBase):
     @staticmethod
@@ -69,6 +75,12 @@ class TestMustExistWhenFollowSymLinks(TestCaseBase):
         property_check = self._the_property_check()
         with empty_directory() as file_path:
             self._assert_not_negated(property_check.apply(file_path),
+                                     is_success=False)
+
+    def test_non_existing_path_under_dir_that_is_a_file(self):
+        property_check = self._the_property_check()
+        with dir_with_file() as file_path:
+            self._assert_not_negated(property_check.apply(file_path / 'non-existing'),
                                      is_success=False)
 
     def test_with_existing_file(self):
@@ -140,6 +152,12 @@ class TestMustExistAsRegularFileWhenFollowSymLinks(TestCaseBase):
         property_check = self._the_property_check()
         with empty_directory() as file_path:
             self._assert_not_negated(property_check.apply(file_path),
+                                     is_success=False)
+
+    def test_non_existing_path_under_dir_that_is_a_file(self):
+        property_check = self._the_property_check()
+        with dir_with_file() as file_path:
+            self._assert_not_negated(property_check.apply(file_path / 'non-existing'),
                                      is_success=False)
 
     def test_with_existing_file(self):

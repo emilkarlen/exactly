@@ -17,13 +17,15 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.instructions.assert_.existence_of_file.test_resources import arguments_building as args
+from exactly_lib_test.impls.instructions.assert_.existence_of_file.test_resources.abstract_syntax import \
+    InstructionArguments
 from exactly_lib_test.impls.instructions.assert_.existence_of_file.test_resources.instruction_check import CHECKER
 from exactly_lib_test.impls.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.impls.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionChecker, \
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation2, ParseExpectation, \
-    ExecutionExpectation
+    ExecutionExpectation, MultiSourceExpectation
 from exactly_lib_test.impls.types.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.impls.types.file_matcher.test_resources.validation_cases import failing_validation_cases__svh
 from exactly_lib_test.impls.types.matcher.test_resources import matchers
@@ -48,7 +50,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Li
     empty_dir_contents, File, Dir
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
     MkSubDirAndMakeItCurrentDirectory
-from exactly_lib_test.test_resources.test_utils import NEA
+from exactly_lib_test.test_resources.test_utils import NEA, NInpArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
 from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as asrt_sym_ref
@@ -70,6 +72,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestCheckForSymLink),
         unittest.makeSuite(TestDifferentSourceVariants),
         TestMatcherShouldBeParsedAsFullExpression(),
+        TestNonExistingPathThatSpecifiesAFileInADirThatIsARegularFile(),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
@@ -558,6 +561,68 @@ class TestCheckForSymLink(TestCaseBase):
             self.instruction_argument_constructor,
             main_result_for_positive_expectation=PassOrFail.FAIL,
         )
+
+
+class TestNonExistingPathThatSpecifiesAFileInADirThatIsARegularFile(unittest.TestCase):
+    def runTest(self):
+        file_in_root = File.empty('file-in-root.txt')
+        files_in_root_dir = [file_in_root]
+
+        file_matcher_symbol = FileMatcherSymbolContext.of_primitive_constant(
+            'FILE_MATCHER_SYMBOL',
+            True,
+        )
+
+        file_matcher_cases = [
+            NInpArr(
+                'wo file matcher',
+                None,
+                (),
+            ),
+            NInpArr(
+                'w file matcher',
+                file_matcher_symbol.abstract_syntax,
+                [file_matcher_symbol],
+            ),
+        ]
+        relativity_cases = [
+            rel_opt_conf.conf_rel_any(RelOptionType.REL_TMP),
+            rel_opt_conf.conf_rel_any(RelOptionType.REL_HDS_CASE),
+        ]
+
+        for expectation_type in ExpectationType:
+            for file_matcher_case in file_matcher_cases:
+                for rel_conf in relativity_cases:
+                    with self.subTest(relativity=rel_conf.relativity,
+                                      file_matcher=file_matcher_case.name,
+                                      expectation_type=expectation_type):
+                        CHECKER.check__abs_stx__source_variants(
+                            self,
+                            InstructionArguments(
+                                rel_conf.path_abs_stx_of_name__c([
+                                    file_in_root.name,
+                                    'path-to-check'
+                                ]),
+                                expectation_type=expectation_type,
+                                file_matcher=file_matcher_case.input,
+                            ),
+                            ArrangementPostAct2(
+                                symbols=SymbolContext.symbol_table_of_contexts(file_matcher_case.arrangement),
+                                tcds=TcdsArrangementPostAct(
+                                    tcds_contents=rel_conf.populator_for_relativity_option_root(
+                                        DirContents(files_in_root_dir)
+                                    )
+                                )
+                            ),
+                            MultiSourceExpectation(
+                                symbol_usages=SymbolContext.usages_assertion_of_contexts(file_matcher_case.arrangement),
+                                execution=ExecutionExpectation(
+                                    main_result=pfh_assertions.is_pass_of_fail(
+                                        expectation_type is ExpectationType.NEGATIVE
+                                    )
+                                )
+                            )
+                        )
 
 
 EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(

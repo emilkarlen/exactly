@@ -24,6 +24,15 @@ def is_fail(assertion_on_error_message: Assertion[TextRenderer] = asrt_renderer.
     ])
 
 
+def is_pass_of_fail(is_pass_: bool) -> Assertion[pfh.PassOrFailOrHardError]:
+    return (
+        is_pass()
+        if is_pass_
+        else
+        is_fail()
+    )
+
+
 def is_fail__with_arbitrary_message() -> Assertion[pfh.PassOrFailOrHardError]:
     return is_fail()
 

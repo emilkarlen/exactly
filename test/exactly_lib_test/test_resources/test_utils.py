@@ -69,6 +69,19 @@ class NArrEx(Generic[ARRANGEMENT, EXPECTED]):
         self.expectation = expectation
 
 
+class NInpArr(Generic[INPUT, ARRANGEMENT]):
+    """A name, one expected value and an arrangement."""
+
+    def __init__(self,
+                 name: str,
+                 input_: INPUT,
+                 arrangement: ARRANGEMENT,
+                 ):
+        self.name = name
+        self.input = input_
+        self.arrangement = arrangement
+
+
 class ArrEx(Generic[ARRANGEMENT, EXPECTED]):
     """An expected value and an arrangement."""
 
