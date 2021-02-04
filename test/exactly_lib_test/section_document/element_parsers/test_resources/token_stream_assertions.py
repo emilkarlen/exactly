@@ -12,7 +12,7 @@ def assert_token_stream(
         is_null: Assertion[bool] = asrt.anything_goes(),
         head_token: Assertion[Token] = asrt.anything_goes(),
         look_ahead_state: Assertion[LookAheadState] = asrt.anything_goes(),
-        position: Assertion[int] = asrt.anything_goes()) -> Assertion:
+        position: Assertion[int] = asrt.anything_goes()) -> Assertion[TokenStream]:
     return asrt.is_instance_with(
         TokenStream,
         asrt.and_([

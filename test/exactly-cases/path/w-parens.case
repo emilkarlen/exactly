@@ -1,0 +1,37 @@
+[setup]
+
+dir ( not-std-dir )
+
+cd  ( not-std-dir )
+
+
+[assert]
+
+exists ( -rel-home home-case.txt )
+
+exists   ( -rel-act-home home-act.txt )
+exists ! ( -rel-act-home non-existing.txt )
+
+
+def path REL_HERE = ( -rel-here here.txt )
+
+exists   ( @[REL_HERE]@ )
+# exists ! ( @[REL_HERE]@/non-existing )
+
+
+file ( -rel-act act.txt )
+
+exists   ( -rel-act act.txt )
+exists ! ( -rel-act non-existing.txt )
+
+
+file ( -rel-tmp tmp.txt )
+
+exists   ( -rel-tmp tmp.txt )
+exists ! ( -rel-tmp non-existing.txt )
+
+
+file ( -rel-cd cd.txt )
+
+exists   ( -rel-cd cd.txt )
+exists ! ( -rel-cd non-existing.txt )

@@ -157,6 +157,7 @@ class _Parsing:
         single_line = single_line_parser.apply(instructions)
         single_line = single_line.strip()
         self._source = ParseSource(single_line)
+        self._path_parser = parse_path.PathParser(RELATIVITY_CONFIGURATION)
 
     def parse(self) -> _SourceInfoForInterpreterWithArgumentList:
         try:
@@ -169,8 +170,7 @@ class _Parsing:
             raise ParseException.of_str(ex.error_message)
 
     def _parse_path(self) -> PathSdv:
-        return parse_path.parse_path_from_parse_source(self._source,
-                                                       RELATIVITY_CONFIGURATION)
+        return self._path_parser.parse(self._source)
 
     def _parse_program_with_arguments(self) -> _SourceInfoForInterpreterWithArgumentList:
         source_file = self._parse_path()

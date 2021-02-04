@@ -1,6 +1,5 @@
 import unittest
 from pathlib import Path, PurePosixPath
-from typing import Optional
 
 from exactly_lib.definitions.path import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTION, REL_CWD_OPTION, \
     REL_HDS_CASE_OPTION_NAME
@@ -10,23 +9,25 @@ from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumen
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.test_case import reserved_words
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.path import path_part_sdvs
-from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
-from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
-from exactly_lib.util.cli_syntax.elements import argument
-from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
-from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
+from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR, QuoteType
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.types.parse.test_resources.source_case import SourceCase
+from exactly_lib_test.impls.types.path.test_resources import Arrangement, Expectation, Expectation2, \
+    RelOptionArgumentConfigurationWoSuffixRequirement, ArrangementWoSuffixRequirement, ARBITRARY_REL_OPT_ARG_CONF, \
+    ARG_CONFIG_FOR_ALL_RELATIVITIES, arg_config_with_all_accepted_and_default, arg_config_for_rel_symbol_config, \
+    option_string_for, option_string_for_relativity, expect, Arrangement2
+from exactly_lib_test.impls.types.path.test_resources import CHECKER
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream, \
     assert_token_string_is
@@ -34,15 +35,18 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.tcfs.test_resources import format_rel_option
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
     is_reference_to_string_made_up_of_just_strings
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext, PathSymbolValueContext, \
-    ConstantSuffixPathDdvSymbolContext, path_or_string_reference_restrictions
+from exactly_lib_test.type_val_deps.types.path.test_resources import sdv_assertions as asrt_path_sdv
+from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import RelSymbolPathAbsStx, \
+    RelOptPathAbsStx, DefaultRelPathAbsStx
+from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext, \
+    ConstantSuffixPathDdvSymbolContext, path_or_string_reference_restrictions, PathSymbolContext
 from exactly_lib_test.type_val_deps.types.path.test_resources.path_part_assertions import equals_path_part_string
 from exactly_lib_test.type_val_deps.types.path.test_resources.sdv_assertions import equals_path_sdv, matches_path_sdv
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
@@ -70,172 +74,116 @@ def suite() -> unittest.TestSuite:
 
     ret_val.addTest(unittest.makeSuite(TestRelativityOfSourceFileLocation))
 
+    ret_val.addTest(TestAQuotedReservedWordIsAnAcceptedFileName())
+
     return ret_val
-
-
-class Arrangement:
-    def __init__(self,
-                 source: str,
-                 rel_option_argument_configuration: RelOptionArgumentConfiguration,
-                 source_file_path: Optional[Path] = None):
-        self.source = source
-        self.rel_option_argument_configuration = rel_option_argument_configuration
-        self.source_file_path = source_file_path
-
-
-class Expectation:
-    def __init__(self,
-                 path_sdv: PathSdv,
-                 token_stream: Assertion):
-        assert isinstance(path_sdv, PathSdv)
-        self.path_sdv = path_sdv
-        self.token_stream = token_stream
-
-
-class Expectation2:
-    def __init__(self,
-                 path_sdv: Assertion,
-                 token_stream: Assertion,
-                 symbol_table_in_with_all_ref_restrictions_are_satisfied: SymbolTable = None):
-        self.path_sdv = path_sdv
-        self.token_stream = token_stream
-        self.symbol_table_in_with_all_ref_restrictions_are_satisfied = symbol_table_in_with_all_ref_restrictions_are_satisfied
-
-
-class RelOptionArgumentConfigurationWoSuffixRequirement(tuple):
-    def __new__(cls,
-                options_configuration: RelOptionsConfiguration,
-                argument_syntax_name: str):
-        return tuple.__new__(cls, (options_configuration,
-                                   argument_syntax_name))
-
-    @property
-    def options(self) -> RelOptionsConfiguration:
-        return self[0]
-
-    @property
-    def argument_syntax_name(self) -> str:
-        return self[1]
-
-    def config_for(self, path_suffix_is_required: bool) -> RelOptionArgumentConfiguration:
-        return RelOptionArgumentConfiguration(self.options,
-                                              self.argument_syntax_name,
-                                              path_suffix_is_required)
-
-
-ARBITRARY_REL_OPT_ARG_CONF = RelOptionArgumentConfigurationWoSuffixRequirement(
-    RelOptionsConfiguration(
-        PathRelativityVariants({RelOptionType.REL_ACT}, True),
-        RelOptionType.REL_ACT),
-    'argument_syntax_name')
-
-
-class ArrangementWoSuffixRequirement:
-    def __init__(self,
-                 source: str,
-                 rel_option_argument_configuration: RelOptionArgumentConfigurationWoSuffixRequirement,
-                 source_file_path: Optional[Path] = None):
-        self.source = source
-        self.rel_option_argument_configuration = rel_option_argument_configuration
-        self.source_file_path = source_file_path
-
-    def for_path_suffix_required(self, value: bool) -> Arrangement:
-        return Arrangement(self.source,
-                           self.rel_option_argument_configuration.config_for(value),
-                           self.source_file_path)
 
 
 class TestParsesBase(unittest.TestCase):
     def _check(self,
                arrangement: Arrangement,
                expectation: Expectation):
-        # ARRANGE #
-        ts = TokenStream(arrangement.source)
-        # ACT #
-        actual = sut.parse_path(ts,
-                                arrangement.rel_option_argument_configuration,
-                                arrangement.source_file_path)
-        # ASSERT #
-        equals_path_sdv(expectation.path_sdv).apply_with_message(self, actual,
-                                                                 'path sdv')
-        expectation.token_stream.apply_with_message(self, ts, 'token-stream')
+        CHECKER.check(self, arrangement, expectation)
 
     def _check2(self,
                 arrangement: Arrangement,
                 expectation: Expectation2):
-        # ARRANGE #
-        ts = TokenStream(arrangement.source)
-        # ACT #
-        actual = sut.parse_path(ts,
-                                arrangement.rel_option_argument_configuration,
-                                arrangement.source_file_path)
-        # ASSERT #
-        self.__assertions_on_reference_restrictions(actual,
-                                                    expectation.symbol_table_in_with_all_ref_restrictions_are_satisfied)
-        expectation.path_sdv.apply_with_message(self, actual, 'path-sdv')
-        expectation.token_stream.apply_with_message(self, ts, 'token-stream')
-        self.__assertions_on_hypothetical_reference_to_sdv(
-            actual,
-            expectation.symbol_table_in_with_all_ref_restrictions_are_satisfied)
+        CHECKER.check2(self, arrangement, expectation)
 
     def _assert_raises_invalid_argument_exception(self,
                                                   source_string: str,
                                                   test_name: str = ''):
-        for path_suffix_is_required in [False, True]:
-            for source_file_location in [None, Path('/source/file/location')]:
-                with self.subTest(test_name=test_name,
-                                  path_suffix_is_required=path_suffix_is_required,
-                                  source_file_location=source_file_location):
-                    token_stream = TokenStream(source_string)
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        rel_opt_arg_conf = ARBITRARY_REL_OPT_ARG_CONF.config_for(path_suffix_is_required)
-                        sut.parse_path(token_stream,
-                                       rel_opt_arg_conf,
-                                       source_file_location=source_file_location)
-
-    def __assertions_on_reference_restrictions(self,
-                                               actual: PathSdv,
-                                               symbols: SymbolTable):
-        for idx, reference in enumerate(actual.references):
-            assert isinstance(reference, SymbolReference)  # Type info for IDE
-            container = symbols.lookup(reference.name)
-            assert isinstance(container, SymbolContainer)
-            result = reference.restrictions.is_satisfied_by(symbols,
-                                                            reference.name,
-                                                            container)
-            self.assertIsNone(result,
-                              'Restriction on reference #{}: expects None=satisfaction'.format(idx))
-
-    def __assertions_on_hypothetical_reference_to_sdv(
-            self,
-            actual: PathSdv,
-            symbols: SymbolTable):
-        restriction = PathRelativityRestriction(PathRelativityVariants(RelOptionType, True))
-        container = PathSymbolValueContext.of_sdv(actual).container
-        result = restriction.is_satisfied_by(symbols, 'hypothetical_symbol', container)
-        self.assertIsNone(result,
-                          'Result of hypothetical restriction on path')
+        CHECKER.assert_raises_invalid_argument_exception(self, source_string, test_name)
 
 
 class TestFailingParseDueToInvalidSyntax(TestParsesBase):
-    def test_fail_due_to_invalid_quoting(self):
-        rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
-        cases = [
-            '{rel_symbol_option} SYMBOL_NAME {soft_quote}file_name'.format(rel_symbol_option=rel_symbol_option,
-                                                                           soft_quote=SOFT_QUOTE_CHAR),
-            '{rel_symbol_option} SYMBOL_NAME file_name{hard_quote}'.format(rel_symbol_option=rel_symbol_option,
-                                                                           hard_quote=HARD_QUOTE_CHAR),
+    def test_fail_due_to_invalid_file_name(self):
+        invalid_file_names = (
+                [
+                    SOFT_QUOTE_CHAR + 'file-name',
+                    HARD_QUOTE_CHAR + 'file-name',
+                ] +
+                list(reserved_words.RESERVED_TOKENS)
+        )
+        path_variant_cases = [
+            NameAndValue(
+                'default relativity',
+                lambda fn: DefaultRelPathAbsStx(fn),
+            ),
+            NameAndValue(
+                'relative symbol',
+                lambda fn: RelSymbolPathAbsStx('SYMBOL_NAME', fn),
+            ),
+            NameAndValue(
+                'relative option',
+                lambda fn: RelOptPathAbsStx(RelOptionType.REL_ACT, fn),
+            ),
         ]
-        for source_string in cases:
-            self._assert_raises_invalid_argument_exception(source_string,
-                                                           test_name=source_string)
+        for path_variant_case in path_variant_cases:
+            for invalid_file_name in invalid_file_names:
+                with self.subTest(path_variant=path_variant_case.name,
+                                  invalid_file_name=repr(invalid_file_name)):
+                    source_syntax = path_variant_case.value(invalid_file_name)
+                    source_str = source_syntax.as_str__default()
+                    self._assert_raises_invalid_argument_exception(source_str,
+                                                                   test_name=repr(source_str))
+
+    def test_fail_due_to_invalid_symbol_name(self):
+        invalid_path_syntax = RelSymbolPathAbsStx(NOT_A_VALID_SYMBOL_NAME, 'valid-file-name')
+        source_str = invalid_path_syntax.as_str__default()
+        self._assert_raises_invalid_argument_exception(source_str,
+                                                       test_name=repr(source_str))
+
+
+class TestAQuotedReservedWordIsAnAcceptedFileName(TestParsesBase):
+    def runTest(self):
+        invalid_file_names = reserved_words.RESERVED_TOKENS
+
+        arg_config = RelOptionArgumentConfigurationWoSuffixRequirement(
+            RelOptionsConfiguration(
+                PathRelativityVariants(RelOptionType, True),
+                RelOptionType.REL_HDS_CASE),
+            'argument_syntax_name')
+
+        path_symbol = PathSymbolContext.of_arbitrary_value('PATH_SYMBOL')
+        path_variant_cases = [
+            NameAndValue(
+                'default relativity',
+                lambda fn, qt: DefaultRelPathAbsStx(fn, qt),
+            ),
+            NameAndValue(
+                'relative symbol',
+                lambda fn, qt: RelSymbolPathAbsStx(path_symbol.name, fn, qt),
+            ),
+            NameAndValue(
+                'relative option',
+                lambda fn, qt: RelOptPathAbsStx(RelOptionType.REL_ACT, fn, qt),
+            ),
+        ]
+        for invalid_file_name in invalid_file_names:
+            path_expectation = asrt_path_sdv.NameMatches(path_symbol.symbol_table,
+                                                         asrt.equals(invalid_file_name))
+            for path_suffix_is_required in [False, True]:
+                arrangement = Arrangement2(arg_config.config_for(path_suffix_is_required))
+                for path_variant_case in path_variant_cases:
+                    for quote_type in QuoteType:
+                        source_syntax = path_variant_case.value(invalid_file_name, quote_type)
+                        with self.subTest(path_variant=path_variant_case.name,
+                                          invalid_file_name=repr(invalid_file_name),
+                                          quote_type=quote_type):
+                            CHECKER.check__abs_stx__source_variants(
+                                self,
+                                source_syntax,
+                                arrangement,
+                                path_expectation,
+                            )
 
 
 class TestParseWithoutRelSymbolRelativity(TestParsesBase):
     def test_fail_when_no_arguments(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_path(TokenStream(''),
-                           _ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(True))
+                           ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(True))
 
     def test_WHEN_no_relativity_option_is_given_THEN_default_relativity_SHOULD_be_used(self):
         file_name_argument = 'file-name'
@@ -293,7 +241,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
             expected_path = path_ddvs.of_rel_option(rel_option_type,
                                                     path_ddvs.constant_path_part(file_name_argument))
             expected_path_sdv = path_sdvs.constant(expected_path)
-            option_str = _option_string_for(rel_option_info.option_name)
+            option_str = option_string_for(rel_option_info.option_name)
             source_and_token_stream_assertion_variants = [
                 (
                     '{option_str} {file_name_argument} arg3 arg4',
@@ -323,7 +271,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
                                                         file_name_argument=file_name_argument)
                         self._check(
                             Arrangement(argument_string,
-                                        _ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(path_suffix_is_required)),
+                                        ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(path_suffix_is_required)),
                             Expectation(expected_path_sdv,
                                         token_stream_assertion))
 
@@ -332,7 +280,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
         for rel_option_type, rel_option_info in REL_OPTIONS_MAP.items():
             expected_path = path_ddvs.absolute_file_name(file_name_argument)
             expected_path_sdv = path_sdvs.constant(expected_path)
-            option_str = _option_string_for(rel_option_info.option_name)
+            option_str = option_string_for(rel_option_info.option_name)
             source_and_token_stream_assertion_variants = [
                 (
                     '{option_str} {file_name_argument} arg3 arg4',
@@ -362,7 +310,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
                                                         file_name_argument=file_name_argument)
                         self._check(
                             Arrangement(argument_string,
-                                        _ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(path_suffix_is_required)),
+                                        ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(path_suffix_is_required)),
                             Expectation(expected_path_sdv,
                                         token_stream_assertion))
 
@@ -398,7 +346,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
                                                                                        argument_string)):
                     self._check(
                         Arrangement(argument_string,
-                                    _ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(path_suffix_is_required)),
+                                    ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(path_suffix_is_required)),
                         Expectation(expected_path_sdv,
                                     token_stream_assertion))
 
@@ -419,7 +367,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
 
         for used_option, default_option, accepted_options in used_and_default_and_accepted_options_variants:
             for path_suffix_is_required in [False, True]:
-                option_str = _option_string_for(REL_OPTIONS_MAP[used_option].option_name)
+                option_str = option_string_for(REL_OPTIONS_MAP[used_option].option_name)
                 arg_config = RelOptionArgumentConfiguration(
                     RelOptionsConfiguration(
                         PathRelativityVariants(accepted_options, True),
@@ -443,15 +391,15 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
     def test_parse_with_option_fails_when_no_file_argument(self):
         for rel_option_info in REL_OPTIONS_MAP.values():
             with self.subTest(msg=rel_option_info.informative_name):
-                option_str = _option_string_for(rel_option_info.option_name)
+                option_str = option_string_for(rel_option_info.option_name)
                 ts = TokenStream(option_str)
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_path(ts, _ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(True))
+                    sut.parse_path(ts, ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(True))
 
 
 class TestParseWithRelSymbolRelativity(TestParsesBase):
     def test_WHEN_symbol_name_is_invalid_THEN_parse_SHOULD_fail(self):
-        rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
+        rel_symbol_option = option_string_for(REL_SYMBOL_OPTION_NAME)
         cases = [
             '{rel_symbol_option} INVALID_SYMBOL_NAME? file_name'.format(rel_symbol_option=rel_symbol_option),
             '{rel_symbol_option} ?INVALID_SYMBOL_NAME file_name'.format(rel_symbol_option=rel_symbol_option),
@@ -466,9 +414,9 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                                                            test_name=source_string)
 
     def test_WHEN_rel_symbol_option_is_quoted_THEN_parse_SHOULD_treat_that_string_as_file_name(self):
-        rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
+        rel_symbol_option = option_string_for(REL_SYMBOL_OPTION_NAME)
         source = '"{rel_symbol_option}" SYMBOL_NAME file_name'.format(rel_symbol_option=rel_symbol_option)
-        expected_path = path_ddvs.of_rel_option(_ARG_CONFIG_FOR_ALL_RELATIVITIES.options.default_option,
+        expected_path = path_ddvs.of_rel_option(ARG_CONFIG_FOR_ALL_RELATIVITIES.options.default_option,
                                                 path_ddvs.constant_path_part('{rel_symbol_option}'.format(
                                                     rel_symbol_option=rel_symbol_option)))
         expected_path_value = path_sdvs.constant(expected_path)
@@ -483,7 +431,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                 )
 
     def test_WHEN_no_file_name_argument_is_given_and_path_suffix_is_required_THEN_parse_SHOULD_fail(self):
-        rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
+        rel_symbol_option = option_string_for(REL_SYMBOL_OPTION_NAME)
         source = '{rel_symbol_option} SYMBOL_NAME'.format(rel_symbol_option=rel_symbol_option)
         token_stream = TokenStream(source)
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -491,14 +439,14 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                            path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME', True))
 
     def test_WHEN_no_file_name_argument_is_given_and_path_suffix_is_not_required_THEN_parse_SHOULD_succeed(self):
-        rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
+        rel_symbol_option = option_string_for(REL_SYMBOL_OPTION_NAME)
         source = '{rel_symbol_option} SYMBOL_NAME'.format(rel_symbol_option=rel_symbol_option)
         token_stream = TokenStream(source)
         sut.parse_path(token_stream,
                        path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME', False))
 
     def test_reference_restrictions_on_symbol_references_in_path_suffix_SHOULD_be_string_restrictions(self):
-        rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
+        rel_symbol_option = option_string_for(REL_SYMBOL_OPTION_NAME)
         defined_path_symbol = ConstantSuffixPathDdvSymbolContext(
             'DEFINED_PATH_SYMBOL',
             RelOptionType.REL_TMP,
@@ -519,7 +467,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                      rel_symbol_option=rel_symbol_option,
                      defined_path_symbol=defined_path_symbol.name,
                      suffix_symbol_reference=suffix_symbol.name__sym_ref_syntax),
-                 rel_option_argument_configuration=_arg_config_for_rel_symbol_config(
+                 rel_option_argument_configuration=arg_config_for_rel_symbol_config(
                      defined_path_symbol.value.accepted_relativities,
                      RelOptionType.REL_HDS_CASE),
              ),
@@ -554,7 +502,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                      defined_path_symbol=defined_path_symbol.name,
                      suffix_symbol_reference=suffix_symbol.name__sym_ref_syntax,
                      suffix_string_constant=suffix_string_constant),
-                 rel_option_argument_configuration=_arg_config_for_rel_symbol_config(
+                 rel_option_argument_configuration=arg_config_for_rel_symbol_config(
                      defined_path_symbol.value.accepted_relativities,
                      RelOptionType.REL_HDS_CASE
                  ),
@@ -591,7 +539,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
     def test_consumption_of_source(self):
         file_name_argument = 'file-name'
         symbol_name = 'symbol_NAME'
-        option_str = _option_string_for(REL_SYMBOL_OPTION_NAME)
+        option_str = option_string_for(REL_SYMBOL_OPTION_NAME)
         source_and_token_stream_assertion_variants = [
             (
                 '{option_str} {symbol_name} {file_name_argument} arg3 arg4',
@@ -628,7 +576,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                                                          path_part_sdvs.from_constant_str(
                                                              file_name_argument))
                 for path_suffix_is_required in [False, True]:
-                    arg_config = _arg_config_for_rel_symbol_config(accepted_relativities)
+                    arg_config = arg_config_for_rel_symbol_config(accepted_relativities)
                     test_descr = 'path_suffix_is_required={} / source={}'.format(path_suffix_is_required,
                                                                                  repr(source))
                     with self.subTest(msg=test_descr):
@@ -652,7 +600,7 @@ class TestRelativityOfSourceFileLocation(TestParsesBase):
                   symbol_reference=symbol.name__sym_ref_syntax,
                   constant_path_part=constant_path_part,
                   )
-        accepted_relativities = _arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT)
+        accepted_relativities = arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT)
         test_cases = [
             ('Constant after src-file relativity '
              'SHOULD '
@@ -771,9 +719,9 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              'become a symbol reference path suffix that must be a string',
              ArrangementWoSuffixRequirement(
                  source='{rel_hds_case_option} {symbol_reference}'.format(
-                     rel_hds_case_option=_option_string_for_relativity(RelOptionType.REL_HDS_CASE),
+                     rel_hds_case_option=option_string_for_relativity(RelOptionType.REL_HDS_CASE),
                      symbol_reference=symbol.name__sym_ref_syntax),
-                 rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
+                 rel_option_argument_configuration=arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
              expect(
                  resolved_path=
@@ -795,10 +743,10 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              'become a symbol reference path suffix that must be a strings',
              ArrangementWoSuffixRequirement(
                  source='{rel_tmp_option} {symbol_reference1}/const{symbol_reference2}'.format(
-                     rel_tmp_option=_option_string_for_relativity(RelOptionType.REL_TMP),
+                     rel_tmp_option=option_string_for_relativity(RelOptionType.REL_TMP),
                      symbol_reference1=symbol_1.name__sym_ref_syntax,
                      symbol_reference2=symbol_2.name__sym_ref_syntax),
-                 rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_TMP),
+                 rel_option_argument_configuration=arg_config_with_all_accepted_and_default(RelOptionType.REL_TMP),
              ),
              expect(
                  resolved_path=
@@ -822,10 +770,10 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              ArrangementWoSuffixRequirement(
                  source='{rel_tmp_option} {soft_quote}{symbol_reference1}/ const {symbol_reference2}{soft_quote}'.format(
                      soft_quote=SOFT_QUOTE_CHAR,
-                     rel_tmp_option=_option_string_for_relativity(RelOptionType.REL_TMP),
+                     rel_tmp_option=option_string_for_relativity(RelOptionType.REL_TMP),
                      symbol_reference1=symbol_1.name__sym_ref_syntax,
                      symbol_reference2=symbol_2.name__sym_ref_syntax),
-                 rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_TMP),
+                 rel_option_argument_configuration=arg_config_with_all_accepted_and_default(RelOptionType.REL_TMP),
              ),
              expect(
                  resolved_path=
@@ -847,10 +795,10 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              'become a path suffix that is the literal quoted symbol reference',
              ArrangementWoSuffixRequirement(
                  source='{rel_hds_case_option} {hard_quote}{symbol_reference}{hard_quote}'.format(
-                     rel_hds_case_option=_option_string_for_relativity(RelOptionType.REL_HDS_CASE),
+                     rel_hds_case_option=option_string_for_relativity(RelOptionType.REL_HDS_CASE),
                      hard_quote=HARD_QUOTE_CHAR,
                      symbol_reference=symbol.name__sym_ref_syntax),
-                 rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
+                 rel_option_argument_configuration=arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
              expect(
                  resolved_path=
@@ -878,7 +826,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
         accepted_relativities = PathRelativityVariants({RelOptionType.REL_HDS_CASE,
                                                         RelOptionType.REL_TMP},
                                                        True)
-        _arg_config_for_rel_symbol_config(accepted_relativities)
+        arg_config_for_rel_symbol_config(accepted_relativities)
         path_rel_home = path_ddvs.of_rel_option(RelOptionType.REL_HDS_CASE,
                                                 path_ddvs.constant_path_part('file-in-home-dir'))
         test_cases = [
@@ -890,8 +838,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              ArrangementWoSuffixRequirement(
                  source='{symbol_reference}'.format(
                      symbol_reference=symbol.name__sym_ref_syntax),
-                 rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
-                                                                                     RelOptionType.REL_ACT),
+                 rel_option_argument_configuration=arg_config_for_rel_symbol_config(accepted_relativities,
+                                                                                    RelOptionType.REL_ACT),
              ),
              expect(
                  resolved_path=
@@ -919,8 +867,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              ArrangementWoSuffixRequirement(
                  source='{symbol_reference}'.format(
                      symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
-                 rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
-                                                                                     RelOptionType.REL_ACT),
+                 rel_option_argument_configuration=arg_config_for_rel_symbol_config(accepted_relativities,
+                                                                                    RelOptionType.REL_ACT),
              ),
              expect(
                  resolved_path=
@@ -947,8 +895,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              ArrangementWoSuffixRequirement(
                  source='{symbol_reference}/constant-suffix'.format(
                      symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
-                 rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
-                                                                                     RelOptionType.REL_ACT),
+                 rel_option_argument_configuration=arg_config_for_rel_symbol_config(accepted_relativities,
+                                                                                    RelOptionType.REL_ACT),
              ),
              expect(
                  resolved_path=
@@ -977,8 +925,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                      symbol_reference1=symbol_reference_syntax_for_name(symbol_1.name),
                      symbol_reference2=symbol_reference_syntax_for_name(symbol_2.name),
                  ),
-                 rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
-                                                                                     RelOptionType.REL_ACT),
+                 rel_option_argument_configuration=arg_config_for_rel_symbol_config(accepted_relativities,
+                                                                                    RelOptionType.REL_ACT),
              ),
              expect(
                  resolved_path=
@@ -1015,8 +963,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                      symbol_reference1=symbol_reference_syntax_for_name(symbol_1.name),
                      symbol_reference2=symbol_reference_syntax_for_name(symbol_2.name),
                  ),
-                 rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
-                                                                                     RelOptionType.REL_ACT),
+                 rel_option_argument_configuration=arg_config_for_rel_symbol_config(accepted_relativities,
+                                                                                    RelOptionType.REL_ACT),
              ),
              expect(
                  resolved_path=
@@ -1050,8 +998,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              ArrangementWoSuffixRequirement(
                  source='{symbol_reference}'.format(
                      symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
-                 rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
-                                                                                     RelOptionType.REL_ACT),
+                 rel_option_argument_configuration=arg_config_for_rel_symbol_config(accepted_relativities,
+                                                                                    RelOptionType.REL_ACT),
              ),
              expect(
                  resolved_path=
@@ -1080,8 +1028,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                      path_symbol_reference=symbol_reference_syntax_for_name(symbol_1.name),
                      string_symbol_reference=symbol_reference_syntax_for_name(symbol_2.name),
                  ),
-                 rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
-                                                                                     RelOptionType.REL_TMP),
+                 rel_option_argument_configuration=arg_config_for_rel_symbol_config(accepted_relativities,
+                                                                                    RelOptionType.REL_TMP),
              ),
              expect(
                  resolved_path=
@@ -1133,7 +1081,7 @@ class TestParseWithMandatoryPathSuffix(TestParsesBase):
             ),
             NameAndValue(
                 'just relativity option',
-                value=_option_string_for(REL_HDS_CASE_OPTION_NAME),
+                value=option_string_for(REL_HDS_CASE_OPTION_NAME),
             ),
         ]
         for case in source_cases:
@@ -1154,7 +1102,7 @@ class TestParseWithMandatoryPathSuffix(TestParsesBase):
             'argument_syntax_name',
             path_suffix_is_required)
 
-        option_str = _option_string_for(REL_HDS_CASE_OPTION_NAME)
+        option_str = option_string_for(REL_HDS_CASE_OPTION_NAME)
         source_variants = [
             SourceCase('just suffix str',
                        source='\n{suffix}',
@@ -1241,7 +1189,7 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
         ]
 
         for used_option, default_option, accepted_options in used_and_default_and_accepted_options_variants:
-            option_str = _option_string_for(REL_OPTIONS_MAP[used_option].option_name)
+            option_str = option_string_for(REL_OPTIONS_MAP[used_option].option_name)
             arg_config = RelOptionArgumentConfiguration(
                 RelOptionsConfiguration(
                     PathRelativityVariants(accepted_options, True),
@@ -1294,7 +1242,7 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
         ]
 
         for used_option, default_option, accepted_options in used_and_default_and_accepted_options_variants:
-            option_str = _option_string_for(REL_OPTIONS_MAP[used_option].option_name)
+            option_str = option_string_for(REL_OPTIONS_MAP[used_option].option_name)
             arg_config = RelOptionArgumentConfiguration(
                 RelOptionsConfiguration(
                     PathRelativityVariants(accepted_options, True),
@@ -1338,21 +1286,23 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
 
 class TestParseFromParseSource(unittest.TestCase):
     def test_raise_exception_for_invalid_argument_syntax_when_invalid_quoting_of_first_token(self):
+        parser = sut.PathParser(path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME', True))
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_path_from_parse_source(remaining_source('"abc'),
-                                             path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME', True))
+            parser.parse(remaining_source('"abc'))
 
     def test_fail_when_no_arguments_and_path_suffix_is_required(self):
+        parser = sut.PathParser(path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME', True))
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_path_from_parse_source(remaining_source(''),
-                                             path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME', True))
+            parser.parse(remaining_source(''))
 
     def test_parse_without_option(self):
         for path_suffix_is_required in [False, True]:
+            parser = sut.PathParser(
+                path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME',
+                                                             path_suffix_is_required)
+            )
             with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required)):
-                path = sut.parse_path_from_parse_source(remaining_source('FILENAME arg2'),
-                                                        path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME',
-                                                                                                     path_suffix_is_required))
+                path = parser.parse(remaining_source('FILENAME arg2'))
                 symbols = empty_symbol_table()
                 actual_path_suffix = path.resolve(symbols).path_suffix()
                 equals_path_part_string('FILENAME').apply_with_message(self,
@@ -1362,11 +1312,15 @@ class TestParseFromParseSource(unittest.TestCase):
 
     def test_parse_with_option(self):
         for path_suffix_is_required in [False, True]:
+            parser = sut.PathParser(
+                path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME',
+                                                             path_suffix_is_required)
+            )
+
             with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required)):
-                path = sut.parse_path_from_parse_source(
+                path = parser.parse(
                     remaining_source(REL_CWD_OPTION + ' FILENAME arg3 arg4'),
-                    path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME',
-                                                                 path_suffix_is_required))
+                )
                 symbols = empty_symbol_table()
                 actual_path_suffix = path.resolve(symbols).path_suffix()
                 equals_path_part_string('FILENAME').apply_with_message(self,
@@ -1376,23 +1330,21 @@ class TestParseFromParseSource(unittest.TestCase):
 
     def test_parse_with_initial_space(self):
         for path_suffix_is_required in [False, True]:
-            with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required)):
-                path = sut.parse_path_from_parse_source(
-                    remaining_source('   FILENAME'),
-                    path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME',
-                                                                 path_suffix_is_required))
-                symbols = empty_symbol_table()
-                actual_path_suffix = path.resolve(symbols).path_suffix()
-                equals_path_part_string('FILENAME').apply_with_message(self,
-                                                                       actual_path_suffix,
-                                                                       'path/path_suffix')
-                assert_source(is_at_eol=asrt.is_true)
+            parser = sut.PathParser(path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME',
+                                                                                 path_suffix_is_required))
+        with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required)):
+            path = parser.parse(remaining_source('   FILENAME'))
+            symbols = empty_symbol_table()
+            actual_path_suffix = path.resolve(symbols).path_suffix()
+            equals_path_part_string('FILENAME').apply_with_message(self,
+                                                                   actual_path_suffix,
+                                                                   'path/path_suffix')
+            assert_source(is_at_eol=asrt.is_true)
 
     def test_fail_when_option_is_only_argument_and_path_suffix_is_required(self):
+        parser = sut.PathParser(path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME', True))
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_path_from_parse_source(remaining_source(REL_CWD_OPTION),
-                                             path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME',
-                                                                                          True))
+            parser.parse(remaining_source(REL_CWD_OPTION))
 
 
 class TestParsesCorrectValueFromParseSource(TestParsesBase):
@@ -1402,10 +1354,9 @@ class TestParsesCorrectValueFromParseSource(TestParsesBase):
                                     RelOptionType.REL_ACT),
             'FILE')
         for path_suffix_is_required in [False, True]:
+            parser = sut.PathParser(custom_configuration.config_for(path_suffix_is_required))
             with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required)):
-                actual_sdv = sut.parse_path_from_parse_source(
-                    remaining_source('file.txt'),
-                    custom_configuration.config_for(path_suffix_is_required))
+                actual_sdv = parser.parse(remaining_source('file.txt'))
                 expected_sdv = path_sdvs.constant(
                     path_ddvs.rel_act(path_ddvs.constant_path_part('file.txt')))
                 assertion = equals_path_sdv(expected_sdv)
@@ -1417,10 +1368,10 @@ class TestParsesCorrectValueFromParseSource(TestParsesBase):
                                     RelOptionType.REL_ACT),
             'FILE')
         for path_suffix_is_required in [False, True]:
+            parser = sut.PathParser(custom_configuration.config_for(path_suffix_is_required))
             with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required)):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_path_from_parse_source(remaining_source('%s file.txt' % REL_TMP_OPTION),
-                                                     custom_configuration.config_for(path_suffix_is_required))
+                    parser.parse(remaining_source('%s file.txt' % REL_TMP_OPTION))
 
 
 class TestTypeMustBeEitherPathOrStringErrMsgGenerator(unittest.TestCase):
@@ -1442,54 +1393,6 @@ class TestTypeMustBeEitherPathOrStringErrMsgGenerator(unittest.TestCase):
 
 def _remaining_source(ts: TokenStream) -> str:
     return ts.source[ts.position:]
-
-
-_ARG_CONFIG_FOR_ALL_RELATIVITIES = RelOptionArgumentConfigurationWoSuffixRequirement(
-    RelOptionsConfiguration(
-        PathRelativityVariants(RelOptionType, True),
-        RelOptionType.REL_HDS_CASE),
-    'argument_syntax_name')
-
-
-def _arg_config_with_all_accepted_and_default(default: RelOptionType
-                                              ) -> RelOptionArgumentConfigurationWoSuffixRequirement:
-    return RelOptionArgumentConfigurationWoSuffixRequirement(
-        RelOptionsConfiguration(PathRelativityVariants(RelOptionType, True),
-                                default),
-        'argument_syntax_name')
-
-
-def _arg_config_for_rel_symbol_config(relativity_variants: PathRelativityVariants,
-                                      default: RelOptionType = None
-                                      ) -> RelOptionArgumentConfigurationWoSuffixRequirement:
-    if default is None:
-        default = list(relativity_variants.rel_option_types)[0]
-    return RelOptionArgumentConfigurationWoSuffixRequirement(
-        RelOptionsConfiguration(relativity_variants,
-                                default),
-        'argument_syntax_name')
-
-
-def _option_string_for(option_name: argument.OptionName) -> str:
-    return long_option_syntax(option_name.long)
-
-
-def _option_string_for_relativity(relativity: RelOptionType) -> str:
-    return _option_string_for(REL_OPTIONS_MAP[relativity].option_name)
-
-
-def expect(resolved_path: PathDdv,
-           expected_symbol_references: Assertion,
-           symbol_table: SymbolTable,
-           token_stream: Assertion,
-           ) -> Expectation2:
-    return Expectation2(
-        path_sdv=matches_path_sdv(resolved_path,
-                                  expected_symbol_references,
-                                  symbol_table),
-        symbol_table_in_with_all_ref_restrictions_are_satisfied=symbol_table,
-        token_stream=token_stream,
-    )
 
 
 if __name__ == '__main__':

@@ -136,6 +136,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
         self.format_map = {
             'PATH': _PATH_ARGUMENT.name,
         }
+        self._path_parser = parse_path.PathParser(_REL_OPTION_CONFIG)
 
     def parse_from_source(self, source: ParseSource) -> AssertPhaseInstruction:
         with token_stream_parser.from_parse_source(
@@ -148,8 +149,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
     def _parse(self, parser: token_stream_parser.TokenParser) -> AssertPhaseInstruction:
         expectation_type = parser.consume_optional_negation_operator()
 
-        path_to_check = parse_path.parse_path_from_token_parser(_REL_OPTION_CONFIG,
-                                                                parser)
+        path_to_check = self._path_parser.parse_from_token_parser(parser)
 
         file_matcher = self._parse_optional_file_matcher(parser)
 

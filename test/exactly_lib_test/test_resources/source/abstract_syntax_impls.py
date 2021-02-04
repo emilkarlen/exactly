@@ -76,6 +76,14 @@ class CustomAbsStx(AbstractSyntax):
     def __init__(self, tokens: TokenSequence):
         self._tokens = tokens
 
+    @staticmethod
+    def empty() -> AbstractSyntax:
+        return CustomAbsStx(TokenSequence.empty())
+
+    @staticmethod
+    def of_str(s: str) -> AbstractSyntax:
+        return CustomAbsStx(TokenSequence.singleton(s))
+
     def tokenization(self) -> TokenSequence:
         return self._tokens
 

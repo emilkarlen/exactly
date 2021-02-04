@@ -39,12 +39,14 @@ class StringParser(TypeValueParser):
 
 
 class PathParser(TypeValueParser):
+    def __init__(self):
+        self._path_parser = parse_path.PathParser(REL_OPTION_ARGUMENT_CONFIGURATION)
+
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
               token_parser: TokenParser,
               ) -> SymbolDependentValue:
-        return parse_path.parse_path_from_token_parser(
-            REL_OPTION_ARGUMENT_CONFIGURATION,
+        return self._path_parser.parse_from_token_parser(
             token_parser,
             fs_location_info.current_source_file.abs_path_of_dir_containing_last_file_base_name,
         )

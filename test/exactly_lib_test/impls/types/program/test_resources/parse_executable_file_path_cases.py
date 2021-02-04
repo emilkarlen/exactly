@@ -126,7 +126,7 @@ def check(put: unittest.TestCase,
     # ARRANGE #
     source = ParseSource(instruction_argument_string)
     # ACT #
-    actual_exe_file = parse_executable_file_path.parse_from_parse_source(source)
+    actual_exe_file = parse_executable_file_path.parser().parse(source)
     # ASSERT #
     exe_file_as_command = command_sdvs.for_executable_file(actual_exe_file)
 
@@ -218,7 +218,7 @@ class CheckExistingFile(CheckBase):
         arguments_str = '{} file.exe remaining args'.format(conf.option)
         source = ParseSource(arguments_str)
         # ACT #
-        exe_file = parse_executable_file_path.parse_from_parse_source(source)
+        exe_file = parse_executable_file_path.parser().parse(source)
         # ASSERT #
         source_assertion = has_remaining_part_of_first_line('remaining args')
         source_assertion.apply_with_message(self, source, 'source after parse')
@@ -238,7 +238,7 @@ class CheckExistingButNonExecutableFile(CheckBase):
         arguments_str = '{} file.exe remaining args'.format(conf.option)
         source = ParseSource(arguments_str)
         # ACT #
-        exe_file = parse_executable_file_path.parse_from_parse_source(source)
+        exe_file = parse_executable_file_path.parser().parse(source)
         # ASSERT #
         with self._tcds_and_test_as_curr_dir(File.empty('file.exe')) as environment:
             self._assert_does_not_pass_validation(exe_file, environment)
@@ -254,7 +254,7 @@ class CheckNonExistingFile(CheckBase):
         arguments_str = '{} file.exe remaining args'.format(conf.option)
         source = ParseSource(arguments_str)
         # ACT #
-        exe_file = parse_executable_file_path.parse_from_parse_source(source)
+        exe_file = parse_executable_file_path.parser().parse(source)
         # ASSERT #
         source_assertion = has_remaining_part_of_first_line('remaining args')
         source_assertion.apply_with_message(self, source, 'source after parse')

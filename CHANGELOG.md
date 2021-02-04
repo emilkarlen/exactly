@@ -44,6 +44,9 @@ with exception of a "0." prefix until version 1 is released.
  - Type `string-matcher` - `equals` - Expected value is `STRING-SOURCE`
  - Type `string-matcher` - rename `empty` -> `is-empty` (breaking)
  - Syntax element `STRING-SOURCE` - Option `-file` -> `-contents-of` (breaking)
+ - Syntax element `PATH` - Add optional surrounding by parentheses   
+ - Syntax element `PATH` - Introduces "reserved words" that must be quoted if used as a file name (breaking)   
+ - Syntax element `PROGRAM` - Add optional surrounding by parentheses
  - Interpreter actors - interpreter `EXECUTABLE [ARGUMENT]...` requires `EXECUTABLE` to be a file
  - Actor - `file interpreter` - arguments to source file are `PROGRAM-ARGUMENT`
  - Exit codes - rename `IMPLEMENTATION_ERROR` -> `INTERNAL_ERROR`

@@ -1,5 +1,5 @@
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.impls.types.path.parse_path import parse_path_from_token_parser
+from exactly_lib.impls.types.path import parse_path
 from exactly_lib.impls.types.program.parse import parse_program
 from exactly_lib.impls.types.string_ import parse_here_document
 from exactly_lib.impls.types.string_.parse_string import parse_string_from_token_parser
@@ -66,14 +66,16 @@ class _StringSourceParserWoParens(ParserFromTokenParserBase[StringSourceSdv]):
 
 class _FileParser:
     def __init__(self, accepted_file_relativities: RelOptionsConfiguration):
-        self._relativities_arg_conf = RelOptionArgumentConfiguration(
-            accepted_file_relativities,
-            defs.SOURCE_FILE_ARGUMENT_NAME.name,
-            True,
+        self._path_parser = parse_path.PathParser(
+            RelOptionArgumentConfiguration(
+                accepted_file_relativities,
+                defs.SOURCE_FILE_ARGUMENT_NAME.name,
+                True,
+            )
         )
 
     def parse(self, file_option: Token, token_parser: TokenParser) -> StringSourceSdv:
-        path = parse_path_from_token_parser(self._relativities_arg_conf, token_parser)
+        path = self._path_parser.parse_from_token_parser(token_parser)
         file_source = sdvs.PathStringSourceSdv(path)
         optional_transformer = parse_transformation_option.parse_optional_option__optional(token_parser)
 

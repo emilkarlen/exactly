@@ -107,11 +107,10 @@ class InstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
 class EmbryoParser(embryo.InstructionEmbryoParserFromTokensWoFileSystemLocationInfo[Optional[TextRenderer]]):
     def __init__(self, is_after_act_phase: bool):
         self.is_after_act_phase = is_after_act_phase
+        self._path_parser = parse_path.PathParser(relativity_options(is_after_act_phase))
 
     def _parse_from_tokens(self, token_parser: TokenParser) -> InstructionEmbryo:
-        rel_opt_arg_conf = relativity_options(self.is_after_act_phase)
-
-        path = parse_path.parse_path_from_token_parser(rel_opt_arg_conf, token_parser)
+        path = self._path_parser.parse_from_token_parser(token_parser)
         token_parser.report_superfluous_arguments_if_not_at_eol()
         return InstructionEmbryo(path)
 

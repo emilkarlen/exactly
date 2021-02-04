@@ -1,5 +1,6 @@
 [suites]
 
+path
 integer-matcher
 string-matcher
 line-matcher

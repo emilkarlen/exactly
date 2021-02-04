@@ -3,7 +3,7 @@ from typing import List, Sequence
 
 from exactly_lib.common.help import documentation_text, headers
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.definitions import instruction_arguments, formatting
+from exactly_lib.definitions import instruction_arguments, formatting, misc_texts
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId, \
@@ -17,10 +17,12 @@ from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
+from exactly_lib.help.entities.utils.se_within_parens import OptionallyWithinParens
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.value_type import TypeCategory, ValueType
 from exactly_lib.tcfs.relative_path_options import REL_HDS_OPTIONS_MAP, \
     REL_SDS_OPTIONS_MAP, RelOptionInfo, REL_CWD_INFO
+from exactly_lib.test_case import reserved_words
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import render_argument
 from exactly_lib.util.textformat.structure import structures as docs
@@ -40,10 +42,14 @@ class _Documentation(SyntaxElementDocumentation):
         path_type_symbol = 'MY_PATH_SYMBOL'
 
         self._parser = TextParser({
+            'Note': headers.NOTE_LINE_HEADER,
             'RELATIVITY_OPTION': self._relativity_name.name,
             'PATH_STRING': self._string_name.name,
             'posix_syntax': documentation_text.POSIX_SYNTAX,
             'string_type': formatting.keyword(types.STRING_TYPE_INFO.name.singular),
+            'string_type_plain': types.STRING_TYPE_INFO.name,
+            'reserved_word': misc_texts.RESERVED_WORD_NAME,
+            'reserved_word_list_str': ', '.join([formatting.keyword(x) for x in reserved_words.RESERVED_TOKENS]),
             'path_type': formatting.keyword(types.PATH_TYPE_INFO.name.singular),
             'string_syntax_element': syntax_elements.STRING_SYNTAX_ELEMENT.singular_name,
             'cd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
@@ -193,7 +199,9 @@ class _Documentation(SyntaxElementDocumentation):
                 )
 
 
-DOCUMENTATION = _Documentation()
+DOCUMENTATION = OptionallyWithinParens(
+    _Documentation(),
+)
 
 
 def _options_for_directories_in_the_(rel_opt_2_rel_option_info: dict,
@@ -251,7 +259,9 @@ _STRING_DESCRIPTION_REST = """\
 A relative or absolute path, using {posix_syntax}.
 
 
-It is a value of type {string_type}, and thus uses {string_syntax_element} syntax.
+{Note} The following {string_type_plain:s} are {reserved_word:s}: {reserved_word_list_str}.
+
+To use any of them as a file name, it must be quoted.
 """
 
 _RELATIVITY_DESCRIPTION_REST = """\

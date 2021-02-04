@@ -275,6 +275,10 @@ def equivalent_source_variants__for_expression_parser_3__nie(
 
 
 def equivalent_source_variants__for_expr_parse__s__nsc(original_source: str) -> List[NSourceCase]:
+    return expr_parse__s__nsc(original_source)
+
+
+def expr_parse__s__nsc(original_source: str) -> List[NSourceCase]:
     return [
         NSourceCase(nea.name, nea.actual, nea.expected)
         for nea in equivalent_source_variants__for_expression_parser_3(original_source)

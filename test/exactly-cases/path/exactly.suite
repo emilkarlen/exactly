@@ -1,0 +1,6 @@
+*.case
+
+[conf]
+
+home     = hds-case
+act-home = hds-act

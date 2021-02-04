@@ -245,11 +245,11 @@ class TestParseWithSymbols(unittest.TestCase):
 class TestParseInvalidSyntax(unittest.TestCase):
     def test_missing_file_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_from_parse_source(ParseSource(path_texts.REL_HDS_CASE_OPTION))
+            sut.parser().parse(ParseSource(path_texts.REL_HDS_CASE_OPTION))
 
     def test_invalid_option(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_from_parse_source(ParseSource('{} FILE'.format(CustomOptionArgument('invalid-option'))))
+            sut.parser().parse(ParseSource('{} FILE'.format(CustomOptionArgument('invalid-option'))))
 
 
 CONFIGURATION_FOR_PYTHON_EXECUTABLE = TestCaseConfiguration(
@@ -393,7 +393,7 @@ class TestParseAbsolutePath(unittest.TestCase):
         # ARRANGE #
         source = ParseSource(arguments_str)
         # ACT #
-        exe_file = sut.parse_from_parse_source(source)
+        exe_file = sut.parser().parse(source)
         # ASSERT #
         utils.check_exe_file(self, expectation_on_exe_file, exe_file)
         expected_source_after_parse.apply_with_message(self, source, 'parse source')
@@ -424,7 +424,7 @@ def _parse_and_check(put: unittest.TestCase,
     # ARRANGE #
     source = ParseSource(case.source)
     # ACT #
-    actual = sut.parse_from_parse_source(source)
+    actual = sut.parser().parse(source)
     # ASSERT #
     utils.check_exe_file(put, case.expectation, actual)
     case.source_after_parse.apply_with_message(put, source,

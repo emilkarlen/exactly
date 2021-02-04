@@ -23,6 +23,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
         self.format_map = {
             'PATH': config.PATH_ARGUMENT.name,
         }
+        self._path_parser = parse_path.PathParser(config.ACTUAL_RELATIVITY_CONFIGURATION)
 
     def parse_from_source(self,
                           source: ParseSource,
@@ -36,8 +37,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
             if must_be_on_current_line:
                 token_parser.require_is_not_at_eol('Missing {PATH} argument')
 
-            path_to_check = parse_path.parse_path_from_token_parser(config.ACTUAL_RELATIVITY_CONFIGURATION,
-                                                                    token_parser)
+            path_to_check = self._path_parser.parse_from_token_parser(token_parser)
 
             files_matcher_model_constructor = parse_file_matcher.DIR_CONTENTS_MODEL_PARSER.parse(token_parser)
 

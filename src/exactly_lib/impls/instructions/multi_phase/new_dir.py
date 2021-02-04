@@ -102,20 +102,22 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
 
 
 class EmbryoParser(embryo.InstructionEmbryoParserFromTokensWoFileSystemLocationInfo[Optional[TextRenderer]]):
+    def __init__(self):
+        self._path_parser = parse_path.PathParser(RELATIVITY_VARIANTS)
+
     def _parse_from_tokens(self, token_parser: TokenParser) -> TheInstructionEmbryo:
-        path = parse_path.parse_path_from_token_parser(RELATIVITY_VARIANTS, token_parser)
+        path = self._path_parser.parse_from_token_parser(token_parser)
         token_parser.report_superfluous_arguments_if_not_at_eol()
         return TheInstructionEmbryo(path)
 
+
+_PATH_ARGUMENT = syntax_elements.PATH_SYNTAX_ELEMENT.argument
+RELATIVITY_VARIANTS = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)
 
 PARTS_PARSER = instruction_part_utils.PartsParserFromEmbryoParser(
     EmbryoParser(),
     instruction_part_utils.MainStepResultTranslatorForTextRendererAsHardError(),
 )
-
-_PATH_ARGUMENT = syntax_elements.PATH_SYNTAX_ELEMENT.argument
-
-RELATIVITY_VARIANTS = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)
 
 _NOTES = """\
 Intermediate directories as created, if required.

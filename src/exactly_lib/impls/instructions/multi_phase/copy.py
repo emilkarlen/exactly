@@ -236,8 +236,8 @@ class _MainWithExplicitDestination:
 
 class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo[Optional[TextRenderer]]):
     def __init__(self, phase_is_after_act: bool):
-        self._phase_is_after_act = phase_is_after_act
-        self._src_rel_opt_arg_conf = src_rel_opt_arg_conf_for_phase(phase_is_after_act)
+        self._src_path_parser = parse_path.PathParser(src_rel_opt_arg_conf_for_phase(phase_is_after_act))
+        self._dst_path_parser = parse_path.PathParser(REL_OPTION_ARG_CONF_FOR_DESTINATION)
 
     def _parse(self, source: ParseSource) -> TheInstructionEmbryoBase:
         with from_parse_source(source,
@@ -245,10 +245,10 @@ class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo[Option
             return self._parse_from_tokens(token_parser)
 
     def _parse_from_tokens(self, token_parser: TokenParser) -> TheInstructionEmbryoBase:
-        src_path = parse_path.parse_path_from_token_parser(self._src_rel_opt_arg_conf, token_parser)
+        src_path = self._src_path_parser.parse_from_token_parser(token_parser)
         if token_parser.is_at_eol:
             return _CopySourceWithoutExplicitDestinationInstruction(src_path)
-        dst_path = parse_path.parse_path_from_token_parser(REL_OPTION_ARG_CONF_FOR_DESTINATION, token_parser)
+        dst_path = self._dst_path_parser.parse_from_token_parser(token_parser)
         token_parser.report_superfluous_arguments_if_not_at_eol()
         return _CopySourceWithExplicitDestinationInstruction(src_path, dst_path)
 

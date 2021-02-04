@@ -90,11 +90,14 @@ def parser(instruction_name: str) -> AssertPhaseInstructionParser:
 
 
 class _ActualFileParser(ComparisonActualFileParser):
+    def __init__(self):
+        super().__init__()
+        self._path_parser = parse_path.PathParser(ACTUAL_RELATIVITY_CONFIGURATION)
+
     def parse_from_token_parser(self, parser: TokenParser) -> ComparisonActualFileConstructor:
         parser.require_is_not_at_eol(
             'Missing {actual_file} argument'.format(actual_file=ACTUAL_PATH_ARGUMENT.name))
-        path = parse_path.parse_path_from_token_parser(ACTUAL_RELATIVITY_CONFIGURATION,
-                                                       parser)
+        path = self._path_parser.parse_from_token_parser(parser)
         return actual_files.ConstructorForPath(path,
                                                actual_file_attributes.PLAIN_FILE_OBJECT_NAME,
                                                True)

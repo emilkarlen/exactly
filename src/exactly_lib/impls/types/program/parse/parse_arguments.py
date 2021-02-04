@@ -80,18 +80,21 @@ def _parse_rest_of_line_as_single_element(token_parser: TokenParser) -> Argument
     return ArgumentsSdv.new_without_validation(list_sdvs.from_string(string))
 
 
+_PATH_PARSER = parse_path.PathParser(REL_OPT_ARG_CONF)
+
+
 def _parse_existing_file(token_parser: TokenParser) -> ArgumentsSdv:
-    path = parse_path.parse_path_from_token_parser(REL_OPT_ARG_CONF, token_parser)
+    path = _PATH_PARSER.parse_from_token_parser(token_parser)
     return arguments_sdvs.ref_to_file_that_must_exist(path, FileType.REGULAR)
 
 
 def _parse_existing_dir(token_parser: TokenParser) -> ArgumentsSdv:
-    path = parse_path.parse_path_from_token_parser(REL_OPT_ARG_CONF, token_parser)
+    path = _PATH_PARSER.parse_from_token_parser(token_parser)
     return arguments_sdvs.ref_to_file_that_must_exist(path, FileType.DIRECTORY)
 
 
 def _parse_existing_path(token_parser: TokenParser) -> ArgumentsSdv:
-    path = parse_path.parse_path_from_token_parser(REL_OPT_ARG_CONF, token_parser)
+    path = _PATH_PARSER.parse_from_token_parser(token_parser)
     return arguments_sdvs.ref_to_path_that_must_exist(path)
 
 

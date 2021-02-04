@@ -5,6 +5,8 @@ from exactly_lib.util.str_ import name
 
 WHITESPACE = 'whitespace'
 
+RESERVED_WORD_NAME = name.a_name(name.name_with_plural_s('reserved word'))
+
 SYNTAX_ERROR_NAME = name.a_name(name.name_with_plural_s('syntax error'))
 
 FILE_ACCESS_ERROR_NAME = name.a_name(name.name_with_plural_s('file access error'))

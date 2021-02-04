@@ -118,6 +118,8 @@ class _TheInstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
 
 class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo[Optional[TextRenderer]]):
     def __init__(self, phase_is_after_act: bool):
+        self._path_parser = parse_path.PathParser(REL_OPT_ARG_CONF)
+
         self._file_maker_parser = file_maker.FileMakerParser(
             defs.src_rel_opt_arg_conf_for_phase(phase_is_after_act))
 
@@ -127,7 +129,7 @@ class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo[Option
             return self._parse_from_tokens(tokens)
 
     def _parse_from_tokens(self, tokens: TokenParser) -> _TheInstructionEmbryo:
-        path_to_create = parse_path.parse_path_from_token_parser(REL_OPT_ARG_CONF, tokens)
+        path_to_create = self._path_parser.parse_from_token_parser(tokens)
         file_maker_ = self._file_maker_parser.parse(tokens)
 
         tokens.report_superfluous_arguments_if_not_at_eol()
