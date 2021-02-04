@@ -12,6 +12,7 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.impls.instructions.configuration.utils.single_arg_utils import single_eq_invokation_variants, \
     extract_single_eq_argument_string
+from exactly_lib.impls.text_render import header_rendering
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import split_arguments_list_string
@@ -20,8 +21,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
-from exactly_lib.test_case.result import sh
-from exactly_lib.util.str_ import str_constructor
+from exactly_lib.test_case.result import svh
+from exactly_lib.util.render import combinators as rend_comb
 
 _RELATIVITY_ROOT = 'location of the current source file - the file that contains the instruction'
 
@@ -93,28 +94,27 @@ class _Instruction(ConfigurationPhaseInstruction):
         self.relativity_root = relativity_root
         self.argument = argument
 
-    def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+    def main(self, configuration_builder: ConfigurationBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         new_path = self._new_path()
         if not new_path.exists():
-            return sh.new_sh_hard_error(
-                text_docs.single_line(
-                    str_constructor.FormatPositional(
-                        'Directory does not exist: {}',
-                        new_path)
-                )
-            )
+            return _validation_error('Directory does not exist', new_path)
         if not new_path.is_dir():
-            return sh.new_sh_hard_error(
-                text_docs.single_line(
-                    str_constructor.FormatPositional(
-                        'Not a directory: {}',
-                        new_path)
-                )
-            )
+            return _validation_error('Not a directory', new_path)
         configuration_builder.set_hds_dir(self.dir_to_set, new_path.resolve())
-        return sh.new_sh_success()
+        return svh.new_svh_success()
 
     def _new_path(self) -> pathlib.Path:
         if self.argument.is_absolute():
             return self.argument
         return self.relativity_root / self.argument
+
+
+def _validation_error(header: str, path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    return svh.new_svh_validation_error(
+        rend_comb.SingletonSequenceR(
+            header_rendering.HeaderValueRenderer(
+                header,
+                text_docs.minor_blocks_of_string_lines([str(path)])
+            )
+        )
+    )

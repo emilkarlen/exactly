@@ -22,7 +22,7 @@ from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case.phases.act.actor import Actor, ActionToCheck, ParseException
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
-from exactly_lib.test_case.result import sh
+from exactly_lib.test_case.result import svh
 from exactly_lib.type_val_deps.sym_ref.restrictions import ValueTypeRestriction
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_ import str_constructor
@@ -125,15 +125,15 @@ class _SetActorThatParsesReferences(InstructionParserThatConsumesCurrentLine):
 class _ParserOfConfPhaseInstructionThatCausesHardError(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> model.Instruction:
         return configuration_phase_instruction_that(
-            main=do_return(sh.new_sh_hard_error__str('unconditional hard error'))
+            main=do_return(svh.new_svh_hard_error__str('unconditional hard error'))
         )
 
 
 class _InstructionThatSetsInterpreterActor(ConfigurationPhaseInstruction):
-    def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+    def main(self, configuration_builder: ConfigurationBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         configuration_builder.set_actor(NameAndValue('actor that parses reference',
                                                      _ActorThatParsesReferences(REF_INSTRUCTION_NAME)))
-        return sh.new_sh_success()
+        return svh.new_svh_success()
 
 
 INSTRUCTION_SETUP = InstructionsSetup(

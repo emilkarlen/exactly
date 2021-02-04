@@ -31,7 +31,7 @@ class SuccessOrHardError(tuple):
         if self.is_success:
             return 'SUCCESS'
         else:
-            return 'FAILURE:' + to_string.major_blocks(self.failure_message.render())
+            return 'FAILURE:' + to_string.major_blocks(self.failure_message.render_sequence())
 
 
 def new_sh_success() -> SuccessOrHardError:

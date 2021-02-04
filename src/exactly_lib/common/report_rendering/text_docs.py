@@ -7,7 +7,7 @@ from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
 from exactly_lib.util.simple_textstruct.rendering import \
     component_renderers as comp_rend
-from exactly_lib.util.simple_textstruct.structure import LineElement, MajorBlock
+from exactly_lib.util.simple_textstruct.structure import LineElement, MajorBlock, MinorBlock
 from exactly_lib.util.str_ import str_constructor
 
 
@@ -57,11 +57,15 @@ def plain_line_elements_of_string_lines(lines: Sequence[str]) -> SequenceRendere
 def major_blocks_of_string_lines(lines: Sequence[str]) -> SequenceRenderer[MajorBlock]:
     return rend_comb.SingletonSequenceR(
         comp_rend.MajorBlockR(
-            rend_comb.SingletonSequenceR(
-                comp_rend.MinorBlockR(
-                    plain_line_elements_of_string_lines(lines)
-                )
-            )
+            minor_blocks_of_string_lines(lines)
+        )
+    )
+
+
+def minor_blocks_of_string_lines(lines: Sequence[str]) -> SequenceRenderer[MinorBlock]:
+    return rend_comb.SingletonSequenceR(
+        comp_rend.MinorBlockR(
+            plain_line_elements_of_string_lines(lines)
         )
     )
 

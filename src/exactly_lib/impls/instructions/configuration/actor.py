@@ -6,7 +6,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.phases.act.actor import Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
-from exactly_lib.test_case.result import sh
+from exactly_lib.test_case.result import svh
 from exactly_lib.util.name_and_value import NameAndValue
 
 
@@ -28,6 +28,6 @@ class Instruction(ConfigurationPhaseInstruction):
     def __init__(self, actor: NameAndValue[Actor]):
         self.actor = actor
 
-    def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+    def main(self, configuration_builder: ConfigurationBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         configuration_builder.set_actor(self.actor)
-        return sh.new_sh_success()
+        return svh.new_svh_success()

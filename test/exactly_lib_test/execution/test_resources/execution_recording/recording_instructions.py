@@ -15,7 +15,7 @@ class RecordingInstructionsFactory:
         self.recorder = recorder
 
     def new_configuration_instruction(self, value) -> ConfigurationPhaseInstruction:
-        return configuration_phase_instruction_that(main=self._do_record_and_return_sh(value))
+        return configuration_phase_instruction_that(main=self._do_record_and_return_svh(value))
 
     def new_setup_instruction(self,
                               value_for_symbol_usages,

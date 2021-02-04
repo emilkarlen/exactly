@@ -53,7 +53,7 @@ class _FailureMessageConfig(FailureMessageConfig[ExitCodeAndStderrFile]):
 
     def head(self, model_getter: ModelGetter[ExitCodeAndStderrFile], model: ExitCodeAndStderrFile) -> TextRenderer:
         return rend_comb.SingletonSequenceR(
-            header_rendering.UnexpectedAttrOfObjMajorBlockRenderer(
+            header_rendering.HeaderValueRenderer.of_unexpected_attr_of_obj(
                 texts.ATTRIBUTE__EXIT_CODE,
                 self._object_name,
                 model_getter.description(),

@@ -15,7 +15,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
-from exactly_lib.test_case.result import sh
+from exactly_lib.test_case.result import svh
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.document import SectionContents
@@ -80,9 +80,9 @@ class _Instruction(ConfigurationPhaseInstruction):
                  timeout: int):
         self.timeout = timeout
 
-    def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+    def main(self, configuration_builder: ConfigurationBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         configuration_builder.set_timeout_in_seconds(self.timeout)
-        return sh.new_sh_success()
+        return svh.new_svh_success()
 
 
 _INTEGER_ARG_NAME = a.Named('INTEGER')

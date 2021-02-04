@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.result import sh
+from exactly_lib.test_case.result import svh
 from exactly_lib.test_case.test_case_status import TestCaseStatus
 from exactly_lib_test.execution.full_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
@@ -35,7 +35,7 @@ class Test(TestCaseBase):
     def test_execution_mode_skipped_but_failing_instruction_in_configuration_phase_before_setting_execution_mode(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
             .add(phase_identifier.CONFIGURATION,
-                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error__str('hard error msg')))) \
+                 test.configuration_phase_instruction_that(do_return(svh.new_svh_hard_error__str('hard error msg')))) \
             .add(phase_identifier.CONFIGURATION,
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(
                      TestCaseStatus.SKIP))
@@ -60,7 +60,7 @@ class Test(TestCaseBase):
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(
                      TestCaseStatus.SKIP)) \
             .add(phase_identifier.CONFIGURATION,
-                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error__str('hard error msg'))))
+                 test.configuration_phase_instruction_that(do_return(svh.new_svh_hard_error__str('hard error msg'))))
         self._check(
             Arrangement(test_case),
             Expectation(

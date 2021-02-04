@@ -5,7 +5,7 @@ from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.test_case.phases.act.actor import Actor
 from exactly_lib.test_case.phases.common import TestCaseInstruction
-from exactly_lib.test_case.result.sh import SuccessOrHardError
+from exactly_lib.test_case.result.svh import SuccessOrValidationErrorOrHardError
 from exactly_lib.test_case.test_case_status import TestCaseStatus
 from exactly_lib.util.name_and_value import NameAndValue
 
@@ -66,8 +66,10 @@ class ConfigurationPhaseInstruction(TestCaseInstruction):
     Abstract base class for instructions of the configuration phase.
     """
 
-    def main(self, configuration_builder: ConfigurationBuilder) -> SuccessOrHardError:
+    def main(self, configuration_builder: ConfigurationBuilder) -> SuccessOrValidationErrorOrHardError:
         """
         :param configuration_builder Collects the settings set by the instruction.
+
+        :raises: :class:`HardErrorException`
         """
         raise NotImplementedError()

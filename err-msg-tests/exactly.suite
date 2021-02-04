@@ -10,6 +10,8 @@ types
 grammar-parser
 actor
 
+symbol-report
+
 # suites
 # ^ Cannot be included here
 # since causes INVALID_SUITE

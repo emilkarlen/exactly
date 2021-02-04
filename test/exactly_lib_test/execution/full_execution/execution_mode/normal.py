@@ -4,12 +4,13 @@ from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
-from exactly_lib.test_case.result import sh
+from exactly_lib.test_case.result import svh
 from exactly_lib_test.execution.full_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     test_case_with_two_instructions_in_each_phase
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_that_records_phase_execution import \
     Expectation, Arrangement, TestCaseBase
+from exactly_lib_test.execution.partial_execution.test_resources.hard_error_ex import hard_error_ex
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
     SYMBOL_VALIDATION_STEPS__TWICE
@@ -60,10 +61,31 @@ class Test(TestCaseBase):
                  ],
             ))
 
+    def test_validation_error_in_configuration_phase(self):
+        err_msg = 'the error msg'
+        test_case_generator = test_case_with_two_instructions_in_each_phase() \
+            .add(phase_identifier.CONFIGURATION,
+                 test.configuration_phase_instruction_that(do_return(svh.new_svh_validation_error__str(err_msg))))
+        self._check(
+            Arrangement(test_case_generator),
+            Expectation(
+                asrt_result.matches2(
+                    FullExeResultStatus.VALIDATION_ERROR,
+                    asrt_result.has_no_sds(),
+                    asrt_result.has_no_action_to_check_outcome(),
+                    ExpectedFailureForInstructionFailure.new_with_message(
+                        phase_step.CONFIGURATION__MAIN,
+                        test_case_generator.the_extra(phase_identifier.CONFIGURATION)[0].source,
+                        err_msg)
+                ),
+                [phase_step.CONFIGURATION__MAIN],
+            )
+        )
+
     def test_hard_error_in_configuration_phase(self):
         test_case_generator = test_case_with_two_instructions_in_each_phase() \
             .add(phase_identifier.CONFIGURATION,
-                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error__str('hard error msg'))))
+                 test.configuration_phase_instruction_that(do_return(svh.new_svh_hard_error__str('hard error msg'))))
         self._check(
             Arrangement(test_case_generator),
             Expectation(
@@ -79,6 +101,30 @@ class Test(TestCaseBase):
                 ),
                 [phase_step.CONFIGURATION__MAIN],
             ))
+
+    def test_hard_error_exception_in_configuration_phase(self):
+        err_msg = 'the error message'
+        test_case_generator = test_case_with_two_instructions_in_each_phase() \
+            .add(phase_identifier.CONFIGURATION,
+                 test.configuration_phase_instruction_that(do_raise(
+                     hard_error_ex(err_msg))
+                 ))
+        self._check(
+            Arrangement(test_case_generator),
+            Expectation(
+                asrt_result.matches2(
+                    FullExeResultStatus.HARD_ERROR,
+                    asrt_result.has_no_sds(),
+                    asrt_result.has_no_action_to_check_outcome(),
+                    ExpectedFailureForInstructionFailure.new_with_message(
+                        phase_step.CONFIGURATION__MAIN,
+                        test_case_generator.the_extra(phase_identifier.CONFIGURATION)[
+                            0].source,
+                        err_msg)
+                ),
+                [phase_step.CONFIGURATION__MAIN],
+            )
+        )
 
     def test_internal_error_in_configuration_phase(self):
         test_case = test_case_with_two_instructions_in_each_phase() \

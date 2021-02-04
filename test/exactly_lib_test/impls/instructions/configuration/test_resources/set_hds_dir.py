@@ -18,7 +18,7 @@ from exactly_lib_test.impls.instructions.configuration.test_resources.source_wit
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.test_case.result.test_resources import sh_assertions
+from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
@@ -51,8 +51,8 @@ def suite_for(configuration: Configuration) -> unittest.TestSuite:
         TestParse_fail_when_just_eq_argument,
         TestParse_fail_when_there_is_more_than_one_argument,
         TestSuccessfulExecution_path_SHOULD_be_relative_path_relativity_root_dir,
-        TestFailingExecution_hard_error_WHEN_path_does_not_exist,
-        TestFailingExecution_hard_error_WHEN_path_exists_but_is_a_file,
+        TestFailingExecution_validation_error_WHEN_path_does_not_exist,
+        TestFailingExecution_validation_error_WHEN_path_exists_but_is_a_file,
         TestSuccessfulExecution_change_to_direct_sub_dir,
         TestSuccessfulExecution_change_to_2_level_sub_dir,
         TestSuccessfulExecution_change_to_parent_dir,
@@ -125,7 +125,7 @@ class TestSuccessfulExecution_path_SHOULD_be_relative_path_relativity_root_dir(T
             ),
             Expectation(
                 main_result=
-                sh_assertions.is_success(),
+                svh_assertions.is_success(),
 
                 path_rel_root_2_conf=
                 self.conf_prop_equals(
@@ -134,15 +134,15 @@ class TestSuccessfulExecution_path_SHOULD_be_relative_path_relativity_root_dir(T
         )
 
 
-class TestFailingExecution_hard_error_WHEN_path_does_not_exist(TestCaseForConfigurationBase):
+class TestFailingExecution_validation_error_WHEN_path_does_not_exist(TestCaseForConfigurationBase):
     def runTest(self):
         self._check(
             syntax_for_assignment_of('non-existing-path'),
             Arrangement(),
-            Expectation(main_result=sh_assertions.is_hard_error()))
+            Expectation(main_result=svh_assertions.is_validation_error()))
 
 
-class TestFailingExecution_hard_error_WHEN_path_exists_but_is_a_file(TestCaseForConfigurationBase):
+class TestFailingExecution_validation_error_WHEN_path_exists_but_is_a_file(TestCaseForConfigurationBase):
     def runTest(self):
         file_name = 'existing-plain-file'
         self._check(
@@ -150,7 +150,7 @@ class TestFailingExecution_hard_error_WHEN_path_exists_but_is_a_file(TestCaseFor
             Arrangement(
                 root_dir_contents=DirContents([File.empty(file_name)])),
             Expectation(
-                main_result=sh_assertions.is_hard_error())
+                main_result=svh_assertions.is_validation_error())
         )
 
 

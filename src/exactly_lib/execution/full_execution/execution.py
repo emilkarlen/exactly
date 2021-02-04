@@ -59,10 +59,17 @@ def execute_configuration_phase(phase_environment: ConfigurationBuilder,
 
 
 def new_configuration_phase_failure_from(phase_result: PhaseStepFailure) -> FullExeResult:
-    full_status = FullExeResultStatus.HARD_ERROR
-    if phase_result.status is ExecutionFailureStatus.INTERNAL_ERROR:
-        full_status = FullExeResultStatus.INTERNAL_ERROR
-    return FullExeResult(full_status,
+    return FullExeResult(_STATUS_TRANSLATION[phase_result.status],
                          None,
                          None,
                          phase_result.failure_info)
+
+
+_STATUS_TRANSLATION = {
+    ExecutionFailureStatus.INTERNAL_ERROR:
+        FullExeResultStatus.INTERNAL_ERROR,
+    ExecutionFailureStatus.VALIDATION_ERROR:
+        FullExeResultStatus.VALIDATION_ERROR,
+    ExecutionFailureStatus.HARD_ERROR:
+        FullExeResultStatus.HARD_ERROR,
+}

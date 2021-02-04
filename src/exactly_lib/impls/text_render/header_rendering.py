@@ -25,6 +25,31 @@ def unexpected_attribute__major_block(attribute: ToStringObject) -> Renderer[Maj
     )
 
 
+class HeaderValueRenderer(Renderer[MajorBlock]):
+    def __init__(self,
+                 header: ToStringObject,
+                 value_description: SequenceRenderer[MinorBlock] = combinators.ConstantSequenceR(()),
+                 ):
+        self._header = header
+        self._object_description = value_description
+
+    @staticmethod
+    def of_unexpected_attr_of_obj(
+            attribute: ToStringObject,
+            object_: ToStringObject,
+            object_description: SequenceRenderer[MinorBlock] = combinators.ConstantSequenceR(()),
+            attribute_of_object_word: str = 'of') -> Renderer[MajorBlock]:
+        return HeaderValueRenderer(
+            unexpected_attr_of_obj(attribute,
+                                   object_,
+                                   attribute_of_object_word),
+            object_description,
+        )
+
+    def render(self) -> MajorBlock:
+        return header_blocks.w_details(self._header, self._object_description).render()
+
+
 class UnexpectedAttrOfObjMajorBlockRenderer(Renderer[MajorBlock]):
     def __init__(self,
                  attribute: ToStringObject,

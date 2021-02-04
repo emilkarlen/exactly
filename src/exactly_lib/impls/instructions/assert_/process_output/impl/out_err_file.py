@@ -103,7 +103,7 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
         resolver = resolving_helper__of_full_env(environment)
         program = resolver.resolve_program(self._program)
 
-        return header_rendering.UnexpectedAttrOfObjMajorBlockRenderer(
+        return header_rendering.HeaderValueRenderer.of_unexpected_attr_of_obj(
             file_check_properties.CONTENTS,
             texts.target_name_of_proc_output_file_from_program(self._checked_output),
             rendering__node_wo_data.NodeAsMinorBlocksRenderer(program.structure()),

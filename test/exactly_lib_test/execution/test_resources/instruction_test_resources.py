@@ -22,9 +22,10 @@ class ImplementationErrorTestException(Exception):
     pass
 
 
-def configuration_phase_instruction_that(main: Callable = do_return(sh.new_sh_success()),
-                                         main_initial_action: Optional[
-                                             Callable] = None) -> ConfigurationPhaseInstruction:
+def configuration_phase_instruction_that(
+        main: Callable = do_return(svh.new_svh_success()),
+        main_initial_action: Optional[Callable[[ConfigurationBuilder], svh.SuccessOrValidationErrorOrHardError]] = None,
+) -> ConfigurationPhaseInstruction:
     return _ConfigurationPhaseInstructionThat(main=action_of(main_initial_action, main))
 
 
@@ -88,22 +89,21 @@ def cleanup_phase_instruction_that(validate_pre_sds: Callable = do_return(svh.ne
 
 
 class ConfigurationPhaseInstructionThatSetsExecutionMode(ConfigurationPhaseInstruction):
-    def __init__(self,
-                 value_to_set: TestCaseStatus):
+    def __init__(self, value_to_set: TestCaseStatus):
         self.value_to_set = value_to_set
 
-    def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+    def main(self, configuration_builder: ConfigurationBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         configuration_builder.set_test_case_status(self.value_to_set)
-        return sh.new_sh_success()
+        return svh.new_svh_success()
 
 
 class _ConfigurationPhaseInstructionThat(ConfigurationPhaseInstruction):
     def __init__(self,
-                 main: Callable[[ConfigurationBuilder], sh.SuccessOrHardError],
+                 main: Callable[[ConfigurationBuilder], svh.SuccessOrValidationErrorOrHardError],
                  ):
         self.do_main = main
 
-    def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+    def main(self, configuration_builder: ConfigurationBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         return self.do_main(configuration_builder)
 
 
