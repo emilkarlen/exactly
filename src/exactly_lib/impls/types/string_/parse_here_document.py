@@ -4,6 +4,7 @@ from typing import Optional
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import string
 from exactly_lib.impls.types.string_ import parse_string
+from exactly_lib.section_document import defs
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
@@ -81,7 +82,7 @@ def _parse_document_lines(marker: str, source: ParseSource) -> StringSdv:
         if line == marker:
             return _sdv_from_lines(here_doc)
         here_doc.append(line)
-    raise HereDocumentContentsParsingException("End Of File reached without finding Marker: '{}'".format(marker))
+    return _raise_end_marker_not_found(marker)
 
 
 def parse_document_of_start_str(here_doc_start: str,
@@ -109,7 +110,7 @@ def parse_document_lines_from_token_parser(marker: str,
             return _sdv_from_lines(here_doc)
         here_doc.append(line)
         token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
-    raise HereDocumentContentsParsingException("End Of File reached without finding Marker: '{}'".format(marker))
+    return _raise_end_marker_not_found(marker)
 
 
 def _sdv_from_lines(lines: list) -> StringSdv:
@@ -121,3 +122,12 @@ def _raise_not_a_here_doc_exception(source: str) -> StringSdv:
     raise SingleInstructionInvalidArgumentException('Not a {}: {}'.format(
         syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name,
         source))
+
+
+def _raise_end_marker_not_found(marker: str) -> StringSdv:
+    raise HereDocumentContentsParsingException(
+        "{eof} reached without finding Marker: '{m}'".format(
+            eof=defs.END_OF_FILE,
+            m=marker,
+        )
+    )

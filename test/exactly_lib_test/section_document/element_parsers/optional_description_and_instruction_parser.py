@@ -1,7 +1,9 @@
 import unittest
+from typing import Sequence
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
+from exactly_lib.section_document.defs import DESCRIPTION_DELIMITER
 from exactly_lib.section_document.element_parsers.optional_description_and_instruction_parser import \
     InstructionWithOptionalDescriptionParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
@@ -19,9 +21,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestParseWithDescription)
-    ])
+    return unittest.makeSuite(TestParseWithDescription)
 
 
 class SingleInstructionParserThatConsumesCurrentLine(InstructionParserWithoutSourceFileLocationInfo):
@@ -37,7 +37,7 @@ class TestParseWithDescription(unittest.TestCase):
 
     def test_no_description(self):
         source_lines = ['instruction']
-        source = source_of_lines(source_lines)
+        source = _source_of_lines(source_lines)
         expectation = Expectation(description=asrt.is_none,
                                   source=source_is_at_end,
                                   instruction=assert_instruction(1, 'instruction'))
@@ -46,24 +46,24 @@ class TestParseWithDescription(unittest.TestCase):
 
     def test_fail_when_there_is_a_description_but_no_following_instruction(self):
         test_cases = [
-            ['\'description\'',
+            ['{d}description{d}',
              ],
-            ['\'description\'        ',
+            ['{d}description{d}        ',
              ],
-            ['\'description\'',
+            ['{d}description{d}',
              '',
              ],
-            ['\'multi line description',
-             '\'',
+            ['{d}multi line description',
+             '{d}',
              ],
-            ['\'multi line description',
-             '\'',
+            ['{d}multi line description',
+             '{d}',
              '',
              ],
         ]
         for source_lines in test_cases:
             with self.subTest(source_lines=source_lines):
-                source = source_of_lines(source_lines)
+                source = _source_of_lines(source_lines)
                 remaining_source_before = source.remaining_source
                 with self.assertRaises(UnrecognizedSectionElementSourceError):
                     self.sut.parse(ARBITRARY_FS_LOCATION_INFO, source)
@@ -74,33 +74,32 @@ class TestParseWithDescription(unittest.TestCase):
     def test_fail_WHEN_description_has_invalid_syntax(self):
         test_cases = [
             NameAndValue('No ending quote, single line',
-                         ['\'description',
+                         ['{d}description',
                           ]),
             NameAndValue('No ending quote, would-be-instruction on following line',
-                         ['\'description',
+                         ['{d}description',
                           'would_be_instruction']),
-            NameAndValue('No ending quote, single line/double quote',
-                         ['\"description',
-                          ]),
         ]
         for name, source_lines in test_cases:
             with self.subTest(name):
-                source = source_of_lines(source_lines)
+                source = _source_of_lines(source_lines)
                 with self.assertRaises(RecognizedSectionElementSourceError):
                     self.sut.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_description_and_instruction_on_single_line(self):
         source_and_description_variants = [
-            (["'single line, single quotes' instruction"],
-             'single line, single quotes', 'instruction'),
-            (['       "single line, indented, double quotes"    other-instruction'],
-             'single line, indented, double quotes', 'other-instruction'),
+            (['{d}single line, single quotes{d} instruction'],
+             'single line, single quotes',
+             'instruction'),
+            (['       {d}single line, indented{d}    other-instruction'],
+             'single line, indented',
+             'other-instruction'),
         ]
         for source_lines, expected_description, expected_instruction in source_and_description_variants:
             with self.subTest(source_lines=source_lines,
                               expected_description=expected_description,
                               expected_instruction=expected_instruction):
-                source = source_of_lines(source_lines)
+                source = _source_of_lines(source_lines)
                 expectation = Expectation(description=asrt.equals(expected_description),
                                           source=source_is_at_end,
                                           instruction=assert_instruction(1, expected_instruction))
@@ -109,14 +108,14 @@ class TestParseWithDescription(unittest.TestCase):
 
     def test_description_on_single_line_and_instruction_on_line_after(self):
         source_and_description_variants = [
-            (["'single line, single quotes'",
+            (['{d}single line, single quotes{d}',
               'instruction',
               ],
              Expectation(description=asrt.Equals('single line, single quotes'),
                          source=source_is_at_end,
                          instruction=assert_instruction(2, 'instruction')),
              ),
-            (["'single line, single quotes'",
+            (['{d}single line, single quotes{d}',
               '',
               'instruction',
               ],
@@ -124,39 +123,23 @@ class TestParseWithDescription(unittest.TestCase):
                          source=source_is_at_end,
                          instruction=assert_instruction(3, 'instruction')),
              ),
-            (["   'single line, indented, single quotes'",
+            (['   {d}single line, indented{d}',
               'instruction',
               ],
-             Expectation(description=asrt.Equals('single line, indented, single quotes'),
+             Expectation(description=asrt.Equals('single line, indented'),
                          source=source_is_at_end,
                          instruction=assert_instruction(2, 'instruction')),
-             ),
-            (['       "single line, indented, double quotes"    ',
-              'instruction',
-              ],
-             Expectation(description=asrt.Equals('single line, indented, double quotes'),
-                         source=source_is_at_end,
-                         instruction=assert_instruction(2, 'instruction')),
-             ),
-            (['       "single line, indented, double quotes"    ',
-              '     ',
-              '',
-              'instruction',
-              ],
-             Expectation(description=asrt.Equals('single line, indented, double quotes'),
-                         source=source_is_at_end,
-                         instruction=assert_instruction(4, 'instruction')),
              ),
         ]
         for description_lines, expectation in source_and_description_variants:
             with self.subTest(description_lines=description_lines):
-                source = source_of_lines(description_lines)
+                source = _source_of_lines(description_lines)
                 arrangement = Arrangement(self.sut, source)
                 check(self, expectation, arrangement)
 
     def test_ignore_comment_lines_between_description_and_instruction(self):
         source_and_description_variants = [
-            (['\'description\'',
+            (['{d}description{d}',
               syntax.LINE_COMMENT_MARKER,
               'instruction',
               ],
@@ -164,7 +147,7 @@ class TestParseWithDescription(unittest.TestCase):
                          source=source_is_at_end,
                          instruction=assert_instruction(3, 'instruction')),
              ),
-            (['\'description\'',
+            (['{d}description{d}',
               '     ' + syntax.LINE_COMMENT_MARKER + ' comment text   ',
               'instruction',
               ],
@@ -172,7 +155,7 @@ class TestParseWithDescription(unittest.TestCase):
                          source=source_is_at_end,
                          instruction=assert_instruction(3, 'instruction')),
              ),
-            (['\'description\'',
+            (['{d}description{d}',
               '',
               syntax.LINE_COMMENT_MARKER,
               '',
@@ -182,8 +165,8 @@ class TestParseWithDescription(unittest.TestCase):
                          source=source_is_at_end,
                          instruction=assert_instruction(5, 'Instruction')),
              ),
-            (['\'description line 1',
-              'description line 2\'',
+            (['{d}description line 1',
+              'description line 2{d}',
               syntax.LINE_COMMENT_MARKER,
               'Instruction',
               ],
@@ -191,8 +174,8 @@ class TestParseWithDescription(unittest.TestCase):
                          source=source_is_at_end,
                          instruction=assert_instruction(4, 'Instruction')),
              ),
-            (['\'description line 1',
-              'description line 2\'',
+            (['{d}description line 1',
+              'description line 2{d}',
               '',
               '' + syntax.LINE_COMMENT_MARKER,
               '' + syntax.LINE_COMMENT_MARKER,
@@ -205,37 +188,37 @@ class TestParseWithDescription(unittest.TestCase):
         ]
         for description_lines, expectation in source_and_description_variants:
             with self.subTest(description_lines=description_lines):
-                source = source_of_lines(description_lines)
+                source = _source_of_lines(description_lines)
                 arrangement = Arrangement(self.sut, source)
                 check(self, expectation, arrangement)
 
     def test_multi_line_description(self):
         test_cases = [
-            (['\'first line of description',
-              'second line of description\'',
+            (['{d}first line of description',
+              'second line of description{d}',
               'instruction line'],
              Expectation(asrt.equals('first line of description\nsecond line of description'),
                          assert_instruction(3, 'instruction line'),
                          source_is_at_end),
              ),
-            (['\'first line of description',
-              'second line of description\'',
+            (['{d}first line of description',
+              'second line of description{d}',
               '',
               'instruction line'],
              Expectation(asrt.equals('first line of description\nsecond line of description'),
                          assert_instruction(4, 'instruction line'),
                          source_is_at_end),
              ),
-            (['\'first line of description',
-              'second line of description\'      ',
+            (['{d}first line of description',
+              'second line of description{d}      ',
               '    ',
               'instruction line'],
              Expectation(asrt.equals('first line of description\nsecond line of description'),
                          assert_instruction(4, 'instruction line'),
                          source_is_at_end),
              ),
-            (['\'first line of description',
-              'second line of description\'   instruction source'],
+            (['{d}first line of description',
+              'second line of description{d}   instruction source'],
              Expectation(asrt.equals('first line of description\nsecond line of description'),
                          assert_instruction(2, 'instruction source'),
                          source_is_at_end),
@@ -244,23 +227,23 @@ class TestParseWithDescription(unittest.TestCase):
         for source_lines, expectation in test_cases:
             with self.subTest(source_lines=str(source_lines)):
                 check(self, expectation,
-                      Arrangement(self.sut, source_of_lines(source_lines)))
+                      Arrangement(self.sut, _source_of_lines(source_lines)))
 
     def test_strip_space_from_description(self):
         test_cases = [
-            (['\'   first line of description',
-              'second line of description  \'',
+            (['{d}   first line of description',
+              'second line of description  {d}',
               'instruction line'],
              Expectation(asrt.equals('first line of description\nsecond line of description'),
                          assert_instruction(3, 'instruction line'),
                          assert_source(is_at_eof=asrt.equals(True),
                                        has_current_line=asrt.equals(False))),
              ),
-            (['\'',
+            (['{d}',
               'first line of description',
               '  second line of description',
               '',
-              '\'',
+              '{d}',
               'instruction source'],
              Expectation(asrt.equals('first line of description\n  second line of description'),
                          assert_instruction(6, 'instruction source'),
@@ -271,7 +254,7 @@ class TestParseWithDescription(unittest.TestCase):
         for source_lines, expectation in test_cases:
             with self.subTest(source_lines=str(source_lines)):
                 check(self, expectation,
-                      Arrangement(self.sut, source_of_lines(source_lines)))
+                      Arrangement(self.sut, _source_of_lines(source_lines)))
 
 
 class Expectation(tuple):
@@ -359,3 +342,11 @@ class Instruction(model.Instruction):
     @property
     def source_string(self) -> str:
         return self._source_string
+
+
+def _source_of_lines(lines: Sequence[str]) -> ParseSource:
+    return source_of_lines([
+        line.format(d=DESCRIPTION_DELIMITER)
+        for line in lines
+
+    ])

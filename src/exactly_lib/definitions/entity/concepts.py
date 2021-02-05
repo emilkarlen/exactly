@@ -7,6 +7,7 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
     SingularAndPluralAndAcronymNameAndCrossReferenceId
 from exactly_lib.definitions.entity import all_entity_types
 from exactly_lib.definitions.test_case import phase_names, phase_infos
+from exactly_lib.section_document import defs as syntax_defs
 from exactly_lib.util.str_.name import NameWithGender, an_name_with_plural_s, a_name_with_plural_s
 
 _CURRENT_DIRECTORY_SINGULAR = 'current directory'
@@ -58,7 +59,7 @@ CONFIGURATION_PARAMETER_CONCEPT_INFO = name_and_ref_target_for_entity_type(
 )
 
 INSTRUCTION_CONCEPT_INFO = name_and_ref_target(
-    an_name_with_plural_s('instruction'),
+    syntax_defs.INSTRUCTION,
     _format('The building block of all phases except {phase[act]:syntax}.'),
 )
 

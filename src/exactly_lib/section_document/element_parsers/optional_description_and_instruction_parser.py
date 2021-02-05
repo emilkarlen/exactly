@@ -1,7 +1,6 @@
-import io
-import shlex
+from typing import Optional
 
-from exactly_lib.section_document import syntax
+from exactly_lib.section_document import syntax, defs
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
     InstructionParser, InstructionAndDescriptionParser, parse_and_compute_source
 from exactly_lib.section_document.parse_source import ParseSource
@@ -10,6 +9,19 @@ from exactly_lib.section_document.section_element_parsing import new_unrecognize
     new_recognized_section_element_error_of_single_line
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.util.line_source import Line
+
+_ERR_MSG__MISSING_INSTRUCTION_AFTER_DESCRIPTION = (
+    '{EOF} reached without finding {i:a} (following {id:a}).'.format(
+        EOF=defs.END_OF_FILE,
+        i=defs.INSTRUCTION,
+        id=defs.INSTRUCTION_DESCRIPTION,
+    )
+)
+_ERR_MSG__MISSING_END_DELIMITER = (
+    'Invalid {id}: end delimiter ({d}) not found.'.format(
+        id=defs.INSTRUCTION_DESCRIPTION,
+        d=defs.DESCRIPTION_DELIMITER,
+    ))
 
 
 class InstructionWithOptionalDescriptionParser(InstructionAndDescriptionParser):
@@ -32,9 +44,11 @@ class InstructionWithOptionalDescriptionParser(InstructionAndDescriptionParser):
 
     @staticmethod
     def _consume_space_and_comment_lines(source: ParseSource, first_line: Line):
-        error_message = 'End-of-file reached without finding an instruction (following a description)'
         if source.is_at_eof:
-            raise new_unrecognized_section_element_error_of_single_line(first_line, error_message)
+            raise new_unrecognized_section_element_error_of_single_line(
+                first_line,
+                _ERR_MSG__MISSING_INSTRUCTION_AFTER_DESCRIPTION,
+            )
         line_in_error_message = first_line
         source.consume_initial_space_on_current_line()
         if not source.is_at_eol:
@@ -47,34 +61,33 @@ class InstructionWithOptionalDescriptionParser(InstructionAndDescriptionParser):
             else:
                 source.consume_initial_space_on_current_line()
                 return
-        raise new_unrecognized_section_element_error_of_single_line(line_in_error_message, error_message)
+        raise new_unrecognized_section_element_error_of_single_line(line_in_error_message,
+                                                                    _ERR_MSG__MISSING_INSTRUCTION_AFTER_DESCRIPTION)
 
 
 class _DescriptionExtractor:
     def __init__(self, source: ParseSource):
         self.source = source
         self.source.consume_initial_space_on_current_line()
-        self.source_io = io.StringIO(source.remaining_source)
-        self.lexer = shlex.shlex(self.source_io, posix=True)
+        self.remaining_source = self.source.remaining_source
 
-    def apply(self) -> str:
-        ret_val = None
-        if self.starts_with_description():
-            ret_val = self.extract_and_consume_description()
-        return ret_val
+    def apply(self) -> Optional[str]:
+        return (
+            self.extract_and_consume_description()
+            if self.starts_with_description()
+            else
+            None
+        )
 
     def extract_and_consume_description(self) -> str:
-        try:
-            string_token = self.lexer.get_token()
-        except ValueError as ex:
-            raise new_recognized_section_element_error_of_single_line(self.source.current_line,
-                                                                      'Syntax error in description: ' + str(ex))
-        num_chars_consumed = self.source_io.tell()
-        if len(self.source.remaining_source) > num_chars_consumed:
-            num_chars_consumed -= 1
-        self.source.consume(num_chars_consumed)
-        return string_token.strip()
+        end_delimiter_pos = self.remaining_source.find(defs.DESCRIPTION_DELIMITER, 1)
+        if end_delimiter_pos == -1:
+            raise new_recognized_section_element_error_of_single_line(
+                self.source.current_line,
+                _ERR_MSG__MISSING_END_DELIMITER)
+        description = self.remaining_source[1:end_delimiter_pos]
+        self.source.consume(end_delimiter_pos + 1)
+        return description.strip()
 
     def starts_with_description(self) -> bool:
-        stripped_first_line = self.source.remaining_part_of_current_line
-        return stripped_first_line and stripped_first_line[0] in self.lexer.quotes
+        return self.remaining_source[0] == defs.DESCRIPTION_DELIMITER

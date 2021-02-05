@@ -1,5 +1,5 @@
 import enum
-from typing import Dict, Sequence
+from typing import Dict, Sequence, Optional
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.util import line_source
@@ -26,7 +26,8 @@ class InstructionInfo(tuple):
 
     def __new__(cls,
                 instruction: Instruction,
-                description: str = None):
+                description: Optional[str] = None,
+                ):
         return tuple.__new__(cls, (instruction, description))
 
     @property
@@ -34,7 +35,7 @@ class InstructionInfo(tuple):
         return self[0]
 
     @property
-    def description(self) -> str:
+    def description(self) -> Optional[str]:
         return self[1]
 
 

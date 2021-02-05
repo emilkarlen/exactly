@@ -49,7 +49,7 @@ classify-files-by-moving-to-appropriate-dir @[ARGUMENTS_TO_SUT]@
 exit-code == 0
 
 
-'All files should have been processed'
+`All files should have been processed`
 
 dir-contents @[INPUT_DIR]@ is-empty
 
@@ -58,11 +58,11 @@ dir-contents @[INPUT_DIR]@ is-empty
 # Check good files
 
 
-'Correct classification of good file'
+`Correct classification of good file`
 
 exists @[OUTPUT_GOOD_DIR]@/@[NAME_OF_GOOD_FILE]@ : type file
 
-'The dir for good files should contain only the file found to be good'
+`The dir for good files should contain only the file found to be good`
 
 dir-contents @[OUTPUT_GOOD_DIR]@ num-files == 1
 
@@ -71,11 +71,11 @@ dir-contents @[OUTPUT_GOOD_DIR]@ num-files == 1
 # Check bad files
 
 
-'Correct classification of bad file'
+`Correct classification of bad file`
 
 exists @[OUTPUT_BAD_DIR]@/@[NAME_OF_BAD_FILE]@ : type file
 
-'The dir for bad files should contain only the file found to be bad'
+`The dir for bad files should contain only the file found to be bad`
 
 dir-contents @[OUTPUT_BAD_DIR]@ num-files == 1
 

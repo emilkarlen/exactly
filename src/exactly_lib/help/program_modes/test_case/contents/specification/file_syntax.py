@@ -8,7 +8,9 @@ from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.render import see_also
 from exactly_lib.impls.types.condition import comparators
 from exactly_lib.impls.types.string_matcher import matcher_options as contents_opts
+from exactly_lib.section_document import defs
 from exactly_lib.section_document.syntax import section_header, LINE_COMMENT_MARKER
+from exactly_lib.tcfs import sds
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
 from exactly_lib.util.textformat.constructor import paragraphs, sections
 from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
@@ -46,7 +48,7 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
                               'Instructions',
                               paragraphs_of(INSTRUCTIONS_DOC),
                               [h.child_leaf('description',
-                                            'Instruction descriptions',
+                                            defs.INSTRUCTION_DESCRIPTION.plural.capitalize(),
                                             initial_paragraphs_of(INSTRUCTIONS_DESCRIPTION_DOC))
                                ]
                               ),
@@ -67,6 +69,9 @@ def _text_parser() -> TextParser:
         'phase_declaration_for_NAME': section_header('NAME'),
         'instr': AnyInstructionNameDictionary(),
         'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
+        'instruction_description': defs.INSTRUCTION_DESCRIPTION,
+        'description_delimiter': defs.DESCRIPTION_DELIMITER,
+        'description_delimiter_char_name': defs.DESCRIPTION_DELIMITER_CHAR_NAME,
         'default_phase': phase_names.PHASE_NAME_DICTIONARY[DEFAULT_PHASE.identifier].syntax,
         'phase': phase_names.PHASE_NAME_DICTIONARY,
         'actor': formatting.concept_(ACTOR_CONCEPT_INFO),
@@ -83,6 +88,8 @@ def _text_parser() -> TextParser:
         'INT_EQUALS_OPERATOR': comparators.EQ.name,
         'HERE_DOCUMENT_MARKER_PREFIX': string.HERE_DOCUMENT_MARKER_PREFIX,
         'MARKER': 'EOF',
+        'sds_result_dir': sds.SUB_DIRECTORY__RESULT,
+        'sds_stdout_file': sds.RESULT_FILE__STDOUT,
     })
 
 
@@ -178,14 +185,14 @@ Hello, World!
 """
 
 INSTRUCTIONS_DESCRIPTION_DOC = """\
-{instruction:a/u} may optionally be preceded by a "description" -
-a free text within quotes that is
-displayed together with the {instruction} source line in error messages.
+{instruction:a/u} may optionally be preceded by {instruction_description:a/q} -
+a free text that is displayed together with the {instruction} source code in error messages.
 
-The purpose of a description is to describe the meaning of the {instruction} using
-text that is easier to understand than the source line.
+The purpose of {instruction_description:a} is to describe the meaning of the {instruction} using
+text that is easier to understand than source code.
 
-A description is a quoted string using shell syntax.
+
+{instruction_description:a/u} is a string within {description_delimiter_char_name:s} ({description_delimiter}).
 
 
 For example, a free text may be easier to understand than {shell_command:a}:
@@ -194,13 +201,13 @@ For example, a free text may be easier to understand than {shell_command:a}:
 ```
 {phase[assert]:syntax}
 
-'PATH should contain /usr/local/bin'
+{description_delimiter}PATH should contain /usr/local/bin{description_delimiter}
 
-{instruction__shell_cmd_line} tr ':' '\\n' < ../result/stdout | grep '^/usr/local/bin$'
+{instruction__shell_cmd_line} tr ':' '\\n' < {sds_result_dir}/{sds_stdout_file} | grep '^/usr/local/bin$'
 ```
 
 
-A description may span several lines.
+{instruction_description:a/u} may span several lines.
 """
 
 OTHER_DOC = """\

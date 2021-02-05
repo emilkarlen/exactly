@@ -1,6 +1,7 @@
 [suites]
 
 instructions
+instruction-description
 integer-symbol-value
 misc
 path-presentation

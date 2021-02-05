@@ -1,0 +1,6 @@
+[assert]
+
+`1st line of description
+2nd line of description`
+
+exists . : type file

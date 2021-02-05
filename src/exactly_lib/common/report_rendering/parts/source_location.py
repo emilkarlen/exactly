@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Sequence, Tuple, List, Optional
 
 from exactly_lib.definitions.formatting import SectionName
+from exactly_lib.section_document import defs
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationPath
 from exactly_lib.util.ansi_terminal_color import FontStyle
 from exactly_lib.util.render import combinators as comb
@@ -243,4 +244,7 @@ class _InSectionHeaderRenderer(LineObjectRenderer):
 
 
 def _description_str(description: str) -> str:
-    return 'Described as "{}"'.format(description)
+    return 'Described as {delimiter}{description}{delimiter}'.format(
+        delimiter=defs.DESCRIPTION_DELIMITER,
+        description=description,
+    )

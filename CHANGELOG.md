@@ -55,6 +55,7 @@ with exception of a "0." prefix until version 1 is released.
  - Instruction `conf`/`actor` - Remove "-" prefix from actor names
  - Instruction `setup`/`stdin` - Contents value is `STRING-SOURCE`
  - Builtin symbol - string `LINE_SEP` -> Rename to `OS_LINE_SEP`
+ - Syntax of `instruction description` - Delimiter is backtick (`) (breaking)  
  - Phase `conf` - Invalid HDS path gives `VALIDATION_ERROR`
 
 ### Removed

@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream, LookAheadState
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import Token
 from exactly_lib_test.section_document.element_parsers.test_resources import token_stream_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -17,14 +18,14 @@ def suite() -> unittest.TestSuite:
 class Test(unittest.TestCase):
     def test_pass_when_no_explicit_component_assertion(self):
         test_cases = [
-            ('', 'Empty source'),
-            ('a_token', 'Single token source'),
-            ('first_token second', 'Two token source'),
+            NameAndValue('Empty source', ''),
+            NameAndValue('Single token source', 'a_token'),
+            NameAndValue('Two token source', 'first_token second'),
         ]
-        for source, description in test_cases:
-            with self.subTest(msg=description):
+        for test_case in test_cases:
+            with self.subTest(test_case.name):
                 # ARRANGE #
-                token_stream = TokenStream(source)
+                token_stream = TokenStream(test_case.value)
                 assertion = sut.assert_token_stream()
                 # ACT & ASSERT #
                 assertion.apply_without_message(self, token_stream)
