@@ -1,4 +1,10 @@
+[cases]
+
 *.case
+
+[suites]
+
+pgm-ref-in-act
 
 [setup]
 

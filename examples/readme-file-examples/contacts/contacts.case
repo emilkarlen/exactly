@@ -4,7 +4,7 @@ stdin = -contents-of some-test-contacts.txt
 
 [act]
 
-my-contacts-program get-email-of --name 'Pablo Gauss'
+my-contacts-program get-email --name 'Pablo Gauss'
 
 [assert]
 

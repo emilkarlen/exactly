@@ -1,7 +1,7 @@
 import os
 import sys
 
-GET_EMAIL_COMMAND = 'get-email-of'
+GET_EMAIL_COMMAND = 'get-email'
 NAME_OPTION = '--name'
 
 

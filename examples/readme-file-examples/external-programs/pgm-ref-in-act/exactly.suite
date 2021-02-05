@@ -1,0 +1,7 @@
+[cases]
+
+*.case
+
+[setup]
+
+def program EXECUTE_SQL = -python -c :> import sys; print(str(sys.argv[1:]))

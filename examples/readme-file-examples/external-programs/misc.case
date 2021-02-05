@@ -26,16 +26,15 @@ file interesting-records.txt =
 $ ls *.txt
 
 file root-files.txt =
-     -stdout-from
-      % ls /
-      -transformed-by
-          run my-string-transformer-program
+     -stdout-from % ls /
+       -transformed-by
+         run my-string-transformer-program
 
 file interesting-pgm-output.txt =
      -stdout-from
-      -python @[EXACTLY_HOME]@/my-text-generating-program.py
-      -transformed-by
-          strip -trailing-new-lines
+       -python @[EXACTLY_HOME]@/my-text-generating-program.py
+       -transformed-by
+         strip -trailing-new-lines
 
 [act]
 
