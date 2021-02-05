@@ -90,7 +90,7 @@ then Exactly will *report failure*. For example:
       EOF
 
 
-    Unexpected contents of stdout from [act]
+    Unexpected contents of stdout from the "action to check"
 
       @[EXACTLY_RESULT]@/stdout
 
@@ -101,13 +101,9 @@ then Exactly will *report failure*. For example:
               'pablo\@gauss.org\\n'
           *Diff*
     --- Expected
-
     +++ Actual
-
     @@ -1 +1 @@
-
     -pablo\@gauss.org
-
     +pablo.gauss\@masters.org
 
 

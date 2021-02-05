@@ -1,7 +1,7 @@
 import difflib
 import filecmp
 import pathlib
-from typing import Iterable, Sequence, Callable, Tuple
+from typing import Iterable, Sequence, Callable, Tuple, List
 
 import exactly_lib.util.str_.read_lines
 from exactly_lib.definitions.entity import syntax_elements
@@ -28,7 +28,6 @@ from exactly_lib.type_val_prims.string_source.contents import StringSourceConten
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
-from exactly_lib.util.file_utils import misc_utils
 from exactly_lib.util.str_.str_constructor import StringConstructor
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -303,8 +302,8 @@ def _min_num_chars_to_read(operand: str) -> int:
 
 def _file_diff_description(actual_file_path: pathlib.Path,
                            expected_file_path: pathlib.Path) -> Iterable[str]:
-    expected_lines = misc_utils.lines_of(expected_file_path)
-    actual_lines = misc_utils.lines_of(actual_file_path)
+    expected_lines = _lines_of(expected_file_path)
+    actual_lines = _lines_of(actual_file_path)
     diff = difflib.unified_diff(expected_lines,
                                 actual_lines,
                                 fromfile=custom_details.EXPECTED,
@@ -318,3 +317,22 @@ class _DiffString(StringConstructor):
 
     def __str__(self) -> str:
         return ''.join(self._lines)
+
+
+def _lines_of(file_path: pathlib.Path) -> List[str]:
+    with file_path.open() as f:
+        ret_val = list(f.readlines())
+
+    if ret_val:
+        ret_val[-1] = _with_nl_ending(ret_val[-1])
+
+    return ret_val
+
+
+def _with_nl_ending(s: str) -> str:
+    return (
+        s + '\n'
+        if s == '' or s[-1] != '\n'
+        else
+        s
+    )

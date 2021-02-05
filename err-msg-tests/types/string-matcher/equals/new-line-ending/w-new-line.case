@@ -1,0 +1,6 @@
+[assert]
+
+file a.txt = actual@[NEW_LINE]@
+file e.txt = expected@[NEW_LINE]@
+
+contents a.txt equals -contents-of -rel-act e.txt
