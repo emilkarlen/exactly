@@ -20,6 +20,8 @@ with exception of a "0." prefix until version 1 is released.
  - Type `file-matcher` - `suffixes` - matches the "suffixes" part of file names
  - Type `file-matcher` - `suffix` - matches the "suffix" part of file names
  - Type `line-matcher` - `contents` - matches text contents using a `string-matcher`
+ - Type `string-transformer` - `char-case`
+ - Type `string-transformer` - `replace-test-case-dirs`
  - Type `string-transformer` - `strip`
  - Type `string-transformer` - `filter` - `-line-nums` Matches lines against line number ranges
  - Type `string-matcher` - Add alias `~` for `matches`
@@ -31,16 +33,14 @@ with exception of a "0." prefix until version 1 is released.
 
 ### Changed
 
- - Syntax of type expressions in nested expressions - May not contain binary operators (unless inside parentheses)
- - Syntax of type expressions - Precedences of `||` and `&&`
+ - Syntax of type expressions in nested expressions - May not contain binary operators (unless inside parentheses) (breaking)
+ - Syntax of type expressions - Precedences of `||` and `&&` (breaking)
  - Type `files-matcher` - rename `-prune` -> `-with-pruned` (breaking)
  - Type `files-matcher` - rename `empty` -> `is-empty` (breaking)
- - Type `file-matcher` - `name` - match base name (also for the GLOB-PATTERN variant)
- - Type `file-matcher` - `name` / `path` - Use `~` for regex matching
- - Type `string-transformer` - `replace` - Include new-lines in processed lines, unless `-preserve-new-lines` is given
+ - Type `file-matcher` - `name` - match base name (also for the GLOB-PATTERN variant) (breaking)
+ - Type `file-matcher` - `name` / `path` - Use `~` for regex matching (breaking)
+ - Type `string-transformer` - `replace` - Include new-lines in processed lines, unless `-preserve-new-lines` is given (breaking)
  - Type `string-transformer` - `filter`/`LINE-MATCHER` - Optimize by deriving interval of applicable lines
- - Type `string-transformer` - Case converters - Replaces builtin symbols with primitive
- - Type `string-transformer` - TCDS dir replacement - Replaces builtin symbol with primitive
  - Type `string-matcher` - `equals` - Expected value is `STRING-SOURCE`
  - Type `string-matcher` - rename `empty` -> `is-empty` (breaking)
  - Syntax element `STRING-SOURCE` - Option `-file` -> `-contents-of` (breaking)
@@ -49,14 +49,17 @@ with exception of a "0." prefix until version 1 is released.
  - Syntax element `PROGRAM` - Add optional surrounding by parentheses
  - Interpreter actors - interpreter `EXECUTABLE [ARGUMENT]...` requires `EXECUTABLE` to be a file
  - Actor - `file interpreter` - arguments to source file are `PROGRAM-ARGUMENT`
- - Exit codes - rename `IMPLEMENTATION_ERROR` -> `INTERNAL_ERROR`
+ - Exit codes - rename `IMPLEMENTATION_ERROR` -> `INTERNAL_ERROR` (breaking)
  - Exit codes - Syntax error in `[act]` - `VALIDATION_ERROR` -> `SYNTAX_ERROR`
- - Exit codes - Values of all non-zero exit codes
- - Instruction `conf`/`actor` - Remove "-" prefix from actor names
+ - Exit codes - Values of all non-zero exit codes (breaking)
+ - Instruction `conf`/`actor` - Remove "-" prefix from actor names (breaking)
  - Instruction `setup`/`stdin` - Contents value is `STRING-SOURCE`
  - Instruction `assert`/`contents` - Syntax - add `:` between path and matcher (breaking)
  - Instruction `assert`/`dir-contents` - Syntax - add `:` between path and matcher (breaking)
- - Builtin symbol - string `LINE_SEP` -> Rename to `OS_LINE_SEP`
+ - Builtin symbol - `string-transformer` - `TO_LOWER_CASE` -> Replaced with `char-case` (breaking)
+ - Builtin symbol - `string-transformer` - `TO_UPPER_CASE` -> Replaced with `char-case` (breaking)
+ - Builtin symbol - `string-transformer` - `REPLACE_TEST_CASE_DIRS` -> Replaced with `replace-test-case-dirs` (breaking)
+ - Builtin symbol - `string` -  `LINE_SEP` -> Rename to `OS_LINE_SEP` (breaking)
  - Syntax of `instruction description` - Delimiter is backtick (`) (breaking)  
  - Phase `conf` - Invalid HDS path gives `VALIDATION_ERROR`
 
