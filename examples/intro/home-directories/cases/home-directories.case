@@ -34,7 +34,7 @@ home     = ..
 [setup]
 
 
-# The "install" instruction looks for referenced files in the "case home" directory.
+# The "copy" instruction looks for referenced files in the "case home" directory.
 
 copy testdata/test-file.txt
 
