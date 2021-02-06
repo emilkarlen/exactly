@@ -1,3 +1,4 @@
+import enum
 import pathlib
 from typing import Optional
 
@@ -48,36 +49,48 @@ def path_or_string_reference_restrictions(accepted_relativities: PathRelativityV
     ])
 
 
+class PathReferenceVariant(enum.IntEnum):
+    PATH = 1
+    PATH_OR_STRING = 2
+
+
 class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
     def __init__(self,
                  sdv: PathSdv,
                  accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 default_reference_variant: PathReferenceVariant = PathReferenceVariant.PATH_OR_STRING,
                  ):
         super().__init__(sdv, definition_source)
         self._accepted_relativities = accepted_relativities
+        self._default_reference_variant = default_reference_variant
 
     @staticmethod
     def of_sdv(sdv: PathSdv,
                accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+               default_reference_variant: PathReferenceVariant = PathReferenceVariant.PATH_OR_STRING,
                ) -> 'PathSymbolValueContext':
         """
         Use this to create from an SDV, since constructor will
         may be changed to take other type of arg.
         """
-        return PathSymbolValueContext(sdv, accepted_relativities, definition_source)
+        return PathSymbolValueContext(sdv, accepted_relativities, definition_source, default_reference_variant)
 
     @staticmethod
     def of_ddv(ddv: PathDdv,
                accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+               default_reference_variant: PathReferenceVariant = PathReferenceVariant.PATH_OR_STRING,
                ) -> 'PathSymbolValueContext':
         """
         Use this to create from an SDV, since constructor will
         may be changed to take other type of arg.
         """
-        return PathSymbolValueContext(PathConstantSdv(ddv), accepted_relativities, definition_source)
+        return PathSymbolValueContext(PathConstantSdv(ddv),
+                                      accepted_relativities,
+                                      definition_source,
+                                      default_reference_variant)
 
     @staticmethod
     def of_rel_opt_and_suffix(relativity: RelOptionType,
@@ -105,6 +118,7 @@ class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
     def of_reference(referenced_symbol_name: str,
                      accepted_relativities: PathRelativityVariants,
                      definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                     default_reference_variant: PathReferenceVariant = PathReferenceVariant.PATH_OR_STRING,
                      ) -> 'PathSymbolValueContext':
         return PathSymbolValueContext(
             path_rel_symbol.PathSdvRelSymbol(
@@ -114,6 +128,7 @@ class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
             ),
             accepted_relativities,
             definition_source,
+            default_reference_variant,
         )
 
     @staticmethod
@@ -159,7 +174,12 @@ class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
         )
 
     def reference_assertion(self, symbol_name: str) -> Assertion[SymbolReference]:
-        return self.reference_assertion__path_or_string(symbol_name)
+        return (
+            self.reference_assertion__path_or_string(symbol_name)
+            if self._default_reference_variant is PathReferenceVariant.PATH_OR_STRING
+            else
+            self.reference_assertion__path(symbol_name)
+        )
 
 
 class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
@@ -232,10 +252,12 @@ class PathDdvSymbolContext(PathSymbolContext):
                  ddv: PathDdv,
                  accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 default_reference_variant: PathReferenceVariant = PathReferenceVariant.PATH_OR_STRING,
                  ):
         super().__init__(name, PathSymbolValueContext.of_sdv(PathConstantSdv(ddv),
                                                              accepted_relativities,
-                                                             definition_source))
+                                                             definition_source,
+                                                             default_reference_variant))
         self._ddv = ddv
 
     @staticmethod
@@ -243,6 +265,7 @@ class PathDdvSymbolContext(PathSymbolContext):
                      relativity: RelOptionType,
                      accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
                      definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                     default_reference_variant: PathReferenceVariant = PathReferenceVariant.PATH_OR_STRING,
                      ) -> 'PathDdvSymbolContext':
         return PathDdvSymbolContext(
             name,
@@ -250,6 +273,7 @@ class PathDdvSymbolContext(PathSymbolContext):
                                     path_ddvs.empty_path_part()),
             accepted_relativities,
             definition_source,
+            default_reference_variant,
         )
 
     @property
@@ -272,13 +296,15 @@ class ConstantSuffixPathDdvSymbolContext(PathDdvSymbolContext):
                  suffix: str,
                  accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 default_reference_variant: PathReferenceVariant = PathReferenceVariant.PATH_OR_STRING,
                  ):
         self._path_part = path_ddvs.constant_path_part(suffix)
         super().__init__(name,
                          path_ddvs.of_rel_option(relativity,
                                                  self._path_part),
                          accepted_relativities,
-                         definition_source)
+                         definition_source,
+                         default_reference_variant)
         self._suffix = suffix
 
     @property

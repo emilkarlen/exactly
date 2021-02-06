@@ -34,6 +34,12 @@ def symbol_reference_followed_by_superfluous_string_on_same_line(
     )
 
 
+class StringMatcherNegationAbsStx(abstract_syntax_impls.NegationAbsStx,
+                                  StringMatcherAbsStx):
+    def __init__(self, negated: StringMatcherAbsStx):
+        super().__init__(negated)
+
+
 class StringMatcherInfixOpAbsStx(abstract_syntax_impls.InfixOperatorAbsStx,
                                  StringMatcherAbsStx):
     def __init__(self,
@@ -99,4 +105,11 @@ class EqualsAbsStx(StringMatcherAbsStx):
             TokenSequence.singleton(matcher_options.EQUALS_ARGUMENT),
             TokenSequence.optional_new_line(),
             self._expected.tokenization(),
+        ])
+
+
+class EmptyAbsStx(StringMatcherAbsStx):
+    def tokenization(self) -> TokenSequence:
+        return TokenSequence.concat([
+            TokenSequence.singleton(matcher_options.EMPTY_ARGUMENT),
         ])

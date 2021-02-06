@@ -41,7 +41,7 @@ from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_asserti
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import RelativityAbsStx, \
     PathWConstNameAbsStx
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext, PathReferenceVariant
 
 
 class SymbolsConfiguration:
@@ -185,6 +185,17 @@ class RelativityOptionConfiguration(ABC):
             raise ValueError('Not a {}: {}'.format(OptionStringConfiguration, cli_option))
         if not isinstance(symbols_configuration, SymbolsConfiguration):
             raise ValueError('Not a {}: {}'.format(SymbolsConfiguration, symbols_configuration))
+
+    @property
+    def name(self) -> str:
+        """A name useful for inclusion in test case variant descriptions"""
+        return 'cli_opt={cli_opt}, symbols={symbols}'.format(
+            cli_opt=repr(self._cli_option.option_string),
+            symbols=repr([
+                symbol.name
+                for symbol in self._symbols_configuration.contexts_for_arrangement()
+            ])
+        )
 
     @property
     def directory_structure_partition(self) -> DirectoryStructurePartition:
@@ -449,6 +460,7 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
         self.symbol_context = PathDdvSymbolContext(symbol_name,
                                                    path_ddvs.of_rel_option(relativity,
                                                                            path_ddvs.empty_path_part()),
+                                                   default_reference_variant=PathReferenceVariant.PATH,
                                                    )
 
     def reference_expectation_assertions(self) -> List[Assertion[SymbolReference]]:

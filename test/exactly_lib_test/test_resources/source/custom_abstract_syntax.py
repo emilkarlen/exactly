@@ -24,9 +24,30 @@ class CustomAbstractSyntax(AbstractSyntax):
         return self._tokens
 
 
-class SequenceAbstractSyntax(AbstractSyntax):
+class SequenceAbsStx(AbstractSyntax):
     def __init__(self, elements: Sequence[AbstractSyntax]):
         self._elements = elements
+
+    @staticmethod
+    def followed_by_str(first: AbstractSyntax, following: str) -> AbstractSyntax:
+        return SequenceAbsStx([
+            first,
+            CustomAbstractSyntax(TokenSequence.singleton(following)),
+        ])
+
+    @staticmethod
+    def followed_by_superfluous(first: AbstractSyntax) -> AbstractSyntax:
+        return SequenceAbsStx([
+            first,
+            CustomAbstractSyntax(TokenSequence.singleton('superfluous')),
+        ])
+
+    @staticmethod
+    def preceded_by_str(first: str, following: AbstractSyntax) -> AbstractSyntax:
+        return SequenceAbsStx([
+            CustomAbstractSyntax(TokenSequence.singleton(first)),
+            following,
+        ])
 
     def tokenization(self) -> TokenSequence:
         return TokenSequence.concat([

@@ -26,10 +26,10 @@ class Checker(Generic[T]):
 
     def check_invalid_arguments(self,
                                 put: unittest.TestCase,
-                                source: ParseSource,
+                                invalid_source: ParseSource,
                                 ):
         with put.assertRaises(SingleInstructionInvalidArgumentException) as cx:
-            self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+            self.parser.parse(ARBITRARY_FS_LOCATION_INFO, invalid_source)
 
         put.assertIsInstance(cx.exception.error_message,
                              str,
@@ -37,18 +37,18 @@ class Checker(Generic[T]):
 
     def check_invalid_syntax__abs_stx(self,
                                       put: unittest.TestCase,
-                                      source: AbstractSyntax,
+                                      invalid_source: AbstractSyntax,
                                       ):
         for layout_case in STANDARD_LAYOUT_SPECS:
-            parse_source = ParseSource(source.tokenization().layout(layout_case.value))
+            parse_source = ParseSource(invalid_source.tokenization().layout(layout_case.value))
             with put.subTest(layout=layout_case.name):
                 self.check_invalid_arguments(put, parse_source)
 
     def check_invalid_syntax__src_var_consume_last_line_abs_stx(self,
                                                                 put: unittest.TestCase,
-                                                                source: AbstractSyntax,
+                                                                invalid_source: AbstractSyntax,
                                                                 ):
-        for case in equivalent_source_variants__with_source_check__consume_last_line__abs_stx(source):
+        for case in equivalent_source_variants__with_source_check__consume_last_line__abs_stx(invalid_source):
             with put.subTest(layout=case.name):
                 self.check_invalid_arguments(put, case.value.source)
 
@@ -62,18 +62,18 @@ class Checker(Generic[T]):
 
     def check_valid_arguments(self,
                               put: unittest.TestCase,
-                              source: ParseSource,
+                              valid_source: ParseSource,
                               ):
-        actual = self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+        actual = self.parser.parse(ARBITRARY_FS_LOCATION_INFO, valid_source)
         put.assertIsNotNone(actual,
                             'parsed object')
 
     def parse__abs_stx(self,
                        put: unittest.TestCase,
-                       source: AbstractSyntax,
+                       valid_source: AbstractSyntax,
                        layout: tokens_layout.LayoutSpec = tokens_layout.LayoutSpec.of_default(),
                        ) -> T:
-        parse_source = remaining_source(source.tokenization().layout(layout))
+        parse_source = remaining_source(valid_source.tokenization().layout(layout))
         actual = self.parser.parse(ARBITRARY_FS_LOCATION_INFO, parse_source)
         put.assertIsNotNone(actual,
                             'parsed object')

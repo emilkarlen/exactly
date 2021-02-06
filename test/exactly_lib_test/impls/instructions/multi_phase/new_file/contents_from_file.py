@@ -158,7 +158,7 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                 path_abs_stx.DefaultRelPathAbsStx('dst-file.txt'),
                 file_contents_case.value,
             )
-            invalid_instruction_syntax = custom_abs_stx.SequenceAbstractSyntax([
+            invalid_instruction_syntax = custom_abs_stx.SequenceAbsStx([
                 valid_instruction_syntax,
                 custom_abs_stx.CustomAbstractSyntax.singleton('superfluous_argument')
             ])

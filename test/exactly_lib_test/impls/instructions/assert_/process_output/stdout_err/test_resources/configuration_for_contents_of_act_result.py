@@ -1,18 +1,18 @@
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.impls.instructions.assert_.test_resources.file_contents.equals import \
-    InstructionTestConfigurationForEquals
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.impls.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
+    InstructionTestConfiguration
 from exactly_lib_test.tcfs.test_resources import tcds_populators as tcds
-from exactly_lib_test.tcfs.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.test_case.test_resources.act_result import ActResultProducer, ActResultProducerFromActResult
 from exactly_lib_test.test_resources.process import SubProcessResult
+from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import TcdsAction
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.abstract_syntax import StringMatcherAbsStx
 
 
-class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
-    def arguments_for(self, additional_arguments: str) -> Arguments:
-        return Arguments(additional_arguments)
+class TestConfigurationForStdFile(InstructionTestConfiguration):
+    def syntax_for_matcher(self, matcher: StringMatcherAbsStx) -> AbstractSyntax:
+        return matcher
 
     def arrangement_for_contents(self,
                                  actual_contents: str,
@@ -23,19 +23,6 @@ class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
         return instruction_check.ArrangementPostAct(
             act_result_producer=self._act_result_producer(actual_contents),
             tcds_contents=tcds_contents,
-            post_sds_population_action=post_sds_population_action,
-            symbols=symbols,
-        )
-
-    def arrangement_for_actual_and_expected(self,
-                                            actual_contents: str,
-                                            expected: TcdsPopulator,
-                                            post_sds_population_action: TcdsAction = TcdsAction(),
-                                            symbols: SymbolTable = None,
-                                            ) -> instruction_check.ArrangementPostAct:
-        return instruction_check.ArrangementPostAct(
-            act_result_producer=(self._act_result_producer(actual_contents)),
-            tcds_contents=expected,
             post_sds_population_action=post_sds_population_action,
             symbols=symbols,
         )

@@ -6,6 +6,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.hard_error import HardErrorException
@@ -127,6 +128,18 @@ class ExecutionExpectation:
             )
         else:
             return ExecutionExpectation()
+
+    @staticmethod
+    def validation_corresponding_to_dsp__post_sds_as_hard_error(path_location: DirectoryStructurePartition
+                                                                ) -> 'ExecutionExpectation':
+        if path_location is DirectoryStructurePartition.HDS:
+            return ExecutionExpectation(
+                validation_pre_sds=svh_assertions.is_validation_error()
+            )
+        else:
+            return ExecutionExpectation(
+                main_result=pfh_assertions.is_hard_error()
+            )
 
 
 class Expectation2:

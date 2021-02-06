@@ -3,23 +3,18 @@ import unittest
 from exactly_lib.impls.instructions.assert_ import contents_of_file as sut
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.impls.instructions.assert_.contents_of_file import parse
-from exactly_lib_test.impls.instructions.assert_.contents_of_file.relativity_option_for_actual_file import \
-    any_line_matches as any_line_matches_with_relative_actual, \
-    empty as empty_with_relative_actual, \
-    equals as equals_with_relative_actual
-from exactly_lib_test.impls.instructions.assert_.contents_of_file.test_resources.misc import TestConfigurationForFile
+from exactly_lib_test.impls.instructions.assert_.contents_of_file import specific
+from exactly_lib_test.impls.instructions.assert_.contents_of_file.test_resources.instruction_configuration import \
+    TestConfigurationForFile
 from exactly_lib_test.impls.instructions.assert_.test_resources.file_contents import common_tests
 
 
 def suite() -> unittest.TestSuite:
-    configuration = TestConfigurationForFile()
     return unittest.TestSuite([
-        common_tests.suite_for(configuration),
+        common_tests.suite_for(TestConfigurationForFile()),
 
         parse.suite(),
-        empty_with_relative_actual.suite_for(configuration),
-        equals_with_relative_actual.suite_for(configuration),
-        any_line_matches_with_relative_actual.suite_for(configuration),
+        specific.suite(),
 
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])

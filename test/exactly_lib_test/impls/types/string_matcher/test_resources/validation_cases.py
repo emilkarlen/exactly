@@ -14,6 +14,7 @@ class ValidationCase:
                  expectation: ValidationAssertions,
                  actual: ValidationActual,
                  ):
+        self.actual = actual
         self._expectation = expectation
         self._symbol_context = StringMatcherSymbolContext.of_sdv(
             'string_matcher_symbol',

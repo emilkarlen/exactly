@@ -269,7 +269,7 @@ class TestFailingParse(unittest.TestCase):
             path_abs_stx.DefaultRelPathAbsStx('file-name'),
             string_source_abs_stx.StringSourceOfStringAbsStx(str_abs_stx.StringLiteralAbsStx('string')),
         )
-        invalid_instruction_syntax = custom_abs_stx.SequenceAbstractSyntax([
+        invalid_instruction_syntax = custom_abs_stx.SequenceAbsStx([
             valid_instruction_syntax,
             custom_abs_stx.CustomAbstractSyntax.singleton('superfluous_argument')
         ])

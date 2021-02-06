@@ -1,96 +1,68 @@
 import unittest
 
-from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
-    SingleInstructionInvalidArgumentException
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
-    TestWithConfigurationAndNegationArgumentBase, \
-    suite_for__conf__not_argument, InstructionTestConfiguration
-from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_building import args
-from exactly_lib_test.impls.types.string_matcher.test_resources.transformations import \
-    TRANSFORMER_OPTION_ALTERNATIVES
-from exactly_lib_test.section_document.element_parsers.test_resources.exception_assertions import \
-    assert_is_single_instruction_invalid_argument_exception
-from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+    InstructionTestConfiguration, TestWithConfigurationBase
+from exactly_lib_test.symbol.test_resources.symbol_syntax import \
+    NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME
+from exactly_lib_test.test_resources.source.abstract_syntax_impls import CustomAbsStx
+from exactly_lib_test.test_resources.source.custom_abstract_syntax import SequenceAbsStx
+from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import \
+    StringMatcherSymbolContext
 
 
 def suite_for(configuration: InstructionTestConfiguration) -> unittest.TestSuite:
-    test_cases = [
-        ParseShouldFailWhenActualIsFollowedByIllegalOptionOrString,
-        ParseShouldFailWhenCheckIsMissing,
-        ParseShouldFailWhenCheckIsIllegal,
-    ]
-    return suite_for__conf__not_argument(configuration, test_cases)
+    return unittest.TestSuite([
+        ParseShouldFailWhenActualIsFollowedByIllegalOptionOrString(configuration),
+        ParseShouldFailWhenCheckIsMissing(configuration),
+        ParseShouldFailWhenCheckIsIllegal(configuration),
+    ])
 
 
-class ParseShouldFailWhenActualIsFollowedByIllegalOptionOrString(TestWithConfigurationAndNegationArgumentBase):
+class ParseShouldFailWhenActualIsFollowedByIllegalOptionOrString(TestWithConfigurationBase):
     def runTest(self):
         # ARRANGE #
+        string_matcher__const_true = StringMatcherSymbolContext.of_primitive_constant('STRING_MATCHER', True)
         cases = [
             NameAndValue('illegal option',
                          option_syntax.long_option_syntax('this-is-an-illegal-option')),
             NameAndValue('illegal argument',
                          'this-is-an-illegal-argument'),
         ]
-        parser = self.configuration.new_parser()
         for case in cases:
             with self.subTest(case_name=case.name):
-                source = self.configuration.source_for(
-                    args('{illegal_argument} {maybe_not} {empty}',
-                         illegal_argument=case.value,
-                         maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
-                )
-                with self.assertRaises(SingleInstructionInvalidArgumentException) as cm:
-                    parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
-                assert_is_single_instruction_invalid_argument_exception().apply_with_message(
+                # ACT & ASSERT #
+                self.configuration.parse_checker.check_invalid_syntax__src_var_consume_last_line_abs_stx(
                     self,
-                    cm.exception,
-                    'exception from parser'
-                )
-
-
-class ParseShouldFailWhenCheckIsMissing(TestWithConfigurationAndNegationArgumentBase):
-    def runTest(self):
-        parser = self.configuration.new_parser()
-        for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
-            with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
-                source = self.configuration.source_for(
-                    args('{maybe_with_transformer_option} {maybe_not}',
-                         maybe_with_transformer_option=maybe_with_transformer_option,
-                         maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
-                )
-                with self.assertRaises(SingleInstructionInvalidArgumentException) as cm:
-                    parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
-                assert_is_single_instruction_invalid_argument_exception().apply_with_message(
-                    self,
-                    cm.exception,
-                    'exception from parser'
-                )
-
-
-class ParseShouldFailWhenCheckIsIllegal(TestWithConfigurationAndNegationArgumentBase):
-    def runTest(self):
-        cases = [
-            NameAndValue('illegal option',
-                         'this-is-an-illegal-argument'),
-        ]
-        parser = self.configuration.new_parser()
-        for case in cases:
-            for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
-                with self.subTest(illegal_check=case.name,
-                                  maybe_with_transformer_option=maybe_with_transformer_option):
-                    source = self.configuration.source_for(
-                        args('{maybe_with_transformer_option} {maybe_not} {illegal_check}',
-                             maybe_with_transformer_option=maybe_with_transformer_option,
-                             maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative,
-                             illegal_check=case.value,
-                             ),
+                    self.configuration.syntax_for_matcher(
+                        SequenceAbsStx.preceded_by_str(
+                            case.value,
+                            self.configuration.syntax_for_matcher(string_matcher__const_true.abstract_syntax),
+                        )
                     )
-                    with self.assertRaises(SingleInstructionInvalidArgumentException) as cm:
-                        parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
-                    assert_is_single_instruction_invalid_argument_exception().apply_with_message(
-                        self,
-                        cm.exception,
-                        'exception from parser'
-                    )
+                )
+
+
+class ParseShouldFailWhenCheckIsMissing(TestWithConfigurationBase):
+    def runTest(self):
+        # ACT & ASSERT #
+        self.configuration.parse_checker.check_invalid_syntax__src_var_consume_last_line_abs_stx(
+            self,
+            self.configuration.syntax_for_matcher(
+                self.configuration.syntax_for_matcher(
+                    CustomAbsStx.empty()
+                )
+            )
+        )
+
+
+class ParseShouldFailWhenCheckIsIllegal(TestWithConfigurationBase):
+    def runTest(self):
+        # ACT & ASSERT #
+        self.configuration.parse_checker.check_invalid_syntax__src_var_consume_last_line_abs_stx(
+            self,
+            self.configuration.syntax_for_matcher(
+                CustomAbsStx.of_str(NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME)
+            )
+        )
