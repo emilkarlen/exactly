@@ -8,14 +8,14 @@ file file-C.txt = 'C'
 
 [assert]
 
-dir-contents .
+dir-contents . :
              -selection ( type file && contents equals 'A' )
-             num-files == 1
+               num-files == 1
 
-dir-contents .
+dir-contents . :
              -selection ( type file && ! contents equals 'A' )
-             num-files == 2
+               num-files == 2
 
-dir-contents .
+dir-contents . :
              -selection ( type dir || ( type file && contents equals 'A' ) )
-             num-files == 3
+               num-files == 3

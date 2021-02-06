@@ -5,21 +5,18 @@ file xyz.txt
 
 [assert]
 
-dir-contents .
-             -recursive
-             -selection path act/*/*/*.txt
-             num-files == 1
+dir-contents . : -recursive
+                 -selection path act/*/*/*.txt
+                   num-files == 1
 
 def string TXT_GLOB_PATTERN = *.txt
 
-dir-contents .
-             -recursive
-             -selection path dir2/@[TXT_GLOB_PATTERN]@
-             num-files == 1
+dir-contents . : -recursive
+                 -selection path dir2/@[TXT_GLOB_PATTERN]@
+                   num-files == 1
 
 def file-matcher PATH_TXT_GLOB_PATTERN = path @[TXT_GLOB_PATTERN]@
 
-dir-contents .
-             -recursive
-             -selection PATH_TXT_GLOB_PATTERN
-             num-files == 2
+dir-contents . : -recursive
+                 -selection PATH_TXT_GLOB_PATTERN
+                   num-files == 2

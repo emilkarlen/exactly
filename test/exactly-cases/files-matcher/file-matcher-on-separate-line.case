@@ -7,5 +7,5 @@ file checked-file.txt
 [assert]
 
 
-dir-contents . every file :
-               contents is-empty
+dir-contents . : every file :
+                 contents is-empty

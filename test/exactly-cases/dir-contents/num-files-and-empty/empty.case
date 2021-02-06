@@ -7,8 +7,8 @@ dir empty-dir
 [assert]
 
 
-dir-contents empty-dir is-empty
+dir-contents empty-dir : is-empty
 
-dir-contents empty-dir num-files == 0
+dir-contents empty-dir : num-files == 0
 
-dir-contents empty-dir ! num-files > 0
+dir-contents empty-dir : ! num-files > 0

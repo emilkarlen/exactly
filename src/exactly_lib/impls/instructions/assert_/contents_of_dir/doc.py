@@ -9,6 +9,7 @@ from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.impls import common_arguments
 from exactly_lib.impls.file_properties import FileType
 from exactly_lib.impls.types.file_matcher import file_or_dir_contents_doc
 from exactly_lib.impls.types.path import rel_opts_configuration, relative_path_options_documentation as rel_path_doc
@@ -58,7 +59,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         files_matcher_arg = a.Single(a.Multiplicity.MANDATORY,
                                      syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.argument)
 
-        arguments = [self.actual_file]
+        arguments = [self.actual_file, common_arguments.RESERVED_WORD__COLON]
         arguments += file_or_dir_contents_doc.TRAVERSAL_OPTION_USAGES
         arguments += [files_matcher_arg]
 

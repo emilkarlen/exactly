@@ -48,7 +48,7 @@ exit-code == 0
 
 `All files should have been processed`
 
-dir-contents -rel-act input-files is-empty
+dir-contents -rel-act input-files : is-empty
 
 
 
@@ -61,7 +61,7 @@ exists -rel-act output-files/good/a-good-file.txt : type file
 
 `The dir for good files should contain only the file found to be good`
 
-dir-contents -rel-act output-files/good num-files == 1
+dir-contents -rel-act output-files/good : num-files == 1
 
 
 
@@ -74,4 +74,4 @@ exists -rel-act output-files/bad/a-bad-file.txt : type file
 
 `The dir for bad files should contain only the file found to be bad`
 
-dir-contents -rel-act output-files/bad num-files == 1
+dir-contents -rel-act output-files/bad : num-files == 1

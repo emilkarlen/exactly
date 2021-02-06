@@ -1,13 +1,14 @@
 import unittest
 
-from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.impls.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.test_case import reserved_words
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.impls.instructions.assert_.contents_of_dir.test_resources import argument_building as args
 from exactly_lib_test.impls.instructions.assert_.contents_of_dir.test_resources import files_matcher_integration
 from exactly_lib_test.impls.instructions.assert_.contents_of_dir.test_resources import generated_case_execution
 from exactly_lib_test.impls.instructions.assert_.contents_of_dir.test_resources.hard_error import \
@@ -36,9 +37,6 @@ from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgume
 from exactly_lib_test.tcfs.test_resources.tcds_populators import TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
-from exactly_lib_test.test_resources import argument_renderer as args
-from exactly_lib_test.test_resources.argument_renderer import SequenceOfArguments, \
-    OptionArgument
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -68,18 +66,15 @@ INSTRUCTION_CHECKER = instruction_check.Checker(
     PARSER
 )
 
-RECURSION_OPTION_ARG = OptionArgument(file_or_dir_contents.RECURSIVE_OPTION.name)
-RECURSION_OPTION_STR = str(RECURSION_OPTION_ARG)
-
 
 class TestInvalidSyntax(unittest.TestCase):
     def runTest(self):
         cases = [
             NameAndValue('Missing arguments',
-                         RECURSION_OPTION_STR,
+                         args.RECURSION_OPTION_STR,
                          ),
             NameAndValue('Missing matcher argument',
-                         ' '.join([RECURSION_OPTION_STR,
+                         ' '.join([args.RECURSION_OPTION_STR,
                                    'file']),
                          ),
         ]
@@ -96,11 +91,10 @@ class TestReferencedMatcherShouldBeValidated(unittest.TestCase):
 
         helper = ValidationHelper()
 
-        arguments = SequenceOfArguments([
+        arguments = args.recursive(
             helper.path_argument(),
-            RECURSION_OPTION_ARG,
             helper.files_matcher_reference_argument(),
-        ])
+        )
 
         # ACT & ASSERT #
 
@@ -118,11 +112,10 @@ class TestHardErrorDueToInvalidPathArgument(unittest.TestCase):
 
         helper = HardErrorDueToInvalidPathArgumentHelper()
 
-        arguments = SequenceOfArguments([
+        arguments = args.recursive(
             helper.path_argument(),
-            RECURSION_OPTION_ARG,
             helper.files_matcher_reference_argument(),
-        ])
+        )
 
         # ACT & ASSERT #
 
@@ -138,11 +131,10 @@ class TestErrorDueToHardErrorFromFilesMatcher(unittest.TestCase):
     def runTest(self):
         helper = HardErrorDueToHardErrorFromFilesMatcherHelper()
 
-        arguments = SequenceOfArguments([
+        arguments = args.recursive(
             helper.path_argument(),
-            RECURSION_OPTION_ARG,
             helper.files_matcher_reference_argument(),
-        ])
+        )
 
         INSTRUCTION_CHECKER.check(
             self,
@@ -193,11 +185,9 @@ class TestFilesOfModel(unittest.TestCase):
 
         model_checker_symbol_name = 'symbol_that_checks_model'
 
-        arguments = SequenceOfArguments([
+        arguments = args.recursive(
             RelOptPathArgument(checked_dir_name, checked_dir_location),
-            RECURSION_OPTION_ARG,
             SymbolReferenceArgument(model_checker_symbol_name),
-        ]
         )
 
         contents_cases = test_data.strip_file_type_info_s(
@@ -261,7 +251,8 @@ class TestMultiLineSyntax(unittest.TestCase):
                 'All arguments on separate lines',
                 Arguments(checked_dir.name,
                           [
-                              RECURSION_OPTION_STR,
+                              reserved_words.COLON,
+                              args.RECURSION_OPTION_STR,
                               matcher_argument
                           ]
                           ),
@@ -271,7 +262,9 @@ class TestMultiLineSyntax(unittest.TestCase):
                 Arguments(checked_dir.name,
                           [
                               '',
-                              RECURSION_OPTION_STR,
+                              reserved_words.COLON,
+                              '',
+                              args.RECURSION_OPTION_STR,
                               '',
                               matcher_argument,
                           ]),
@@ -318,11 +311,10 @@ class TestFilesMatcherShouldBeParsedAsFullExpression(unittest.TestCase):
 
         rel_conf = rel_opt_conf.conf_rel_any(RelOptionType.REL_ACT)
 
-        arguments = args.SequenceOfArguments([
+        arguments = args.recursive(
             rel_conf.path_argument_of_rel_name(checked_dir.name),
-            args.Singleton(RECURSION_OPTION_STR),
             fsm_args.disjunction([fsm_1.argument, fsm_2.argument]),
-        ])
+        )
         is_pass = fsm_1.result_value or fsm_2.result_value
         # ACT # & ASSERT #
         INSTRUCTION_CHECKER.check_2(

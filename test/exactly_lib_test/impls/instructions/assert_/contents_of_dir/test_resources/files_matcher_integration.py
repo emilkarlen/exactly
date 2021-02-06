@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Sequence
 
-from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.impls.file_properties import FileType
 from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib_test.impls.instructions.assert_.contents_of_dir.test_resources import argument_building as args
 from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import ExecutionExpectation
 from exactly_lib_test.impls.types.file_matcher.contents_of_dir.test_resources.files_matcher_integration import \
     NumFilesSetup
@@ -15,8 +15,7 @@ from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgument
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
-from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer, SequenceOfArguments, \
-    OptionArgument
+from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 
@@ -32,20 +31,17 @@ class NumFilesTestCaseHelperBase(ABC):
         self.checked_dir_location = checked_dir_location
 
     def argument__recursive(self) -> ArgumentElementsRenderer:
-        return SequenceOfArguments([
+        return args.recursive(
             RelOptPathArgument(self.checked_dir_name,
                                self.checked_dir_location),
-            OptionArgument(file_or_dir_contents.RECURSIVE_OPTION.name),
             self._files_matcher_arg(),
-        ]
         )
 
     def argument__non_recursive(self) -> ArgumentElementsRenderer:
-        return SequenceOfArguments([
+        return args.non_recursive(
             RelOptPathArgument(self.checked_dir_name,
                                self.checked_dir_location),
             self._files_matcher_arg(),
-        ]
         )
 
     @abstractmethod

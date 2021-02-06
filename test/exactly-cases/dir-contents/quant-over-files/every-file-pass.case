@@ -14,18 +14,18 @@ file the-dir/empty-2.txt
 [assert]
 
 
-dir-contents the-dir
+dir-contents the-dir :
              -selection name empty*.txt
-             every file : contents is-empty
+               every file : contents is-empty
 
-dir-contents the-dir
+dir-contents the-dir :
              -selection name non-empty*.txt
-             every file : contents ! is-empty
+               every file : contents ! is-empty
 
-dir-contents the-dir
+dir-contents the-dir :
              -selection name empty*.txt
-             every file : contents is-empty
+               every file : contents is-empty
 
-dir-contents the-dir
+dir-contents the-dir :
              -selection name non-empty*.txt
-             every file : ! contents is-empty
+               every file : ! contents is-empty

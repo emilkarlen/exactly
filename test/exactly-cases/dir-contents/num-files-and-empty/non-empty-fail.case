@@ -13,4 +13,4 @@ file non-empty-dir/1.txt
 [assert]
 
 
-dir-contents non-empty-dir is-empty
+dir-contents non-empty-dir : is-empty

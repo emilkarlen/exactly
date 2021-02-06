@@ -7,16 +7,16 @@ file non-empty-dir/1.txt
 [assert]
 
 
-dir-contents non-empty-dir ! is-empty
+dir-contents non-empty-dir : ! is-empty
 
-dir-contents non-empty-dir num-files == 1
+dir-contents non-empty-dir : num-files == 1
 
-dir-contents non-empty-dir ! num-files == 0
+dir-contents non-empty-dir : ! num-files == 0
 
-dir-contents non-empty-dir ! num-files == 2
+dir-contents non-empty-dir : ! num-files == 2
 
-dir-contents non-empty-dir -selection name name-of-non-existing-file
-                           is-empty
+dir-contents non-empty-dir : -selection name name-of-non-existing-file
+                               is-empty
 
-dir-contents non-empty-dir -selection name name-of-non-existing-file
-                           num-files == 0
+dir-contents non-empty-dir : -selection name name-of-non-existing-file
+                               num-files == 0

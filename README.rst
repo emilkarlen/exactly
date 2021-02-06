@@ -136,11 +136,11 @@ appropriate directory::
 
     [assert]
 
-    dir-contents input        is-empty
+    dir-contents input       : is-empty
 
-    dir-contents output/good  matches -full { a.txt : type file }
+    dir-contents output/good : matches -full { a.txt : type file }
 
-    dir-contents output/bad   matches -full
+    dir-contents output/bad  : matches -full
         {
             b.txt : type file
             sub   : type dir &&

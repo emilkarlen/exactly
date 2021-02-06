@@ -5,8 +5,8 @@ file 2
 
 [assert]
 
-dir-contents . num-files == 2
+dir-contents . : num-files == 2
 
-dir-contents .
+dir-contents . :
     num-files
       == 2

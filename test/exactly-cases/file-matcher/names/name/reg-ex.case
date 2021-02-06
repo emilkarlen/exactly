@@ -5,18 +5,18 @@ file xyz.txt
 
 [assert]
 
-dir-contents .
+dir-contents . :
              -selection name ~ ^abc
-             num-files == 1
+               num-files == 1
 
 def string AB_REGEX = ^ab
 
-dir-contents .
+dir-contents . :
              -selection name ~ @[AB_REGEX]@c
-             num-files == 1
+               num-files == 1
 
 def file-matcher NAME_AB_REGEX = name ~ @[AB_REGEX]@c
 
-dir-contents .
+dir-contents . :
              -selection NAME_AB_REGEX
-             num-files == 1
+               num-files == 1

@@ -43,7 +43,7 @@ exit-code == 0
 
 `All files should have been processed`
 
-dir-contents input-files is-empty
+dir-contents input-files : is-empty
 
 
 
@@ -56,7 +56,7 @@ exists output-files/good/a-good-file.txt : type file
 
 `The dir for good files should contain only the file found to be good`
 
-dir-contents output-files/good num-files == 1
+dir-contents output-files/good : num-files == 1
 
 
 
@@ -69,7 +69,7 @@ exists output-files/bad/a-bad-file.txt : type file
 
 `The dir for bad files should contain only the file found to be bad`
 
-dir-contents output-files/bad num-files == 1
+dir-contents output-files/bad : num-files == 1
 
 
 

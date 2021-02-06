@@ -11,8 +11,8 @@ file -rel-tmp a-file.txt
 
 [assert]
 
-dir-contents . EMPTY
+dir-contents . : EMPTY
 
-dir-contents . ! NUM_FILES_EQ_1
+dir-contents . : ! NUM_FILES_EQ_1
 
-dir-contents -rel-tmp . ! EMPTY
+dir-contents -rel-tmp . : ! EMPTY

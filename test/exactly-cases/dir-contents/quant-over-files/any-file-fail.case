@@ -14,5 +14,5 @@ file the-dir/empty-2.txt
 [assert]
 
 
-dir-contents the-dir
+dir-contents the-dir :
              any file : contents ! is-empty

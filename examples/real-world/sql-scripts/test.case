@@ -39,20 +39,20 @@ def line-matcher IS_DDL_STATEMENT_LINE =
 
 `A SQL file must be a regular file`
 
-dir-contents @[SCRIPTS_DIR]@
+dir-contents @[SCRIPTS_DIR]@ :
              -selection IS_SQL_FILE
-             every file : type file
+               every file : type file
 
 
 `A SQL file name must have structure NNN-informative_name-(DDL|DML)-NNN.sql`
 
-dir-contents @[SCRIPTS_DIR]@
+dir-contents @[SCRIPTS_DIR]@ :
              -selection IS_SQL_FILE
-             every file : FILE_NAME_HAS_EXPECTED_STRUCTURE
+               every file : FILE_NAME_HAS_EXPECTED_STRUCTURE
 
 
 `A DML script must NOT contain DDL statements`
 
-dir-contents @[SCRIPTS_DIR]@
+dir-contents @[SCRIPTS_DIR]@ :
              -selection ( IS_SQL_FILE && IS_DML_FILE )
-             every file : contents ! any line : IS_DDL_STATEMENT_LINE
+               every file : contents ! any line : IS_DDL_STATEMENT_LINE

@@ -7,6 +7,7 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case.result import svh
 from exactly_lib.util.functional import reduce_optional
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.impls.instructions.assert_.contents_of_dir.test_resources import argument_building as args
 from exactly_lib_test.impls.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation2, ParseExpectation, \
     ExecutionExpectation, SourceArrangement
@@ -21,7 +22,7 @@ from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgument
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh, svh_assertions as asrt_svh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
-from exactly_lib_test.test_resources.argument_renderer import SequenceOfArguments, ArgumentElementsRenderer, \
+from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer, \
     OptionArgument
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -36,7 +37,6 @@ RECURSION_OPTION_ARG = OptionArgument(file_or_dir_contents.RECURSIVE_OPTION.name
 
 
 class ExecutorOfCaseGeneratorForDirContents(ExecutorOfCaseGenerator):
-
     def execute_single(self,
                        put: unittest.TestCase,
                        case: SingleCaseGenerator,
@@ -131,13 +131,13 @@ def _execution_expectation_of(expected: ExecutionResult) -> ExecutionExpectation
 
 
 def _arguments(model_file: ModelFile,
-               generic_arguments: FileMatcherArg) -> ArgumentElementsRenderer:
-    return SequenceOfArguments([
+               file_matcher: FileMatcherArg) -> ArgumentElementsRenderer:
+    return args.of_file_matcher(
         RelOptPathArgument(model_file.name,
                            model_file.location,
                            ),
-        generic_arguments,
-    ])
+        file_matcher,
+    )
 
 
 def _mk_validation_assertion(passes: bool) -> Assertion[svh.SuccessOrValidationErrorOrHardError]:
