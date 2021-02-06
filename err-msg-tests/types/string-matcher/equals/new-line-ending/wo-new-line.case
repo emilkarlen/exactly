@@ -3,4 +3,4 @@
 file a.txt = 'actual'
 file e.txt = 'expected'
 
-contents a.txt equals -contents-of -rel-act e.txt
+contents a.txt : equals -contents-of -rel-act e.txt

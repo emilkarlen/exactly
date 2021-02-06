@@ -12,7 +12,7 @@ EOF
 [assert]
 
 
-contents checked-file.txt
+contents checked-file.txt :
   every line :
     contents equals
       -stdout-from

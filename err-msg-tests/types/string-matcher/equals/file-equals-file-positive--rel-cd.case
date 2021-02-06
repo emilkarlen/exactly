@@ -13,5 +13,5 @@ EOF
 [assert]
 
 
-contents actual-file
+contents actual-file :
          equals -contents-of -rel-cd expected-file

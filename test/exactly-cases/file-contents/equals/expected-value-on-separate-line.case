@@ -11,14 +11,14 @@ actual contents line
 [assert]
 
 
-contents string.txt equals
+contents string.txt : equals
 "actual contents"
 
-contents single-line.txt equals
+contents single-line.txt : equals
 <<-
 actual contents line
 -
 
-contents single-line.txt equals
+contents single-line.txt : equals
 -contents-of
 -rel-cd single-line.txt

@@ -1,6 +1,6 @@
 [assert]
 
-contents checked-file.txt
+contents checked-file.txt :
          -transformed-by
            run @ EXIT_W_0_IFF_STDIN_EQUALS_1ST_ARGUMENT @[MODEL_CONTENTS]@
          is-empty

@@ -6,4 +6,4 @@ file actual.txt = @[ACTUAL]@
 
 [assert]
 
-contents actual.txt equals @[ACTUAL]@
+contents actual.txt : equals @[ACTUAL]@

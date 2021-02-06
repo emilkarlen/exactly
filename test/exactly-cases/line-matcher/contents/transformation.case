@@ -7,7 +7,7 @@ World
 
 [assert]
 
-contents f.txt
+contents f.txt :
 
     any line :
       contents

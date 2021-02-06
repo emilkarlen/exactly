@@ -18,26 +18,26 @@ EOF
 [assert]
 
 
-contents input.txt
+contents input.txt :
     -transformed-by ( filter contents matches '2nd' )
     equals <<EOF
 2nd
 EOF
 
-contents input.txt
+contents input.txt :
     -transformed-by ( filter line-num == 2 )
     equals <<EOF
 2nd
 EOF
 
-contents input.txt
+contents input.txt :
     -transformed-by ( filter line-num <= 2 )
     equals <<EOF
 1st
 2nd
 EOF
 
-contents input.txt
+contents input.txt :
     -transformed-by
       filter ( line-num == 1 || contents == '3rd' )
     equals <<EOF
@@ -45,20 +45,20 @@ contents input.txt
 3rd
 EOF
 
-contents input.txt
+contents input.txt :
     -transformed-by ( filter contents ~ '2nd' )
     equals <<EOF
 2nd
 EOF
 
-contents input.txt
+contents input.txt :
     -transformed-by filter ( contents == '1st' || contents == '3rd' )
     equals <<EOF
 1st
 3rd
 EOF
 
-contents input.txt
+contents input.txt :
     -transformed-by ( filter ! contents matches '2nd' )
     equals <<EOF
 1st
@@ -68,7 +68,7 @@ EOF
 
 def line-matcher EQUALS_THIRD = contents == '3rd'
 
-contents input.txt
+contents input.txt :
     -transformed-by filter EQUALS_THIRD
     equals <<EOF
 3rd

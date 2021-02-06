@@ -4,7 +4,7 @@ file actual.txt = 'the actual contents'
 
 [assert]
 
-contents actual.txt
+contents actual.txt :
     equals
     -stdout-from
       -python -c :> print('the expected contents')

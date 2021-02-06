@@ -11,6 +11,6 @@ file expected.txt = @[ACTUAL]@-followed-by-unexpected
 
 [assert]
 
-contents actual.txt
+contents actual.txt :
          equals
          -contents-of -rel-act expected.txt

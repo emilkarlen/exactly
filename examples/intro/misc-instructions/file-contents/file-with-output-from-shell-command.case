@@ -4,6 +4,6 @@ file my-file.txt = -stdout-from $ echo "Hello, Shell World!"
 
 [assert]
 
-contents my-file.txt equals <<eof
+contents my-file.txt : equals <<eof
 Hello, Shell World!
 eof

@@ -9,9 +9,9 @@ def string-transformer SPLIT_ON_P = replace P @[NEW_LINE]@
 
 [assert]
 
-contents input.txt
+contents input.txt :
     num-lines == 1
 
-contents input.txt
+contents input.txt :
     -transformed-by SPLIT_ON_P
     num-lines == 2

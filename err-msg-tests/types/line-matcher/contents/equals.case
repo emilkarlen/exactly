@@ -11,6 +11,6 @@ World
 
 [assert]
 
-contents f.txt
+contents f.txt :
 
     every line : contents equals 'Hello'

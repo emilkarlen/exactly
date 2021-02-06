@@ -6,7 +6,7 @@
 
 [assert]
 
-contents case-file.txt matches @[DEFINED_IN_EACH_CASE]@
+contents case-file.txt : matches @[DEFINED_IN_EACH_CASE]@
 
 # The matcher above has a regex-sdv that stores the compilation
 # of the regex, so that it is not done every time it is requested.

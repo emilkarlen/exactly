@@ -9,8 +9,8 @@ EOF
 [assert]
 
 
-contents checked-file ! any line : (
-                      contents matches 'contents'
-                      &&
-                      line-num == 1
-                      )
+contents checked-file : ! any line : (
+                        contents matches 'contents'
+                        &&
+                        line-num == 1
+                        )

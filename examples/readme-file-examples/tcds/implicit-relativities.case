@@ -14,6 +14,6 @@ filter-lines "text to find" actual.txt
 
 [assert]
 
-contents actual.txt
+contents actual.txt :
          equals
          -contents-of expected.txt

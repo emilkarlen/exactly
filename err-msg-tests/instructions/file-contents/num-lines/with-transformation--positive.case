@@ -11,7 +11,7 @@ EOF
 [assert]
 
 
-contents a-file.txt
+contents a-file.txt :
   -transformed-by
     filter contents matches 'second'
     num-lines == 3

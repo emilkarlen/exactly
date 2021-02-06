@@ -8,6 +8,6 @@ file F = "text"
 
 [assert]
 
-contents F -transformed-by char-case -to-upper ( equals 'TEXT' && equals 'text' )
+contents F : -transformed-by char-case -to-upper ( equals 'TEXT' && equals 'text' )
 
 # Both "equals" applies to the transformed model.

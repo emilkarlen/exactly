@@ -7,4 +7,4 @@ dir checked-file
 [assert]
 
 
-contents checked-file is-empty
+contents checked-file : is-empty

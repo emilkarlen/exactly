@@ -4,5 +4,5 @@ file actual-empty.txt
 
 [assert]
 
-contents actual-empty.txt
+contents actual-empty.txt :
   equals -contents-of expected-empty.txt

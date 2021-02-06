@@ -18,9 +18,9 @@ file from-program.txt =
 
 [assert]
 
-contents from-string.txt equals 'constant string'
+contents from-string.txt : equals 'constant string'
 
-contents from-program.txt equals <<EOF
+contents from-program.txt : equals <<EOF
 THE STDIN
 AFTER STDIN
 EOF

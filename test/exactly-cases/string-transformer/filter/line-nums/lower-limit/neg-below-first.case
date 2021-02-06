@@ -9,7 +9,7 @@ file f.txt = <<-
 
 [assert]
 
-contents f.txt
+contents f.txt :
   -transformed-by
     filter -line-nums -5:
     equals

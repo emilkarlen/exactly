@@ -10,6 +10,7 @@ from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.impls import common_arguments
 from exactly_lib.impls.file_properties import FileType
 from exactly_lib.impls.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.impls.instructions.assert_.utils.file_contents import parse_instruction
@@ -21,6 +22,7 @@ from exactly_lib.impls.types.path import parse_path, path_relativities, rel_opts
 from exactly_lib.impls.types.path.relative_path_options_documentation import path_element
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.test_case import reserved_words
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -64,8 +66,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         actual_file_arg = a.Single(a.Multiplicity.MANDATORY,
                                    self.actual_file_arg)
         return [
-            invokation_variant_from_args(
-                [actual_file_arg, syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.single_mandatory],
+            invokation_variant_from_args([
+                actual_file_arg,
+                common_arguments.RESERVED_WORD__COLON,
+                syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.single_mandatory,
+            ],
                 self._tp.fnap(_MAIN_INVOKATION__FILE__SYNTAX_DESCRIPTION)),
         ]
 
@@ -98,6 +103,8 @@ class _ActualFileParser(ComparisonActualFileParser):
         parser.require_is_not_at_eol(
             'Missing {actual_file} argument'.format(actual_file=ACTUAL_PATH_ARGUMENT.name))
         path = self._path_parser.parse_from_token_parser(parser)
+        parser.consume_mandatory_constant_unquoted_string(reserved_words.COLON,
+                                                          must_be_on_current_line=False)
         return actual_files.ConstructorForPath(path,
                                                actual_file_attributes.PLAIN_FILE_OBJECT_NAME,
                                                True)

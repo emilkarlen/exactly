@@ -4,6 +4,6 @@ file f.txt
 
 [assert]
 
-contents f.txt
+contents f.txt :
 
     num-lines > 1

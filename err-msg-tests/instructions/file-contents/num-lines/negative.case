@@ -11,5 +11,5 @@ EOF
 [assert]
 
 
-contents a-file.txt ! num-lines == 3
+contents a-file.txt : ! num-lines == 3
 

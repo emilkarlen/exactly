@@ -4,4 +4,4 @@ file actual.txt
 
 [assert]
 
-contents actual.txt num-lines == 1
+contents actual.txt : num-lines == 1

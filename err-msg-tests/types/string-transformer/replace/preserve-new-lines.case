@@ -12,7 +12,7 @@ file transformed.txt = -contents-of original.txt
 
 [assert]
 
-contents original.txt
+contents original.txt :
     -transformed-by
       replace -preserve-new-lines '\s' ''
       equals '12'

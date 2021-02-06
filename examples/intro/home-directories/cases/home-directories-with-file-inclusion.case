@@ -25,6 +25,6 @@ do-something-good-with test-file.txt
 
 # The "contents" instruction looks for referenced files in the "case home" directory.
 
-contents test-file.txt
+contents test-file.txt :
          equals
          -contents-of expectation/expected.txt

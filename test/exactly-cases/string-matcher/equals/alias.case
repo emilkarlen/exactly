@@ -7,8 +7,8 @@ file expected.txt = @[ACTUAL]@
 
 [assert]
 
-contents actual.txt
+contents actual.txt :
          ==
          -contents-of -rel-act expected.txt
 
-contents actual.txt == @[ACTUAL]@
+contents actual.txt : == @[ACTUAL]@

@@ -10,4 +10,4 @@ file actual.txt = @[ACTUAL]@
 
 [assert]
 
-contents actual.txt equals @[ACTUAL]@-followed-by-unexpected
+contents actual.txt : equals @[ACTUAL]@-followed-by-unexpected

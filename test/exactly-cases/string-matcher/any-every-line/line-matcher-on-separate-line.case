@@ -9,5 +9,5 @@ EOF
 [assert]
 
 
-contents checked-file any line :
-                      line-num == 1
+contents checked-file : any line :
+                        line-num == 1

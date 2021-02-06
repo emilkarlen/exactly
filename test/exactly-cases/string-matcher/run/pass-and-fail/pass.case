@@ -1,4 +1,4 @@
 [assert]
 
-contents checked-file.txt
+contents checked-file.txt :
          run -python -c :> exit(0)

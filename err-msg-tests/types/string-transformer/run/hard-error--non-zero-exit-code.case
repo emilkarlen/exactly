@@ -4,6 +4,6 @@ file f.txt
 
 [assert]
 
-contents f.txt
+contents f.txt :
          -transformed-by run @ NON_0_EXIT_CODE arg1 arg2
          equals 'hello'

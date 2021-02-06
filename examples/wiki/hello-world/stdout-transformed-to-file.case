@@ -11,8 +11,8 @@ file transformed-output.txt = -contents-of
 
 [assert]
 
-contents transformed-output.txt
+contents transformed-output.txt :
          every line : contents matches ^WORLD!$
 
-contents transformed-output.txt
+contents transformed-output.txt :
          num-lines == 1

@@ -9,17 +9,17 @@ file f.txt = <<-
 
 [assert]
 
-contents f.txt
+contents f.txt :
   -transformed-by
     filter -line-nums 5:5
     equals ''
 
-contents f.txt
+contents f.txt :
   -transformed-by
     filter -line-nums 5:4
     equals ''
 
-contents f.txt
+contents f.txt :
   -transformed-by
     filter -line-nums 4:5
     equals
@@ -27,7 +27,7 @@ contents f.txt
 4
 -
 
-contents f.txt
+contents f.txt :
   -transformed-by
     filter -line-nums -1:5
     equals

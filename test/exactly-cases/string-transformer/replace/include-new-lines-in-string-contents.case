@@ -12,4 +12,4 @@ file transformed.txt = -contents-of -rel-cd original.txt
 
 [assert]
 
-contents transformed.txt equals '12'
+contents transformed.txt : equals '12'

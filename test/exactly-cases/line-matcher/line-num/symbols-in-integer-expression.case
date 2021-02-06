@@ -16,7 +16,7 @@ def string TWO   = '1+1'
 
 def string THREE = @[TWO]@+1
 
-contents actual.txt
+contents actual.txt :
          -transformed-by filter ( line-num >= @[TWO]@ &&
                                   line-num <= @[THREE]@ )
          equals

@@ -16,15 +16,15 @@ file non-empty.txt = 'non-empty file'
 [assert]
 
 
-contents non-empty.txt ! IS_EMPTY
+contents non-empty.txt : ! IS_EMPTY
 
-contents non-empty.txt IS_NOT_EMPTY
+contents non-empty.txt : IS_NOT_EMPTY
 
-contents non-empty.txt IS_NOT_EMPTY__WITH_REF
+contents non-empty.txt : IS_NOT_EMPTY__WITH_REF
 
 
-contents empty.txt IS_EMPTY
+contents empty.txt : IS_EMPTY
 
-contents empty.txt ! IS_NOT_EMPTY
+contents empty.txt : ! IS_NOT_EMPTY
 
-contents empty.txt ! IS_NOT_EMPTY__WITH_REF
+contents empty.txt : ! IS_NOT_EMPTY__WITH_REF

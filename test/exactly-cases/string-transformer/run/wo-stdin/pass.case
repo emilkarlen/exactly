@@ -1,6 +1,6 @@
 [assert]
 
-contents checked-file.txt
+contents checked-file.txt :
          -transformed-by
            run @ COPY_STDIN_2_STDOUT
          equals @[MODEL_CONTENTS]@

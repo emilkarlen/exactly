@@ -8,7 +8,7 @@ file actual.txt = <<-
 
 [assert]
 
-contents actual.txt
+contents actual.txt :
          equals
            -stdout-from
              -python -c :> print("""@[ACTUAL]@""")

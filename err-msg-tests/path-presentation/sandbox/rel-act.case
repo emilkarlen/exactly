@@ -9,4 +9,4 @@ file @[CHECKED_FILE]@
 [assert]
 
 
-contents @[CHECKED_FILE]@ ! is-empty
+contents @[CHECKED_FILE]@ : ! is-empty

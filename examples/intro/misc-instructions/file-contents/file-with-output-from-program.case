@@ -8,10 +8,10 @@ file my-snd-file.txt = -stdout-from
 
 [assert]
 
-contents my-fst-file.txt equals <<eof
+contents my-fst-file.txt : equals <<eof
 Hello, Python World!
 eof
 
-contents my-snd-file.txt equals <<eof
+contents my-snd-file.txt : equals <<eof
 Hello, Python World!
 eof

@@ -4,7 +4,7 @@ hello-world -o output.txt
 
 [assert]
 
-contents output.txt
+contents output.txt :
          every line : contents matches 'Hello'
 
 stderr is-empty

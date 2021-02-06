@@ -22,7 +22,7 @@ filter-lines @[MY_FILE]@ @[GOOD]@
 [assert]
 
 
-contents @[MY_FILE]@ equals <<EOF
+contents @[MY_FILE]@ : equals <<EOF
 a @[GOOD]@ 1st line
 a @[GOOD]@ 3d line
 EOF

@@ -10,7 +10,7 @@ EOF
 [assert]
 
 
-contents checked-file
+contents checked-file :
   -transformed-by char-case -to-upper
     -transformed-by filter line-num == 1
       ! num-lines == 1

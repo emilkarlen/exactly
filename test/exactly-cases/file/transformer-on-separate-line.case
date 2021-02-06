@@ -8,4 +8,4 @@ file transformed.txt = -contents-of -rel-act string.txt
 
 [assert]
 
-contents transformed.txt equals "SOME CONTENTS"
+contents transformed.txt : equals "SOME CONTENTS"

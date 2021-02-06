@@ -9,6 +9,6 @@ def string A_LINE = 'Hello'
 
 [assert]
 
-contents f.txt
+contents f.txt :
 
     any line : contents equals @[A_LINE]@

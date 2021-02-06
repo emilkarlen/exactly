@@ -10,6 +10,6 @@ EOF
 [assert]
 
 
-contents checked-file
+contents checked-file :
   -transformed-by filter line-num > 1
   is-empty

@@ -20,4 +20,4 @@ file great-bikes.txt  = -contents-of -rel-act bike-ratings.txt
 [assert]
 
 
-contents  great-bikes.txt  num-lines == 2
+contents  great-bikes.txt :  num-lines == 2

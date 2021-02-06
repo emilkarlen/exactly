@@ -191,7 +191,7 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
     [assert]
 
-    contents log.txt
+    contents log.txt :
              -transformed-by GET_TIMING_LINES
              equals <<EOF
     timing TIMESTAMP begin
@@ -550,7 +550,7 @@ and ``-rel-act`` to the *act* directory, for example::
 
     [assert]
 
-    contents -rel-act actual.txt
+    contents -rel-act actual.txt :
              equals
              -contents-of -rel-home expected.txt
 
@@ -575,7 +575,7 @@ The following case does the same thing as the one above::
 
     [assert]
 
-    contents actual.txt
+    contents actual.txt :
              equals
              -contents-of expected.txt
 

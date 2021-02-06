@@ -8,7 +8,7 @@ file f.txt = <<-
 
 [assert]
 
-contents f.txt
+contents f.txt :
   -transformed-by
     filter -line-nums :1+1
     equals

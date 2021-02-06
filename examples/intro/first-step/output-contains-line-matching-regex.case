@@ -14,4 +14,4 @@ hello-world
 
 stdout any line : contents matches H.*W
 
-contents output.txt ! every line : contents matches 'kiwi'
+contents output.txt : ! every line : contents matches 'kiwi'

@@ -13,6 +13,6 @@ file 3-lines.txt = <<-
 
 [assert]
 
-contents 3-lines.txt
+contents 3-lines.txt :
          -transformed-by RM_FIRST_LINE
          NUM_LINES_AFTER_FIRST_LINE_EQ_1

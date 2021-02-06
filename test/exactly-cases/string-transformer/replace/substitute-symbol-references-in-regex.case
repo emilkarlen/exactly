@@ -15,7 +15,7 @@ file transformed.txt = -contents-of -rel-cd original.txt
 
 [assert]
 
-contents transformed.txt equals
+contents transformed.txt : equals
 <<-
  1 2
 A b

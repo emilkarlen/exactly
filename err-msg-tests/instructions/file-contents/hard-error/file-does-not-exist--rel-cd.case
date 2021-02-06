@@ -1,4 +1,4 @@
 [assert]
 
 
-contents -rel-cd non-existing-file is-empty
+contents -rel-cd non-existing-file : is-empty

@@ -32,7 +32,7 @@ EXACTLY_ACT
 EOF
 
 
-contents my-file-with-abs-paths.txt
+contents my-file-with-abs-paths.txt :
     -transformed-by replace-test-case-dirs
     equals <<EOF
 EXACTLY_ACT

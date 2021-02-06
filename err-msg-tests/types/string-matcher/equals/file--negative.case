@@ -9,6 +9,6 @@ EOF
 [assert]
 
 
-contents checked-file ! equals <<EOF
+contents checked-file : ! equals <<EOF
 expected contents
 EOF

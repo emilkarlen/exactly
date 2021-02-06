@@ -9,7 +9,7 @@ The first line
 
 `Default mode`
 
-contents actual.txt
+contents actual.txt :
          ~
 <<-
 The.*
@@ -17,7 +17,7 @@ The.*
 
 `Full match option`
 
-contents actual.txt
+contents actual.txt :
          ~ -full
 <<-
 The.*

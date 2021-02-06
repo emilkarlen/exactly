@@ -7,6 +7,6 @@ EOF
 
 [assert]
 
-contents checked-file run % non-existing-system-command
+contents checked-file : run % non-existing-system-command
 
 stdout run % non-existing-system-command

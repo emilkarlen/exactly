@@ -6,6 +6,6 @@ file f.txt = 'abc
 
 [assert]
 
-contents f.txt
+contents f.txt :
   -transformed-by strip -trailing-new-lines
     equals 'abc'

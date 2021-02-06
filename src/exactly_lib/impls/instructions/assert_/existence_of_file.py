@@ -10,7 +10,7 @@ from exactly_lib.definitions import logic
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.impls import negation_of_predicate, file_properties
+from exactly_lib.impls import negation_of_predicate, file_properties, common_arguments
 from exactly_lib.impls.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.impls.text_render.header_rendering import SimpleHeaderMinorBlockRenderer
 from exactly_lib.impls.types.file_matcher import file_matcher_models
@@ -27,6 +27,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
     InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.test_case import reserved_words
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import instruction_environment as i
@@ -56,7 +57,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 NEGATION_OPERATOR = logic.NOT_OPERATOR_NAME
 
-PROPERTIES_SEPARATOR = logic.QUANTIFICATION_SEPARATOR_ARGUMENT
+PROPERTIES_SEPARATOR = reserved_words.COLON
 
 _PATH_ARGUMENT = syntax_elements.PATH_SYNTAX_ELEMENT.argument
 
@@ -126,7 +127,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
     @staticmethod
     def _properties_invokation_variant() -> InvokationVariant:
         return invokation_variant_from_args([
-            a.Single(a.Multiplicity.MANDATORY, a.Constant(PROPERTIES_SEPARATOR)),
+            common_arguments.RESERVED_WORD__COLON,
             syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.single_mandatory,
         ])
 
@@ -164,7 +165,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
 
         if not parser.is_at_eol:
             parser.consume_mandatory_constant_unquoted_string(
-                PROPERTIES_SEPARATOR,
+                reserved_words.COLON,
                 must_be_on_current_line=True)
             file_matcher = parse_file_matcher.parsers().full.parse_from_token_parser(parser)
             parser.report_superfluous_arguments_if_not_at_eol()

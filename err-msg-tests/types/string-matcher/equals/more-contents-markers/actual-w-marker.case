@@ -9,5 +9,5 @@ file large.txt =
 [assert]
 
 
-contents large.txt
+contents large.txt :
   equals 'expected'

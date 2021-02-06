@@ -23,8 +23,8 @@ file s2.txt = -stderr-from @ OUTPUT_S1_S2
 [assert]
 
 
-contents s0.txt is-empty
+contents s0.txt : is-empty
 
-contents s1.txt equals @[S1]@
+contents s1.txt : equals @[S1]@
 
-contents s2.txt equals @[S1]@@[S2]@
+contents s2.txt : equals @[S1]@@[S2]@

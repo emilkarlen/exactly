@@ -38,7 +38,7 @@ new-directory/empty-file2.txt
 non-empty-file.txt
 EOF
 
-contents non-empty-file.txt equals <<EOF
+contents non-empty-file.txt : equals <<EOF
 Some contents.
 EOF
 

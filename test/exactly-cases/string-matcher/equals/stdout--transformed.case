@@ -8,7 +8,7 @@ file actual.txt = <<-
 
 [assert]
 
-contents actual.txt
+contents actual.txt :
   -transformed-by
     char-case -to-upper
     equals

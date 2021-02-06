@@ -24,21 +24,21 @@ EOF
 [assert]
 
 
-contents input.txt
+contents input.txt :
     -transformed-by
       filter -line-nums 2
     equals <<EOF
 2nd
 EOF
 
-contents input.txt
+contents input.txt :
     -transformed-by
       filter -line-nums -1
     equals <<EOF
 4th
 EOF
 
-contents input.txt
+contents input.txt :
     -transformed-by
       filter -line-nums 3:
     equals <<EOF
@@ -46,7 +46,7 @@ contents input.txt
 4th
 EOF
 
-contents input.txt
+contents input.txt :
     -transformed-by
       filter -line-nums -2:
     equals <<EOF
@@ -54,7 +54,7 @@ contents input.txt
 4th
 EOF
 
-contents input.txt
+contents input.txt :
     -transformed-by
       filter -line-nums :3
     equals <<EOF
@@ -63,7 +63,7 @@ contents input.txt
 3rd
 EOF
 
-contents input.txt
+contents input.txt :
     -transformed-by
       filter -line-nums :-3
     equals <<EOF
@@ -71,7 +71,7 @@ contents input.txt
 2nd
 EOF
 
-contents input.txt
+contents input.txt :
     -transformed-by
       filter -line-nums 2:4
     equals <<EOF
@@ -80,7 +80,7 @@ contents input.txt
 4th
 EOF
 
-contents input.txt
+contents input.txt :
     -transformed-by
       filter -line-nums -3:-1
     equals <<EOF
@@ -89,7 +89,7 @@ contents input.txt
 4th
 EOF
 
-contents input.txt
+contents input.txt :
     -transformed-by
       filter -line-nums 1 4
     equals <<EOF
@@ -98,7 +98,7 @@ contents input.txt
 EOF
 
 
-contents input.txt
+contents input.txt :
     -transformed-by
       filter -line-nums 4 1
     equals <<EOF
@@ -107,7 +107,7 @@ contents input.txt
 EOF
 
 
-contents input.txt
+contents input.txt :
     -transformed-by
       filter -line-nums 1:2 -2:
     equals <<EOF

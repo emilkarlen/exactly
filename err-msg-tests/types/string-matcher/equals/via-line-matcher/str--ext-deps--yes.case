@@ -1,6 +1,6 @@
 [assert]
 
-contents -rel-act-home input-file-w-ints.txt
+contents -rel-act-home input-file-w-ints.txt :
 
   every line :
     contents

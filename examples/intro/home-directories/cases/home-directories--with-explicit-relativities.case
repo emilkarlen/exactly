@@ -39,6 +39,6 @@ do-something-good-with test-file.txt
 [assert]
 
 
-contents test-file.txt
+contents test-file.txt :
          equals
          -contents-of -rel-home expectation/expected.txt

@@ -6,7 +6,7 @@ Elephant!"
 
 [assert]
 
-contents f.txt
+contents f.txt :
      -transformed-by char-case -to-upper
      equals "
 AN

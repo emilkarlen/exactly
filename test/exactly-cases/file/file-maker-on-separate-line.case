@@ -20,16 +20,16 @@ file program-output.txt =
 [assert]
 
 
-contents string.txt equals "string constant"
+contents string.txt : equals "string constant"
 
-contents here-doc.txt equals <<eof
+contents here-doc.txt : equals <<eof
 here document
 eof
 
-contents here-doc-alt-marker.txt equals <<eof
+contents here-doc-alt-marker.txt : equals <<eof
 here document
 eof
 
-contents program-output.txt equals <<eof
+contents program-output.txt : equals <<eof
 output from program
 eof

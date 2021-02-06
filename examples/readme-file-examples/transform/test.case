@@ -12,7 +12,7 @@ program-that-writes-log-file
 
 [assert]
 
-contents log.txt
+contents log.txt :
          -transformed-by GET_TIMING_LINES
          equals <<EOF
 timing TIMESTAMP begin

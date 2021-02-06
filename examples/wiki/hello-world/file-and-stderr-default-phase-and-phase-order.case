@@ -8,7 +8,7 @@ def line-matcher       MY_LINE_MATCHER = contents matches ^WORLD!$
 
 [assert]
 
-contents output.txt
+contents output.txt :
          -transformed-by MY_TRANSFORMER
          every line : MY_LINE_MATCHER
 

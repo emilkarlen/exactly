@@ -8,7 +8,7 @@ file f.txt = <<-
 
 [assert]
 
-contents f.txt
+contents f.txt :
   -transformed-by
     filter ! ( contents equals '2' && line-num > 1 )
     equals
@@ -17,7 +17,7 @@ contents f.txt
 3
 -
 
-contents f.txt
+contents f.txt :
   -transformed-by
     filter ! ( contents equals '2' || line-num > 10 )
     equals
@@ -26,7 +26,7 @@ contents f.txt
 3
 -
 
-contents f.txt
+contents f.txt :
   -transformed-by
     filter ! ( contents equals '2' || line-num > 2 )
     equals
@@ -34,7 +34,7 @@ contents f.txt
 1
 -
 
-contents f.txt
+contents f.txt :
   -transformed-by
     filter ( contents equals '2' && contents equals '2' )
     equals
