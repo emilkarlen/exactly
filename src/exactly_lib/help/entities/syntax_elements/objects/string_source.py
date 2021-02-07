@@ -4,8 +4,8 @@ from exactly_lib.common.help import headers
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, invokation_variant_from_args, \
     cli_argument_syntax_element_description
-from exactly_lib.definitions import path, file_types
-from exactly_lib.definitions import syntax_descriptions, formatting
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions import path, file_types, misc_texts
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -19,6 +19,7 @@ from exactly_lib.impls.file_properties import FileType
 from exactly_lib.impls.types.path import relative_path_options_documentation as rel_path_doc
 from exactly_lib.impls.types.string_source import defs
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -36,15 +37,23 @@ class Documentation(SyntaxElementDocumentation):
         self._tp = TextParser({
             'HERE_DOCUMENT': syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name,
             'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
+            'stdout': misc_texts.STDOUT,
+            'stderr': misc_texts.STDERR,
+            'output_transformation_option': formatting.argument_option(
+                string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME
+            ),
+            'stdout_from_option': formatting.argument_option(
+                defs.PROGRAM_OUTPUT_OPTIONS[ProcOutputFile.STDOUT]
+            ),
+            'stderr_from_option': formatting.argument_option(
+                defs.PROGRAM_OUTPUT_OPTIONS[ProcOutputFile.STDERR]
+            ),
             'program_type': types.PROGRAM_TYPE_INFO.name,
             'regular_file': file_types.REGULAR,
             'TRANSFORMATION': string_transformer.STRING_TRANSFORMATION_ARGUMENT.name,
             'transformer': syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
             'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
             'SRC_PATH_ARGUMENT': defs.SOURCE_FILE_ARGUMENT_NAME.name,
-            'Sym_refs_are_not_substituted': syntax_descriptions.symbols_are_not_substituted_in(
-                'the file ' + defs.SOURCE_FILE_ARGUMENT_NAME.name
-            ),
             'rel_result_option': formatting.argument_option(path.REL_RESULT_OPTION_NAME),
             'phase': phase_names.PHASE_NAME_DICTIONARY,
             'Note': headers.NOTE_LINE_HEADER,
@@ -131,14 +140,17 @@ Transforms the original contents.
 """
 
 _PROGRAM_DESCRIPTION = """\
-The output from {program_type:a/q}.
+The output from {program_type:a/q} - either {stdout} or {stderr}.
+
+
+If {PROGRAM} defines a transformation of its output (via {output_transformation_option}),
+the transformation is applied to either
+{stdout} ({stdout_from_option}), or {stderr} ({stderr_from_option}).
+
 """
 
 _FILE_DESCRIPTION = """\
 The contents of an existing {regular_file}.
-
-
-{Sym_refs_are_not_substituted}
 """
 
 # TODO (2021-01-31) Make -rel-result available in phases after act
