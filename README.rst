@@ -17,7 +17,7 @@ Supports execution of arbitrary programs, as well as checking their result.
 Exactly has a  built in help system,
 which can, among other things,
 generate this `Reference Manual
-<https://emilkarlen.github.io/exactly/version/next/reference-manual.html>`_.
+<https://emilkarlen.github.io/exactly/version/0-13-0/reference-manual.html>`_.
 
 
 .. contents::
