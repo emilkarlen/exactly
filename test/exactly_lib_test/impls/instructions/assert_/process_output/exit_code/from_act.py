@@ -16,8 +16,9 @@ from exactly_lib_test.impls.instructions.assert_.process_output.exit_code.test_r
 from exactly_lib_test.impls.instructions.assert_.process_output.exit_code.test_resources.int_matchers import of_op, \
     of_neg_op
 from exactly_lib_test.impls.instructions.assert_.test_resources import expression
-from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation2, ParseExpectation, \
+from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation2, \
     ExecutionExpectation, MultiSourceExpectation
+from exactly_lib_test.impls.instructions.test_resources.instr_arr_exp import ParseExpectation
 from exactly_lib_test.impls.types.integer_matcher.test_resources.abstract_syntaxes import IntegerMatcherInfixOpAbsStx, \
     IntegerMatcherComparisonAbsStx
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \

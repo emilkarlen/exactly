@@ -124,9 +124,11 @@ def equivalent_source_variants__with_source_check__consume_last_line__abs_stx(
     ])
 
 
-def equivalent_source_variants__consume_last_line__s__nsc(
-        source: str,
-) -> List[NSourceCase]:
+def equivalent_source_variants__consume_last_line__s__nsc(source: str) -> List[NSourceCase]:
+    return consume_last_line__s__nsc(source)
+
+
+def consume_last_line__s__nsc(source: str) -> List[NSourceCase]:
     """
     Checks that the whole instruction_argument has been consumed,
     and that the parser is positioned at the beginning of the following line.

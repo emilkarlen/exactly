@@ -24,8 +24,9 @@ from exactly_lib_test.impls.instructions.assert_.test_resources import instructi
 from exactly_lib_test.impls.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionChecker, \
     InstructionArgumentsVariantConstructor
-from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation2, ParseExpectation, \
+from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation2, \
     ExecutionExpectation, MultiSourceExpectation
+from exactly_lib_test.impls.instructions.test_resources.instr_arr_exp import ParseExpectation
 from exactly_lib_test.impls.types.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.impls.types.file_matcher.test_resources.validation_cases import failing_validation_cases__svh
 from exactly_lib_test.impls.types.matcher.test_resources import matchers

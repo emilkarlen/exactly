@@ -4,8 +4,9 @@ from exactly_lib_test.impls.instructions.assert_.process_output.exit_code.test_r
     InstructionArguments
 from exactly_lib_test.impls.instructions.assert_.process_output.exit_code.test_resources.instruction_check import \
     CHECKER
-from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import ParseExpectation, \
-    ExecutionExpectation, MultiSourceExpectation, Expectation2
+from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import ExecutionExpectation, \
+    MultiSourceExpectation, Expectation2
+from exactly_lib_test.impls.instructions.test_resources.instr_arr_exp import ParseExpectation
 from exactly_lib_test.impls.types.program.parse_program.test_resources import pgm_and_args_cases
 from exactly_lib_test.impls.types.program.test_resources.stdin_test_setups import MultipleStdinOfProgramTestSetup, \
     SingleStdinOfProgramTestSetup, NoStdinTestSetup, StdinCheckWithProgramWExitCode0ForSuccess

@@ -16,7 +16,8 @@ from exactly_lib_test.impls.instructions.assert_.contents_of_dir.test_resources.
 from exactly_lib_test.impls.instructions.assert_.contents_of_dir.test_resources.validation import ValidationHelper
 from exactly_lib_test.impls.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import SourceArrangement, \
-    ExecutionExpectation, ParseExpectation, Expectation2
+    ExecutionExpectation, Expectation2
+from exactly_lib_test.impls.instructions.test_resources.instr_arr_exp import ParseExpectation
 from exactly_lib_test.impls.types.file_matcher.contents_of_dir.test_resources import \
     files_matcher_integration as fm_tr
 from exactly_lib_test.impls.types.file_matcher.contents_of_dir.test_resources.cases import file_type

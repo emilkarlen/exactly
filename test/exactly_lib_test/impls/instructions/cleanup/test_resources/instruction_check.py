@@ -4,6 +4,7 @@ import unittest
 from exactly_lib.execution import phase_step
 from exactly_lib.impls.os_services.os_services_access import new_for_current_os
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
+from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices
@@ -17,6 +18,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.impls.instructions.test_resources.instruction_check_utils import \
     InstructionExecutionBase
+from exactly_lib_test.impls.instructions.test_resources.instruction_checker import InstructionChecker
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_populators, \
     tcds_populators, sds_populator
@@ -55,7 +57,27 @@ class Arrangement(ArrangementWithSds):
         self.previous_phase = previous_phase
 
 
-class Expectation(ExpectationBase):
+class MultiSourceExpectation(ExpectationBase):
+    def __init__(self,
+                 act_result: SubProcessResult = SubProcessResult(),
+                 validate_pre_sds_result: Assertion = svh_assertions.is_success(),
+                 main_result: Assertion = sh_assertions.is_success(),
+                 symbol_usages: Assertion = asrt.is_empty_sequence,
+                 main_side_effects_on_sds: Assertion = asrt.anything_goes(),
+                 main_side_effects_on_tcds: Assertion = asrt.anything_goes(),
+                 proc_exe_settings: Assertion[ProcessExecutionSettings]
+                 = asrt.is_instance(ProcessExecutionSettings)
+                 ):
+        super().__init__(validate_pre_sds_result,
+                         main_side_effects_on_sds,
+                         main_side_effects_on_tcds,
+                         symbol_usages,
+                         proc_exe_settings)
+        self.act_result = act_result
+        self.main_result = main_result
+
+
+class Expectation(MultiSourceExpectation):
     def __init__(self,
                  act_result: SubProcessResult = SubProcessResult(),
                  validate_pre_sds_result: Assertion = svh_assertions.is_success(),
@@ -64,13 +86,16 @@ class Expectation(ExpectationBase):
                  main_side_effects_on_sds: Assertion = asrt.anything_goes(),
                  main_side_effects_on_tcds: Assertion = asrt.anything_goes(),
                  source: Assertion = asrt.anything_goes(),
+                 proc_exe_settings: Assertion[ProcessExecutionSettings]
+                 = asrt.is_instance(ProcessExecutionSettings)
                  ):
-        super().__init__(validate_pre_sds_result,
+        super().__init__(act_result,
+                         validate_pre_sds_result,
+                         main_result,
+                         symbol_usages,
                          main_side_effects_on_sds,
                          main_side_effects_on_tcds,
-                         symbol_usages)
-        self.act_result = act_result
-        self.main_result = main_result
+                         proc_exe_settings)
         self.source = source
 
 
@@ -107,8 +132,30 @@ class Executor(InstructionExecutionBase):
                 parser: InstructionParser,
                 source: ParseSource):
         instruction = parser.parse(self.arrangement.fs_location_info, source)
-        self._check_instruction(CleanupPhaseInstruction, instruction)
         self.expectation.source.apply_with_message(self.put, source, 'source')
+        InstructionCheckExecutor(self.put, self.arrangement, self.expectation).check(instruction)
+
+
+class CleanupInstructionChecker(InstructionChecker[Arrangement, MultiSourceExpectation]):
+    def check(self,
+              put: unittest.TestCase,
+              instruction: Instruction,
+              arrangement: Arrangement,
+              expectation: MultiSourceExpectation):
+        InstructionCheckExecutor(put, arrangement, expectation).check(instruction)
+
+
+class InstructionCheckExecutor(InstructionExecutionBase):
+    def __init__(self,
+                 put: unittest.TestCase,
+                 arrangement: Arrangement,
+                 expectation: MultiSourceExpectation):
+        super().__init__(put, arrangement, expectation)
+        self.arrangement = arrangement
+        self.expectation = expectation
+
+    def check(self, instruction: Instruction):
+        self._check_instruction(CleanupPhaseInstruction, instruction)
         assert isinstance(instruction, CleanupPhaseInstruction)
         self.expectation.symbol_usages.apply_with_message(self.put,
                                                           instruction.symbol_usages(),
@@ -145,8 +192,10 @@ class Executor(InstructionExecutionBase):
 
             result_of_main = self._execute_main(environment, instruction)
 
-            self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
-            self.expectation.main_side_effects_on_tcds.apply(self.put, tcds)
+            self.expectation.proc_exe_settings.apply_with_message(self.put, environment.proc_exe_settings,
+                                                                  'proc exe settings')
+            self.expectation.main_side_effects_on_sds.apply_with_message(self.put, environment.sds, 'SDS')
+            self.expectation.main_side_effects_on_tcds.apply_with_message(self.put, tcds, 'TCDS')
 
         self.expectation.main_result.apply_with_message(self.put, result_of_main,
                                                         'result of main (without access to TCDS)')

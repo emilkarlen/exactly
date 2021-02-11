@@ -6,7 +6,8 @@ from exactly_lib_test.impls.instructions.assert_.process_output.exit_code.test_r
 from exactly_lib_test.impls.instructions.assert_.process_output.exit_code.test_resources.instruction_check import \
     CHECKER
 from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import ExecutionExpectation, \
-    Expectation2, ParseExpectation
+    Expectation2
+from exactly_lib_test.impls.instructions.test_resources.instr_arr_exp import ParseExpectation
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2, ProcessExecutionArrangement

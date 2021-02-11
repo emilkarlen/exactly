@@ -10,6 +10,7 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     assert_phase_instruction_that
 from exactly_lib_test.impls.instructions.assert_.test_resources import instruction_check as sut
@@ -37,7 +38,9 @@ from exactly_lib_test.type_val_deps.types.string.test_resources.string import St
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestMiscCases))
+    ret_val.addTest(unittest.makeSuite(TestParse))
+    ret_val.addTest(unittest.makeSuite(TestExecution))
+    ret_val.addTest(unittest.makeSuite(TestSideEffectsOfMain))
     ret_val.addTest(unittest.makeSuite(TestPopulate))
     ret_val.addTest(unittest.makeSuite(TestSymbolUsages))
     return ret_val
@@ -145,14 +148,7 @@ class TestSymbolUsages(TestCaseBase):
         )
 
 
-class TestMiscCases(TestCaseBase):
-    def test_successful_flow(self):
-        self._check(
-            utils.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
-            utils.single_line_source(),
-            sut.ArrangementPostAct(),
-            is_pass())
-
+class TestParse(TestCaseBase):
     def test_fail_due_to_unexpected_source_after_parse(self):
         with self.assertRaises(utils.TestError):
             self._check(utils.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
@@ -162,6 +158,15 @@ class TestMiscCases(TestCaseBase):
                             source=asrt_source.is_at_beginning_of_line(10),
                         )
                         )
+
+
+class TestExecution(TestCaseBase):
+    def test_successful_flow(self):
+        self._check(
+            utils.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
+            utils.single_line_source(),
+            sut.ArrangementPostAct(),
+            is_pass())
 
     def test_fail_due_to_unexpected_result_from_pre_validation(self):
         with self.assertRaises(utils.TestError):
@@ -191,7 +196,16 @@ class TestMiscCases(TestCaseBase):
                     main_result=pfh_assertions.is_fail__with_arbitrary_message()),
             )
 
-    def test_fail_due_to_fail_of_side_effects_on_files(self):
+    def test_that_cwd_for_main_and_post_validation_is_test_root(self):
+        self._check(
+            utils.ParserThatGives(InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot()),
+            utils.single_line_source(),
+            sut.ArrangementPostAct(),
+            is_pass())
+
+
+class TestSideEffectsOfMain(TestCaseBase):
+    def test_fail_due_to_fail_of_side_effects_on_sds(self):
         with self.assertRaises(utils.TestError):
             self._check(
                 utils.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
@@ -202,14 +216,7 @@ class TestMiscCases(TestCaseBase):
                         DirContents([File.empty('non-existing-file.txt')]))),
             )
 
-    def test_that_cwd_for_main_and_post_validation_is_test_root(self):
-        self._check(
-            utils.ParserThatGives(InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot()),
-            utils.single_line_source(),
-            sut.ArrangementPostAct(),
-            is_pass())
-
-    def test_fail_due_to_side_effects_check(self):
+    def test_fail_due_to_fail_of_side_effects_on_tcds(self):
         with self.assertRaises(utils.TestError):
             self._check(
                 utils.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
@@ -219,6 +226,16 @@ class TestMiscCases(TestCaseBase):
                     main_side_effects_on_tcds=sds_2_tcds_assertion(
                         act_dir_contains_exactly(
                             DirContents([File.empty('non-existing-file.txt')])))),
+            )
+
+    def test_fail_due_to_fail_of_side_effects_on_proc_exe_settings(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                utils.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
+                utils.single_line_source(),
+                sut.ArrangementPostAct(),
+                Expectation(
+                    proc_exe_settings=asrt.not_(asrt.is_instance(ProcessExecutionSettings))),
             )
 
 

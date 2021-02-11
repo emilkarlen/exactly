@@ -9,8 +9,9 @@ from exactly_lib.util.functional import reduce_optional
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.instructions.assert_.contents_of_dir.test_resources import argument_building as args
 from exactly_lib_test.impls.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation2, ParseExpectation, \
+from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation2, \
     ExecutionExpectation, SourceArrangement
+from exactly_lib_test.impls.instructions.test_resources.instr_arr_exp import ParseExpectation
 from exactly_lib_test.impls.types.file_matcher.contents_of_dir.test_resources.case_executor import \
     ExecutorOfCaseGenerator
 from exactly_lib_test.impls.types.file_matcher.contents_of_dir.test_resources.case_generator import \

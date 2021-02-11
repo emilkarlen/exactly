@@ -40,6 +40,16 @@ class StringLiteralAbsStx(NonHereDocStringAbsStx):
             raise ValueError('Invalid quoting: ' + str(self.quoting))
 
 
+QUOTED_STR__SOFT = quoting.surrounded_by_soft_quotes_str('quoted_value__soft')
+QUOTED_STR__HARD = quoting.surrounded_by_hard_quotes_str('quoted_value__hard')
+
+MISSING_END_QUOTE_STR__SOFT = quoting.SOFT_QUOTE_CHAR + 'missing_end_quote'
+MISSING_END_QUOTE_STR__HARD = quoting.HARD_QUOTE_CHAR + 'missing_end_quote'
+
+MISSING_END_QUOTE__SOFT = StringLiteralAbsStx(MISSING_END_QUOTE_STR__SOFT)
+MISSING_END_QUOTE__HARD = StringLiteralAbsStx(MISSING_END_QUOTE_STR__HARD)
+
+
 class StringConcatAbsStx(NonHereDocStringAbsStx):
     def __init__(self, fragments: Sequence[NonHereDocStringAbsStx]):
         if not fragments:

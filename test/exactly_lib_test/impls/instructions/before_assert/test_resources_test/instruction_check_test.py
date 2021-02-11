@@ -10,6 +10,7 @@ from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruct
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     before_assert_phase_instruction_that
 from exactly_lib_test.impls.instructions.before_assert.test_resources import instruction_check as sut
@@ -34,7 +35,8 @@ from exactly_lib_test.type_val_deps.types.string.test_resources.string import St
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestMiscCases),
+        unittest.makeSuite(TestExecution),
+        unittest.makeSuite(TestSideEffectsAfterMain),
         unittest.makeSuite(TestPopulate),
         unittest.makeSuite(TestSymbols),
     ])
@@ -144,7 +146,7 @@ class TestSymbols(TestCaseBase):
         )
 
 
-class TestMiscCases(TestCaseBase):
+class TestExecution(TestCaseBase):
     def test_successful_flow(self):
         self._check(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
@@ -179,16 +181,6 @@ class TestMiscCases(TestCaseBase):
                 sut.Expectation(main_result=sh_assertions.is_hard_error()),
             )
 
-    def test_fail_due_to_fail_of_side_effects_on_files(self):
-        with self.assertRaises(utils.TestError):
-            self._check(
-                PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
-                single_line_source(),
-                sut.arrangement(),
-                sut.Expectation(main_side_effects_on_sds=act_dir_contains_exactly(
-                    DirContents([File.empty('non-existing-file.txt')]))),
-            )
-
     def test_that_cwd_for_main__and__validate_post_setup_is_act_dir(self):
         self._check(
             utils.ParserThatGives(InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot()),
@@ -196,13 +188,39 @@ class TestMiscCases(TestCaseBase):
             sut.arrangement(),
             sut.is_success())
 
-    def test_fail_due_to_side_effects_check(self):
+
+class TestSideEffectsAfterMain(TestCaseBase):
+    def test_fail_due_to_fail_of_side_effects_on_sds(self):
         with self.assertRaises(utils.TestError):
             self._check(
                 PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
                 single_line_source(),
                 sut.arrangement(),
-                sut.Expectation(main_side_effects_on_tcds=asrt.IsInstance(bool)),
+                sut.Expectation(
+                    main_side_effects_on_sds=act_dir_contains_exactly(
+                        DirContents([File.empty('non-existing-file.txt')]))
+                ),
+            )
+
+    def test_fail_due_to_fail_of_side_effects_on_tcds(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+                single_line_source(),
+                sut.arrangement(),
+                sut.Expectation(
+                    main_side_effects_on_tcds=asrt.IsInstance(bool)),
+            )
+
+    def test_fail_due_to_fail_of_side_effects_on_proc_exe_settings(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+                single_line_source(),
+                sut.arrangement(),
+                sut.Expectation(
+                    proc_exe_settings=asrt.not_(asrt.is_instance(ProcessExecutionSettings)),
+                ),
             )
 
 

@@ -4,6 +4,7 @@ import unittest
 from exactly_lib.execution import phase_step
 from exactly_lib.impls.os_services.os_services_access import new_for_current_os
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
+from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
@@ -15,6 +16,7 @@ from exactly_lib.util.process_execution.execution_elements import ProcessExecuti
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.impls.instructions.test_resources.instruction_check_utils import InstructionExecutionBase
+from exactly_lib_test.impls.instructions.test_resources.instruction_checker import InstructionChecker
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_populators, \
     tcds_populators, sds_populator
@@ -51,7 +53,27 @@ def arrangement(pre_contents_population_action: TcdsAction = TcdsAction(),
                               symbols=symbols)
 
 
-class Expectation(ExpectationBase):
+class MultiSourceExpectation(ExpectationBase):
+    def __init__(self,
+                 validation_pre_sds: Assertion = svh_assertions.is_success(),
+                 validation_post_setup: Assertion = svh_assertions.is_success(),
+                 main_result: Assertion = sh_assertions.is_success(),
+                 symbol_usages: Assertion = asrt.is_empty_sequence,
+                 main_side_effects_on_sds: Assertion = asrt.anything_goes(),
+                 main_side_effects_on_tcds: Assertion = asrt.anything_goes(),
+                 proc_exe_settings: Assertion[ProcessExecutionSettings]
+                 = asrt.is_instance(ProcessExecutionSettings)
+                 ):
+        super().__init__(validation_pre_sds,
+                         main_side_effects_on_sds,
+                         main_side_effects_on_tcds,
+                         symbol_usages,
+                         proc_exe_settings)
+        self.validation_post_setup = validation_post_setup
+        self.main_result = sh_assertions.is_sh_and(main_result)
+
+
+class Expectation(MultiSourceExpectation):
     def __init__(self,
                  validation_pre_sds: Assertion = svh_assertions.is_success(),
                  validation_post_setup: Assertion = svh_assertions.is_success(),
@@ -60,13 +82,17 @@ class Expectation(ExpectationBase):
                  main_side_effects_on_sds: Assertion = asrt.anything_goes(),
                  main_side_effects_on_tcds: Assertion = asrt.anything_goes(),
                  source: Assertion = asrt.anything_goes(),
+                 proc_exe_settings: Assertion[ProcessExecutionSettings]
+                 = asrt.is_instance(ProcessExecutionSettings)
                  ):
         super().__init__(validation_pre_sds,
+                         validation_post_setup,
+                         main_result,
+                         symbol_usages,
                          main_side_effects_on_sds,
                          main_side_effects_on_tcds,
-                         symbol_usages)
-        self.validation_post_setup = validation_post_setup
-        self.main_result = sh_assertions.is_sh_and(main_result)
+                         proc_exe_settings,
+                         )
         self.source = source
 
 
@@ -114,8 +140,33 @@ class Executor(InstructionExecutionBase):
                 parser: InstructionParser,
                 source: ParseSource):
         instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
-        self._check_instruction(BeforeAssertPhaseInstruction, instruction)
         self.expectation.source.apply_with_message(self.put, source, 'source')
+        instruction_checker = _InstructionCheckExecutor(self.put, self.arrangement, self.expectation)
+        instruction_checker.check(instruction)
+
+
+class BeforeAssertInstructionChecker(InstructionChecker[ArrangementPostAct, MultiSourceExpectation]):
+    def check(self,
+              put: unittest.TestCase,
+              instruction: Instruction,
+              arrangement: ArrangementPostAct,
+              expectation: MultiSourceExpectation):
+        _InstructionCheckExecutor(put, arrangement, expectation).check(instruction)
+
+
+class _InstructionCheckExecutor(InstructionExecutionBase):
+    def __init__(self,
+                 put: unittest.TestCase,
+                 arrangement: ArrangementPostAct,
+                 expectation: MultiSourceExpectation):
+        super().__init__(put, arrangement, expectation)
+        self.put = put
+        self.arrangement = arrangement
+        self.expectation = expectation
+        self.message_builder = asrt.MessageBuilder()
+
+    def check(self, instruction: Instruction):
+        self._check_instruction(BeforeAssertPhaseInstruction, instruction)
         assert isinstance(instruction, BeforeAssertPhaseInstruction)
         self.expectation.symbol_usages.apply_with_message(self.put,
                                                           instruction.symbol_usages(),
@@ -164,6 +215,9 @@ class Executor(InstructionExecutionBase):
 
             self._check_main_side_effects_on_sds(tcds)
             self._check_side_effects_on_tcds(tcds)
+            self.expectation.proc_exe_settings.apply_with_message(self.put,
+                                                                  environment.proc_exe_settings,
+                                                                  'proc exe settings')
             self.expectation.symbol_usages.apply_with_message(self.put,
                                                               instruction.symbol_usages(),
                                                               'symbol-usages after ' +
@@ -194,3 +248,12 @@ class Executor(InstructionExecutionBase):
                       environment: InstructionEnvironmentForPostSdsStep,
                       instruction: BeforeAssertPhaseInstruction) -> sh.SuccessOrHardError:
         return instruction.main(environment, self.arrangement.os_services)
+
+    def _check(self,
+               component: str,
+               assertion: Assertion,
+               actual):
+        assertion.apply(self.put,
+                        actual,
+                        asrt.MessageBuilder(component))
+        return actual

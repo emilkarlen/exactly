@@ -5,12 +5,14 @@ from exactly_lib.impls.os_services.os_services_access import new_for_current_os
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.util.process_execution.execution_elements import with_environ
+from exactly_lib.util.process_execution.execution_elements import with_environ, ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
+from exactly_lib_test.impls.instructions.cleanup.test_resources import instruction_check
 from exactly_lib_test.impls.instructions.cleanup.test_resources.instruction_check import Arrangement, check, Expectation
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
+from exactly_lib_test.impls.instructions.test_resources.instruction_checker import InstructionChecker
 from exactly_lib_test.tcfs.test_resources import hds_populators, tcds_populators, \
     sds_populator
 from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh
@@ -31,6 +33,10 @@ class CleanupConfigurationBase(ConfigurationBase):
                              expectation):
         check(put, parser, source, arrangement, expectation)
 
+    @property
+    def instruction_checker(self) -> InstructionChecker:
+        return instruction_check.CleanupInstructionChecker()
+
     def phase_is_after_act(self) -> bool:
         return True
 
@@ -38,11 +44,14 @@ class CleanupConfigurationBase(ConfigurationBase):
                        main_side_effects_on_sds: Assertion = asrt.anything_goes(),
                        symbol_usages: Assertion = asrt.is_empty_sequence,
                        source: Assertion[ParseSource] = asrt.anything_goes(),
+                       proc_exe_settings: Assertion[ProcessExecutionSettings]
+                       = asrt.is_instance(ProcessExecutionSettings)
                        ):
         return Expectation(
             source=source,
             symbol_usages=symbol_usages,
             main_side_effects_on_sds=main_side_effects_on_sds,
+            proc_exe_settings=proc_exe_settings,
         )
 
     def expect_failure_of_main(self,

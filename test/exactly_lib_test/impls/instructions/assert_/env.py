@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.impls.instructions.assert_ import env as sut
 from exactly_lib_test.impls.instructions.assert_.test_resources.configuration import AssertConfigurationBase
-from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.env_instruction_test import \
+from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.env_instruction_test import \
     suite_for
 
 

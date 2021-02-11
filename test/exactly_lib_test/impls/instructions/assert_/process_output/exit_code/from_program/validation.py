@@ -5,7 +5,8 @@ from exactly_lib_test.impls.instructions.assert_.process_output.exit_code.test_r
 from exactly_lib_test.impls.instructions.assert_.process_output.exit_code.test_resources.instruction_check import \
     CHECKER
 from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import ExecutionExpectation, \
-    Expectation2, ParseExpectation
+    Expectation2
+from exactly_lib_test.impls.instructions.test_resources.instr_arr_exp import ParseExpectation
 from exactly_lib_test.impls.types.integer_matcher.test_resources import validation_cases as im_validation_case
 from exactly_lib_test.impls.types.program.test_resources import validation_cases as pgm_validation_cases
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext

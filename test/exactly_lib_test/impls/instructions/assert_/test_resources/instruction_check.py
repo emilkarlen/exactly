@@ -3,6 +3,7 @@ import unittest
 from typing import Sequence
 
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
+from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolUsage
@@ -15,7 +16,10 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc, text_doc_assertions
+from exactly_lib_test.impls.instructions.test_resources.instr_arr_exp import ParseExpectation
+from exactly_lib_test.impls.instructions.test_resources.instruction_checker import InstructionChecker
 from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationActual
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
@@ -63,6 +67,8 @@ class Expectation:
             main_side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
             source: Assertion[ParseSource] = asrt.anything_goes(),
             main_raises_hard_error: bool = False,
+            proc_exe_settings: Assertion[ProcessExecutionSettings]
+            = asrt.is_instance(ProcessExecutionSettings)
     ):
         self.validation_post_sds = validation_post_sds
         self.validation_pre_sds = validation_pre_sds
@@ -72,16 +78,7 @@ class Expectation:
         self.main_side_effects_on_tcds = main_side_effects_on_tcds
         self.source = source
         self.symbol_usages = symbol_usages
-
-
-class ParseExpectation:
-    def __init__(
-            self,
-            source: Assertion[ParseSource] = asrt.anything_goes(),
-            symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
-    ):
-        self.source = source
-        self.symbol_usages = symbol_usages
+        self.proc_exe_settings = proc_exe_settings
 
 
 class ExecutionExpectation:
@@ -97,6 +94,8 @@ class ExecutionExpectation:
             main_raises_hard_error: bool = False,
             main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
             main_side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+            proc_exe_settings: Assertion[ProcessExecutionSettings]
+            = asrt.is_instance(ProcessExecutionSettings)
     ):
         self.validation_post_sds = validation_post_sds
         self.validation_pre_sds = validation_pre_sds
@@ -104,6 +103,7 @@ class ExecutionExpectation:
         self.main_raises_hard_error = main_raises_hard_error
         self.main_side_effects_on_sds = main_side_effects_on_sds
         self.main_side_effects_on_tcds = main_side_effects_on_tcds
+        self.proc_exe_settings = proc_exe_settings
 
     @staticmethod
     def of_validation(expectation_: ValidationExpectationSvh) -> 'ExecutionExpectation':
@@ -374,9 +374,22 @@ class Executor:
                                            ex.main_raises_hard_error,
                                            ex.main_side_effects_on_sds,
                                            ex.main_side_effects_on_tcds,
+                                           ex.proc_exe_settings,
                                        ))
         exe_checker.check(instruction)
         return
+
+
+class AssertInstructionChecker(InstructionChecker[ArrangementPostAct2, ExecutionExpectation]):
+    def check(self,
+              put: unittest.TestCase,
+              instruction: Instruction,
+              arrangement: ArrangementPostAct,
+              expectation: ExecutionExpectation):
+        put.assertIsInstance(instruction, AssertPhaseInstruction, 'instruction type')
+        assert isinstance(instruction, AssertPhaseInstruction)  # Type info for IDE
+
+        ExecutionChecker(put, arrangement.as_arrangement_2(), expectation).check(instruction)
 
 
 class ExecutionChecker:
@@ -416,8 +429,10 @@ class ExecutionChecker:
             except StopAssertion:
                 return
 
-            self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
-            self.expectation.main_side_effects_on_tcds.apply(self.put, tcds)
+            self.expectation.proc_exe_settings.apply_with_message(self.put, environment.proc_exe_settings,
+                                                                  'proc exe settings')
+            self.expectation.main_side_effects_on_sds.apply_with_message(self.put, environment.sds, 'SDS')
+            self.expectation.main_side_effects_on_tcds.apply_with_message(self.put, tcds, 'TCDS')
 
         self.expectation.main_result.apply(self.put, main_result)
 

@@ -1,5 +1,6 @@
 import unittest
-from abc import ABC
+from abc import ABC, abstractmethod
+from typing import Sequence, Dict, Optional
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
@@ -8,10 +9,14 @@ from exactly_lib.impls.os_services.os_services_access import new_for_current_os
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
+from exactly_lib_test.impls.instructions.test_resources.instruction_checker import InstructionChecker
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.section_document.test_resources import parse_checker
@@ -24,7 +29,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
-class ConfigurationBase:
+class ConfigurationBase(ABC):
     def phase_is_after_act(self) -> bool:
         raise NotImplementedError()
 
@@ -35,6 +40,11 @@ class ConfigurationBase:
                              arrangement,
                              expectation):
         raise NotImplementedError()
+
+    @property
+    @abstractmethod
+    def instruction_checker(self) -> InstructionChecker:
+        pass
 
     def run_test(self,
                  put: unittest.TestCase,
@@ -69,7 +79,7 @@ class ConfigurationBase:
                     hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
-                    environ: dict = None,
+                    environ: Optional[Dict[str, str]] = None,
                     os_services: OsServices = new_for_current_os(),
                     symbols: SymbolTable = None):
         raise NotImplementedError()
@@ -78,9 +88,11 @@ class ConfigurationBase:
         raise NotImplementedError()
 
     def expect_success(self,
-                       main_side_effects_on_sds: Assertion = asrt.anything_goes(),
-                       symbol_usages: Assertion = asrt.is_empty_sequence,
+                       main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+                       symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                        source: Assertion[ParseSource] = asrt.anything_goes(),
+                       proc_exe_settings: Assertion[ProcessExecutionSettings]
+                       = asrt.is_instance(ProcessExecutionSettings)
                        ):
         raise NotImplementedError()
 
