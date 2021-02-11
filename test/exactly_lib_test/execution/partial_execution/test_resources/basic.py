@@ -1,8 +1,7 @@
 import pathlib
 import shutil
-import types
 import unittest
-from typing import Callable, Optional
+from typing import Callable, Optional, Mapping
 
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
@@ -20,6 +19,7 @@ from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.functional import Composition
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_pr
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that, \
@@ -55,10 +55,10 @@ class Result(tuple):
         return self[1]
 
 
-def result_assertion(hds: Assertion[HomeDs] = asrt.anything_goes(),
-                     sds: Assertion[SandboxDs] = asrt.anything_goes(),
-                     partial_result: Assertion[PartialExeResult] = asrt.anything_goes(),
-                     ) -> Assertion[Result]:
+def result_matches(hds: Assertion[HomeDs] = asrt.anything_goes(),
+                   sds: Assertion[SandboxDs] = asrt.anything_goes(),
+                   partial_result: Assertion[PartialExeResult] = asrt.anything_goes(),
+                   ) -> Assertion[Result]:
     return asrt.and_([
         asrt.sub_component('hds',
                            Result.hds.fget,
@@ -70,6 +70,16 @@ def result_assertion(hds: Assertion[HomeDs] = asrt.anything_goes(),
                            Result.partial_result.fget,
                            partial_result),
     ])
+
+
+def result_is_pass(hds: Assertion[HomeDs] = asrt.anything_goes(),
+                   sds: Assertion[SandboxDs] = asrt.anything_goes(),
+                   ) -> Assertion[Result]:
+    return result_matches(
+        hds=hds,
+        sds=sds,
+        partial_result=asrt_pr.is_pass()
+    )
 
 
 class TestCaseGeneratorForPartialExecutionBase(TestCaseGeneratorBase):
@@ -127,7 +137,7 @@ class TestCaseWithCommonDefaultInstructions(TestCaseGeneratorForPartialExecution
                                     PhaseEnum.CLEANUP)
 
     def _phase_elements(self,
-                        instruction_in_phase_adapter: types.FunctionType,
+                        instruction_in_phase_adapter: Callable,
                         phase: PhaseEnum) -> list:
         return list(map(Composition(self.instruction_line_constructor,
                                     instruction_in_phase_adapter),
@@ -145,7 +155,7 @@ class Arrangement:
                  actor: Actor = dummy_actor(),
                  hds: HomeDs = HomeDs(pathlib.Path().resolve(),
                                       pathlib.Path().resolve()),
-                 environ: dict = None,
+                 environ: Optional[Mapping[str, str]] = None,
                  timeout_in_seconds: int = None,
                  predefined_symbols: SymbolTable = None,
                  exe_atc_and_skip_assertions: Optional[StdOutputFiles] = None,
@@ -202,8 +212,6 @@ def _execute(test_case: TestCase,
              arrangement: Arrangement,
              is_keep_sandbox: bool = True) -> Result:
     environ = arrangement.environ
-    if environ is None:
-        environ = {}
     partial_result = sut.execute(
         test_case,
         ExecutionConfiguration(environ,

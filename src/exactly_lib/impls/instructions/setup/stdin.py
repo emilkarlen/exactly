@@ -24,6 +24,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act.adv_w_validation import AdvWValidation
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
 from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
@@ -119,6 +120,7 @@ class _Instruction(SetupPhaseInstruction):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder,
              ) -> sh.SuccessOrHardError:

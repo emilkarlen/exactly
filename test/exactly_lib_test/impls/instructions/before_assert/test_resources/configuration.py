@@ -1,11 +1,13 @@
 import unittest
+from typing import Optional, Dict
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.impls.os_services.os_services_access import new_for_current_os
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.util.process_execution.execution_elements import with_environ, ProcessExecutionSettings
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.instructions.before_assert.test_resources import instruction_check
@@ -45,13 +47,16 @@ class BeforeAssertConfigurationBase(ConfigurationBase):
                        symbol_usages: Assertion = asrt.is_empty_sequence,
                        source: Assertion[ParseSource] = asrt.anything_goes(),
                        proc_exe_settings: Assertion[ProcessExecutionSettings]
-                       = asrt.is_instance(ProcessExecutionSettings)
+                       = asrt.is_instance(ProcessExecutionSettings),
+                       instruction_settings: Assertion[InstructionSettings]
+                       = asrt.is_instance(InstructionSettings),
                        ):
         return ic.Expectation(
             source=source,
             symbol_usages=symbol_usages,
             main_side_effects_on_sds=main_side_effects_on_sds,
             proc_exe_settings=proc_exe_settings,
+            instruction_settings=instruction_settings,
         )
 
     def expect_failure_of_main(self,
@@ -78,14 +83,14 @@ class BeforeAssertConfigurationBase(ConfigurationBase):
                     hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
-                    environ: dict = None,
+                    environ: Optional[Dict[str, str]] = None,
                     os_services: OsServices = new_for_current_os(),
                     symbols: SymbolTable = None):
         return ic.arrangement(pre_contents_population_action=pre_contents_population_action,
                               hds_contents=hds_contents,
                               sds_contents_before_main=sds_contents_before_main,
                               tcds_contents=tcds_contents,
-                              process_execution_settings=with_environ(environ),
+                              process_execution_settings=ProcessExecutionSettings.from_non_immutable(environ=environ),
                               os_services=os_services,
                               symbols=symbols)
 

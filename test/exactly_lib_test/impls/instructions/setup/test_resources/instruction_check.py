@@ -14,11 +14,12 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
 from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
-from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.partial_execution.test_resources import settings_handlers
 from exactly_lib_test.impls.instructions.test_resources.instruction_checker import InstructionChecker
@@ -29,7 +30,8 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_populators, \
     tcds_populators, sds_populator
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
-from exactly_lib_test.test_case.test_resources import settings_builder_assertions as asrt_settings
+from exactly_lib_test.test_case.test_resources import settings_builder_assertions as asrt_settings, \
+    instruction_settings as instr_settings
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_case.test_resources.settings_builder_assertions import SettingsBuilderAssertionModel
@@ -49,7 +51,7 @@ class Arrangement(ArrangementWithSds):
                  non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                  os_services: OsServices = os_services_access.new_for_current_os(),
-                 process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
+                 process_execution_settings: ProcessExecutionSettings = ProcessExecutionSettings.null(),
                  settings_builder: Optional[SetupSettingsBuilder] = None,
                  symbols: SymbolTable = None,
                  fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
@@ -90,7 +92,9 @@ class MultiSourceExpectation:
                  symbols_after_main: Assertion[Sequence[SymbolUsage]]
                  = asrt.anything_goes(),
                  proc_exe_settings: Assertion[ProcessExecutionSettings]
-                 = asrt.is_instance(ProcessExecutionSettings)
+                 = asrt.is_instance(ProcessExecutionSettings),
+                 instruction_settings: Assertion[InstructionSettings]
+                 = asrt.is_instance(InstructionSettings),
                  ):
         self.validation = validation
         self.main_result = main_result
@@ -100,6 +104,7 @@ class MultiSourceExpectation:
         self.symbols_after_parse = symbols_after_parse
         self.symbols_after_main = symbols_after_main
         self.proc_exe_settings = proc_exe_settings
+        self.instruction_settings = instruction_settings
 
     def as_expectation_w_source(self, source: Assertion[ParseSource] = asrt.anything_goes()) -> 'Expectation':
         return Expectation(
@@ -143,7 +148,8 @@ class Expectation(MultiSourceExpectation):
                  symbols_after_main: Assertion[Sequence[SymbolUsage]]
                  = asrt.anything_goes(),
                  proc_exe_settings: Assertion[ProcessExecutionSettings]
-                 = asrt.is_instance(ProcessExecutionSettings)
+                 = asrt.is_instance(ProcessExecutionSettings),
+                 instruction_settings: Assertion[InstructionSettings] = asrt.is_instance(InstructionSettings)
                  ):
         super().__init__(
             ValidationExpectationSvh(pre_validation_result,
@@ -155,6 +161,7 @@ class Expectation(MultiSourceExpectation):
             settings_builder,
             symbols_after_main,
             proc_exe_settings,
+            instruction_settings,
         )
         self.source = source
         self.pre_validation_result = pre_validation_result
@@ -297,12 +304,15 @@ class _InstructionCheckExecutor:
                     return
 
             instruction_environment = environment_builder.build_post_sds()
+            instruction_settings = instr_settings.from_proc_exe_settings(self.arrangement.process_execution_settings)
 
             tcds = path_resolving_environment.tcds
             sds = tcds.sds
 
-            main_result = self._execute_main(instruction_environment, self.instruction)
+            main_result = self._execute_main(instruction_environment, instruction_settings, self.instruction)
 
+            self.expectation.instruction_settings.apply_with_message(self.put, instruction_settings,
+                                                                     'instruction settings')
             self.expectation.main_side_effects_on_sds.apply(self.put, sds)
             self.expectation.symbols_after_main.apply_with_message(self.put,
                                                                    self.instruction.symbol_usages(),
@@ -349,9 +359,11 @@ class _InstructionCheckExecutor:
 
     def _execute_main(self,
                       instruction_environment: InstructionEnvironmentForPostSdsStep,
+                      settings: InstructionSettings,
                       instruction: SetupPhaseInstruction) -> sh.SuccessOrHardError:
         settings_builder = self.arrangement.initial_settings_builder
         main_result = instruction.main(instruction_environment,
+                                       settings,
                                        self.arrangement.os_services,
                                        settings_builder)
         self.put.assertIsInstance(main_result,

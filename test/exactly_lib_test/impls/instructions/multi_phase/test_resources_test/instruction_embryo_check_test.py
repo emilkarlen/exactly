@@ -15,9 +15,10 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.process_execution import execution_elements
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
@@ -102,11 +103,13 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
             sut.Expectation(side_effects_on_hds=asrt.IsInstance(pathlib.Path)),
         )
 
-    def test_environment_variables__is_an_empty_dict(self):
+    def test_environment_variables__is_copy_from_proc_exe_settings(self):
         self._check(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             single_line_source(),
-            ArrangementWithSds(),
+            ArrangementWithSds(
+                process_execution_settings=ProcessExecutionSettings.with_environ({})
+            ),
             sut.Expectation(main_side_effect_on_environment_variables=asrt.equals({})),
         )
 
@@ -399,7 +402,7 @@ class TestMiscCases(TestCaseBase):
                 sut.Expectation(assertion_on_instruction_environment=asrt.fail('unconditional failure')),
             )
 
-    def test_manipulate_environment_variables(self):
+    def test_manipulation_of_environment_variables(self):
         env_var = NameAndValue('env_var_name', 'env var value')
         expected_environment_variables = {
             env_var.name: env_var.value
@@ -409,8 +412,12 @@ class TestMiscCases(TestCaseBase):
         self._check(
             ParserThatGives(instruction),
             single_line_source(),
-            ArrangementWithSds(),
-            sut.Expectation(main_side_effect_on_environment_variables=asrt.equals(expected_environment_variables)),
+            ArrangementWithSds(
+                process_execution_settings=ProcessExecutionSettings.with_environ({})
+            ),
+            sut.Expectation(
+                main_side_effect_on_environment_variables=asrt.equals(expected_environment_variables)
+            ),
         )
 
     def test_propagate_environment_variables_from_arrangement(self):
@@ -431,7 +438,7 @@ class TestMiscCases(TestCaseBase):
             ParserThatGives(instruction),
             single_line_source(),
             ArrangementWithSds(
-                process_execution_settings=execution_elements.with_environ(environ_of_arrangement)),
+                process_execution_settings=ProcessExecutionSettings.with_environ(environ_of_arrangement)),
             sut.Expectation(
                 main_side_effect_on_environment_variables=
                 asrt.equals(expected_environment_variables)),
@@ -457,10 +464,11 @@ class InstructionThatSetsEnvironmentVariable(embryo.InstructionEmbryo[None]):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices,
              ):
         variable = self.variable
-        environment.proc_exe_settings.environ[variable.name] = variable.value
+        settings.environ()[variable.name] = variable.value
 
 
 if __name__ == '__main__':

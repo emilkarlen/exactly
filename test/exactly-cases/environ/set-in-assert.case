@@ -1,0 +1,26 @@
+[setup]
+
+
+run @ ENV_VAR_IS_NOT_SET ASSERT_VAR
+
+[act]
+
+@ PRINT_ENV_VAR ASSERT_VAR
+
+[assert]
+
+
+stdout is-empty
+
+
+def string VAR_VAL = 'the value of the assert env var'
+
+env ASSERT_VAR = @[VAR_VAL]@
+
+run @ ENV_VAR_EQUALS ASSERT_VAR @[VAR_VAL]@
+
+
+[cleanup]
+
+
+run @ ENV_VAR_EQUALS ASSERT_VAR @[VAR_VAL]@

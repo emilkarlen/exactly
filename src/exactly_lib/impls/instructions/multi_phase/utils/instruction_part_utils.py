@@ -13,6 +13,7 @@ from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.result import pfh, sh
 
 
@@ -83,10 +84,11 @@ class MainStepExecutorFromMainStepExecutorEmbryo(MainStepExecutor):
 
     def apply_as_non_assertion(self,
                                environment: InstructionEnvironmentForPostSdsStep,
+                               settings: InstructionSettings,
                                os_services: OsServices,
                                ) -> sh.SuccessOrHardError:
         try:
-            result = self.main_step_embryo.main(environment, os_services)
+            result = self.main_step_embryo.main(environment, settings, os_services)
         except HardErrorException as ex:
             return sh.new_sh_hard_error(ex.error)
 
@@ -94,10 +96,11 @@ class MainStepExecutorFromMainStepExecutorEmbryo(MainStepExecutor):
 
     def apply_as_assertion(self,
                            environment: InstructionEnvironmentForPostSdsStep,
+                           settings: InstructionSettings,
                            os_services: OsServices,
                            ) -> pfh.PassOrFailOrHardError:
         try:
-            result = self.main_step_embryo.main(environment, os_services)
+            result = self.main_step_embryo.main(environment, settings, os_services)
         except HardErrorException as ex:
             return pfh.new_pfh_hard_error(ex.error)
 

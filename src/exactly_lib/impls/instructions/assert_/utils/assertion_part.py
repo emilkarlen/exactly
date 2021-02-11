@@ -11,6 +11,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case.result.pfh import PassOrFailOrHardErrorEnum
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
@@ -185,6 +186,7 @@ class AssertionInstructionFromAssertionPart(Generic[A], AssertPhaseInstruction):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         post_sds_validation_result = self._assertion_part.validator.validate_post_sds_if_applicable(
             environment.path_resolving_environment

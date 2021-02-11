@@ -8,6 +8,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.result import sh
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
@@ -213,6 +214,16 @@ class TestSideEffectsOfMain(TestCaseBase):
                         ),
                         )
 
+    def test_fail_due_to_fail_of_side_effects_on_instruction_settings(self):
+        with self.assertRaises(utils.TestError):
+            self._check(utils.ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                        utils.single_line_source(),
+                        sut.Arrangement(),
+                        sut.Expectation(
+                            instruction_settings=asrt.not_(asrt.is_instance(InstructionSettings))
+                        ),
+                        )
+
 
 SUCCESSFUL_INSTRUCTION = cleanup_phase_instruction_that()
 
@@ -220,6 +231,7 @@ SUCCESSFUL_INSTRUCTION = cleanup_phase_instruction_that()
 class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(CleanupPhaseInstruction):
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices,
              previous_phase: PreviousPhase) -> sh.SuccessOrHardError:
         utils.raise_test_error_if_cwd_is_not_test_root(environment.sds)

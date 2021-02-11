@@ -13,6 +13,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.result import sh, svh
 
 
@@ -32,13 +33,13 @@ class CleanupPhaseInstructionFromParts(CleanupPhaseInstruction):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices,
              previous_phase: PreviousPhase) -> sh.SuccessOrHardError:
         validation_result = self._validate_from_main(environment)
         if validation_result.is_hard_error:
             return validation_result
-        return self.setup.executor.apply_as_non_assertion(environment,
-                                                          os_services)
+        return self.setup.executor.apply_as_non_assertion(environment, settings, os_services)
 
     def _validate_from_main(
             self,

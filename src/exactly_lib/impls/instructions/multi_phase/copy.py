@@ -34,6 +34,7 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.result import sh
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
@@ -137,6 +138,7 @@ class TheInstructionEmbryoBase(embryo.InstructionEmbryo[Optional[TextRenderer]])
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices,
              ) -> Optional[TextRenderer]:
         sh_result = self._main(environment, os_services)

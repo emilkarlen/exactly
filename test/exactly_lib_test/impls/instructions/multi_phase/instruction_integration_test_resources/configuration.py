@@ -12,6 +12,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
@@ -92,7 +93,9 @@ class ConfigurationBase(ABC):
                        symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                        source: Assertion[ParseSource] = asrt.anything_goes(),
                        proc_exe_settings: Assertion[ProcessExecutionSettings]
-                       = asrt.is_instance(ProcessExecutionSettings)
+                       = asrt.is_instance(ProcessExecutionSettings),
+                       instruction_settings: Assertion[InstructionSettings]
+                       = asrt.is_instance(InstructionSettings),
                        ):
         raise NotImplementedError()
 

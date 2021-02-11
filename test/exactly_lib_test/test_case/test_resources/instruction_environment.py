@@ -69,8 +69,8 @@ class InstructionEnvironmentPreSdsBuilder:
     def build(self) -> InstructionEnvironmentForPreSdsStep:
         return InstructionEnvironmentForPreSdsStep(
             self._hds,
-            ProcessExecutionSettings(self._timeout_in_seconds,
-                                     self._environ),
+            ProcessExecutionSettings.from_non_immutable(self._timeout_in_seconds,
+                                                        self._environ),
             self._symbols,
             self.mem_buff_size
         )
@@ -143,8 +143,8 @@ class InstructionEnvironmentPostSdsBuilder:
     def build_pre_sds(self) -> InstructionEnvironmentForPreSdsStep:
         return InstructionEnvironmentForPreSdsStep(
             self._hds,
-            ProcessExecutionSettings(self._timeout_in_seconds,
-                                     self._environ),
+            ProcessExecutionSettings.from_non_immutable(self._timeout_in_seconds,
+                                                        self._environ),
             self._symbols,
             self.mem_buff_size,
         )
@@ -152,7 +152,7 @@ class InstructionEnvironmentPostSdsBuilder:
     def build_post_sds(self) -> InstructionEnvironmentForPostSdsStep:
         return InstructionEnvironmentForPostSdsStep(
             self._hds,
-            ProcessExecutionSettings(self._timeout_in_seconds, self._environ),
+            ProcessExecutionSettings.from_non_immutable(self._timeout_in_seconds, self._environ),
             self._sds,
             self.get_instr_tmp_file_space(self._sds.internal_tmp_dir),
             self._symbols,

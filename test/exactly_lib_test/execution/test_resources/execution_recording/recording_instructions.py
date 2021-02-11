@@ -1,3 +1,5 @@
+from typing import Callable
+
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
@@ -70,7 +72,7 @@ class RecordingInstructionsFactory:
                                           sh.new_sh_success())
 
     def _do_cleanup_main(self, first_value_of_pair_for_main):
-        def ret_val(environment, os_services, previous_phase, *args):
+        def ret_val(environment, instruction_settings, os_services, previous_phase, *args):
             element = (first_value_of_pair_for_main, previous_phase)
             self.recorder.recording_of(element).record()
             return sh.new_sh_success()
@@ -88,15 +90,15 @@ class RecordingInstructionsFactory:
 
         return ret_val
 
-    def _do_record_first_invokation(self, element):
+    def _do_record_first_invokation(self, element) -> Callable:
         class RetVal:
             def __init__(self, recorder: ListRecorder):
                 self.recorder = recorder
                 self.has_recorded = False
 
-            def __call__(self, *args, **kwargs):
+            def call(self, *args, **kwargs):
                 if not self.has_recorded:
                     self.recorder.recording_of(element).record()
                     self.has_recorded = True
 
-        return RetVal(self.recorder)
+        return RetVal(self.recorder).call

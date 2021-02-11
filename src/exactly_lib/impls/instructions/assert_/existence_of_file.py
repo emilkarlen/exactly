@@ -34,6 +34,7 @@ from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
@@ -203,6 +204,7 @@ class _Instruction(AssertPhaseInstruction):
 
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         try:
             return _Assertion(os_services,

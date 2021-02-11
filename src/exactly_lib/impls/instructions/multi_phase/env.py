@@ -23,6 +23,7 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.str_.formatter import StringFormatter
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -81,9 +82,10 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo[None]):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices,
              ):
-        self.executor.execute(environment.proc_exe_settings.environ,
+        self.executor.execute(settings.environ(),
                               environment.path_resolving_environment_pre_or_post_sds)
 
 

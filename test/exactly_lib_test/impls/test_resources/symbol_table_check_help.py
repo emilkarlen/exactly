@@ -1,5 +1,5 @@
-import types
 import unittest
+from typing import Callable
 
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
@@ -19,7 +19,7 @@ def get_symbol_table_from_path_resolving_environment_that_is_first_arg(environme
 
 def do_fail_if_symbol_table_does_not_equal(put: unittest.TestCase,
                                            expected: SymbolTable,
-                                           get_actual_symbol_table) -> types.FunctionType:
+                                           get_actual_symbol_table) -> Callable:
     def ret_val(*args, **kwargs):
         actual_symbol_table = get_actual_symbol_table(*args, **kwargs)
         assertion = equals_symbol_table(expected)

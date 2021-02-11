@@ -14,6 +14,7 @@ from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
@@ -30,6 +31,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source_of_abs_stx
 from exactly_lib_test.tcfs.test_resources.ds_construction import tcds_with_act_as_curr_dir__post_act
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
+from exactly_lib_test.test_case.test_resources import instruction_settings as instr_settings
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ArrangementPostAct2
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_resources.source import layout
@@ -68,7 +70,9 @@ class Expectation:
             source: Assertion[ParseSource] = asrt.anything_goes(),
             main_raises_hard_error: bool = False,
             proc_exe_settings: Assertion[ProcessExecutionSettings]
-            = asrt.is_instance(ProcessExecutionSettings)
+            = asrt.is_instance(ProcessExecutionSettings),
+            instruction_settings: Assertion[InstructionSettings]
+            = asrt.is_instance(InstructionSettings)
     ):
         self.validation_post_sds = validation_post_sds
         self.validation_pre_sds = validation_pre_sds
@@ -79,6 +83,7 @@ class Expectation:
         self.source = source
         self.symbol_usages = symbol_usages
         self.proc_exe_settings = proc_exe_settings
+        self.instruction_settings = instruction_settings
 
 
 class ExecutionExpectation:
@@ -95,7 +100,9 @@ class ExecutionExpectation:
             main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
             main_side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
             proc_exe_settings: Assertion[ProcessExecutionSettings]
-            = asrt.is_instance(ProcessExecutionSettings)
+            = asrt.is_instance(ProcessExecutionSettings),
+            instruction_settings: Assertion[InstructionSettings]
+            = asrt.is_instance(InstructionSettings)
     ):
         self.validation_post_sds = validation_post_sds
         self.validation_pre_sds = validation_pre_sds
@@ -104,6 +111,7 @@ class ExecutionExpectation:
         self.main_side_effects_on_sds = main_side_effects_on_sds
         self.main_side_effects_on_tcds = main_side_effects_on_tcds
         self.proc_exe_settings = proc_exe_settings
+        self.instruction_settings = instruction_settings
 
     @staticmethod
     def of_validation(expectation_: ValidationExpectationSvh) -> 'ExecutionExpectation':
@@ -167,6 +175,8 @@ def expectation(
         main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
         main_side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
         source: Assertion[ParseSource] = asrt.anything_goes(),
+        instruction_settings: Assertion[InstructionSettings]
+        = asrt.is_instance(InstructionSettings)
 ) -> Expectation:
     return Expectation(
         validation_pre_sds=validation.pre_sds,
@@ -175,6 +185,7 @@ def expectation(
         symbol_usages=symbol_usages,
         main_side_effects_on_sds=main_side_effects_on_sds,
         main_side_effects_on_tcds=main_side_effects_on_tcds,
+        instruction_settings=instruction_settings,
         source=source,
     )
 
@@ -375,6 +386,7 @@ class Executor:
                                            ex.main_side_effects_on_sds,
                                            ex.main_side_effects_on_tcds,
                                            ex.proc_exe_settings,
+                                           ex.instruction_settings,
                                        ))
         exe_checker.check(instruction)
         return
@@ -424,11 +436,17 @@ class ExecutionChecker:
             if not validate_result.is_success:
                 return
 
+            instruction_settings = instr_settings.from_proc_exe_settings(
+                self.arrangement.process_execution.process_execution_settings
+            )
+
             try:
-                main_result = self._execute_main(environment, instruction)
+                main_result = self._execute_main(environment, instruction_settings, instruction)
             except StopAssertion:
                 return
 
+            self.expectation.instruction_settings.apply_with_message(self.put, instruction_settings,
+                                                                     'instruction settings')
             self.expectation.proc_exe_settings.apply_with_message(self.put, environment.proc_exe_settings,
                                                                   'proc exe settings')
             self.expectation.main_side_effects_on_sds.apply_with_message(self.put, environment.sds, 'SDS')
@@ -458,9 +476,12 @@ class ExecutionChecker:
 
     def _execute_main(self,
                       environment: InstructionEnvironmentForPostSdsStep,
+                      settings: InstructionSettings,
                       instruction: AssertPhaseInstruction) -> pfh.PassOrFailOrHardError:
         try:
-            main_result = instruction.main(environment, self.arrangement.process_execution.os_services)
+            main_result = instruction.main(environment,
+                                           settings,
+                                           self.arrangement.process_execution.os_services)
             self.put.assertIsNotNone(main_result,
                                      'Result from main method cannot be None')
         except HardErrorException as ex:

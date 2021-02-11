@@ -1,6 +1,6 @@
 import copy
 import unittest
-from typing import Dict, Optional
+from typing import Dict
 
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
@@ -8,9 +8,9 @@ from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.act.actor import Actor
+from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
-from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import recorder as instr_setup
@@ -38,13 +38,13 @@ class Test(FullExecutionTestCaseBase):
         return ActorThatRunsConstantActions(
             validate_pre_sds_initial_action=_RecordEnvVars(
                 self.recorder,
-                phase_step.ACT__VALIDATE_PRE_SDS),
+                phase_step.ACT__VALIDATE_PRE_SDS).call,
             validate_post_setup_initial_action=_RecordEnvVars(
                 self.recorder,
-                phase_step.ACT__VALIDATE_POST_SETUP),
+                phase_step.ACT__VALIDATE_POST_SETUP).call,
             prepare_initial_action=_RecordEnvVars(
                 self.recorder,
-                phase_step.ACT__PREPARE),
+                phase_step.ACT__PREPARE).call,
             execute_initial_action=_RecordEnvVars(
                 self.recorder,
                 phase_step.ACT__EXECUTE).as_execute_initial_action)
@@ -59,31 +59,31 @@ class Test(FullExecutionTestCaseBase):
             ],
             [setup_phase_instruction_that(
                 validate_pre_sds_initial_action=_RecordEnvVars(self.recorder,
-                                                               phase_step.SETUP__VALIDATE_PRE_SDS),
+                                                               phase_step.SETUP__VALIDATE_PRE_SDS).call,
                 validate_post_setup_initial_action=_RecordEnvVars(self.recorder,
-                                                                  phase_step.SETUP__VALIDATE_POST_SETUP),
+                                                                  phase_step.SETUP__VALIDATE_POST_SETUP).call,
                 main_initial_action=_RecordEnvVars(self.recorder,
-                                                   phase_step.SETUP__MAIN))],
+                                                   phase_step.SETUP__MAIN).call)],
             [],
             [before_assert_phase_instruction_that(
                 validate_pre_sds_initial_action=_RecordEnvVars(self.recorder,
-                                                               phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS),
+                                                               phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS).call,
                 validate_post_setup_initial_action=_RecordEnvVars(self.recorder,
-                                                                  phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP),
+                                                                  phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP).call,
                 main_initial_action=_RecordEnvVars(self.recorder,
-                                                   phase_step.BEFORE_ASSERT__MAIN))],
+                                                   phase_step.BEFORE_ASSERT__MAIN).call)],
             [assert_phase_instruction_that(
                 validate_pre_sds_initial_action=_RecordEnvVars(self.recorder,
-                                                               phase_step.ASSERT__VALIDATE_PRE_SDS),
+                                                               phase_step.ASSERT__VALIDATE_PRE_SDS).call,
                 validate_post_setup_initial_action=_RecordEnvVars(self.recorder,
-                                                                  phase_step.ASSERT__VALIDATE_POST_SETUP),
+                                                                  phase_step.ASSERT__VALIDATE_POST_SETUP).call,
                 main_initial_action=_RecordEnvVars(self.recorder,
-                                                   phase_step.ASSERT__MAIN))],
+                                                   phase_step.ASSERT__MAIN).call)],
             [cleanup_phase_instruction_that(
                 validate_pre_sds_initial_action=_RecordEnvVars(self.recorder,
-                                                               phase_step.CLEANUP__VALIDATE_PRE_SDS),
+                                                               phase_step.CLEANUP__VALIDATE_PRE_SDS).call,
                 main_initial_action=_RecordEnvVars(self.recorder,
-                                                   phase_step.CLEANUP__MAIN))],
+                                                   phase_step.CLEANUP__MAIN).call)],
         )
 
     def __assert_expected_recorded_variables(self, expected: Dict[PhaseStep, Dict[str, str]]):
@@ -170,13 +170,13 @@ class _ConfigurationPhaseActionThatSetsHdsActDirToParentParent:
 
 
 class _RecordEnvVars(_ActionWithPhaseStepAndRecording):
-    def __call__(self, environment: InstructionEnvironmentForPreSdsStep, *args, **kwargs):
+    def call(self, environment: InstructionEnvironmentForPreSdsStep, *args):
         self.recorder.set_phase_step_recording(self.my_phase_step,
-                                               copy.copy(environment.proc_exe_settings.environ))
+                                               dict(environment.proc_exe_settings.environ))
 
     def as_execute_initial_action(self,
                                   environment: InstructionEnvironmentForPreSdsStep,
-                                  stdin: Optional[StringSource],
+                                  act_exe_input: ActExecutionInput,
                                   output: StdOutputFiles):
         self.recorder.set_phase_step_recording(self.my_phase_step,
-                                               copy.copy(environment.proc_exe_settings.environ))
+                                               dict(environment.proc_exe_settings.environ))

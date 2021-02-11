@@ -120,10 +120,11 @@ def execute_element(executor: ControlledInstructionExecutor,
             FailureDetails.new_message(ex.error)
         )
     except Exception as ex:
+        from exactly_lib.util import traceback_
         return SingleInstructionExecutionFailure(
             ExecutionFailureStatus.INTERNAL_ERROR,
             element.source_location_info.source_location_path,
-            FailureDetails.new_exception(ex)
+            FailureDetails.new_exception(ex, traceback_.traceback_as_str())
         )
 
 

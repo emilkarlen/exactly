@@ -120,9 +120,9 @@ class PhaseStepFailureResultConstructor:
         return self.apply(ExecutionFailureStatus.HARD_ERROR,
                           FailureDetails.new_message(ex.error))
 
-    def internal_error(self, ex: Exception) -> PhaseStepFailure:
+    def internal_error(self, ex: Exception, message: Optional[str] = None) -> PhaseStepFailure:
         return self.apply(ExecutionFailureStatus.INTERNAL_ERROR,
-                          FailureDetails.new_exception(ex))
+                          FailureDetails.new_exception(ex, message))
 
     def internal_error_msg(self, msg: str) -> PhaseStepFailure:
         return self.apply(ExecutionFailureStatus.INTERNAL_ERROR,
@@ -162,4 +162,5 @@ def execute_action_and_catch_internal_error_exception(
     except HardErrorException as ex:
         raise PhaseStepFailureException(failure_con.hard_error(ex))
     except Exception as ex:
-        raise PhaseStepFailureException(failure_con.internal_error(ex))
+        from exactly_lib.util import line_source, traceback_
+        raise PhaseStepFailureException(failure_con.internal_error(ex, traceback_.traceback_as_str()))

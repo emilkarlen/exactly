@@ -11,6 +11,7 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
 from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
@@ -36,14 +37,14 @@ class SetupPhaseInstructionFromParts(SetupPhaseInstruction):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         validation_result = self._validator.validate_post_sds_if_applicable(environment.path_resolving_environment)
         if not validation_result.is_success:
             return sh.new_sh_hard_error(validation_result.failure_message)
 
-        return self.setup.executor.apply_as_non_assertion(environment,
-                                                          os_services)
+        return self.setup.executor.apply_as_non_assertion(environment, settings, os_services)
 
 
 class Parser(InstructionParser):

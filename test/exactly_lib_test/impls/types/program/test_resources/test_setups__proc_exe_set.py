@@ -86,4 +86,4 @@ class EnvironTestSetup(TestSetupBase):
         self.expected_environ = expected_environ
 
     def _proc_exe_settings_w_expected_value(self) -> ProcessExecutionSettings:
-        return ProcessExecutionSettings.with_environ_copy(self.expected_environ)
+        return ProcessExecutionSettings.with_environ(self.expected_environ)

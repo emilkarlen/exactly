@@ -8,6 +8,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
@@ -238,6 +239,16 @@ class TestSideEffectsOfMain(TestCaseBase):
                     proc_exe_settings=asrt.not_(asrt.is_instance(ProcessExecutionSettings))),
             )
 
+    def test_fail_due_to_fail_of_side_effects_on_instruction_settings(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                utils.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
+                utils.single_line_source(),
+                sut.ArrangementPostAct(),
+                Expectation(
+                    instruction_settings=asrt.not_(asrt.is_instance(InstructionSettings))),
+            )
+
 
 _SUCCESSFUL_INSTRUCTION = assert_phase_instruction_that()
 
@@ -250,6 +261,7 @@ class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(AssertPhaseInstruction)
         return svh.new_svh_success()
 
     def main(self, environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         utils.raise_test_error_if_cwd_is_not_test_root(environment.sds)
         return pfh.new_pfh_pass()

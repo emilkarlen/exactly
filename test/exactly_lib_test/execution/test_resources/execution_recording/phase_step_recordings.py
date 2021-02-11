@@ -1,4 +1,3 @@
-import types
 import unittest
 from operator import attrgetter
 from typing import Callable
@@ -111,8 +110,8 @@ def no_recording(phase_step: SimplePhaseStep):
 
 
 def actor_that_records_a_value_per_step(
-        recorder_for_step_with_env: types.FunctionType,
-        recorder_for_parse_step: types.FunctionType,
+        recorder_for_step_with_env: Callable,
+        recorder_for_parse_step: Callable,
 ) -> Actor:
     return ActorThatRunsConstantActions(
         parse_atc=recorder_for_parse_step(step.ACT__PARSE),

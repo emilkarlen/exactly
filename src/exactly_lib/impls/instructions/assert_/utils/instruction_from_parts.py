@@ -12,6 +12,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.result import pfh, svh
 
 
@@ -36,13 +37,13 @@ class AssertPhaseInstructionFromParts(AssertPhaseInstruction):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         validation_result = self._validator.validate_post_sds_if_applicable(environment.path_resolving_environment)
         if not validation_result.is_success:
             return pfh.new_pfh_hard_error(validation_result.failure_message)
 
-        return self.setup.executor.apply_as_assertion(environment,
-                                                      os_services)
+        return self.setup.executor.apply_as_assertion(environment, settings, os_services)
 
 
 class Parser(InstructionParser):

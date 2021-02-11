@@ -16,6 +16,7 @@ from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolUsage, Symbo
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.symbol_table import SymbolTable
 from . import type_setup
@@ -31,6 +32,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo[None]):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices,
              ):
         self.custom_main(environment.symbols)

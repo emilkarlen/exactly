@@ -8,6 +8,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
@@ -223,6 +224,17 @@ class TestSideEffectsAfterMain(TestCaseBase):
                 ),
             )
 
+    def test_fail_due_to_fail_of_side_effects_on_instruction_settings(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+                single_line_source(),
+                sut.arrangement(),
+                sut.Expectation(
+                    instruction_settings=asrt.not_(asrt.is_instance(InstructionSettings)),
+                ),
+            )
+
 
 class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(BeforeAssertPhaseInstruction):
     def validate_post_setup(self,
@@ -233,6 +245,7 @@ class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(BeforeAssertPhaseInstru
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices) -> sh.SuccessOrHardError:
         utils.raise_test_error_if_cwd_is_not_test_root(environment.sds)
         return sh.new_sh_success()

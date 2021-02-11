@@ -15,6 +15,7 @@ from exactly_lib.processing.test_case_processing import Preprocessor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment
@@ -197,6 +198,7 @@ class AssertPhaseInstructionThatPassIffStdoutEqualsString(AssertPhaseInstruction
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         actual_contents = environment.sds.result.stdout_file.read_text()
         if actual_contents == self.expected:

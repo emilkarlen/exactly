@@ -11,9 +11,10 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
-from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.impls.instructions.test_resources.instruction_check_utils import \
@@ -23,6 +24,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_populators, \
     tcds_populators, sds_populator
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
+from exactly_lib_test.test_case.test_resources import instruction_settings as instr_settings
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -40,7 +42,7 @@ class Arrangement(ArrangementWithSds):
                  non_hds_contents_before_main: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                  os_services: OsServices = new_for_current_os(),
-                 process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
+                 process_execution_settings: ProcessExecutionSettings = ProcessExecutionSettings.null(),
                  previous_phase: PreviousPhase = PreviousPhase.ASSERT,
                  symbols: SymbolTable = None,
                  fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
@@ -66,13 +68,16 @@ class MultiSourceExpectation(ExpectationBase):
                  main_side_effects_on_sds: Assertion = asrt.anything_goes(),
                  main_side_effects_on_tcds: Assertion = asrt.anything_goes(),
                  proc_exe_settings: Assertion[ProcessExecutionSettings]
-                 = asrt.is_instance(ProcessExecutionSettings)
+                 = asrt.is_instance(ProcessExecutionSettings),
+                 instruction_settings: Assertion[InstructionSettings]
+                 = asrt.is_instance(InstructionSettings),
                  ):
         super().__init__(validate_pre_sds_result,
                          main_side_effects_on_sds,
                          main_side_effects_on_tcds,
                          symbol_usages,
-                         proc_exe_settings)
+                         proc_exe_settings,
+                         instruction_settings)
         self.act_result = act_result
         self.main_result = main_result
 
@@ -87,7 +92,9 @@ class Expectation(MultiSourceExpectation):
                  main_side_effects_on_tcds: Assertion = asrt.anything_goes(),
                  source: Assertion = asrt.anything_goes(),
                  proc_exe_settings: Assertion[ProcessExecutionSettings]
-                 = asrt.is_instance(ProcessExecutionSettings)
+                 = asrt.is_instance(ProcessExecutionSettings),
+                 instruction_settings: Assertion[InstructionSettings]
+                 = asrt.is_instance(InstructionSettings),
                  ):
         super().__init__(act_result,
                          validate_pre_sds_result,
@@ -95,7 +102,8 @@ class Expectation(MultiSourceExpectation):
                          symbol_usages,
                          main_side_effects_on_sds,
                          main_side_effects_on_tcds,
-                         proc_exe_settings)
+                         proc_exe_settings,
+                         instruction_settings)
         self.source = source
 
 
@@ -189,9 +197,12 @@ class InstructionCheckExecutor(InstructionExecutionBase):
                     return
 
             environment = environment_builder.build_post_sds()
+            instruction_settings = instr_settings.from_proc_exe_settings(self.arrangement.process_execution_settings)
 
-            result_of_main = self._execute_main(environment, instruction)
+            result_of_main = self._execute_main(environment, instruction_settings, instruction)
 
+            self.expectation.instruction_settings.apply_with_message(self.put, instruction_settings,
+                                                                     'instruction settings')
             self.expectation.proc_exe_settings.apply_with_message(self.put, environment.proc_exe_settings,
                                                                   'proc exe settings')
             self.expectation.main_side_effects_on_sds.apply_with_message(self.put, environment.sds, 'SDS')
@@ -215,8 +226,10 @@ class InstructionCheckExecutor(InstructionExecutionBase):
 
     def _execute_main(self,
                       environment: InstructionEnvironmentForPostSdsStep,
+                      settings: InstructionSettings,
                       instruction: CleanupPhaseInstruction) -> sh.SuccessOrHardError:
         result = instruction.main(environment,
+                                  settings,
                                   self.arrangement.os_services,
                                   self.arrangement.previous_phase)
         self._check_result_of_main__sh(result)

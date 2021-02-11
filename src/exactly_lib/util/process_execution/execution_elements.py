@@ -1,28 +1,40 @@
-from typing import Dict, Optional, Union, Sequence
+from types import MappingProxyType
+from typing import Optional, Union, Sequence, Mapping
 
 
 class ProcessExecutionSettings(tuple):
     def __new__(cls,
                 timeout_in_seconds: Optional[int] = None,
-                environ: Optional[Dict[str, str]] = None,
+                environ: Optional[Mapping[str, str]] = None,
                 ):
+        """
+        :param environ: Must be immutable
+        """
         return tuple.__new__(cls, (timeout_in_seconds, environ))
+
+    @staticmethod
+    def from_non_immutable(timeout_in_seconds: Optional[int] = None,
+                           environ: Optional[Mapping[str, str]] = None) -> 'ProcessExecutionSettings':
+        environ__ro = (
+            None
+            if environ is None
+            else
+            MappingProxyType(environ)
+        )
+        return ProcessExecutionSettings(timeout_in_seconds=timeout_in_seconds,
+                                        environ=environ__ro)
 
     @staticmethod
     def with_timeout(timeout_in_seconds: Optional[int]) -> 'ProcessExecutionSettings':
         return ProcessExecutionSettings(timeout_in_seconds=timeout_in_seconds)
 
     @staticmethod
-    def with_environ(environ: Dict[str, str]) -> 'ProcessExecutionSettings':
-        return ProcessExecutionSettings(environ=environ)
+    def with_environ(environ: Mapping[str, str]) -> 'ProcessExecutionSettings':
+        return ProcessExecutionSettings(environ=MappingProxyType(environ))
 
     @staticmethod
     def with_empty_environ() -> 'ProcessExecutionSettings':
-        return ProcessExecutionSettings(environ={})
-
-    @staticmethod
-    def with_environ_copy(environ_to_copy: Dict[str, str]) -> 'ProcessExecutionSettings':
-        return ProcessExecutionSettings(environ=dict(environ_to_copy))
+        return ProcessExecutionSettings(environ=MappingProxyType({}))
 
     @staticmethod
     def null() -> 'ProcessExecutionSettings':
@@ -36,23 +48,11 @@ class ProcessExecutionSettings(tuple):
         return self[0]
 
     @property
-    def environ(self) -> Optional[Dict[str, str]]:
+    def environ(self) -> Optional[Mapping[str, str]]:
         """
-        :return: None if inherit current process' environment
+        :return: (immutable) None if inherit current process' environment
         """
         return self[1]
-
-
-def with_no_timeout() -> ProcessExecutionSettings:
-    return ProcessExecutionSettings()
-
-
-def with_environ(environ: Dict[str, str]) -> ProcessExecutionSettings:
-    return ProcessExecutionSettings(environ=environ)
-
-
-def with_environ_copy(environ_to_copy: Dict[str, str]) -> ProcessExecutionSettings:
-    return ProcessExecutionSettings(environ=dict(environ_to_copy))
 
 
 class Executable:

@@ -28,6 +28,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
@@ -107,6 +108,7 @@ class _TheInstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices,
              ) -> Optional[TextRenderer]:
         described_path = (

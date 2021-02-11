@@ -28,18 +28,18 @@ class TestInstructionTmpDirs(unittest.TestCase):
 
         setup_phase_instr_that_records = setup_phase_instruction_that(
             validate_post_setup_initial_action=RecordTmpDirForInstructionInPhase(PhaseEnum.SETUP, recorder),
-            main_initial_action=RecordTmpDirForInstructionInPhase(PhaseEnum.SETUP, recorder),
+            main_initial_action=RecordTmpDirForInstructionInPhase(PhaseEnum.SETUP, recorder).call,
         )
         before_assert_phase_instr_that_records = before_assert_phase_instruction_that(
             validate_post_setup_initial_action=RecordTmpDirForInstructionInPhase(PhaseEnum.BEFORE_ASSERT, recorder),
-            main_initial_action=RecordTmpDirForInstructionInPhase(PhaseEnum.BEFORE_ASSERT, recorder)
+            main_initial_action=RecordTmpDirForInstructionInPhase(PhaseEnum.BEFORE_ASSERT, recorder).call
         )
         assert_phase_instr_that_records = assert_phase_instruction_that(
             validate_post_setup_initial_action=RecordTmpDirForInstructionInPhase(PhaseEnum.ASSERT, recorder),
-            main_initial_action=RecordTmpDirForInstructionInPhase(PhaseEnum.ASSERT, recorder)
+            main_initial_action=RecordTmpDirForInstructionInPhase(PhaseEnum.ASSERT, recorder).call
         )
         cleanup_phase_instr_that_records = cleanup_phase_instruction_that(
-            main_initial_action=RecordTmpDirForInstructionInPhase(PhaseEnum.CLEANUP, recorder)
+            main_initial_action=RecordTmpDirForInstructionInPhase(PhaseEnum.CLEANUP, recorder).call
         )
         test_case = partial_test_case_with_instructions(
             [
@@ -131,6 +131,12 @@ class RecordTmpDirForInstructionInPhase:
     def __init__(self, phase: PhaseEnum, recorder: Dict[PhaseEnum, List[pathlib.Path]]):
         self.phase = phase
         self.recorder = recorder
+
+    def call(self, environment: InstructionEnvironmentForPostSdsStep, *args):
+        next_path_in_instruction_dir = environment.tmp_dir__path_access.root_dir__may_not_exist
+
+        value_for_phase = self.recorder.setdefault(self.phase, [])
+        value_for_phase.append(next_path_in_instruction_dir)
 
     def __call__(self, environment: InstructionEnvironmentForPostSdsStep, *args):
         next_path_in_instruction_dir = environment.tmp_dir__path_access.root_dir__may_not_exist

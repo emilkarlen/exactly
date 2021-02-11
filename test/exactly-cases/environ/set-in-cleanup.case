@@ -1,0 +1,20 @@
+[setup]
+
+run @ ENV_VAR_IS_NOT_SET CLEANUP_VAR
+
+[before-assert]
+
+run @ ENV_VAR_IS_NOT_SET CLEANUP_VAR
+
+[assert]
+
+run @ ENV_VAR_IS_NOT_SET CLEANUP_VAR
+
+[cleanup]
+
+
+def string VAR_VAL = 'the value of the cleanup env var'
+
+env CLEANUP_VAR = @[VAR_VAL]@
+
+run @ ENV_VAR_EQUALS CLEANUP_VAR @[VAR_VAL]@

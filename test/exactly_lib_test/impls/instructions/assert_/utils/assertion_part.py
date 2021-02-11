@@ -17,6 +17,7 @@ from exactly_lib_test.impls.test_resources.validation.sdv_validators import SdvV
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh, svh_assertions as asrt_svh
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
+from exactly_lib_test.test_case.test_resources.instruction_settings import optionally_from_proc_exe_settings
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
 
@@ -215,7 +216,9 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
                                                                 argument_getter_that_depends_on_environment)
         # ACT #
-        actual = instruction.main(environment, self.the_os_services)
+        actual = instruction.main(environment,
+                                  optionally_from_proc_exe_settings(None, environment.proc_exe_settings),
+                                  self.the_os_services)
         # ASSERT #
         assertion = asrt_pfh.is_fail(
             asrt_text_doc.is_string_for_test(
@@ -232,7 +235,9 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_that_not_raises,
                                                                 lambda env: 0)
         # ACT #
-        actual = instruction.main(environment, self.the_os_services)
+        actual = instruction.main(environment,
+                                  optionally_from_proc_exe_settings(None, environment.proc_exe_settings),
+                                  self.the_os_services)
         # ASSERT #
         assertion = asrt_pfh.is_pass()
         assertion.apply_without_message(self, actual)
@@ -245,7 +250,9 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_that_raises,
                                                                 lambda env: 1)
         # ACT #
-        actual = instruction.main(environment, self.the_os_services)
+        actual = instruction.main(environment,
+                                  optionally_from_proc_exe_settings(None, environment.proc_exe_settings),
+                                  self.the_os_services)
         # ASSERT #
         assertion = asrt_pfh.is_fail(
             asrt_text_doc.is_string_for_test(
@@ -332,7 +339,9 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         post_sds_result = instruction.validate_post_setup(environment)
         is_validation_success.apply_with_message(self, post_sds_result,
                                                  'post setup validation should succeed')
-        main_result = instruction.main(environment, self.the_os_services)
+        main_result = instruction.main(environment,
+                                       optionally_from_proc_exe_settings(None, environment.proc_exe_settings),
+                                       self.the_os_services)
 
         main_result_is_hard_error.apply_with_message(self,
                                                      main_result,

@@ -4,7 +4,7 @@ from exactly_lib.impls.instructions.multi_phase import env as sut
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType
-from exactly_lib.util.process_execution import execution_elements
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.abstract_syntax import \
     SetVariableArgumentsAbsStx, UnsetVariableArgumentsAbsStx, env_var_ref_syntax
@@ -231,7 +231,7 @@ class TestSet(unittest.TestCase):
                 symbols=
                 SymbolContext.symbol_table_of_contexts([my_symbol, your_symbol]),
                 process_execution_settings=
-                execution_elements.with_environ_copy({}),
+                ProcessExecutionSettings.with_environ({}),
             ),
             embryo_check.MultiSourceExpectation(
                 main_side_effect_on_environment_variables=asrt.equals(expected_environ_after_main),
@@ -272,7 +272,7 @@ class TestSet(unittest.TestCase):
             source_syntax,
             ArrangementWithSds(
                 process_execution_settings=
-                execution_elements.with_environ_copy({}),
+                ProcessExecutionSettings.with_environ({}),
             ),
             embryo_check.MultiSourceExpectation(
                 main_side_effect_on_environment_variables=asrt.equals(expected_environ_after_main),
@@ -305,7 +305,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
             arrangement=
             ArrangementWithSds(
                 process_execution_settings=
-                execution_elements.with_environ_copy(environ__before),
+                ProcessExecutionSettings.with_environ(environ__before),
             ),
             expectation_=
             embryo_check.MultiSourceExpectation(
@@ -355,7 +355,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
             arrangement=
             ArrangementWithSds(
                 process_execution_settings=
-                execution_elements.with_environ_copy(environ__before),
+                ProcessExecutionSettings.with_environ(environ__before),
             ),
             expectation_=
             embryo_check.MultiSourceExpectation(
@@ -411,7 +411,7 @@ class TestUnset(unittest.TestCase):
             UnsetVariableArgumentsAbsStx(var_a.name),
             ArrangementWithSds(
                 process_execution_settings=
-                execution_elements.with_environ_copy(environ__before),
+                ProcessExecutionSettings.with_environ(environ__before),
             ),
             embryo_check.MultiSourceExpectation(
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),
@@ -430,7 +430,7 @@ class TestUnset(unittest.TestCase):
             UnsetVariableArgumentsAbsStx(non_existing_var_name),
             ArrangementWithSds(
                 process_execution_settings=
-                execution_elements.with_environ_copy(environ__before),
+                ProcessExecutionSettings.with_environ(environ__before),
             ),
             embryo_check.MultiSourceExpectation(
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),

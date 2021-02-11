@@ -1,4 +1,4 @@
-from typing import Optional, Dict
+from typing import Optional, Dict, Mapping
 
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.test_case.os_services import OsServices
@@ -36,7 +36,7 @@ class ExecutionConfiguration(tuple):
     """Configuration that is passed to full execution"""
 
     def __new__(cls,
-                environ: Dict[str, str],
+                environ: Optional[Mapping[str, str]],
                 os_services: OsServices,
                 sandbox_root_dir_resolver: SandboxRootDirNameResolver,
                 mem_buff_size: int,
@@ -51,7 +51,7 @@ class ExecutionConfiguration(tuple):
                                    mem_buff_size))
 
     @property
-    def environ(self) -> Dict[str, str]:
+    def environ(self) -> Optional[Mapping[str, str]]:
         """
         The set of environment variables available to instructions.
         These may be both read and written.

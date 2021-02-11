@@ -2,6 +2,7 @@ from typing import List
 
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
 from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh
@@ -22,6 +23,7 @@ class SetupPhaseInstructionThatSetsEnvVar(SetupPhaseInstruction):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         environment.proc_exe_settings.environ[self.var_name] = self.var_value
@@ -37,6 +39,7 @@ class SetupPhaseInstructionThatRegistersExistenceOfEnvVar(SetupPhaseInstruction)
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         self.registry.observation = self.env_var_to_observe in environment.proc_exe_settings.environ

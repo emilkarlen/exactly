@@ -12,7 +12,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.test_resources.functions import Sequence
+from exactly_lib_test.test_resources.functions import sequence_of_actions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
     StringSymbolContext
@@ -102,7 +102,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
                 setup_phase_instruction_that(
                     symbol_usages=do_return(symbol_usages_of_instruction_that_defines_symbol),
                     validate_pre_sds_initial_action=recorder_for(step.SETUP__VALIDATE_PRE_SDS),
-                    main_initial_action=Sequence([
+                    main_initial_action=sequence_of_actions([
                         recorder_for(step.SETUP__MAIN),
                         _ActionThatSetsSymbolInSymbolTable(symbol_definition),
                     ]),
@@ -177,7 +177,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
                 before_assert_phase_instruction_that(
                     symbol_usages=do_return(symbol_usages_of_instruction_that_defines_symbol),
                     validate_pre_sds_initial_action=recorder_for(step.BEFORE_ASSERT__VALIDATE_PRE_SDS),
-                    main_initial_action=Sequence([
+                    main_initial_action=sequence_of_actions([
                         recorder_for(step.BEFORE_ASSERT__MAIN),
                         _ActionThatSetsSymbolInSymbolTable(symbol_definition),
                     ]),
@@ -251,7 +251,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
                 assert_phase_instruction_that(
                     symbol_usages=do_return(symbol_usages_of_instruction_that_defines_symbol),
                     validate_pre_sds_initial_action=recorder_for(step.ASSERT__VALIDATE_PRE_SDS),
-                    main_initial_action=Sequence([
+                    main_initial_action=sequence_of_actions([
                         recorder_for(step.ASSERT__MAIN),
                         _ActionThatSetsSymbolInSymbolTable(symbol_definition),
                     ]),
@@ -328,7 +328,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
                 cleanup_phase_instruction_that(
                     symbol_usages=do_return(symbol_usages_of_instruction_that_defines_symbol),
                     validate_pre_sds_initial_action=recorder_for(step.CLEANUP__VALIDATE_PRE_SDS),
-                    main_initial_action=Sequence([
+                    main_initial_action=sequence_of_actions([
                         recorder_for(step.CLEANUP__MAIN),
                         _ActionThatSetsSymbolInSymbolTable(symbol_definition),
                     ]),
@@ -450,7 +450,7 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
                 setup_phase_instruction_that(
                     symbol_usages=do_return(symbol_usages_of_instruction_that_defines_symbol),
                     validate_pre_sds_initial_action=recorder_for(step.SETUP__VALIDATE_PRE_SDS),
-                    main_initial_action=Sequence([
+                    main_initial_action=sequence_of_actions([
                         recorder_for(step.SETUP__MAIN),
                         _ActionThatSetsSymbolInSymbolTable(symbol_definition),
                     ]),

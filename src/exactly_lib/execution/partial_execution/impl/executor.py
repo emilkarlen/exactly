@@ -1,6 +1,7 @@
 import itertools
 import os
-from typing import Sequence, Optional, Tuple
+from types import MappingProxyType
+from typing import Sequence, Optional, Tuple, Mapping
 
 from exactly_lib.execution import phase_file_space
 from exactly_lib.execution import phase_step
@@ -22,6 +23,7 @@ from exactly_lib.test_case.phases.act.actor import ActionToCheck, Actor
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.phases.setup.settings_handler import SetupSettingsHandler
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util.file_utils.misc_utils import resolved_path_name
@@ -99,6 +101,7 @@ class _PartialExecutor:
         self._phase_tmp_space_factory = None
         self._act_helper = ActHelper(conf.conf_phase_values.actor.name,
                                      test_case.act_phase)
+        self._instruction_settings = InstructionSettings.of_copy(conf.exe_conf.environ)
 
     def execute(self) -> PartialExeResult:
         try:
@@ -207,7 +210,7 @@ class _PartialExecutor:
         self._instruction_environment_pre_sds = InstructionEnvironmentForPreSdsStep(
             self.conf_values.hds,
             ProcessExecutionSettings(self.conf_values.timeout_in_seconds,
-                                     self.exe_conf.environ,
+                                     self._env_vars__read_only(),
                                      ),
             symbols,
             self.exe_conf.mem_buff_size,
@@ -303,6 +306,7 @@ class _PartialExecutor:
     def _setup__main(self):
         run_instructions_phase_step(phase_step.SETUP__MAIN,
                                     phase_step_executors.SetupMainExecutor(
+                                        self._instruction_settings,
                                         self._os_services,
                                         self._post_sds_main_environments(phase_identifier.SETUP),
                                         self._setup_settings_builder.builder),
@@ -350,6 +354,7 @@ class _PartialExecutor:
             phase_step.ASSERT__MAIN,
             phase_step_executors.AssertMainExecutor(
                 self._post_sds_main_environments(phase_identifier.ASSERT),
+                self._instruction_settings,
                 self._os_services),
             self._test_case.assert_phase)
 
@@ -358,6 +363,7 @@ class _PartialExecutor:
             phase_step.CLEANUP__MAIN,
             phase_step_executors.CleanupMainExecutor(
                 self._post_sds_main_environments(phase_identifier.CLEANUP),
+                self._instruction_settings,
                 previous_phase,
                 self._os_services),
             self._test_case.cleanup_phase)
@@ -367,6 +373,7 @@ class _PartialExecutor:
             phase_step.BEFORE_ASSERT__MAIN,
             phase_step_executors.BeforeAssertMainExecutor(
                 self._post_sds_main_environments(phase_identifier.BEFORE_ASSERT),
+                self._instruction_settings,
                 self._os_services),
             self._test_case.before_assert_phase)
 
@@ -399,7 +406,8 @@ class _PartialExecutor:
                               ) -> InstructionEnvironmentForPostSdsStep:
         return InstructionEnvironmentForPostSdsStep(
             self.conf_values.hds,
-            ProcessExecutionSettings(self.conf_values.timeout_in_seconds, self.exe_conf.environ),
+            ProcessExecutionSettings(self.conf_values.timeout_in_seconds,
+                                     self._env_vars__read_only()),
             self.__sandbox_directory_structure,
             tmp_file_storage,
             symbols,
@@ -417,6 +425,15 @@ class _PartialExecutor:
                                 self.__sandbox_directory_structure,
                                 self._action_to_check_outcome,
                                 None)
+
+    def _env_vars__read_only(self) -> Optional[Mapping[str, str]]:
+        mb_environ_rw = self._instruction_settings.environ()
+        return (
+            None
+            if mb_environ_rw is None
+            else
+            MappingProxyType(mb_environ_rw)
+        )
 
 
 def _initial_atc_executor() -> Optional[ActionToCheckExecutor]:

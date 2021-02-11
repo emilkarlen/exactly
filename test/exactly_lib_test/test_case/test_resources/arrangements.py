@@ -3,7 +3,7 @@ from typing import Optional
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.util.process_execution.execution_elements import with_no_timeout, ProcessExecutionSettings
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_populators, \
@@ -18,7 +18,7 @@ from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import 
 class ArrangementBase:
     def __init__(self,
                  hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
-                 process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
+                 process_execution_settings: ProcessExecutionSettings = ProcessExecutionSettings.null(),
                  ):
         self.hds_contents = hds_contents
         self.process_execution_settings = process_execution_settings
@@ -32,7 +32,7 @@ class ArrangementWithSds(ArrangementBase):
                  non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                  os_services: OsServices = os_services_access.new_for_current_os(),
-                 process_execution_settings=proc_exe_env_for_test(),
+                 process_execution_settings: ProcessExecutionSettings = proc_exe_env_for_test(),
                  post_sds_population_action: TcdsAction = TcdsAction(),
                  symbols: SymbolTable = None,
                  fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
@@ -53,7 +53,7 @@ class ArrangementWithSds(ArrangementBase):
 class ProcessExecutionArrangement:
     def __init__(self,
                  os_services: OsServices = os_services_access.new_for_current_os(),
-                 process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
+                 process_execution_settings: ProcessExecutionSettings = ProcessExecutionSettings.null(),
                  ):
         self.os_services = os_services
         self.process_execution_settings = process_execution_settings
@@ -80,7 +80,7 @@ class ArrangementPostAct(ArrangementWithSds):
                  post_sds_population_action: TcdsAction = TcdsAction(),
                  act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
                  os_services: OsServices = os_services_access.new_for_current_os(),
-                 process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
+                 process_execution_settings: ProcessExecutionSettings = ProcessExecutionSettings.null(),
                  symbols: SymbolTable = None,
                  fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
                  ):

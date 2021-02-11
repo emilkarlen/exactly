@@ -44,6 +44,9 @@ class _RecordCurrDir(_ActionWithPhaseStepAndRecording):
     def __call__(self, *args):
         self.recorder.set_phase_step_recording(self.my_phase_step, current_directory())
 
+    def call(self, *args):
+        self.recorder.set_phase_step_recording(self.my_phase_step, current_directory())
+
 
 class _RecordCurrDirAndReturn(_ActionWithPhaseStepAndRecording):
     def __init__(self,
@@ -77,7 +80,7 @@ class Test(FullExecutionTestCaseBase):
         return full_test_case_with_instructions(
             [configuration_phase_instruction_that(
                 main_initial_action=_RecordCurrDir(self.recorder,
-                                                   phase_step.CONFIGURATION__MAIN))],
+                                                   phase_step.CONFIGURATION__MAIN).call)],
             [setup_phase_instruction_that(
                 validate_post_setup_initial_action=_RecordCurrDir(self.recorder,
                                                                   phase_step.SETUP__VALIDATE_POST_SETUP),

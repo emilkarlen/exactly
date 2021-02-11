@@ -12,7 +12,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.tcfs.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.util.process_execution.execution_elements import with_environ
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
@@ -25,6 +25,7 @@ from exactly_lib_test.tcfs.test_resources import path_arguments
 from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.tcfs.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
+from exactly_lib_test.test_case.test_resources.instruction_settings import optionally_from_proc_exe_settings
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_1st_value_on_command_line
 from exactly_lib_test.test_resources.tcds_and_symbols import tcds_test
@@ -54,10 +55,13 @@ class ExecuteAction(TcdsAction):
     def apply(self, environment: PathResolvingEnvironmentPreOrPostSds) -> ExecutionResultAndStderr:
         environment_builder = InstructionEnvironmentPostSdsBuilder.new_tcds(
             environment.tcds,
-            process_execution_settings=with_environ(dict(os.environ)),
+            process_execution_settings=ProcessExecutionSettings.with_environ(os.environ),
         )
+        env__post_sds = environment_builder.build_post_sds()
+        settings = optionally_from_proc_exe_settings(None, env__post_sds.proc_exe_settings)
         return self.instruction_embryo.main(
-            environment_builder.build_post_sds(),
+            env__post_sds,
+            settings,
             os_services_access.new_for_current_os(),
         )
 

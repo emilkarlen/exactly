@@ -23,6 +23,7 @@ from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionTy
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -78,6 +79,7 @@ class InstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices,
              ) -> Optional[TextRenderer]:
         return self.custom_main(environment.path_resolving_environment)

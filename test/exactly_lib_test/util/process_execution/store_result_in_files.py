@@ -9,7 +9,7 @@ from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.type_val_prims.program.commands import CommandDriverForExecutableFile
 from exactly_lib.util import exception
 from exactly_lib.util.process_execution import process_output_files, file_ctx_managers
-from exactly_lib.util.process_execution.execution_elements import with_no_timeout
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.process_execution.process_output_files import FileNames
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_resources.files import tmp_dir
@@ -44,7 +44,7 @@ class TestProcessorThatStoresResultInFilesInDir(unittest.TestCase):
                                                                  file_ctx_managers.dev_null(),
                                                                  )
             # ACT #
-            result = executor.process(with_no_timeout(),
+            result = executor.process(ProcessExecutionSettings.null(),
                                       py_exe.command_for_interpreting(tmp_dir_path / program_file.name))
             # ASSERT #
             self.assertEqual(exit_code,
@@ -74,7 +74,7 @@ class TestProcessorThatStoresResultInFilesInDir(unittest.TestCase):
                 file_ctx_managers.open_file(stdin_file.name_as_path, 'r'),
             )
             # ACT #
-            result = executor.process(with_no_timeout(),
+            result = executor.process(ProcessExecutionSettings.null(),
                                       py_exe.command_for_interpreting(program_file.name))
             # ASSERT #
             assert_is_success_and_output_dir_contains_at_exactly_result_files(
@@ -99,7 +99,7 @@ class TestProcessorThatStoresResultInFilesInDir(unittest.TestCase):
 
                 # ACT & ASSERT #
                 executor.process(
-                    with_no_timeout(),
+                    ProcessExecutionSettings.null(),
                     command_for_exe_file(tmp_dir_path / 'non-existing-program'),
                 )
         assert isinstance(ctx.exception, HardErrorException)
@@ -122,7 +122,7 @@ class TestProcessorThatStoresResultInFilesInDir(unittest.TestCase):
                                                                      file_ctx_managers.dev_null(),
                                                                      )
                 # ACT #
-                result = executor.process(with_no_timeout(),
+                result = executor.process(ProcessExecutionSettings.null(),
                                           py_exe.command_for_interpreting(pgm_dir_path / py_pgm_file.name)
                                           )
                 # ASSERT #
@@ -147,7 +147,7 @@ class TestProcessorThatStoresResultInFilesInDir(unittest.TestCase):
                                                                      file_ctx_managers.dev_null(),
                                                                      )
                 # ACT #
-                result = executor.process(with_no_timeout(),
+                result = executor.process(ProcessExecutionSettings.null(),
                                           py_exe.command_for_interpreting(pgm_dir_path / py_pgm_file.name)
                                           )
                 # ASSERT #
@@ -177,7 +177,7 @@ class TestProcessorThatStoresResultInFilesInDir(unittest.TestCase):
             with self.assertRaises(exception.ImplementationError) as ctx:
                 # ACT & ASSERT #
                 executor.process(
-                    with_no_timeout(),
+                    ProcessExecutionSettings.null(),
                     command_for_exe_file(tmp_dir_path / successful_py_program.name),
                 )
         assert isinstance(ctx.exception, exception.ImplementationError)

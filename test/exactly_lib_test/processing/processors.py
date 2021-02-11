@@ -1,6 +1,6 @@
 import pathlib
 import unittest
-from typing import List, Sequence
+from typing import List, Sequence, Callable
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.execution.configuration import PredefinedProperties
@@ -435,7 +435,7 @@ def instr_setup(instruction: Instruction) -> SingleInstructionSetup:
     )
 
 
-def append_section_name_action(recorder: List[str], phase: Phase):
+def append_section_name_action(recorder: List[str], phase: Phase) -> Callable:
     def ret_val(*args, **kwargs):
         recorder.append(phase.section_name)
 

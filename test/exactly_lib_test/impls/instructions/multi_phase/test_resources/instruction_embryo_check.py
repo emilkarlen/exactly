@@ -14,6 +14,7 @@ from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
@@ -23,6 +24,7 @@ from exactly_lib_test.impls.test_resources.validation.validation import Validati
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line_2
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.test_case.test_resources import instruction_settings
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_resources.source import layout
@@ -46,9 +48,11 @@ class InstructionApplicationEnvironment:
     def __init__(self,
                  os_service: OsServices,
                  instruction: InstructionEnvironmentForPostSdsStep,
+                 settings: InstructionSettings,
                  ):
         self._os_service = os_service
         self._instruction = instruction
+        self._settings = settings
 
     @property
     def os_service(self) -> OsServices:
@@ -57,6 +61,10 @@ class InstructionApplicationEnvironment:
     @property
     def instruction(self) -> InstructionEnvironmentForPostSdsStep:
         return self._instruction
+
+    @property
+    def settings(self) -> InstructionSettings:
+        return self._settings
 
 
 class Expectation(Generic[T]):
@@ -307,7 +315,7 @@ class Executor(Generic[T]):
             environment_builder = InstructionEnvironmentPostSdsBuilder.new_tcds(
                 tcds,
                 self.arrangement.symbols,
-                ProcessExecutionSettings(
+                ProcessExecutionSettings.from_non_immutable(
                     timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
                     environ=_initial_environment_variables_dict(self.arrangement),
                 ),
@@ -330,7 +338,9 @@ class Executor(Generic[T]):
             if validate_result is not None:
                 return
 
-            result_of_main = self._execute_main(environment, instruction)
+            instr_settings = instruction_settings.from_proc_exe_settings(self.arrangement.process_execution_settings)
+
+            result_of_main = self._execute_main(environment, instr_settings, instruction)
 
             self.expectation.main_side_effects_on_sds.apply_with_message(self.put, tcds.sds,
                                                                          'side_effects_on_files')
@@ -338,7 +348,7 @@ class Executor(Generic[T]):
                                                                      'side_effects_on_tcds')
             self.expectation.main_side_effect_on_environment_variables.apply_with_message(
                 self.put,
-                environment.proc_exe_settings.environ,
+                instr_settings.environ(),
                 'main side effects on environment variables')
             self.expectation.symbols_after_main.apply_with_message(
                 self.put,
@@ -353,7 +363,8 @@ class Executor(Generic[T]):
 
             application_environment = InstructionApplicationEnvironment(
                 self.arrangement.os_services,
-                environment
+                environment,
+                instr_settings,
             )
             self.expectation.instruction_application_environment.apply_with_message(self.put,
                                                                                     application_environment,
@@ -381,9 +392,11 @@ class Executor(Generic[T]):
 
     def _execute_main(self,
                       environment: InstructionEnvironmentForPostSdsStep,
+                      settings: InstructionSettings,
                       instruction: InstructionEmbryo[T]) -> T:
         try:
             result = instruction.main(environment,
+                                      settings,
                                       self.arrangement.os_services)
         except HardErrorException as ex:
             if self.expectation.main_raises_hard_error:

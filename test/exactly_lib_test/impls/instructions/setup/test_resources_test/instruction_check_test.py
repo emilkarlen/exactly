@@ -7,6 +7,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
 from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
@@ -256,6 +257,16 @@ class TestSideEffectsOfMain(TestCaseBase):
                         )
                         )
 
+    def test_fail_due_to_fail_of_side_effects_on_instruction_settings(self):
+        with self.assertRaises(utils.TestError):
+            self._check(utils.ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                        single_line_source(),
+                        sut.Arrangement(),
+                        sut.Expectation(
+                            instruction_settings=asrt.not_(asrt.is_instance(InstructionSettings))
+                        )
+                        )
+
 
 def single_line_source() -> ParseSource:
     return source4('instruction arguments')
@@ -267,6 +278,7 @@ SUCCESSFUL_INSTRUCTION = setup_phase_instruction_that()
 class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(SetupPhaseInstruction):
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         utils.raise_test_error_if_cwd_is_not_test_root(environment.sds)
@@ -285,6 +297,7 @@ class InstructionThatSetsStdin(SetupPhaseInstruction):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         settings_builder.stdin = self.value_to_set

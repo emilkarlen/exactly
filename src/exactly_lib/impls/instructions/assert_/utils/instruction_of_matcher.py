@@ -8,8 +8,10 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep, \
+    InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case.result import svh
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators, ddv_validation
@@ -91,7 +93,7 @@ class Instruction(Generic[MODEL], AssertPhaseInstruction):
         return tuple(self._model_getter.references) + tuple(self._matcher.references)
 
     def validate_pre_sds(self,
-                         environment: i.InstructionEnvironmentForPreSdsStep
+                         environment: InstructionEnvironmentForPreSdsStep
                          ) -> svh.SuccessOrValidationErrorOrHardError:
         _, _, validator = self._ddvs(environment.symbols)
 
@@ -99,7 +101,8 @@ class Instruction(Generic[MODEL], AssertPhaseInstruction):
         return svh.new_maybe_svh_validation_error(err_msg)
 
     def main(self,
-             environment: i.InstructionEnvironmentForPostSdsStep,
+             environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         model_getter_ddv, matcher_ddv, validator = self._ddvs(environment.symbols)
         try:
@@ -125,7 +128,7 @@ class Instruction(Generic[MODEL], AssertPhaseInstruction):
 
     def _execute(self,
                  os_services: OsServices,
-                 environment: i.InstructionEnvironmentForPostSdsStep,
+                 environment: InstructionEnvironmentForPostSdsStep,
                  model_getter_ddv: ModelGetterDdv[MODEL],
                  matcher_ddv: MatcherDdv[MODEL],
                  ) -> pfh.PassOrFailOrHardError:

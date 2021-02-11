@@ -6,10 +6,10 @@ from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.abst
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
+from exactly_lib_test.test_case.test_resources import instr_settings_assertions as asrt_is
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.process_execution.test_resources import proc_exe_env_assertions as asrt_pes
 
 
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
@@ -46,7 +46,7 @@ class TestSet(TestCaseBase):
             instruction_argument,
             mk_arrangement,
             self.conf.expect_success(
-                proc_exe_settings=asrt_pes.matches(environ=asrt.equals(expected_environ))
+                instruction_settings=asrt_is.matches(environ=asrt.equals(expected_environ))
             )
         )
 
@@ -71,7 +71,7 @@ class TestUnsetExistingVariable(TestCaseBase):
             instruction_argument,
             mk_arrangement,
             self.conf.expect_success(
-                proc_exe_settings=asrt_pes.matches(environ=asrt.equals(environ_wo_var_to_unset))
+                instruction_settings=asrt_is.matches(environ=asrt.equals(environ_wo_var_to_unset))
             )
         )
 
@@ -93,6 +93,6 @@ class TestUnsetNonExistingVariable(TestCaseBase):
             instruction_argument,
             mk_arrangement,
             self.conf.expect_success(
-                proc_exe_settings=asrt_pes.matches(environ=asrt.equals(environ_wo_var_to_unset))
+                instruction_settings=asrt_is.matches(environ=asrt.equals(environ_wo_var_to_unset))
             )
         )

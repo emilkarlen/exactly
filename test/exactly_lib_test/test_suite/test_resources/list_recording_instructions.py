@@ -10,7 +10,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo, FileLocationInfo
 from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
-from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
+from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
+    SetupMainInitialAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
@@ -61,7 +62,7 @@ class StringRecorder:
                                               self.string_to_record))
 
 
-def mk_setup_phase_recording_instruction(main_action: Callable) -> SetupPhaseInstruction:
+def mk_setup_phase_recording_instruction(main_action: SetupMainInitialAction) -> SetupPhaseInstruction:
     return setup_phase_instruction_that(main_initial_action=main_action)
 
 
