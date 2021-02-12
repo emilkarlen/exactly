@@ -39,7 +39,7 @@ class CleanupPhaseInstructionFromParts(CleanupPhaseInstruction):
         validation_result = self._validate_from_main(environment)
         if validation_result.is_hard_error:
             return validation_result
-        return self.setup.executor.apply_as_non_assertion(environment, settings, os_services)
+        return self.setup.executor.apply_as_non_assertion(environment, settings, os_services, None)
 
     def _validate_from_main(
             self,

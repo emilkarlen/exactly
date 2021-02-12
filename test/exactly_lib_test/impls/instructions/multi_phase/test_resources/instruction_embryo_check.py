@@ -5,7 +5,7 @@ from typing import Optional, Sequence, Dict, Generic
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_embryo import InstructionEmbryoParser, \
-    InstructionEmbryo, T
+    InstructionEmbryo, T, MainMethodVisitor, RET, PhaseAgnosticMainMethod, SetupPhaseAwareMainMethod
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.sds import SandboxDs
@@ -420,10 +420,9 @@ class Executor(Generic[T]):
                       environment: InstructionEnvironmentForPostSdsStep,
                       settings: InstructionSettings,
                       instruction: InstructionEmbryo[T]) -> T:
+        executor = _MainMethodExecutor(self.put, environment, settings, self.arrangement.os_services)
         try:
-            result = instruction.main(environment,
-                                      settings,
-                                      self.arrangement.os_services)
+            result = instruction.main_method().accept(executor)
         except HardErrorException as ex:
             if self.expectation.main_raises_hard_error:
                 text_doc_assertions.assert_is_valid_text_renderer(self.put, ex.error)
@@ -435,6 +434,25 @@ class Executor(Generic[T]):
             self.put.fail('main does not raise ' + str(HardErrorException))
 
         return result
+
+
+class _MainMethodExecutor(Generic[RET], MainMethodVisitor[RET, RET]):
+    def __init__(self,
+                 put: unittest.TestCase,
+                 environment: InstructionEnvironmentForPostSdsStep,
+                 settings: InstructionSettings,
+                 os_services: OsServices,
+                 ):
+        self.put = put
+        self._environment = environment
+        self._settings = settings
+        self._os_services = os_services
+
+    def visit_phase_agnostic(self, main_method: PhaseAgnosticMainMethod[T]) -> RET:
+        return main_method.main(self._environment, self._settings, self._os_services)
+
+    def visit_setup_phase_aware(self, main_method: SetupPhaseAwareMainMethod[T]) -> RET:
+        self.put.fail('Instruction must not have a setup phase aware main method')
 
 
 def _initial_environment_variables_dict(arrangement: ArrangementWithSds) -> Dict[str, str]:

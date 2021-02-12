@@ -86,7 +86,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         ]
 
 
-class _TheInstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
+class _TheInstructionEmbryo(embryo.PhaseAgnosticInstructionEmbryo[Optional[TextRenderer]]):
     def __init__(self,
                  path_to_create: PathSdv,
                  file_maker_: file_maker.FileMaker,

@@ -69,7 +69,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         ])
 
 
-class InstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
+class InstructionEmbryo(embryo.PhaseAgnosticInstructionEmbryo[Optional[TextRenderer]]):
     def __init__(self, destination: PathSdv):
         self.destination = destination
 

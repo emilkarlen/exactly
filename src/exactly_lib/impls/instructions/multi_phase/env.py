@@ -69,7 +69,7 @@ class Executor:
         raise NotImplementedError()
 
 
-class TheInstructionEmbryo(embryo.InstructionEmbryo[None]):
+class TheInstructionEmbryo(embryo.PhaseAgnosticInstructionEmbryo[None]):
     def __init__(self,
                  executor: Executor,
                  symbol_references: Sequence[SymbolReference]):

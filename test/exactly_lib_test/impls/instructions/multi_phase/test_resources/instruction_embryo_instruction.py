@@ -1,7 +1,8 @@
 from typing import Sequence, Callable, Optional, Generic
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.impls.instructions.multi_phase.utils.instruction_embryo import InstructionEmbryo, T
+from exactly_lib.impls.instructions.multi_phase.utils.instruction_embryo import InstructionEmbryo, T, \
+    PhaseAgnosticInstructionEmbryo
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
@@ -27,7 +28,7 @@ def instruction_embryo_that(validate_pre_sds_initial_action=do_nothing,
                                   action_of(symbol_usages_initial_action, symbol_usages))
 
 
-class _InstructionEmbryoThat(Generic[T], InstructionEmbryo[T]):
+class _InstructionEmbryoThat(Generic[T], PhaseAgnosticInstructionEmbryo[T]):
     def __init__(self,
                  validator: SdvValidator,
                  main: Callable[[InstructionEnvironmentForPostSdsStep, OsServices], T],

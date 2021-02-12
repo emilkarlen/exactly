@@ -120,7 +120,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         )
 
 
-class TheInstructionEmbryoBase(embryo.InstructionEmbryo[Optional[TextRenderer]]):
+class TheInstructionEmbryoBase(embryo.PhaseAgnosticInstructionEmbryo[Optional[TextRenderer]]):
     def __init__(self, source_path: PathSdv):
         self.source_path = source_path
 

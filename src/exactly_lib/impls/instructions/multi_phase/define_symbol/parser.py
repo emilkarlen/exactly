@@ -22,7 +22,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from . import type_setup
 
 
-class TheInstructionEmbryo(embryo.InstructionEmbryo[None]):
+class TheInstructionEmbryo(embryo.PhaseAgnosticInstructionEmbryo[None]):
     def __init__(self, symbol: SymbolDefinition):
         self.symbol = symbol
 

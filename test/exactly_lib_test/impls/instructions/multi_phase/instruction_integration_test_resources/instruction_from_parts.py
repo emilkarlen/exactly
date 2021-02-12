@@ -1,5 +1,5 @@
 import unittest
-from typing import Callable
+from typing import Callable, Optional
 
 from exactly_lib.impls.instructions.multi_phase.utils import instruction_parts
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_parts import InstructionParts, \
@@ -11,6 +11,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
+from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import StringRestriction
@@ -254,14 +255,17 @@ class MainStepExecutorThat(instruction_parts.MainStepExecutor):
     def apply_as_assertion(self,
                            environment: InstructionEnvironmentForPostSdsStep,
                            settings: InstructionSettings,
-                           os_services: OsServices) -> pfh.PassOrFailOrHardError:
+                           os_services: OsServices,
+                           ) -> pfh.PassOrFailOrHardError:
         self.assertion_action(environment, os_services)
         return self.assertion_return_value
 
     def apply_as_non_assertion(self,
                                environment: InstructionEnvironmentForPostSdsStep,
                                settings: InstructionSettings,
-                               os_services: OsServices) -> sh.SuccessOrHardError:
+                               os_services: OsServices,
+                               setup_phase_settings: Optional[SetupSettingsBuilder],
+                               ) -> sh.SuccessOrHardError:
         self.non_assertion_action(environment, os_services)
         return self.non_assertion_return_value
 

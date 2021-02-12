@@ -73,7 +73,7 @@ class ExecutionResultAndStderr(tuple):
         return self.output_dir_path / self.file_names.name_of(output_file)
 
 
-class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultAndStderr]):
+class TheInstructionEmbryo(instruction_embryo.PhaseAgnosticInstructionEmbryo[ExecutionResultAndStderr]):
     def __init__(self, program: ProgramSdv):
         self._program = program
 

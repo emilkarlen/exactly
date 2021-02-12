@@ -31,3 +31,7 @@ class TheConfiguration(BeforeAssertConfigurationBase, tr.Configuration):
     def instruction_parser_from_parts_parser(self, parts_parser: InstructionPartsParser
                                              ) -> InstructionParser:
         return sut.Parser(parts_parser)
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

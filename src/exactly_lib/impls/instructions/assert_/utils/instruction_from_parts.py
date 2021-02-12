@@ -17,13 +17,12 @@ from exactly_lib.test_case.result import pfh, svh
 
 
 class AssertPhaseInstructionFromParts(AssertPhaseInstruction):
-    def __init__(self,
-                 instruction_setup: InstructionParts):
-        self.setup = instruction_setup
-        self._validator = PreOrPostSdsSvhValidationErrorValidator(instruction_setup.validator)
+    def __init__(self, parts: InstructionParts):
+        self._parts = parts
+        self._validator = PreOrPostSdsSvhValidationErrorValidator(parts.validator)
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
-        return self.setup.symbol_usages
+        return self._parts.symbol_usages
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep
@@ -43,7 +42,7 @@ class AssertPhaseInstructionFromParts(AssertPhaseInstruction):
         if not validation_result.is_success:
             return pfh.new_pfh_hard_error(validation_result.failure_message)
 
-        return self.setup.executor.apply_as_assertion(environment, settings, os_services)
+        return self._parts.executor.apply_as_assertion(environment, settings, os_services)
 
 
 class Parser(InstructionParser):

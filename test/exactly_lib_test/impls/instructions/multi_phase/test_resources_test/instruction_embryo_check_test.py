@@ -510,7 +510,7 @@ class ParserThatGives(Generic[T], embryo.InstructionEmbryoParser[T]):
 PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION = ParserThatGives(instruction_embryo_that())
 
 
-class InstructionThatSetsEnvironmentVariable(embryo.InstructionEmbryo[None]):
+class InstructionThatSetsEnvironmentVariable(embryo.PhaseAgnosticInstructionEmbryo[None]):
     def __init__(self, variable: NameAndValue):
         self.variable = variable
 

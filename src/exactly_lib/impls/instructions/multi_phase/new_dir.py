@@ -58,7 +58,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return name_and_cross_ref.cross_reference_id_list(name_and_cross_refs)
 
 
-class TheInstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
+class TheInstructionEmbryo(embryo.PhaseAgnosticInstructionEmbryo[Optional[TextRenderer]]):
     def __init__(self, dir_path_sdv: PathSdv):
         self.dir_path_sdv = dir_path_sdv
 

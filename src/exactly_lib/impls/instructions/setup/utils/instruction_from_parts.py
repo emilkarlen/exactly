@@ -44,7 +44,7 @@ class SetupPhaseInstructionFromParts(SetupPhaseInstruction):
         if not validation_result.is_success:
             return sh.new_sh_hard_error(validation_result.failure_message)
 
-        return self.setup.executor.apply_as_non_assertion(environment, settings, os_services)
+        return self.setup.executor.apply_as_non_assertion(environment, settings, os_services, settings_builder)
 
 
 class Parser(InstructionParser):

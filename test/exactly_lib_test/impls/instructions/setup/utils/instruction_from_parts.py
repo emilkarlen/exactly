@@ -32,3 +32,7 @@ class TheConfiguration(SetupConfigurationBase, tr.Configuration):
                                              parts_parser: InstructionPartsParser
                                              ) -> InstructionParser:
         return sut.Parser(parts_parser)
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

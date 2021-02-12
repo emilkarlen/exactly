@@ -1,11 +1,12 @@
 """
 Utilities for helping with integrate multi-phase instruction into different phases.
 """
-from typing import Generic
+from typing import Generic, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.impls.instructions.multi_phase.utils.instruction_embryo import MainStepExecutorEmbryo, \
-    InstructionEmbryo, InstructionEmbryoParser, T
+from exactly_lib.impls.instructions.multi_phase.utils.instruction_embryo import MainStepMethodEmbryo, \
+    InstructionEmbryo, InstructionEmbryoParser, T, MainMethodVisitor, RET, SetupPhaseAwareMainMethod, \
+    PhaseAgnosticMainMethod
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_parts import MainStepExecutor, \
     InstructionParts, InstructionPartsParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -14,6 +15,7 @@ from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
+from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.test_case.result import pfh, sh
 
 
@@ -77,18 +79,21 @@ class MainStepResultTranslatorForUnconditionalSuccess(MainStepResultTranslator):
 
 class MainStepExecutorFromMainStepExecutorEmbryo(MainStepExecutor):
     def __init__(self,
-                 main_step_embryo: MainStepExecutorEmbryo[T],
-                 result_translator: MainStepResultTranslator[T]):
+                 main_step: MainStepMethodEmbryo[T],
+                 result_translator: MainStepResultTranslator[T],
+                 ):
         self.result_translator = result_translator
-        self.main_step_embryo = main_step_embryo
+        self.main_step = main_step
 
     def apply_as_non_assertion(self,
                                environment: InstructionEnvironmentForPostSdsStep,
                                settings: InstructionSettings,
                                os_services: OsServices,
+                               setup_phase_settings: Optional[SetupSettingsBuilder],
                                ) -> sh.SuccessOrHardError:
+        main_executor = _MainMethodExecutor(environment, settings, os_services, setup_phase_settings)
         try:
-            result = self.main_step_embryo.main(environment, settings, os_services)
+            result = self.main_step.main_method().accept(main_executor)
         except HardErrorException as ex:
             return sh.new_sh_hard_error(ex.error)
 
@@ -99,12 +104,35 @@ class MainStepExecutorFromMainStepExecutorEmbryo(MainStepExecutor):
                            settings: InstructionSettings,
                            os_services: OsServices,
                            ) -> pfh.PassOrFailOrHardError:
+        main_executor = _MainMethodExecutor(environment, settings, os_services, None)
         try:
-            result = self.main_step_embryo.main(environment, settings, os_services)
+            result = self.main_step.main_method().accept(main_executor)
         except HardErrorException as ex:
             return pfh.new_pfh_hard_error(ex.error)
 
         return self.result_translator.translate_for_assertion(result)
+
+
+class _MainMethodExecutor(Generic[RET], MainMethodVisitor[RET, RET]):
+    def __init__(self,
+                 environment: InstructionEnvironmentForPostSdsStep,
+                 instruction_settings: InstructionSettings,
+                 os_services: OsServices,
+                 setup_phase_settings: Optional[SetupSettingsBuilder],
+                 ):
+        self._environment = environment
+        self._instruction_settings = instruction_settings
+        self._os_services = os_services
+        self._setup_phase_settings = setup_phase_settings
+
+    def visit_phase_agnostic(self, main_method: PhaseAgnosticMainMethod[T]) -> RET:
+        return main_method.main(self._environment, self._instruction_settings, self._os_services)
+
+    def visit_setup_phase_aware(self, main_method: SetupPhaseAwareMainMethod[T]) -> RET:
+        return main_method.main(self._environment,
+                                self._instruction_settings,
+                                self._setup_phase_settings,
+                                self._os_services)
 
 
 def instruction_parts_from_embryo(instruction: InstructionEmbryo[T],
