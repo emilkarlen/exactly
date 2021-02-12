@@ -26,6 +26,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.phases.setup.settings_handler import SetupSettingsHandler
 from exactly_lib.test_case.result.failure_details import FailureDetails
+from exactly_lib.util import functional
 from exactly_lib.util.file_utils.misc_utils import resolved_path_name
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
@@ -101,7 +102,10 @@ class _PartialExecutor:
         self._phase_tmp_space_factory = None
         self._act_helper = ActHelper(conf.conf_phase_values.actor.name,
                                      test_case.act_phase)
-        self._instruction_settings = InstructionSettings.of_copy(conf.exe_conf.environ)
+        self._instruction_settings = InstructionSettings(
+            functional.map_optional(dict, conf.exe_conf.environ),
+            conf.exe_conf.default_environ_getter,
+        )
 
     def execute(self) -> PartialExeResult:
         try:

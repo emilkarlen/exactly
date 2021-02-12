@@ -76,6 +76,7 @@ class Processor:
                   result_reporter: result_reporting.TestCaseResultReporter
                   ) -> processing_utils.Executor:
         exe_conf = ExecutionConfiguration(
+            self._test_case_definition.predefined_properties.default_environ_getter,
             self._test_case_definition.predefined_properties.environ,
             self._os_services,
             sandbox_root_dir_resolver,

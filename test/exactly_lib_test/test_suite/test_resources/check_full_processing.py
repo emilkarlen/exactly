@@ -5,7 +5,6 @@ import unittest
 from exactly_lib import program_info
 from exactly_lib.common import instruction_setup
 from exactly_lib.definitions.test_suite import instruction_names
-from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
@@ -23,6 +22,7 @@ from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import Reader, 
 from exactly_lib.test_suite.instruction_set.sections.configuration import preprocessor
 from exactly_lib.test_suite.processing import Processor
 from exactly_lib.util.file_utils.misc_utils import resolved_path
+from exactly_lib_test.execution.test_resources import predefined_properties as _predefined_properties
 from exactly_lib_test.processing.test_resources.test_case_setup import instruction_set_with_no_instructions
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.files.str_std_out_files import null_output_reporting_environment
@@ -105,5 +105,5 @@ _TEST_CASE_PARSING_SETUP = TestCaseParsingSetup(white_space_name_and_argument_sp
                                                 ActPhaseParser())
 
 _DEFAULT_TEST_CASE_DEFINITION = TestCaseDefinition(_TEST_CASE_PARSING_SETUP,
-                                                   PredefinedProperties({}),
+                                                   _predefined_properties.new_empty(),
                                                    )

@@ -2,13 +2,13 @@ from pathlib import Path
 from typing import Optional
 
 from exactly_lib.cli.test_suite_def import TestSuiteDefinition
-from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.standalone import processor as sut
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings, ReportingOption
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib_test.execution.test_resources import predefined_properties as _predefined_properties
 from exactly_lib_test.processing.standalone.test_resources import instructions_inclusion_test_base as base
 from exactly_lib_test.processing.standalone.test_resources.run_processor import capture_output_from_processor
 from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
@@ -23,7 +23,7 @@ class TestCaseRunner(base.TestCaseRunner):
             case_file: Path,
             explicit_suite_file_path: Optional[Path]) -> SubProcessResult:
         processor = sut.Processor(TestCaseDefinition(parsing_setup,
-                                                     PredefinedProperties.new_empty()),
+                                                     _predefined_properties.new_empty()),
                                   os_services_access.new_for_cmd_exe(
                                       CommandExecutorThatJustReturnsConstant()
                                   ),

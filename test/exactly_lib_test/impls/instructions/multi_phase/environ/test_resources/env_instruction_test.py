@@ -1,4 +1,5 @@
 import unittest
+from typing import Dict
 
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.abstract_syntax import \
@@ -18,6 +19,8 @@ def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
                                TestSet,
                                TestUnsetExistingVariable,
                                TestUnsetNonExistingVariable,
+                               TestSetWhenCurrentEnvironIsNone,
+                               TestUnsetExistingVariableWhenEnvironIsNone,
                            ])
 
 
@@ -51,6 +54,36 @@ class TestSet(TestCaseBase):
         )
 
 
+class TestSetWhenCurrentEnvironIsNone(TestCaseBase):
+    def runTest(self):
+        # ARRANGE #
+        var_in_default = NameAndValue('var_in_default', 'value of var in default')
+        var_to_set = NameAndValue('var_to_set', 'value')
+        expected_environ = NameAndValue.as_dict([var_in_default, var_to_set])
+
+        def get_default_environ() -> Dict[str, str]:
+            return NameAndValue.as_dict([var_in_default])
+
+        instruction_argument = SetVariableArgumentsAbsStx.of_nav(var_to_set)
+
+        def mk_arrangement():
+            return self.conf.arrangement(
+                environ=None,
+                default_environ_getter=get_default_environ,
+            )
+
+        # ACT & ASSERT #
+        self.conf.instruction_checker.check_parsing__abs_stx(
+            self,
+            self.conf.parser(),
+            instruction_argument,
+            mk_arrangement,
+            self.conf.expect_success(
+                instruction_settings=asrt_is.matches(environ=asrt.equals(expected_environ))
+            )
+        )
+
+
 class TestUnsetExistingVariable(TestCaseBase):
     def runTest(self):
         # ARRANGE #
@@ -63,6 +96,38 @@ class TestUnsetExistingVariable(TestCaseBase):
 
         def mk_arrangement():
             return self.conf.arrangement(environ=dict(environ_w_var_to_unset))
+
+        # ACT & ASSERT #
+        self.conf.instruction_checker.check_parsing__abs_stx(
+            self,
+            self.conf.parser(),
+            instruction_argument,
+            mk_arrangement,
+            self.conf.expect_success(
+                instruction_settings=asrt_is.matches(environ=asrt.equals(environ_wo_var_to_unset))
+            )
+        )
+
+
+class TestUnsetExistingVariableWhenEnvironIsNone(TestCaseBase):
+    def runTest(self):
+        # ARRANGE #
+        var_to_unset = NameAndValue('var_to_unset', 'value of var to unset')
+
+        other_var = NameAndValue('other_var', 'val of other var')
+        instruction_argument = UnsetVariableArgumentsAbsStx(var_to_unset.name)
+        vars_from_defaults_getter = [var_to_unset, other_var]
+
+        environ_wo_var_to_unset = NameAndValue.as_dict([other_var])
+
+        def get_default_environ() -> Dict[str, str]:
+            return NameAndValue.as_dict(vars_from_defaults_getter)
+
+        def mk_arrangement():
+            return self.conf.arrangement(
+                environ=None,
+                default_environ_getter=get_default_environ,
+            )
 
         # ACT & ASSERT #
         self.conf.instruction_checker.check_parsing__abs_stx(

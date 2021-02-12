@@ -3,7 +3,6 @@ import unittest
 from typing import List, Sequence, Callable
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.processing import processors as sut
@@ -22,6 +21,7 @@ from exactly_lib.util.line_source import Line, single_line_sequence
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
 from exactly_lib_test.execution.test_resources import instruction_test_resources as instr
+from exactly_lib_test.execution.test_resources import predefined_properties as _predefined_properties
 from exactly_lib_test.processing.test_resources.instruction_set import directive_for_inclusion_of_file
 from exactly_lib_test.processing.test_resources.result_assertions import result_is_access_error, \
     result_for_executed_status_matches
@@ -316,7 +316,7 @@ def configuration_for_instruction_set(instruction_set: InstructionsSetup) -> sut
         ActPhaseParser()
     )
     tc_definition = TestCaseDefinition(tc_parsing_setup,
-                                       PredefinedProperties({}))
+                                       _predefined_properties.new_empty())
     tc_handling_setup = setup_with_null_act_phase_and_null_preprocessing()
     return sut.Configuration(
         tc_definition,

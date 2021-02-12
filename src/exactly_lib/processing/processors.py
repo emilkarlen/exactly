@@ -23,6 +23,7 @@ from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act.actor import Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
+from exactly_lib.util import functional
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.simple_textstruct.rendering import line_objects, line_elements
@@ -78,7 +79,8 @@ class Configuration:
         self.sandbox_root_dir_resolver = sandbox_root_dir_resolver
 
     def execution_configuration(self) -> ExecutionConfiguration:
-        return ExecutionConfiguration(self.test_case_definition.predefined_properties.environ,
+        return ExecutionConfiguration(self.test_case_definition.predefined_properties.default_environ_getter,
+                                      self.test_case_definition.predefined_properties.environ,
                                       self.os_services,
                                       self.sandbox_root_dir_resolver,
                                       self.mem_buff_size,
@@ -205,7 +207,8 @@ class _Executor(processing_utils.Executor):
 
     def _exe_conf_that_may_be_updated(self) -> ExecutionConfiguration:
         ec = self._exe_conf
-        return ExecutionConfiguration(ec.environ.copy(),
+        return ExecutionConfiguration(ec.default_environ_getter,
+                                      functional.map_optional(dict, ec.environ),
                                       ec.os_services,
                                       ec.sds_root_dir_resolver,
                                       ec.mem_buff_size,

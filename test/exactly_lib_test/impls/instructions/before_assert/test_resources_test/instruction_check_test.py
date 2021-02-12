@@ -2,6 +2,7 @@
 Test of test-infrastructure: instruction_check.
 """
 import unittest
+from typing import Dict
 
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -22,6 +23,7 @@ from exactly_lib_test.tcfs.test_resources import non_hds_populator, sds_populato
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
+from exactly_lib_test.test_case.test_resources import instr_settings_assertions as asrt_instr_settings
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case.test_resources.test_of_test_framework_utils import single_line_source
@@ -32,6 +34,7 @@ from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
     matches_data_type_symbol_reference
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.util.process_execution.test_resources import proc_exe_env_assertions as asrt_pes
 
 
 def suite() -> unittest.TestSuite:
@@ -82,6 +85,31 @@ class TestPopulate(TestCaseBase):
             sut.Expectation(
                 main_side_effects_on_sds=tmp_user_dir_contains_exactly(
                     populated_dir_contents)),
+        )
+
+    def test_populate_environ(self):
+        default_from_default_getter = {'default': 'value of default'}
+        default_environs = {'in_environs': 'value of var in environs'}
+
+        def default_environ_getter() -> Dict[str, str]:
+            return default_from_default_getter
+
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            utils.single_line_source(),
+            sut.arrangement(
+                default_environ_getter=default_environ_getter,
+                process_execution_settings=ProcessExecutionSettings.from_non_immutable(environ=default_environs),
+            ),
+            sut.Expectation(
+                instruction_settings=asrt_instr_settings.matches(
+                    environ=asrt.equals(default_environs),
+                    return_value_from_default_getter=asrt.equals(default_from_default_getter)
+                ),
+                proc_exe_settings=asrt_pes.matches(
+                    environ=asrt.equals(default_environs)
+                )
+            ),
         )
 
 

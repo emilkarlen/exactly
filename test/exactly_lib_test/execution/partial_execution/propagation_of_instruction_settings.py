@@ -16,13 +16,70 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     cleanup_phase_instruction_that, act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
+from exactly_lib_test.test_resources.actions import do_return__wo_args
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        TestDefaultEnvVarsIsAvailableInAllPhases(),
         TestEnvironVariablesAreNoneIfValueInConfigIsNone(),
         TestPropagationOfEnvironInSettings(),
     ])
+
+
+class TestDefaultEnvVarsIsAvailableInAllPhases(unittest.TestCase):
+    def runTest(self):
+        default_environ = {'env_var_name': 'env var value'}
+
+        recording_media = _empty_recording_media()
+        expected_recordings = [
+            RecordingEntry.from_settings(PhaseEnum.SETUP, None, default_environ),
+
+            RecordingEntry.from_settings(PhaseEnum.BEFORE_ASSERT, None, default_environ),
+
+            RecordingEntry.from_settings(PhaseEnum.ASSERT, None, default_environ),
+
+            RecordingEntry.from_settings(PhaseEnum.CLEANUP, None, default_environ),
+        ]
+
+        helper = RecordingsHelper(recording_media)
+        test_case = partial_test_case_with_instructions(
+            [
+                setup_phase_instruction_that(
+                    main_initial_action=helper.action_for_recording_of_default_environ(PhaseEnum.SETUP),
+                ),
+            ],
+            _act_phase_instructions_that_are_not_relevant_to_this_test(),
+            [
+                before_assert_phase_instruction_that(
+                    main_initial_action=helper.action_for_recording_of_default_environ(PhaseEnum.BEFORE_ASSERT),
+                ),
+            ],
+            [
+                assert_phase_instruction_that(
+                    main_initial_action=helper.action_for_recording_of_default_environ(PhaseEnum.ASSERT),
+                ),
+            ],
+            [
+                cleanup_phase_instruction_that(
+                    main_initial_action=helper.action_for_recording_of_default_environ(PhaseEnum.CLEANUP),
+                ),
+            ],
+        )
+        null_actor = ActorThatRunsConstantActions()
+        # ACT #
+        test__va(
+            self,
+            test_case,
+            Arrangement(
+                actor=null_actor,
+                default_environ_getter=do_return__wo_args(dict(default_environ))
+            ),
+            result_is_pass(),
+        )
+        self.assertEqual(expected_recordings,
+                         recording_media,
+                         'recordings')
 
 
 class TestEnvironVariablesAreNoneIfValueInConfigIsNone(unittest.TestCase):
@@ -323,6 +380,10 @@ class RecordingsHelper:
     def action_for_recordings_for(self, phase: PhaseEnum, pos_in_phase: Optional[PosInPhase]) -> Callable:
         return RecordEnvironmentVariables(phase, pos_in_phase, self.recording_media).call
 
+    def action_for_recording_of_default_environ(self, phase: PhaseEnum,
+                                                pos_in_phase: Optional[PosInPhase] = None) -> Callable:
+        return RecordDefaultEnviron(phase, pos_in_phase, self.recording_media).call
+
 
 def _act_phase_instructions_that_are_not_relevant_to_this_test() -> List[ActPhaseInstruction]:
     return [act_phase_instruction_with_source(LineSequence(1, ('line',)))]
@@ -360,6 +421,26 @@ class RecordEnvironmentVariables:
                            environment.proc_exe_settings.environ),
             RecordingEntry(StepInfo.of_settings(self.phase, self.pos_in_phase),
                            settings.environ()),
+        ]
+
+
+class RecordDefaultEnviron:
+    def __init__(self,
+                 phase: PhaseEnum,
+                 pos_in_phase: Optional[PosInPhase],
+                 recording_media: List[RecordingEntry],
+                 ):
+        self.phase = phase
+        self.pos_in_phase = pos_in_phase
+        self.recording_media = recording_media
+
+    def call(self,
+             environment: InstructionEnvironmentForPostSdsStep,
+             settings: InstructionSettings,
+             *args):
+        self.recording_media += [
+            RecordingEntry(StepInfo.of_settings(self.phase, self.pos_in_phase),
+                           settings.default_environ_getter()),
         ]
 
 

@@ -1,7 +1,7 @@
 import os
 import unittest
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Optional
 
 from exactly_lib.cli.test_case_def import TestCaseDefinitionForMainProgram
 from exactly_lib.definitions.test_case import phase_names
@@ -47,7 +47,8 @@ class TestInitialEnvVarsInInstructionEnvironment(unittest.TestCase):
         ])
 
         with tmp_dir_as_cwd(cwd_dir_contents):
-            expected_env_vars_to_exist_at_least = os.environ
+            expected_default = None
+            expected_from_defaults_getter = dict(os.environ)
 
             # ACT & ASSERT #
 
@@ -55,26 +56,37 @@ class TestInitialEnvVarsInInstructionEnvironment(unittest.TestCase):
                 self,
                 Path(root_file_base_name),
                 test_case_definition_with_setup_phase_assertion_instruction(self,
-                                                                            expected_env_vars_to_exist_at_least))
+                                                                            expected_default,
+                                                                            expected_from_defaults_getter))
 
 
 class SetupPhaseInstructionThatAssertsEnvVars(SetupPhaseInstruction):
     def __init__(self,
                  put: unittest.TestCase,
-                 expected_to_exist: Dict[str, str]):
+                 expected_default: Optional[Dict[str, str]],
+                 expected_from_defaults_getter: Dict[str, str],
+                 ):
         self.put = put
-        self.expected_to_exist = expected_to_exist
+        self.expected_default = expected_default
+        self.expected_from_defaults_getter = expected_from_defaults_getter
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              settings: InstructionSettings,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        for k, v in self.expected_to_exist.items():
-            if k not in environment.proc_exe_settings.environ:
+        self.put.assertEqual(self.expected_default, environment.proc_exe_settings.environ,
+                             'environ of proc-exe-settings')
+        self.put.assertEqual(self.expected_default, settings.environ(),
+                             'environ of instruction-settings')
+
+        default_environ = settings.default_environ_getter()
+
+        for k, v in self.expected_from_defaults_getter.items():
+            if k not in default_environ:
                 self.put.fail('Missing env var: ' + k)
             self.put.assertEqual(v,
-                                 environment.proc_exe_settings.environ[k],
+                                 default_environ[k],
                                  'Env var value for var ' + k)
 
         return sh.new_sh_success()
@@ -83,20 +95,26 @@ class SetupPhaseInstructionThatAssertsEnvVars(SetupPhaseInstruction):
 class SetupPhaseInstructionParserThatAssertsEnvVars(InstructionParser):
     def __init__(self,
                  put: unittest.TestCase,
-                 expected_to_exist: Dict[str, str]):
+                 expected_default: Optional[Dict[str, str]],
+                 expected_from_defaults_getter: Dict[str, str],
+                 ):
         self.put = put
-        self.expected_to_exist = expected_to_exist
+        self.expected_default = expected_default
+        self.expected_from_defaults_getter = expected_from_defaults_getter
 
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> model.Instruction:
         source.consume_current_line()
-        return SetupPhaseInstructionThatAssertsEnvVars(self.put, self.expected_to_exist)
+        return SetupPhaseInstructionThatAssertsEnvVars(self.put,
+                                                       self.expected_default,
+                                                       self.expected_from_defaults_getter)
 
 
 def test_case_definition_with_setup_phase_assertion_instruction(
         put: unittest.TestCase,
-        expected_to_exist: Dict[str, str],
+        expected_default: Optional[Dict[str, str]],
+        expected_from_defaults_getter: Dict[str, str],
 ) -> TestCaseDefinitionForMainProgram:
     return test_case_definition_for(
         InstructionsSetup(
@@ -105,7 +123,8 @@ def test_case_definition_with_setup_phase_assertion_instruction(
                     INSTR_THAT_ASSERTS_ENV_VARS,
                     SetupPhaseInstructionParserThatAssertsEnvVars(
                         put,
-                        expected_to_exist))
+                        expected_default,
+                        expected_from_defaults_getter))
             })
     )
 

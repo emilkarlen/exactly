@@ -9,6 +9,7 @@ from exactly_lib.cli.test_suite_def import TestSuiteDefinition
 from exactly_lib.common.process_result_reporter import Environment, ProcessResultReporter
 from exactly_lib.common.process_result_reporters import ProcessResultReporterWithInitialExitValueOutput
 from exactly_lib.execution.configuration import PredefinedProperties
+from exactly_lib.execution.predefined_properties import os_environ_getter
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.processing import exit_values
@@ -42,7 +43,8 @@ class MainProgram:
         self._test_case_definition = TestCaseDefinition(
             test_case_definition.test_case_parsing_setup,
             PredefinedProperties(
-                dict(os.environ),
+                os_environ_getter,
+                None,
                 predefined_symbols,
             )
         )

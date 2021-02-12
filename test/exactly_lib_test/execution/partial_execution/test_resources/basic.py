@@ -1,7 +1,7 @@
 import pathlib
 import shutil
 import unittest
-from typing import Callable, Optional, Mapping
+from typing import Callable, Optional, Mapping, Dict
 
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
@@ -14,6 +14,7 @@ from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases.act.actor import Actor
+from exactly_lib.test_case.phases.instruction_settings import DefaultEnvironGetter
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.functional import Composition
@@ -150,12 +151,17 @@ class TestCaseWithCommonDefaultInstructions(TestCaseGeneratorForPartialExecution
         return []
 
 
+def _default_environ_getter() -> Dict[str, str]:
+    return {}
+
+
 class Arrangement:
     def __init__(self,
                  actor: Actor = dummy_actor(),
                  hds: HomeDs = HomeDs(pathlib.Path().resolve(),
                                       pathlib.Path().resolve()),
                  environ: Optional[Mapping[str, str]] = None,
+                 default_environ_getter: DefaultEnvironGetter = _default_environ_getter,
                  timeout_in_seconds: int = None,
                  predefined_symbols: SymbolTable = None,
                  exe_atc_and_skip_assertions: Optional[StdOutputFiles] = None,
@@ -166,6 +172,7 @@ class Arrangement:
         self.os_services = os_services
         self.hds = hds
         self.environ = environ
+        self.default_environ_getter = default_environ_getter
         self.timeout_in_seconds = timeout_in_seconds
         self.predefined_symbols_or_none = predefined_symbols
         self.exe_atc_and_skip_assertions = exe_atc_and_skip_assertions
@@ -214,7 +221,8 @@ def _execute(test_case: TestCase,
     environ = arrangement.environ
     partial_result = sut.execute(
         test_case,
-        ExecutionConfiguration(environ,
+        ExecutionConfiguration(arrangement.default_environ_getter,
+                               environ,
                                arrangement.os_services,
                                sandbox_root_name_resolver.for_test(),
                                arrangement.mem_buff_size,

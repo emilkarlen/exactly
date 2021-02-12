@@ -10,11 +10,12 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings, DefaultEnvironGetter
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ
 from exactly_lib_test.impls.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.impls.instructions.test_resources.instruction_check_utils import InstructionExecutionBase
 from exactly_lib_test.impls.instructions.test_resources.instruction_checker import InstructionChecker
@@ -42,6 +43,7 @@ def arrangement(pre_contents_population_action: TcdsAction = TcdsAction(),
                 act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
                 os_services: OsServices = new_for_current_os(),
                 process_execution_settings: ProcessExecutionSettings = ProcessExecutionSettings.null(),
+                default_environ_getter: DefaultEnvironGetter = get_empty_environ,
                 symbols: SymbolTable = None,
                 ) -> ArrangementPostAct:
     return ArrangementPostAct(pre_contents_population_action=pre_contents_population_action,
@@ -52,6 +54,7 @@ def arrangement(pre_contents_population_action: TcdsAction = TcdsAction(),
                               act_result_producer=act_result_producer,
                               os_services=os_services,
                               process_execution_settings=process_execution_settings,
+                              default_environ_getter=default_environ_getter,
                               symbols=symbols)
 
 
@@ -219,7 +222,8 @@ class _InstructionCheckExecutor(InstructionExecutionBase):
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(tcds))
             write_act_result(tcds.sds, act_result)
 
-            instruction_settings = instr_settings.from_proc_exe_settings(self.arrangement.process_execution_settings)
+            instruction_settings = instr_settings.from_proc_exe_settings(self.arrangement.process_execution_settings,
+                                                                         self.arrangement.default_environ_getter)
 
             result_from_main = self._execute_main(environment, instruction_settings, instruction)
 

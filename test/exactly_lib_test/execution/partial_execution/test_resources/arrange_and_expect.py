@@ -1,4 +1,3 @@
-import os
 import shutil
 import unittest
 from typing import Optional
@@ -7,6 +6,7 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
+from exactly_lib.execution.predefined_properties import os_environ_getter
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.os_services import OsServices
@@ -52,7 +52,8 @@ def execute_and_check(put: unittest.TestCase,
         with preserved_cwd():
             partial_result = sut.execute(
                 arrangement.test_case,
-                ExecutionConfiguration(dict(os.environ),
+                ExecutionConfiguration(os_environ_getter,
+                                       None,
                                        arrangement.os_services,
                                        sandbox_root_name_resolver.for_test(),
                                        arrangement.mem_buff_size),

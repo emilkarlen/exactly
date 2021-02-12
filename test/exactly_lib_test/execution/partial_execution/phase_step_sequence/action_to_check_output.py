@@ -1,4 +1,3 @@
-import os
 import unittest
 from typing import Optional
 
@@ -7,6 +6,7 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues
 from exactly_lib.execution.partial_execution.result import PartialExeResult
+from exactly_lib.execution.predefined_properties import os_environ_getter
 from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.test_case.phases.act.actor import Actor
@@ -92,7 +92,8 @@ def check(put: unittest.TestCase,
         arrangement.actor)
 
     def action(std_files: StdOutputFiles) -> PartialExeResult:
-        exe_conf = ExecutionConfiguration(dict(os.environ),
+        exe_conf = ExecutionConfiguration(os_environ_getter,
+                                          None,
                                           os_services_access.new_for_current_os(),
                                           sandbox_root_name_resolver.for_test(),
                                           arrangement.mem_buff_size,

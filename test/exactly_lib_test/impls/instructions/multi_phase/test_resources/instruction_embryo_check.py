@@ -15,6 +15,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
+from exactly_lib.util import functional
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
@@ -24,7 +25,7 @@ from exactly_lib_test.impls.test_resources.validation.validation import Validati
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line_2
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_case.test_resources import instruction_settings
+from exactly_lib_test.test_case.test_resources import instruction_settings as _instruction_settings
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_resources.source import layout
@@ -80,6 +81,10 @@ class Expectation(Generic[T]):
                  side_effects_on_hds: Assertion[pathlib.Path] = asrt.anything_goes(),
                  source: Assertion[ParseSource] = asrt.anything_goes(),
                  main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
+                 proc_exe_settings: Assertion[ProcessExecutionSettings]
+                 = asrt.is_instance(ProcessExecutionSettings),
+                 instruction_settings: Assertion[InstructionSettings]
+                 = asrt.is_instance(InstructionSettings),
                  assertion_on_instruction_environment:
                  Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
                  ):
@@ -87,6 +92,8 @@ class Expectation(Generic[T]):
         self.validation_post_sds = validation_post_sds
         self.main_result = main_result
         self.main_raises_hard_error = main_raises_hard_error
+        self.instruction_settings = instruction_settings
+        self.proc_exe_settings = proc_exe_settings
         self.main_side_effects_on_sds = main_side_effects_on_sds
         self.side_effects_on_tcds = side_effects_on_tcds
         self.side_effects_on_hds = side_effects_on_hds
@@ -108,12 +115,18 @@ class MultiSourceExpectation(Generic[T]):
                  side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
                  side_effects_on_hds: Assertion[pathlib.Path] = asrt.anything_goes(),
                  main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
+                 proc_exe_settings: Assertion[ProcessExecutionSettings]
+                 = asrt.is_instance(ProcessExecutionSettings),
+                 instruction_settings: Assertion[InstructionSettings]
+                 = asrt.is_instance(InstructionSettings),
                  instruction_environment:
                  Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
                  ):
         self.validation = validation
         self.main_result = main_result
         self.main_raises_hard_error = main_raises_hard_error
+        self.proc_exe_settings = proc_exe_settings
+        self.instruction_settings = instruction_settings
         self.main_side_effects_on_sds = main_side_effects_on_sds
         self.side_effects_on_tcds = side_effects_on_tcds
         self.side_effects_on_hds = side_effects_on_hds
@@ -135,6 +148,8 @@ class MultiSourceExpectation(Generic[T]):
             self.side_effects_on_hds,
             source,
             self.main_side_effect_on_environment_variables,
+            self.proc_exe_settings,
+            self.instruction_settings,
             self.instruction_application_environment,
         )
 
@@ -149,6 +164,10 @@ def expectation(validation: ValidationAssertions = validation_utils.ValidationAs
                 side_effects_on_home: Assertion[pathlib.Path] = asrt.anything_goes(),
                 source: Assertion[ParseSource] = asrt.anything_goes(),
                 main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
+                proc_exe_settings: Assertion[ProcessExecutionSettings]
+                = asrt.is_instance(ProcessExecutionSettings),
+                instruction_settings: Assertion[InstructionSettings]
+                = asrt.is_instance(InstructionSettings),
                 assertion_on_instruction_environment:
                 Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
                 ) -> Expectation[T]:
@@ -163,6 +182,8 @@ def expectation(validation: ValidationAssertions = validation_utils.ValidationAs
         side_effects_on_tcds=side_effects_on_tcds,
         side_effects_on_hds=side_effects_on_home,
         source=source,
+        proc_exe_settings=proc_exe_settings,
+        instruction_settings=instruction_settings,
         main_side_effect_on_environment_variables=main_side_effect_on_environment_variables,
         assertion_on_instruction_environment=assertion_on_instruction_environment,
     )
@@ -317,7 +338,7 @@ class Executor(Generic[T]):
                 self.arrangement.symbols,
                 ProcessExecutionSettings.from_non_immutable(
                     timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
-                    environ=_initial_environment_variables_dict(self.arrangement),
+                    environ=self.arrangement.process_execution_settings.environ,
                 ),
             )
 
@@ -338,14 +359,11 @@ class Executor(Generic[T]):
             if validate_result is not None:
                 return
 
-            instr_settings = instruction_settings.from_proc_exe_settings(self.arrangement.process_execution_settings)
+            instr_settings = _instruction_settings.from_proc_exe_settings(self.arrangement.process_execution_settings,
+                                                                          self.arrangement.default_environ_getter)
 
             result_of_main = self._execute_main(environment, instr_settings, instruction)
 
-            self.expectation.main_side_effects_on_sds.apply_with_message(self.put, tcds.sds,
-                                                                         'side_effects_on_files')
-            self.expectation.side_effects_on_tcds.apply_with_message(self.put, tcds,
-                                                                     'side_effects_on_tcds')
             self.expectation.main_side_effect_on_environment_variables.apply_with_message(
                 self.put,
                 instr_settings.environ(),
@@ -358,6 +376,14 @@ class Executor(Generic[T]):
                                                               instruction.symbol_usages,
                                                               'symbol-usages after ' +
                                                               phase_step.STEP__MAIN)
+            self.expectation.proc_exe_settings.apply_with_message(self.put, environment.proc_exe_settings,
+                                                                  'proc exe settings')
+            self.expectation.instruction_settings.apply_with_message(self.put, instr_settings,
+                                                                     'instruction settings')
+            self.expectation.main_side_effects_on_sds.apply_with_message(self.put, tcds.sds,
+                                                                         'side_effects_on_files')
+            self.expectation.side_effects_on_tcds.apply_with_message(self.put, tcds,
+                                                                     'side_effects_on_tcds')
             self.expectation.side_effects_on_hds.apply_with_message(self.put, tcds.hds.case_dir,
                                                                     'side_effects_on_home')
 
@@ -412,7 +438,4 @@ class Executor(Generic[T]):
 
 
 def _initial_environment_variables_dict(arrangement: ArrangementWithSds) -> Dict[str, str]:
-    environ = arrangement.process_execution_settings.environ
-    if environ is None:
-        environ = {}
-    return environ
+    return functional.map_optional(dict, arrangement.process_execution_settings.environ)

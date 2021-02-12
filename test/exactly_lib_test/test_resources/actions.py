@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, TypeVar
 
 
 def do_nothing(*args, **kwargs):
@@ -11,6 +11,16 @@ def do_nothing__single_arg(args):
 
 def do_return(x) -> Callable:
     def ret_val(*args, **kwargs):
+        return x
+
+    return ret_val
+
+
+T = TypeVar('T')
+
+
+def do_return__wo_args(x: T) -> Callable[[], T]:
+    def ret_val() -> T:
         return x
 
     return ret_val

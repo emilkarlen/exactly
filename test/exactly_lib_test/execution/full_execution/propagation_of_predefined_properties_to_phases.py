@@ -12,9 +12,11 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.full_execution.test_resources import execution_check, \
     result_assertions as asrt_full_result
+from exactly_lib_test.execution.test_resources import predefined_properties as _predefined_properties
 from exactly_lib_test.execution.test_resources.execution_recording.recording2 import PropertyRecorderBuilder, \
     actor_that_records_property_of_env_for_each_step_w_env_arg, \
     test_case_that_records_property_of_env_for_each_step_of_partial_execution
+from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_keys_equals
@@ -28,8 +30,7 @@ class TestPredefinedSymbols(unittest.TestCase):
     def test_WHEN_no_predefined_symbols_are_specified_THEN_the_set_of_symbols_SHOULD_be_empty(
             self):
         # ARRANGE #
-        predefined_properties = PredefinedProperties(environ={},
-                                                     predefined_symbols=None)
+        predefined_properties = _predefined_properties.new_empty()
         self._check(predefined_properties, assert_symbol_table_keys_equals({}))
 
     def test_WHEN_predefined_symbols_are_specified_THEN_the_set_of_symbols_SHOULD_be_exactly_these_symbols(
@@ -38,7 +39,8 @@ class TestPredefinedSymbols(unittest.TestCase):
         predefined_symbols_table = StringSymbolContext.of_constant(
             'predefined symbol',
             'predefined string value (not used by this test)').symbol_table
-        predefined_properties = PredefinedProperties(environ={},
+        predefined_properties = PredefinedProperties(default_environ_getter=get_empty_environ,
+                                                     environ=None,
                                                      predefined_symbols=predefined_symbols_table)
         self._check(predefined_properties, assert_symbol_table_keys_equals(predefined_symbols_table.names_set))
 

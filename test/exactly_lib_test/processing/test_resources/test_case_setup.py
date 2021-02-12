@@ -11,6 +11,8 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.util import symbol_table
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
+from exactly_lib_test.execution.test_resources import predefined_properties
+from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ
 from exactly_lib_test.processing.test_resources.act_phase import act_setup_that_does_nothing
 from exactly_lib_test.processing.test_resources.act_phase import command_line_actor_setup
 
@@ -43,7 +45,7 @@ def instruction_set_with_no_instructions() -> InstructionsSetup:
 def test_case_definition_with_no_instructions_and_no_preprocessor() -> TestCaseDefinition:
     return TestCaseDefinition(
         parsing_setup_with_no_instructions(),
-        PredefinedProperties({}),
+        predefined_properties.new_empty(),
     )
 
 
@@ -73,6 +75,7 @@ def test_case_definition_with_only_assert_phase_instructions(
                 cleanup_instruction_set={},
             ),
             act_phase_parser=ActPhaseParser()),
-        PredefinedProperties({},
+        PredefinedProperties(get_empty_environ,
+                             None,
                              symbol_table.empty_symbol_table())
     )

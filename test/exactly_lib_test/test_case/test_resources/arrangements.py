@@ -3,8 +3,10 @@ from typing import Optional
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.instruction_settings import DefaultEnvironGetter
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
+from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_populators, \
     tcds_populators, sds_populator
@@ -19,9 +21,11 @@ class ArrangementBase:
     def __init__(self,
                  hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                  process_execution_settings: ProcessExecutionSettings = ProcessExecutionSettings.null(),
+                 default_environ_getter: DefaultEnvironGetter = get_empty_environ,
                  ):
         self.hds_contents = hds_contents
         self.process_execution_settings = process_execution_settings
+        self.default_environ_getter = default_environ_getter
 
 
 class ArrangementWithSds(ArrangementBase):
@@ -33,12 +37,14 @@ class ArrangementWithSds(ArrangementBase):
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                  os_services: OsServices = os_services_access.new_for_current_os(),
                  process_execution_settings: ProcessExecutionSettings = proc_exe_env_for_test(),
+                 default_environ_getter: DefaultEnvironGetter = get_empty_environ,
                  post_sds_population_action: TcdsAction = TcdsAction(),
                  symbols: SymbolTable = None,
                  fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
                  ):
         super().__init__(hds_contents=hds_contents,
-                         process_execution_settings=process_execution_settings)
+                         process_execution_settings=process_execution_settings,
+                         default_environ_getter=default_environ_getter)
         self.pre_contents_population_action = pre_contents_population_action
         self.sds_contents = sds_contents
         self.non_hds_contents = non_hds_contents
@@ -64,10 +70,12 @@ class ArrangementPostAct2:
                  tcds: TcdsArrangementPostAct = TcdsArrangementPostAct(),
                  symbols: Optional[SymbolTable] = None,
                  process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement(),
+                 default_environ_getter: DefaultEnvironGetter = get_empty_environ,
                  ):
         self.symbols = symbol_table_from_none_or_value(symbols)
         self.tcds = tcds
         self.process_execution = process_execution
+        self.default_environ_getter = default_environ_getter
 
 
 class ArrangementPostAct(ArrangementWithSds):
@@ -81,6 +89,7 @@ class ArrangementPostAct(ArrangementWithSds):
                  act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
                  os_services: OsServices = os_services_access.new_for_current_os(),
                  process_execution_settings: ProcessExecutionSettings = ProcessExecutionSettings.null(),
+                 default_environ_getter: DefaultEnvironGetter = get_empty_environ,
                  symbols: SymbolTable = None,
                  fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
                  ):
@@ -92,6 +101,7 @@ class ArrangementPostAct(ArrangementWithSds):
                          post_sds_population_action=post_sds_population_action,
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,
+                         default_environ_getter=default_environ_getter,
                          symbols=symbols,
                          fs_location_info=fs_location_info)
         self.act_result_producer = act_result_producer
@@ -113,5 +123,6 @@ class ArrangementPostAct(ArrangementWithSds):
             ProcessExecutionArrangement(
                 self.os_services,
                 self.process_execution_settings,
-            )
+            ),
+            self.default_environ_getter,
         )

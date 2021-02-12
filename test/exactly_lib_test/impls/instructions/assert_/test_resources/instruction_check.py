@@ -437,7 +437,8 @@ class ExecutionChecker:
                 return
 
             instruction_settings = instr_settings.from_proc_exe_settings(
-                self.arrangement.process_execution.process_execution_settings
+                self.arrangement.process_execution.process_execution_settings,
+                self.arrangement.default_environ_getter,
             )
 
             try:

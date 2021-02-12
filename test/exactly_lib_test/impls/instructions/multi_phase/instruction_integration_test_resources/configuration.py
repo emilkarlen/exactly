@@ -12,11 +12,12 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings, DefaultEnvironGetter
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
+from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ
 from exactly_lib_test.impls.instructions.test_resources.instruction_checker import InstructionChecker
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line
@@ -81,6 +82,7 @@ class ConfigurationBase(ABC):
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                     environ: Optional[Dict[str, str]] = None,
+                    default_environ_getter: DefaultEnvironGetter = get_empty_environ,
                     os_services: OsServices = new_for_current_os(),
                     symbols: SymbolTable = None):
         raise NotImplementedError()

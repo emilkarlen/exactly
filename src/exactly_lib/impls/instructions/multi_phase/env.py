@@ -85,6 +85,9 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo[None]):
              settings: InstructionSettings,
              os_services: OsServices,
              ):
+        if settings.environ() is None:
+            settings.set_environ(settings.default_environ_getter())
+
         self.executor.execute(settings.environ(),
                               environment.path_resolving_environment_pre_or_post_sds)
 

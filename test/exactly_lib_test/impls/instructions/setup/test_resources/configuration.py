@@ -7,10 +7,11 @@ from exactly_lib.impls.os_services.os_services_access import new_for_current_os
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings, DefaultEnvironGetter
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
+from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.impls.instructions.setup.test_resources import instruction_check
@@ -85,6 +86,7 @@ class SetupConfigurationBase(ConfigurationBase, ABC):
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                     environ: Optional[Dict[str, str]] = None,
+                    default_environ_getter: DefaultEnvironGetter = get_empty_environ,
                     os_services: OsServices = new_for_current_os(),
                     symbols: SymbolTable = None):
         return ic.Arrangement(pre_contents_population_action=pre_contents_population_action,
@@ -92,6 +94,7 @@ class SetupConfigurationBase(ConfigurationBase, ABC):
                               sds_contents_before_main=sds_contents_before_main,
                               tcds_contents=tcds_contents,
                               process_execution_settings=ProcessExecutionSettings.from_non_immutable(environ=environ),
+                              default_environ_getter=default_environ_getter,
                               os_services=os_services,
                               symbols=symbols)
 

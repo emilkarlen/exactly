@@ -14,7 +14,7 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings, DefaultEnvironGetter
 from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
 from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
@@ -22,6 +22,7 @@ from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.partial_execution.test_resources import settings_handlers
+from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ
 from exactly_lib_test.impls.instructions.test_resources.instruction_checker import InstructionChecker
 from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
@@ -52,6 +53,7 @@ class Arrangement(ArrangementWithSds):
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                  os_services: OsServices = os_services_access.new_for_current_os(),
                  process_execution_settings: ProcessExecutionSettings = ProcessExecutionSettings.null(),
+                 default_environ_getter: DefaultEnvironGetter = get_empty_environ,
                  settings_builder: Optional[SetupSettingsBuilder] = None,
                  symbols: SymbolTable = None,
                  fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
@@ -63,6 +65,7 @@ class Arrangement(ArrangementWithSds):
                          tcds_contents=tcds_contents,
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,
+                         default_environ_getter=default_environ_getter,
                          symbols=symbols,
                          fs_location_info=fs_location_info,
                          )
@@ -304,7 +307,8 @@ class _InstructionCheckExecutor:
                     return
 
             instruction_environment = environment_builder.build_post_sds()
-            instruction_settings = instr_settings.from_proc_exe_settings(self.arrangement.process_execution_settings)
+            instruction_settings = instr_settings.from_proc_exe_settings(self.arrangement.process_execution_settings,
+                                                                         self.arrangement.default_environ_getter)
 
             tcds = path_resolving_environment.tcds
             sds = tcds.sds

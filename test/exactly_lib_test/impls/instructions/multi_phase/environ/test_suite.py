@@ -1,4 +1,5 @@
 import unittest
+from typing import Dict
 
 from exactly_lib.impls.instructions.multi_phase import env as sut
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -96,7 +97,7 @@ class TestInvalidSyntaxOfUnsetShouldBeDetected(unittest.TestCase):
 
 
 class TestSet(unittest.TestCase):
-    def test_constant_string_value(self):
+    def test_constant_string_value__current_is_not_none(self):
         # ACT & ASSERT #
         var = NameAndValue('name', 'value')
 
@@ -115,6 +116,31 @@ class TestSet(unittest.TestCase):
                     {
                         var.name: var.value
                     }
+                )
+            )
+        )
+
+    def test_current_environ_is_none(self):
+        # ACT & ASSERT #
+        var_in_default = NameAndValue('var_in_default', 'value of var in default')
+
+        def get_default_environ() -> Dict[str, str]:
+            return NameAndValue.as_dict([var_in_default])
+
+        var_to_set = NameAndValue('var_to_set', 'value')
+
+        _CHECKER.check__abs_stx__std_layouts_and_source_variants(
+            self,
+            SetVariableArgumentsAbsStx.of_nav(var_to_set),
+            ArrangementWithSds(
+                process_execution_settings=
+                proc_exe_env_for_test(environ=None),
+                default_environ_getter=get_default_environ,
+            ),
+            embryo_check.MultiSourceExpectation(
+                main_result=asrt.is_none,
+                main_side_effect_on_environment_variables=asrt.equals(
+                    NameAndValue.as_dict([var_in_default, var_to_set])
                 )
             )
         )
@@ -412,6 +438,29 @@ class TestUnset(unittest.TestCase):
             ArrangementWithSds(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
+            ),
+            embryo_check.MultiSourceExpectation(
+                main_side_effect_on_environment_variables=asrt.equals(environ__after),
+            )
+        )
+
+    def test_current_environ_is_none(self):
+        var_a = NameAndValue('a', 'A')
+        var_b = NameAndValue('b', 'B')
+
+        environ__before = NameAndValue.as_dict([var_a, var_b])
+        environ__after = NameAndValue.as_dict([var_b])
+
+        def get_default_environ() -> Dict[str, str]:
+            return dict(environ__before)
+
+        _CHECKER.check__abs_stx__std_layouts_and_source_variants(
+            self,
+            UnsetVariableArgumentsAbsStx(var_a.name),
+            ArrangementWithSds(
+                process_execution_settings=
+                proc_exe_env_for_test(environ=None),
+                default_environ_getter=get_default_environ,
             ),
             embryo_check.MultiSourceExpectation(
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),

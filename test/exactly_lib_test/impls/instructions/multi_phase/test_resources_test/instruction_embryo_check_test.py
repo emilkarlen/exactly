@@ -3,7 +3,7 @@ Test of test-infrastructure: instruction_embryo_check.
 """
 import pathlib
 import unittest
-from typing import Generic
+from typing import Generic, Dict
 
 from exactly_lib.impls.instructions.multi_phase.utils import instruction_embryo as embryo
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_embryo import T
@@ -35,6 +35,7 @@ from exactly_lib_test.tcfs.test_resources import non_hds_populator, sds_populato
 from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly, result_dir_contains_exactly
+from exactly_lib_test.test_case.test_resources import instr_settings_assertions as asrt_instr_settings
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.test_of_test_framework_utils import single_line_source
@@ -46,12 +47,14 @@ from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
     matches_data_type_symbol_reference
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.util.process_execution.test_resources import proc_exe_env_assertions as asrt_pes
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestExecution),
+        unittest.makeSuite(TestSideEffectsOfMain),
         unittest.makeSuite(TestArgumentTypesGivenToAssertions),
-        unittest.makeSuite(TestMiscCases),
         unittest.makeSuite(TestSymbols),
         unittest.makeSuite(TestHdsDirHandling),
         unittest.makeSuite(TestPopulate),
@@ -275,7 +278,7 @@ class TestPopulate(TestCaseBase):
         )
 
 
-class TestMiscCases(TestCaseBase):
+class TestExecution(TestCaseBase):
     def test_successful_step_sequence(self):
         validate_pre_sds = 'validate_pre_sds'
         validate_post_sds = 'validate_post_sds'
@@ -363,16 +366,6 @@ class TestMiscCases(TestCaseBase):
             sut.Expectation(main_raises_hard_error=True),
         )
 
-    def test_fail_due_to_fail_of_side_effects_on_files(self):
-        with self.assertRaises(utils.TestError):
-            self._check(
-                PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
-                single_line_source(),
-                ArrangementWithSds(),
-                sut.Expectation(main_side_effects_on_sds=act_dir_contains_exactly(
-                    DirContents([File.empty('non-existing-file.txt')]))),
-            )
-
     def test_that_cwd_for_main__and__validate_post_setup_is_act_dir(self):
         instruction_that_raises_exception_if_unexpected_state = instruction_embryo_that(
             main_initial_action=utils.raise_test_error_if_cwd_is_not_act_root__env,
@@ -384,6 +377,18 @@ class TestMiscCases(TestCaseBase):
             ArrangementWithSds(),
             sut.Expectation())
 
+
+class TestSideEffectsOfMain(TestCaseBase):
+    def test_fail_due_to_fail_of_side_effects_on_files(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+                single_line_source(),
+                ArrangementWithSds(),
+                sut.Expectation(main_side_effects_on_sds=act_dir_contains_exactly(
+                    DirContents([File.empty('non-existing-file.txt')]))),
+            )
+
     def test_fail_due_to_side_effects_check(self):
         with self.assertRaises(utils.TestError):
             self._check(
@@ -391,6 +396,53 @@ class TestMiscCases(TestCaseBase):
                 single_line_source(),
                 ArrangementWithSds(),
                 sut.Expectation(side_effects_on_tcds=asrt.IsInstance(bool)),
+            )
+
+    def test_populate_environ(self):
+        default_from_default_getter = {'default': 'value of default'}
+        default_environs = {'in_environs': 'value of var in environs'}
+
+        def default_environ_getter() -> Dict[str, str]:
+            return default_from_default_getter
+
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            utils.single_line_source(),
+            ArrangementWithSds(
+                default_environ_getter=default_environ_getter,
+                process_execution_settings=ProcessExecutionSettings.from_non_immutable(environ=default_environs),
+            ),
+            sut.Expectation(
+                instruction_settings=asrt_instr_settings.matches(
+                    environ=asrt.equals(default_environs),
+                    return_value_from_default_getter=asrt.equals(default_from_default_getter)
+                ),
+                proc_exe_settings=asrt_pes.matches(
+                    environ=asrt.equals(default_environs)
+                )
+            ),
+        )
+
+    def test_fail_due_to_fail_of_side_effects_on_proc_exe_settings(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+                single_line_source(),
+                ArrangementWithSds(),
+                sut.Expectation(
+                    proc_exe_settings=asrt.not_(asrt.is_instance(ProcessExecutionSettings)),
+                ),
+            )
+
+    def test_fail_due_to_fail_of_side_effects_on_instruction_settings(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+                single_line_source(),
+                ArrangementWithSds(),
+                sut.Expectation(
+                    instruction_settings=asrt.not_(asrt.is_instance(InstructionSettings)),
+                ),
             )
 
     def test_fail_due_to_assertion_on_instruction_environment(self):

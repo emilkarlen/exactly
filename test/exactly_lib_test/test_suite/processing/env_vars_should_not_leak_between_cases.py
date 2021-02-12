@@ -1,11 +1,10 @@
 import unittest
 
-from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.processing import processors
 from exactly_lib.test_suite import processing as sut
 from exactly_lib.test_suite.processing import TestCaseProcessorConstructor
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import empty_symbol_table
+from exactly_lib_test.execution.test_resources import predefined_properties as _predefined_properties
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
@@ -106,5 +105,5 @@ def new_processor_with_no_env_vars(registry: tr.Registry,
         }
         ,
         test_case_processor_constructor,
-        PredefinedProperties({}, empty_symbol_table())
+        _predefined_properties.new_empty()
     )

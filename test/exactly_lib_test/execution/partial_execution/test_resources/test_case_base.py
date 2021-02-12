@@ -1,4 +1,3 @@
-import os
 import pathlib
 import shutil
 import unittest
@@ -9,6 +8,7 @@ from exactly_lib.execution.partial_execution.configuration import ConfPhaseValue
 from exactly_lib.execution.partial_execution.configuration import TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.partial_execution.setup_settings_handler import StandardSetupSettingsHandler
+from exactly_lib.execution.predefined_properties import os_environ_getter
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.phases.act.actor import Actor
@@ -40,7 +40,8 @@ class PartialExecutionTestCaseBase:
                 # ACT #
                 partial_result = sut.execute(
                     self._test_case(),
-                    ExecutionConfiguration(dict(os.environ),
+                    ExecutionConfiguration(os_environ_getter,
+                                           None,
                                            os_services_access.new_for_current_os(),
                                            sandbox_root_name_resolver.for_test(),
                                            2 ** 10),

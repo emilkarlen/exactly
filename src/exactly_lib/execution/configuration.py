@@ -2,6 +2,7 @@ from typing import Optional, Dict, Mapping
 
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.instruction_settings import DefaultEnvironGetter
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 
@@ -14,28 +15,35 @@ class PredefinedProperties:
     """
 
     def __init__(self,
-                 environ: Dict[str, str],
-                 predefined_symbols: Optional[SymbolTable] = None):
-        self.__environ = environ
-        self.__predefined_symbols = predefined_symbols
-
-    @staticmethod
-    def new_empty():
-        return PredefinedProperties({}, None)
-
-    @property
-    def environ(self) -> Dict[str, str]:
-        return self.__environ
+                 default_environ_getter: DefaultEnvironGetter,
+                 environ: Optional[Dict[str, str]],
+                 predefined_symbols: Optional[SymbolTable] = None,
+                 ):
+        self._default_environ_getter = default_environ_getter
+        self._environ = environ
+        self._predefined_symbols = predefined_symbols
 
     @property
-    def predefined_symbols(self) -> SymbolTable:
-        return self.__predefined_symbols
+    def environ(self) -> Optional[Dict[str, str]]:
+        return self._environ
+
+    @property
+    def default_environ_getter(self) -> DefaultEnvironGetter:
+        """
+        Each invokation of the returned function must give a new instance (since it may be modified)
+        """
+        return self._default_environ_getter
+
+    @property
+    def predefined_symbols(self) -> Optional[SymbolTable]:
+        return self._predefined_symbols
 
 
 class ExecutionConfiguration(tuple):
     """Configuration that is passed to full execution"""
 
     def __new__(cls,
+                default_environ_getter: DefaultEnvironGetter,
                 environ: Optional[Mapping[str, str]],
                 os_services: OsServices,
                 sandbox_root_dir_resolver: SandboxRootDirNameResolver,
@@ -48,15 +56,22 @@ class ExecutionConfiguration(tuple):
                                    symbol_table_from_none_or_value(predefined_symbols),
                                    exe_atc_and_skip_assertions,
                                    os_services,
-                                   mem_buff_size))
+                                   mem_buff_size,
+                                   default_environ_getter))
 
     @property
     def environ(self) -> Optional[Mapping[str, str]]:
         """
         The set of environment variables available to instructions.
-        These may be both read and written.
         """
         return self[0]
+
+    @property
+    def default_environ_getter(self) -> DefaultEnvironGetter:
+        """
+        The set of environment variables to use as default, when the environ is None.
+        """
+        return self[6]
 
     @property
     def os_services(self) -> OsServices:

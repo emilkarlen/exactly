@@ -1,16 +1,17 @@
-import os
 import unittest
 from typing import Optional
 
 from exactly_lib.execution.configuration import PredefinedProperties, ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.execution.full_execution.result import FullExeResult
+from exactly_lib.execution.predefined_properties import os_environ_getter
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.phases.setup.settings_handler import SetupSettingsHandler
 from exactly_lib_test.execution.partial_execution.test_resources import settings_handlers
+from exactly_lib_test.execution.test_resources import predefined_properties as _predefined_properties
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
@@ -21,7 +22,7 @@ class Arrangement:
                  test_case: test_case_doc.TestCase,
                  configuration_builder: ConfigurationBuilder,
                  settings_handler: Optional[SetupSettingsHandler] = None,
-                 predefined_properties: PredefinedProperties = PredefinedProperties({}),
+                 predefined_properties: PredefinedProperties = _predefined_properties.new_empty(),
                  os_services: OsServices = os_services_access.new_for_current_os(),
                  mem_buff_size: int = 2 ** 10,
                  ):
@@ -43,7 +44,8 @@ def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expectation: Expectation,
           is_keep_sandbox: bool = False):
-    exe_conf = ExecutionConfiguration(dict(os.environ),
+    exe_conf = ExecutionConfiguration(os_environ_getter,
+                                      None,
                                       arrangement.os_services,
                                       sandbox_root_name_resolver.for_test(),
                                       arrangement.mem_buff_size,
