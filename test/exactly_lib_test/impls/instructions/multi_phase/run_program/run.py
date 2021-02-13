@@ -33,10 +33,6 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction
 
 
-def _get_outcome() -> Sequence[ParagraphItem]:
-    return ()
-
-
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestExecuteProgramWithShellArgumentList),
@@ -46,6 +42,10 @@ def suite() -> unittest.TestSuite:
                                                                             'single line description',
                                                                             _get_outcome)),
     ])
+
+
+def _get_outcome() -> Sequence[ParagraphItem]:
+    return ()
 
 
 class ExecuteAction(TcdsAction):

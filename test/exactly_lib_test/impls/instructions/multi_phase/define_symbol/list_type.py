@@ -8,8 +8,7 @@ from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resource
     INSTRUCTION_CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    MultiSourceExpectation
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
+    MultiSourceExpectation, Arrangement
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.data.test_resources import references
@@ -31,7 +30,7 @@ class TestListSuccessfulParse(unittest.TestCase):
 
         syntax = _syntax(list_symbol, EmptyListAbsStx())
 
-        expectation = MultiSourceExpectation(
+        expectation = MultiSourceExpectation.phase_agnostic(
             symbol_usages=asrt.matches_sequence([
                 list_symbol.assert_matches_definition_of_sdv
             ]),
@@ -44,7 +43,7 @@ class TestListSuccessfulParse(unittest.TestCase):
         INSTRUCTION_CHECKER.check__abs_stx__layout_and_source_variants(
             self,
             syntax,
-            ArrangementWithSds(),
+            Arrangement.phase_agnostic(),
             expectation,
         )
 
@@ -65,7 +64,7 @@ class TestListSuccessfulParse(unittest.TestCase):
                              ListElementStringAbsStx.of_str(value_with_space, QuoteType.SOFT),
                          ]))
 
-        expectation = MultiSourceExpectation(
+        expectation = MultiSourceExpectation.phase_agnostic(
             symbol_usages=asrt.matches_sequence([
                 symbol_to_assign.assert_matches_definition_of_sdv
             ]),
@@ -78,7 +77,7 @@ class TestListSuccessfulParse(unittest.TestCase):
         INSTRUCTION_CHECKER.check__abs_stx__layout_and_source_variants(
             self,
             syntax,
-            ArrangementWithSds(),
+            Arrangement.phase_agnostic(),
             expectation,
         )
 
@@ -96,8 +95,8 @@ class TestListSuccessfulParse(unittest.TestCase):
         INSTRUCTION_CHECKER.check__abs_stx__layout_and_source_variants(
             self,
             syntax,
-            ArrangementWithSds(),
-            MultiSourceExpectation(
+            Arrangement.phase_agnostic(),
+            MultiSourceExpectation.phase_agnostic(
                 symbol_usages=asrt.matches_sequence([
                     symbol_to_assign.assert_matches_definition_of_sdv
                 ]),

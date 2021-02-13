@@ -19,7 +19,9 @@ from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resource
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
     INSTRUCTION_CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, \
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
+    Arrangement, Expectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
     InstructionApplicationEnvironment
 from exactly_lib_test.impls.types.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building as arg_syntax
@@ -30,7 +32,6 @@ from exactly_lib_test.impls.types.test_resources import matcher_assertions
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
@@ -79,7 +80,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                     matches_sdv_of_string_matcher()
                 )
 
-                expectation = Expectation(
+                expectation = Expectation.phase_agnostic(
                     symbol_usages=asrt.matches_sequence([
                         asrt_sym_usage.matches_definition(asrt.equals(defined_name),
                                                           expected_container)
@@ -92,7 +93,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
                 # ACT & ASSERT #
 
-                INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
+                INSTRUCTION_CHECKER.check(self, source, Arrangement.phase_agnostic(), expectation)
 
     def test_successful_parse_of_reference(self):
         defined_name = 'defined_name'
@@ -107,7 +108,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
             src2(ValueType.STRING_MATCHER, defined_name, referenced_symbol.name),
         )
 
-        arrangement = ArrangementWithSds()
+        arrangement = Arrangement.phase_agnostic()
 
         # EXPECTATION #
 
@@ -120,7 +121,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 symbols=symbols)
         )
 
-        expectation = Expectation(
+        expectation = Expectation.phase_agnostic(
             symbol_usages=asrt.matches_sequence([
                 asrt_sym_usage.matches_definition(asrt.equals(defined_name),
                                                   expected_container),
@@ -173,7 +174,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                      defined_name,
                      not_num_lines_eq_1_matcher_arg),
             )
-            expectation = Expectation(
+            expectation = Expectation.phase_agnostic(
                 symbol_usages=asrt.matches_sequence([
                     asrt_sym_usage.matches_definition(asrt.equals(defined_name),
                                                       expected_container)
@@ -182,7 +183,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                     defined_name,
                     expected_container,
                 ),
-                assertion_on_instruction_environment=
+                instruction_environment=
                 AssertApplicationOfMatcherInSymbolTable(self,
                                                         defined_name,
                                                         actual_model_contents=case.actual,
@@ -191,7 +192,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
             with self.subTest(case.name):
                 # ACT & ASSERT #
-                INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
+                INSTRUCTION_CHECKER.check(self, source, Arrangement.phase_agnostic(), expectation)
 
     @staticmethod
     def _not_num_lines_eq_1_matcher_arg() -> str:

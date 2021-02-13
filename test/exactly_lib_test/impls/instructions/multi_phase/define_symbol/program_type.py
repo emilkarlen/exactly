@@ -8,13 +8,12 @@ from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resource
     INSTRUCTION_CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    MultiSourceExpectation
+    MultiSourceExpectation, Arrangement
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_transformer.test_resources.abstract_syntaxes import \
     symbol_reference_followed_by_superfluous_string_on_same_line
 from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
@@ -66,7 +65,7 @@ class TestSuccessfulDefinitionOfProgramWoArguments(unittest.TestCase):
                 primitive_value=matches_py_source_on_cmd_line_program(python_source),
                 symbols=symbols
             ))
-        expectation = MultiSourceExpectation(
+        expectation = MultiSourceExpectation.phase_agnostic(
             symbol_usages=asrt.matches_sequence([
                 asrt_sym_usage.matches_definition(
                     name=asrt.equals(name_of_defined_symbol),
@@ -80,7 +79,7 @@ class TestSuccessfulDefinitionOfProgramWoArguments(unittest.TestCase):
         INSTRUCTION_CHECKER.check__abs_stx__layout_and_source_variants(
             self,
             define_symbol_syntax,
-            ArrangementWithSds(),
+            Arrangement.phase_agnostic(),
             expectation,
         )
 

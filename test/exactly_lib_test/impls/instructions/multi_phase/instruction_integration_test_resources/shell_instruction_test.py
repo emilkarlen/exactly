@@ -3,7 +3,6 @@ import unittest
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
-from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
@@ -15,10 +14,10 @@ from exactly_lib_test.test_resources.programs import python_program_execution as
 
 
 class Configuration(ConfigurationBase):
-    def expectation_for_non_zero_exitcode(self) -> Expectation:
+    def expectation_for_non_zero_exitcode(self):
         raise NotImplementedError()
 
-    def expectation_for_zero_exitcode(self) -> Expectation:
+    def expectation_for_zero_exitcode(self):
         raise NotImplementedError()
 
 

@@ -75,8 +75,7 @@ def raise_test_error_if_cwd_is_not_test_root(sds: SandboxDs):
 
 
 def raise_test_error_if_cwd_is_not_act_root__env(environment: InstructionEnvironmentForPostSdsStep,
-                                                 *args,
-                                                 **kwargs):
+                                                 *args):
     cwd = os.getcwd()
     if cwd != str(environment.sds.act_dir):
         raise TestError()

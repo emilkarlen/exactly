@@ -21,7 +21,7 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.uti
     IS_FAILURE, IS_SUCCESS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check as embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    MultiSourceExpectation
+    MultiSourceExpectation, Arrangement
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
@@ -30,7 +30,6 @@ from exactly_lib_test.impls.types.test_resources import relativity_options as re
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.programs import py_programs
@@ -108,10 +107,10 @@ class TestSymbolUsages(unittest.TestCase):
         checker.check__abs_stx__std_layouts_and_source_variants(
             self,
             instruction_syntax,
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 symbols=symbols,
             ),
-            MultiSourceExpectation(
+            MultiSourceExpectation.phase_agnostic(
                 main_result=IS_SUCCESS,
                 symbol_usages=asrt.matches_sequence([
                     dst_file_symbol.reference_assertion__path_or_string,
@@ -225,10 +224,10 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(unittest.TestCase)
                     integration_check.CHECKER__BEFORE_ACT.check__abs_stx__layout_and_source_variants(
                         self,
                         instruction_syntax,
-                        ArrangementWithSds(
+                        Arrangement.phase_agnostic(
                             symbols=symbols,
                         ),
-                        MultiSourceExpectation(
+                        MultiSourceExpectation.phase_agnostic(
                             main_result=IS_SUCCESS,
                             side_effects_on_hds=f_asrt.dir_is_empty(),
                             symbol_usages=asrt.matches_sequence(expected_symbol_references),
@@ -245,12 +244,16 @@ class TestFailingValidation(unittest.TestCase):
             NArrEx(
                 'pre SDS validation failure SHOULD cause validation error',
                 RelOptionType.REL_HDS_CASE,
-                embryo_check.MultiSourceExpectation(validation=ValidationAssertions.pre_sds_fails__w_any_msg()),
+                embryo_check.MultiSourceExpectation.phase_agnostic(
+                    validation=ValidationAssertions.pre_sds_fails__w_any_msg()
+                ),
             ),
             NArrEx(
                 'post SDS validation failure SHOULD cause main error',
                 RelOptionType.REL_ACT,
-                embryo_check.MultiSourceExpectation(main_result=IS_FAILURE),
+                embryo_check.MultiSourceExpectation.phase_agnostic(
+                    main_result=IS_FAILURE
+                ),
             ),
         ]
         for case in cases:
@@ -271,7 +274,7 @@ class TestFailingValidation(unittest.TestCase):
                     checker.check__abs_stx__std_layouts_and_source_variants(
                         self,
                         instruction_syntax,
-                        ArrangementWithSds(),
+                        Arrangement.phase_agnostic(),
                         case.expectation,
                     )
 
@@ -301,10 +304,10 @@ class TestUnableToExecute(unittest.TestCase):
                     checker.check__abs_stx__std_layouts_and_source_variants(
                         self,
                         instruction_syntax,
-                        ArrangementWithSds(
+                        Arrangement.phase_agnostic(
                             symbols=symbols,
                         ),
-                        MultiSourceExpectation(
+                        MultiSourceExpectation.phase_agnostic(
                             symbol_usages=asrt.anything_goes(),
                             main_result=IS_FAILURE,
                         )
@@ -404,13 +407,13 @@ class TestNonZeroExitCode(unittest.TestCase):
                             checker.check__abs_stx__std_layouts_and_source_variants(
                                 self,
                                 instruction_syntax,
-                                ArrangementWithSds(
+                                Arrangement.phase_agnostic(
                                     symbols=SymbolContext.symbol_table_of_contexts(symbol_contexts),
                                     tcds_contents=py_file_rel_conf.populator_for_relativity_option_root(
                                         DirContents([py_file])
                                     )
                                 ),
-                                MultiSourceExpectation(
+                                MultiSourceExpectation.phase_agnostic(
                                     symbol_usages=SymbolContext.usages_assertion_of_contexts(symbol_contexts),
                                     main_result=main_result,
                                     main_side_effects_on_sds=dst_file_rel_conf.assert_root_dir_contains_exactly(

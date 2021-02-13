@@ -18,14 +18,13 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.par
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import \
     IS_SUCCESS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    MultiSourceExpectation
+    MultiSourceExpectation, Arrangement
 from exactly_lib_test.impls.types.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.tcfs.test_resources.format_rel_option import format_rel_options
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import File, Dir
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
@@ -85,10 +84,10 @@ class TestSuccessfulScenariosWithNoContents(unittest.TestCase):
                     checker.check__abs_stx__std_layouts_and_source_variants(
                         self,
                         instruction_syntax,
-                        ArrangementWithSds(
+                        Arrangement.phase_agnostic(
                             pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                         ),
-                        MultiSourceExpectation(
+                        MultiSourceExpectation.phase_agnostic(
                             main_result=IS_SUCCESS,
                             side_effects_on_hds=f_asrt.dir_is_empty(),
                             symbol_usages=asrt.is_empty_sequence,
@@ -115,10 +114,10 @@ class TestSuccessfulScenariosWithNoContents(unittest.TestCase):
                     checker.check__abs_stx__std_layouts_and_source_variants(
                         self,
                         instruction_syntax,
-                        ArrangementWithSds(
+                        Arrangement.phase_agnostic(
                             pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                         ),
-                        MultiSourceExpectation(
+                        MultiSourceExpectation.phase_agnostic(
                             main_result=IS_SUCCESS,
                             side_effects_on_hds=f_asrt.dir_is_empty(),
                             symbol_usages=asrt.is_empty_sequence,
@@ -143,13 +142,13 @@ class TestSuccessfulScenariosWithNoContents(unittest.TestCase):
                     checker.check__abs_stx__std_layouts_and_source_variants(
                         self,
                         instruction_syntax,
-                        ArrangementWithSds(
+                        Arrangement.phase_agnostic(
                             pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                             non_hds_contents=rel_opt_conf.populator_for_relativity_option_root__non_hds(
                                 fs.DirContents([Dir.empty(sub_dir_name)])
                             )
                         ),
-                        MultiSourceExpectation(
+                        MultiSourceExpectation.phase_agnostic(
                             main_result=IS_SUCCESS,
                             side_effects_on_hds=f_asrt.dir_is_empty(),
                             symbol_usages=asrt.is_empty_sequence,

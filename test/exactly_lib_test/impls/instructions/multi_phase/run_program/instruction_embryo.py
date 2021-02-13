@@ -10,7 +10,9 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, \
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
+    Arrangement, Expectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
     MultiSourceExpectation
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.program.parse_program.test_resources import pgm_and_args_cases
@@ -31,7 +33,6 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.tcfs.test_resources.tcds_populators import \
     multiple, TcdsPopulatorForRelOptionType
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_1st_value_on_command_line
@@ -76,7 +77,7 @@ class TestValidationAndSymbolUsagesOfExecute(unittest.TestCase):
 
             expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
 
-            arrangement = ArrangementWithSds(
+            arrangement = Arrangement.phase_agnostic(
                 symbols=relativity_option_conf.symbols.in_arrangement(),
             )
             with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
@@ -93,11 +94,11 @@ class TestValidationAndSymbolUsagesOfExecute(unittest.TestCase):
                 executable_file=EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0.file_name,
             )
 
-            expectation = embryo_check.MultiSourceExpectation(
+            expectation = embryo_check.MultiSourceExpectation.phase_agnostic(
                 symbol_usages=asrt.matches_sequence(relativity_option_conf.symbols.usage_expectation_assertions()),
             )
 
-            arrangement = ArrangementWithSds(
+            arrangement = Arrangement.phase_agnostic(
                 tcds_contents=relativity_option_conf.populator_for_relativity_option_root(
                     fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
                 symbols=relativity_option_conf.symbols.in_arrangement(),
@@ -120,7 +121,7 @@ class TestValidationAndSymbolUsagesOfExecute(unittest.TestCase):
             exit_code=exit_code_symbol.name__sym_ref_syntax,
         )
 
-        arrangement = ArrangementWithSds(
+        arrangement = Arrangement.phase_agnostic(
             symbols=SymbolContext.symbol_table_of_contexts([
                 python_interpreter_symbol,
                 execute_program_option_symbol,
@@ -128,7 +129,7 @@ class TestValidationAndSymbolUsagesOfExecute(unittest.TestCase):
             ]),
         )
 
-        expectation = embryo_check.Expectation(
+        expectation = embryo_check.Expectation.phase_agnostic(
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([
@@ -163,12 +164,12 @@ class TestValidationAndSymbolUsagesOfInterpret(unittest.TestCase):
                     source_file=source_file.file_name,
                 )
 
-                expectation = embryo_check.MultiSourceExpectation(
+                expectation = embryo_check.MultiSourceExpectation.phase_agnostic(
                     symbol_usages=asrt.matches_sequence(roc_executable_file.symbols.usage_expectation_assertions() +
                                                         roc_source_file.symbols.usage_expectation_assertions()),
                 )
 
-                arrangement = ArrangementWithSds(
+                arrangement = Arrangement.phase_agnostic(
                     tcds_contents=multiple([
                         roc_executable_file.populator_for_relativity_option_root(
                             fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
@@ -205,7 +206,7 @@ class TestValidationAndSymbolUsagesOfInterpret(unittest.TestCase):
 
             expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
 
-            arrangement = ArrangementWithSds(
+            arrangement = Arrangement.phase_agnostic(
                 symbols=relativity_option_conf.symbols.in_arrangement(),
                 hds_contents=hds_case_dir_contents(home_dir_contents),
             )
@@ -226,7 +227,7 @@ class TestValidationAndSymbolUsagesOfInterpret(unittest.TestCase):
 
             expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
 
-            arrangement = ArrangementWithSds(
+            arrangement = Arrangement.phase_agnostic(
                 symbols=relativity_option_conf.symbols.in_arrangement(),
             )
             with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
@@ -254,7 +255,7 @@ class TestValidationAndSymbolUsagesOfInterpret(unittest.TestCase):
         following_line = 'following line'
         source = remaining_source(argument, [following_line])
 
-        arrangement = ArrangementWithSds(
+        arrangement = Arrangement.phase_agnostic(
             tcds_contents=TcdsPopulatorForRelOptionType(
                 path_relativities.ALL_REL_OPTIONS_ARG_CONFIG.options.default_option,
                 fs.DirContents([file_to_interpret])),
@@ -265,7 +266,7 @@ class TestValidationAndSymbolUsagesOfInterpret(unittest.TestCase):
             ]),
         )
 
-        expectation = embryo_check.Expectation(
+        expectation = embryo_check.Expectation.phase_agnostic(
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([
@@ -305,13 +306,13 @@ class TestProgramViaSymbolReference(unittest.TestCase):
             self,
             args.sequence([pgm_args.symbol_ref_command_line(self.program_that_executes_py_pgm_symbol.name),
                            0]).as_str,
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 tcds_contents=self.py_file_rel_opt_conf.populator_for_relativity_option_root(
                     DirContents([self.py_file])
                 ),
                 symbols=self.symbols
             ),
-            instruction_embryo_check.MultiSourceExpectation(
+            instruction_embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_result=result_assertions.equals(0, None),
                 symbol_usages=asrt.matches_sequence([
                     self.program_that_executes_py_pgm_symbol.reference_assertion
@@ -328,13 +329,13 @@ class TestProgramViaSymbolReference(unittest.TestCase):
                 pgm_args.symbol_ref_command_line(self.program_that_executes_py_pgm_symbol.name),
                 exit_code
             ]).as_str,
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 tcds_contents=self.py_file_rel_opt_conf.populator_for_relativity_option_root(
                     DirContents([self.py_file])
                 ),
                 symbols=self.symbols
             ),
-            instruction_embryo_check.MultiSourceExpectation(
+            instruction_embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_result=result_assertions.equals(exit_code,
                                                      self.output_to_stderr),
                 symbol_usages=asrt.matches_sequence([
@@ -353,11 +354,11 @@ class TestValidationAndSymbolUsagesOfSource(unittest.TestCase):
                 source_option=syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
             )
 
-            expectation = embryo_check.MultiSourceExpectation(
+            expectation = embryo_check.MultiSourceExpectation.phase_agnostic(
                 symbol_usages=asrt.matches_sequence(relativity_option_conf.symbols.usage_expectation_assertions()),
             )
 
-            arrangement = ArrangementWithSds(
+            arrangement = Arrangement.phase_agnostic(
                 tcds_contents=relativity_option_conf.populator_for_relativity_option_root(
                     fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
                 symbols=relativity_option_conf.symbols.in_arrangement(),
@@ -378,7 +379,7 @@ class TestValidationAndSymbolUsagesOfSource(unittest.TestCase):
 
             expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
 
-            arrangement = ArrangementWithSds(
+            arrangement = Arrangement.phase_agnostic(
                 symbols=relativity_option_conf.symbols.in_arrangement(),
             )
             with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
@@ -400,7 +401,7 @@ class TestValidationAndSymbolUsagesOfSource(unittest.TestCase):
             exit_code=exit_code_symbol.name__sym_ref_syntax,
         )
 
-        arrangement = ArrangementWithSds(
+        arrangement = Arrangement.phase_agnostic(
             symbols=SymbolContext.symbol_table_of_contexts([
                 python_interpreter_symbol,
                 execute_program_option_symbol,
@@ -411,7 +412,7 @@ class TestValidationAndSymbolUsagesOfSource(unittest.TestCase):
         source = remaining_source(argument,
                                   ['following line'])
 
-        expectation = embryo_check.Expectation(
+        expectation = embryo_check.Expectation.phase_agnostic(
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([
@@ -438,12 +439,12 @@ def _expect_validation_error_and_symbol_usages(relativity_option_conf: rel_opt_c
                                                expected_symbol_usage: list) -> embryo_check.MultiSourceExpectation:
     expected_symbol_usages_assertion = asrt.matches_sequence(expected_symbol_usage)
     if relativity_option_conf.exists_pre_sds:
-        return embryo_check.MultiSourceExpectation(
+        return embryo_check.MultiSourceExpectation.phase_agnostic(
             validation=ValidationAssertions.pre_sds_fails__w_any_msg(),
             symbol_usages=expected_symbol_usages_assertion,
         )
     else:
-        return embryo_check.MultiSourceExpectation(
+        return embryo_check.MultiSourceExpectation.phase_agnostic(
             validation=ValidationAssertions.post_sds_fails__w_any_msg(),
             symbol_usages=expected_symbol_usages_assertion,
         )
@@ -454,30 +455,42 @@ class TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine(unittest.TestC
         EXECUTION_CHECKER.check__w_source_variants(
             self,
             pgm_args.interpret_py_source_line('exit(0)').as_str,
-            ArrangementWithSds(),
-            MultiSourceExpectation(main_result=result_assertions.equals(0, None)))
+            Arrangement.phase_agnostic(),
+            MultiSourceExpectation.phase_agnostic(
+                main_result=result_assertions.equals(0, None)
+            )
+        )
 
     def test_check_non_zero_exit_code(self):
         EXECUTION_CHECKER.check__w_source_variants(
             self,
             pgm_args.interpret_py_source_line('exit(1)').as_str,
-            ArrangementWithSds(),
-            MultiSourceExpectation(main_result=result_assertions.equals(1, '')))
+            Arrangement.phase_agnostic(),
+            MultiSourceExpectation.phase_agnostic(
+                main_result=result_assertions.equals(1, '')
+            )
+        )
 
     def test_check_non_zero_exit_code_with_output_to_stderr(self):
         python_program = 'import sys; sys.stderr.write("on stderr"); exit(2)'
         EXECUTION_CHECKER.check__w_source_variants(
             self,
             pgm_args.interpret_py_source_line(python_program).as_str,
-            ArrangementWithSds(),
-            MultiSourceExpectation(main_result=result_assertions.equals(2, 'on stderr')))
+            Arrangement.phase_agnostic(),
+            MultiSourceExpectation.phase_agnostic(
+                main_result=result_assertions.equals(2, 'on stderr')
+            )
+        )
 
     def test_non_existing_executable(self):
         EXECUTION_CHECKER.check__w_source_variants(
             self,
             '/not/an/executable/program',
-            ArrangementWithSds(),
-            MultiSourceExpectation(validation=ValidationAssertions.pre_sds_fails__w_any_msg()))
+            Arrangement.phase_agnostic(),
+            MultiSourceExpectation.phase_agnostic(
+                validation=ValidationAssertions.pre_sds_fails__w_any_msg()
+            )
+        )
 
 
 class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
@@ -491,12 +504,12 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
                 EXECUTION_CHECKER.check__abs_stx__std_layouts_and_source_variants(
                     self,
                     pgm_and_args_case.pgm_and_args,
-                    ArrangementWithSds(
+                    Arrangement.phase_agnostic(
                         os_services=test_setup.os_services_w_stdin_check,
                         symbols=pgm_and_args_case.symbol_table,
                         tcds_contents=pgm_and_args_case.tcds,
                     ),
-                    MultiSourceExpectation(
+                    MultiSourceExpectation.phase_agnostic(
                         symbol_usages=pgm_and_args_case.usages_assertion,
                         main_result=result_assertions.equals(test_setup.exit_code, None)),
                 )
@@ -511,12 +524,12 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
                 EXECUTION_CHECKER.check__abs_stx__std_layouts_and_source_variants(
                     self,
                     test_setup.program_w_stdin_syntax(pgm_and_args_case.pgm_and_args),
-                    ArrangementWithSds(
+                    Arrangement.phase_agnostic(
                         os_services=test_setup.os_services_w_stdin_check,
                         symbols=pgm_and_args_case.symbol_table,
                         tcds_contents=pgm_and_args_case.tcds,
                     ),
-                    MultiSourceExpectation(
+                    MultiSourceExpectation.phase_agnostic(
                         symbol_usages=pgm_and_args_case.usages_assertion,
                         main_result=result_assertions.equals(test_setup.exit_code, None)),
                 )
@@ -528,11 +541,11 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
         EXECUTION_CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             test_setup.program_w_stdin_syntax,
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 os_services=test_setup.os_services_w_stdin_check,
                 symbols=test_setup.program_symbol.symbol_table,
             ),
-            MultiSourceExpectation(
+            MultiSourceExpectation.phase_agnostic(
                 symbol_usages=test_setup.program_symbol.usages_assertion,
                 main_result=result_assertions.equals(test_setup.exit_code, None)),
         )
@@ -546,10 +559,10 @@ class TestNonEmptyStdinViaExecution(unittest.TestCase):
         EXECUTION_CHECKER.check__abs_stx(
             self,
             test_setup.program_that_checks_stdin__syntax('the contents of stdin'),
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 tcds_contents=test_setup.tcds_contents,
             ),
-            Expectation(
+            Expectation.phase_agnostic(
                 main_result=result_assertions.equals(
                     test_setup.exit_code_of_successful_application, None
                 )

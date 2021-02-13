@@ -11,9 +11,10 @@ from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.abst
     SetVariableArgumentsAbsStx, UnsetVariableArgumentsAbsStx, env_var_ref_syntax
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
+    Arrangement
 from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.source.abstract_syntax_impls import CustomAbsStx
 from exactly_lib_test.test_resources.source.custom_abstract_syntax import SequenceAbsStx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -104,13 +105,13 @@ class TestSet(unittest.TestCase):
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             SetVariableArgumentsAbsStx.of_nav(var),
-            embryo_check.ArrangementWithSds(
+            embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 proc_exe_env_for_test(
                     environ={}
                 )
             ),
-            embryo_check.MultiSourceExpectation(
+            embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     {
@@ -132,12 +133,12 @@ class TestSet(unittest.TestCase):
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             SetVariableArgumentsAbsStx.of_nav(var_to_set),
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 process_execution_settings=
                 proc_exe_env_for_test(environ=None),
                 default_environ_getter=get_default_environ,
             ),
-            embryo_check.MultiSourceExpectation(
+            embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     NameAndValue.as_dict([var_in_default, var_to_set])
@@ -152,13 +153,13 @@ class TestSet(unittest.TestCase):
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             SetVariableArgumentsAbsStx.of_nav(var),
-            embryo_check.ArrangementWithSds(
+            embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 proc_exe_env_for_test(
                     environ={}
                 )
             ),
-            embryo_check.MultiSourceExpectation(
+            embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     {
@@ -178,13 +179,13 @@ class TestSet(unittest.TestCase):
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             SetVariableArgumentsAbsStx.of_str(var.name, var.value, QuoteType.HARD),
-            embryo_check.ArrangementWithSds(
+            embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 proc_exe_env_for_test(
                     environ=environ__before
                 )
             ),
-            embryo_check.MultiSourceExpectation(
+            embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     environ__after)
@@ -208,13 +209,13 @@ class TestSet(unittest.TestCase):
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             SetVariableArgumentsAbsStx.of_str(var_name, value_after),
-            embryo_check.ArrangementWithSds(
+            embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 proc_exe_env_for_test(
                     environ=environ__before
                 )
             ),
-            embryo_check.MultiSourceExpectation(
+            embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     environ__after
@@ -253,13 +254,13 @@ class TestSet(unittest.TestCase):
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             source_syntax,
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 symbols=
                 SymbolContext.symbol_table_of_contexts([my_symbol, your_symbol]),
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ({}),
             ),
-            embryo_check.MultiSourceExpectation(
+            embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_side_effect_on_environment_variables=asrt.equals(expected_environ_after_main),
                 symbol_usages=asrt.matches_sequence([
                     my_symbol.usage_assertion__any_data_type,
@@ -296,11 +297,11 @@ class TestSet(unittest.TestCase):
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             source_syntax,
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ({}),
             ),
-            embryo_check.MultiSourceExpectation(
+            embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_side_effect_on_environment_variables=asrt.equals(expected_environ_after_main),
                 symbol_usages=asrt.matches_sequence([]),
             ),
@@ -329,12 +330,12 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
             SetVariableArgumentsAbsStx.of_str(defined_env_var.name,
                                               env_var_ref_syntax(existing_env_var.name)),
             arrangement=
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
             ),
-            expectation_=
-            embryo_check.MultiSourceExpectation(
+            expectation=
+            embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),
             )
         )
@@ -379,12 +380,12 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
             self,
             source,
             arrangement=
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
             ),
-            expectation_=
-            embryo_check.MultiSourceExpectation(
+            expectation=
+            embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_side_effect_on_environment_variables=asrt.equals(expected_environ__after),
             )
         )
@@ -404,7 +405,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             source,
-            embryo_check.ArrangementWithSds(
+            embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 proc_exe_env_for_test(
                     environ={
@@ -412,7 +413,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
                     }
                 )
             ),
-            embryo_check.MultiSourceExpectation(
+            embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     {
@@ -435,11 +436,11 @@ class TestUnset(unittest.TestCase):
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             UnsetVariableArgumentsAbsStx(var_a.name),
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
             ),
-            embryo_check.MultiSourceExpectation(
+            embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),
             )
         )
@@ -457,12 +458,12 @@ class TestUnset(unittest.TestCase):
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             UnsetVariableArgumentsAbsStx(var_a.name),
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 process_execution_settings=
                 proc_exe_env_for_test(environ=None),
                 default_environ_getter=get_default_environ,
             ),
-            embryo_check.MultiSourceExpectation(
+            embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),
             )
         )
@@ -477,11 +478,11 @@ class TestUnset(unittest.TestCase):
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             UnsetVariableArgumentsAbsStx(non_existing_var_name),
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
             ),
-            embryo_check.MultiSourceExpectation(
+            embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),
             )
         )

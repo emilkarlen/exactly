@@ -12,12 +12,12 @@ from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resource
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
     INSTRUCTION_CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
+    Arrangement, Expectation
 from exactly_lib_test.impls.types.line_matcher.test_resources import argument_syntax
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.resolving_helper import resolving_helper
@@ -97,7 +97,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                     )
                 )
 
-                expectation = Expectation(
+                expectation = Expectation.phase_agnostic(
                     symbol_usages=asrt.matches_sequence([
                         asrt_sym_usage.matches_definition(asrt.equals(defined_name),
                                                           expected_container)
@@ -110,7 +110,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
                 # ACT & ASSERT #
 
-                INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
+                INSTRUCTION_CHECKER.check(self, source, Arrangement.phase_agnostic(), expectation)
 
     def test_matcher_SHOULD_be_parsed_as_full_expression(self):
         matcher_helpers.check_matcher_should_be_parsed_as_full_expression(

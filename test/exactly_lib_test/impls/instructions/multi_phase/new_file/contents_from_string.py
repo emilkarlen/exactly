@@ -17,7 +17,9 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.par
     check_invalid_syntax__abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import \
     IS_SUCCESS
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, \
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
+    Arrangement, Expectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
     MultiSourceExpectation
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
@@ -25,7 +27,6 @@ from exactly_lib_test.impls.types.test_resources.relativity_options import conf_
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly, dir_contains_exactly
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.source import custom_abstract_syntax as custom_abs_stx
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
@@ -68,10 +69,10 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
                     checker.check__abs_stx__std_layouts_and_source_variants(
                         self,
                         instruction_syntax,
-                        ArrangementWithSds(
+                        Arrangement.phase_agnostic(
                             pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                         ),
-                        MultiSourceExpectation(
+                        MultiSourceExpectation.phase_agnostic(
                             main_result=IS_SUCCESS,
                             side_effects_on_hds=f_asrt.dir_is_empty(),
                             symbol_usages=asrt.is_empty_sequence,
@@ -97,10 +98,10 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
                 checker.check__abs_stx__std_layouts_and_source_variants(
                     self,
                     instruction_syntax,
-                    ArrangementWithSds(
+                    Arrangement.phase_agnostic(
                         pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                     ),
-                    MultiSourceExpectation(
+                    MultiSourceExpectation.phase_agnostic(
                         main_result=IS_SUCCESS,
                         side_effects_on_hds=f_asrt.dir_is_empty(),
                         symbol_usages=asrt.is_empty_sequence,
@@ -128,11 +129,11 @@ class TestSymbolReferences(unittest.TestCase):
         integration_check.CHECKER__BEFORE_ACT.check__abs_stx(
             self,
             instruction_syntax,
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                 symbols=dst_path_symbol.symbol_table,
             ),
-            Expectation(
+            Expectation.phase_agnostic(
                 main_result=IS_SUCCESS,
                 symbol_usages=asrt.matches_singleton_sequence(dst_path_symbol.reference_assertion),
                 main_side_effects_on_sds=dir_contains_exactly(
@@ -207,11 +208,11 @@ class TestSymbolReferences(unittest.TestCase):
         integration_check.CHECKER__AFTER_ACT.check__abs_stx(
             self,
             instruction_syntax,
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                 symbols=symbol_table,
             ),
-            Expectation(
+            Expectation.phase_agnostic(
                 main_result=IS_SUCCESS,
                 symbol_usages=expected_symbol_references,
                 main_side_effects_on_sds=dir_contains_exactly(

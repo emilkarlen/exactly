@@ -24,7 +24,6 @@ from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.impls.types.test_resources import command_sdvs as test_command_sdvs
@@ -72,13 +71,13 @@ class Configuration(ConfigurationBase):
                                              assertion_on_error_message: Assertion[str] = asrt.anything_goes()):
         raise NotImplementedError()
 
-    def expectation_for_non_zero_exitcode(self) -> Expectation:
+    def expectation_for_non_zero_exitcode(self):
         raise NotImplementedError()
 
-    def expectation_for_zero_exitcode(self) -> Expectation:
+    def expectation_for_zero_exitcode(self):
         raise NotImplementedError()
 
-    def expect_hard_error_in_main(self) -> Expectation:
+    def expect_hard_error_in_main(self):
         raise NotImplementedError()
 
 

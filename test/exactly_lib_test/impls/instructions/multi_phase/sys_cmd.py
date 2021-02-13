@@ -17,6 +17,8 @@ from exactly_lib_test.impls.actors.program.test_resources import tmp_dir_in_path
 from exactly_lib_test.impls.instructions.configuration.actor.test_resources import ExecutedCommandAssertion
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
+    Arrangement
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.sys_cmd import command_line
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
@@ -28,7 +30,6 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import path_arguments
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments, \
     CommandExecutorThatRaisesHardError, CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
@@ -196,8 +197,8 @@ class TestArgumentsShouldBeValidated(unittest.TestCase):
                             path_arguments.RelOptPathArgument('name', case.value[0]),
                         )
                     ).as_str,
-                    ArrangementWithSds(),
-                    embryo_check.MultiSourceExpectation(
+                    Arrangement.phase_agnostic(),
+                    embryo_check.MultiSourceExpectation.phase_agnostic(
                         validation=case.value[1],
                     ),
                 )
@@ -210,14 +211,14 @@ class TestHardErrorFromExecution(unittest.TestCase):
             command_line(
                 'program',
             ).as_str,
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 os_services=os_services_access.new_for_cmd_exe(
                     CommandExecutorThatRaisesHardError(
                         asrt_text_doc.new_single_string_text_for_test('the error message')
                     )
                 ),
             ),
-            embryo_check.MultiSourceExpectation(
+            embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_raises_hard_error=True
             ),
         )
@@ -234,10 +235,10 @@ class TestNonZeroExitCodeFromExecution(unittest.TestCase):
             command_line(
                 'program',
             ).as_str,
-            ArrangementWithSds(
+            Arrangement.phase_agnostic(
                 os_services=os_services_access.new_for_cmd_exe(executor),
             ),
-            embryo_check.MultiSourceExpectation(
+            embryo_check.MultiSourceExpectation.phase_agnostic(
                 main_result=result_assertions.equals(executor.constant_return_value,
                                                      executor.string_to_write_to_stderr),
             ),
@@ -258,10 +259,10 @@ class TestContentsOfStdinShouldBeEmpty(unittest.TestCase):
                 command_line(
                     exe_file.name,
                 ).as_remaining_source,
-                ArrangementWithSds(
+                Arrangement.phase_agnostic(
                     process_execution_settings=proc_exe_env_for_test(environ=env)
                 ),
-                embryo_check.expectation(
+                embryo_check.Expectation.phase_agnostic_2(
                     source=asrt_source.source_is_at_end,
                     main_result=result_assertions.equals(non_zero_exit_code, ''),
                 ),
@@ -306,11 +307,11 @@ def check_successful_execution(put: unittest.TestCase,
     CHECKER.check__w_source_variants(
         put,
         arguments.as_str,
-        ArrangementWithSds(
+        Arrangement.phase_agnostic(
             os_services=os_services_access.new_for_cmd_exe(executor_that_records_arguments),
             symbols=symbols,
         ),
-        embryo_check.MultiSourceExpectation(
+        embryo_check.MultiSourceExpectation.phase_agnostic(
             symbol_usages=symbol_usages,
             side_effects_on_tcds=ExecutedCommandAssertion(
                 executor_that_records_arguments,

@@ -10,12 +10,12 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources imp
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abstract_syntax import \
     ContentsVariantAbsStx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import IS_FAILURE
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import expectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
+    Arrangement, Expectation
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_non_hds
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.tcfs.test_resources.dir_populator import TcdsPopulator
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
@@ -72,13 +72,13 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(unittest.TestCas
                         checker.check__abs_stx(
                             self,
                             instruction_syntax,
-                            ArrangementWithSds(
+                            Arrangement.phase_agnostic(
                                 pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                                 tcds_contents=cases_data.pre_existing_files,
                                 non_hds_contents=non_hds_contents,
                                 symbols=cases_data.symbols,
                             ),
-                            expectation(
+                            Expectation.phase_agnostic_2(
                                 main_result=IS_FAILURE,
                                 symbol_usages=asrt.anything_goes(),
                             )
@@ -109,10 +109,10 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(unittest.TestCas
                     checker.check__abs_stx(
                         self,
                         instruction_syntax,
-                        ArrangementWithSds(
+                        Arrangement.phase_agnostic(
                             symbols=symbols,
                         ),
-                        expectation(
+                        Expectation.phase_agnostic_2(
                             validation=ValidationAssertions.pre_sds_fails__w_any_msg(),
                             symbol_usages=asrt.anything_goes(),
                         )

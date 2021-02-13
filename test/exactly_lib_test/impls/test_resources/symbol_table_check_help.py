@@ -19,9 +19,9 @@ def get_symbol_table_from_path_resolving_environment_that_is_first_arg(environme
 
 def do_fail_if_symbol_table_does_not_equal(put: unittest.TestCase,
                                            expected: SymbolTable,
-                                           get_actual_symbol_table) -> Callable:
-    def ret_val(*args, **kwargs):
-        actual_symbol_table = get_actual_symbol_table(*args, **kwargs)
+                                           get_actual_symbol_table: Callable) -> Callable:
+    def ret_val(*args):
+        actual_symbol_table = get_actual_symbol_table(*args)
         assertion = equals_symbol_table(expected)
         assertion.apply_with_message(put, actual_symbol_table, 'symbol table')
 

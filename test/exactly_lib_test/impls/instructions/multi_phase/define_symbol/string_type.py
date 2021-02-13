@@ -8,11 +8,11 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
     INSTRUCTION_CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
+    Arrangement, Expectation
 from exactly_lib_test.impls.types.string_.parse_string import string_sdv_from_fragments
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.string.test_resources.here_doc_assertion_utils import here_doc_lines
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
@@ -67,7 +67,7 @@ class TestSuccessfulDefinition(unittest.TestCase):
             with self.subTest(argument_case.name):
                 source = arbitrary_string_source(argument_case.value)
                 expected_symbol = StringConstantSymbolContext('name1', 'v1')
-                expectation = Expectation(
+                expectation = Expectation.phase_agnostic(
                     symbol_usages=asrt.matches_sequence([
                         expected_symbol.assert_matches_definition_of_sdv
                     ]),
@@ -76,7 +76,7 @@ class TestSuccessfulDefinition(unittest.TestCase):
                         expected_symbol.value.assert_matches_container_of_sdv,
                     )
                 )
-                INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
+                INSTRUCTION_CHECKER.check(self, source, Arrangement.phase_agnostic(), expectation)
 
     def test_assignment_of_single_symbol_reference(self):
         # ARRANGE #
@@ -86,7 +86,7 @@ class TestSuccessfulDefinition(unittest.TestCase):
         source = single_line_source('{string_type} {name} = {symbol_reference}',
                                     name=assigned_symbol.name,
                                     symbol_reference=referred_symbol)
-        expectation = Expectation(
+        expectation = Expectation.phase_agnostic(
             symbol_usages=asrt.matches_sequence([
                 assigned_symbol.assert_matches_definition_of_sdv,
             ]),
@@ -96,7 +96,7 @@ class TestSuccessfulDefinition(unittest.TestCase):
             )
         )
         # ACT & ASSERT #
-        INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
+        INSTRUCTION_CHECKER.check(self, source, Arrangement.phase_agnostic(), expectation)
 
     def test_assignment_of_single_symbol_reference_syntax_within_hard_quotes(self):
         # ARRANGE #
@@ -107,7 +107,7 @@ class TestSuccessfulDefinition(unittest.TestCase):
                                     name=assigned_symbol.name,
                                     hard_quote=HARD_QUOTE_CHAR,
                                     symbol_reference=referred_symbol)
-        expectation = Expectation(
+        expectation = Expectation.phase_agnostic(
             symbol_usages=asrt.matches_sequence([
                 assigned_symbol.assert_matches_definition_of_sdv,
             ]),
@@ -117,7 +117,7 @@ class TestSuccessfulDefinition(unittest.TestCase):
             )
         )
         # ACT & ASSERT #
-        INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
+        INSTRUCTION_CHECKER.check(self, source, Arrangement.phase_agnostic(), expectation)
 
     def test_assignment_of_symbols_and_constant_text_within_soft_quotes(self):
         # ARRANGE #
@@ -135,7 +135,7 @@ class TestSuccessfulDefinition(unittest.TestCase):
                                     name=assigned_symbol.name,
                                     sym_ref1=referred_symbol1,
                                     sym_ref2=referred_symbol2)
-        expectation = Expectation(
+        expectation = Expectation.phase_agnostic(
             symbol_usages=asrt.matches_sequence([
                 assigned_symbol.assert_matches_definition_of_sdv,
             ]),
@@ -145,7 +145,7 @@ class TestSuccessfulDefinition(unittest.TestCase):
             )
         )
         # ACT & ASSERT #
-        INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
+        INSTRUCTION_CHECKER.check(self, source, Arrangement.phase_agnostic(), expectation)
 
 
 class TestSuccessfulDefinitionFromHereDocument(unittest.TestCase):
@@ -163,7 +163,7 @@ class TestSuccessfulDefinitionFromHereDocument(unittest.TestCase):
         )
         # EXPECTATION #
         expected_symbol = StringConstantSymbolContext(symbol_name, value_str + '\n')
-        expectation = Expectation(
+        expectation = Expectation.phase_agnostic(
             symbol_usages=asrt.matches_sequence([
                 expected_symbol.assert_matches_definition_of_sdv
             ]),
@@ -174,7 +174,7 @@ class TestSuccessfulDefinitionFromHereDocument(unittest.TestCase):
             source=asrt_source.is_at_beginning_of_line(4)
         )
         # ACT & ASSERT #
-        INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
+        INSTRUCTION_CHECKER.check(self, source, Arrangement.phase_agnostic(), expectation)
 
     def test_assignment_of_single_symbol_reference(self):
         # ARRANGE #
@@ -194,7 +194,7 @@ class TestSuccessfulDefinitionFromHereDocument(unittest.TestCase):
                            contents_lines=[str(referred_symbol)])
         )
         # EXPECTATION #
-        expectation = Expectation(
+        expectation = Expectation.phase_agnostic(
             symbol_usages=asrt.matches_sequence([
                 assigned_symbol.assert_matches_definition_of_sdv,
             ]),
@@ -204,4 +204,4 @@ class TestSuccessfulDefinitionFromHereDocument(unittest.TestCase):
             )
         )
         # ACT & ASSERT #
-        INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
+        INSTRUCTION_CHECKER.check(self, source, Arrangement.phase_agnostic(), expectation)

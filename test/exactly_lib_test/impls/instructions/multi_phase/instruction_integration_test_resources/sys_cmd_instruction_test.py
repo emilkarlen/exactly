@@ -6,7 +6,6 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.impls.actors.program.test_resources import tmp_dir_in_path_with_files
-from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
@@ -21,10 +20,10 @@ from exactly_lib_test.test_resources.programs import py_programs
 
 
 class Configuration(ConfigurationBase):
-    def expectation_for_non_zero_exitcode(self) -> Expectation:
+    def expectation_for_non_zero_exitcode(self):
         raise NotImplementedError()
 
-    def expectation_for_zero_exitcode(self) -> Expectation:
+    def expectation_for_zero_exitcode(self):
         raise NotImplementedError()
 
 

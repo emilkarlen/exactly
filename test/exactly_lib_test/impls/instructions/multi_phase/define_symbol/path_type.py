@@ -17,12 +17,12 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
     INSTRUCTION_CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
+    Arrangement, Expectation
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathSymbolValueContext, \
@@ -89,8 +89,8 @@ class TestAssignmentRelativeSingleValidOption(unittest.TestCase):
                                                                                                instruction_argument):
                     INSTRUCTION_CHECKER.check(self,
                                               source,
-                                              ArrangementWithSds(),
-                                              Expectation(
+                                              Arrangement.phase_agnostic(),
+                                              Expectation.phase_agnostic(
                                                   symbol_usages=asrt.matches_singleton_sequence(
                                                       expected_defined_symbol.assert_matches_definition_of_sdv
                                                   ),
@@ -116,8 +116,8 @@ class TestAssignmentRelativeSingleDefaultOption(unittest.TestCase):
             INSTRUCTION_CHECKER.check(
                 self,
                 source,
-                ArrangementWithSds(),
-                Expectation(
+                Arrangement.phase_agnostic(),
+                Expectation.phase_agnostic(
                     symbol_usages=asrt.matches_singleton_sequence(
                         expected_defined_symbol.assert_matches_definition_of_sdv
                     ),
@@ -141,8 +141,8 @@ class TestAssignmentRelativeSymbolDefinition(unittest.TestCase):
             INSTRUCTION_CHECKER.check(
                 self,
                 source,
-                ArrangementWithSds(),
-                Expectation(
+                Arrangement.phase_agnostic(),
+                Expectation.phase_agnostic(
                     symbol_usages=asrt.matches_sequence([
                         expected_symbol.assert_matches_definition_of_sdv
                     ]),
@@ -167,8 +167,8 @@ class TestAssignmentRelativeSourceFileLocation(unittest.TestCase):
                 INSTRUCTION_CHECKER.check(
                     self,
                     source,
-                    ArrangementWithSds(fs_location_info=fs_location_info),
-                    Expectation(
+                    Arrangement.phase_agnostic(fs_location_info=fs_location_info),
+                    Expectation.phase_agnostic(
                         symbol_usages=asrt.matches_singleton_sequence(
                             expected_symbol.assert_matches_definition_of_sdv
                         ),
