@@ -229,7 +229,8 @@ class Checker(Generic[T]):
                        expectation_: Expectation[T],
                        layout: LayoutSpec = LayoutSpec.of_default(),
                        ):
-        self.check__token_sequence(put, source.tokenization(), arrangement, expectation_, layout)
+        source = remaining_source(source.tokenization().layout(layout))
+        Executor(put, arrangement, expectation_).execute(self.parser, source)
 
     def check__abs_stx__std_layouts_and_source_variants(
             self,
@@ -237,6 +238,7 @@ class Checker(Generic[T]):
             source: AbstractSyntax,
             arrangement: ArrangementWithSds,
             expectation_: MultiSourceExpectation[T],
+            **sub_test_identifiers,
     ):
         self.check__abs_stx__layout_and_source_variants(
             put,
@@ -244,6 +246,7 @@ class Checker(Generic[T]):
             arrangement,
             expectation_,
             layout.STANDARD_LAYOUT_SPECS,
+            **sub_test_identifiers,
         )
 
     def check__abs_stx__layout_and_source_variants(
@@ -253,6 +256,7 @@ class Checker(Generic[T]):
             arrangement: ArrangementWithSds,
             expectation_: MultiSourceExpectation[T],
             layouts: Sequence[NameAndValue[LayoutSpec]] = layout.STANDARD_LAYOUT_SPECS,
+            **sub_test_identifiers,
     ):
         self.check__token_sequence__layout_and_source_variants(
             put,
@@ -260,17 +264,8 @@ class Checker(Generic[T]):
             arrangement,
             expectation_,
             layouts,
+            **sub_test_identifiers,
         )
-
-    def check__token_sequence(self,
-                              put: unittest.TestCase,
-                              source: TokenSequence,
-                              arrangement: ArrangementWithSds,
-                              expectation_: Expectation[T],
-                              layout: LayoutSpec = LayoutSpec.of_default(),
-                              ):
-        source = remaining_source(source.layout(layout))
-        Executor(put, arrangement, expectation_).execute(self.parser, source)
 
     def check__token_sequence__layout_and_source_variants(
             self,
@@ -279,9 +274,11 @@ class Checker(Generic[T]):
             arrangement: ArrangementWithSds,
             expectation_: MultiSourceExpectation[T],
             layouts: Sequence[NameAndValue[LayoutSpec]],
+            **sub_test_identifiers,
     ):
         for layout_ in layouts:
-            with put.subTest(layout=layout_.name):
+            with put.subTest(layout=layout_.name,
+                             **sub_test_identifiers):
                 source_str = source.layout(layout_.value)
                 self.check__w_source_variants(put, source_str, arrangement, expectation_)
 
