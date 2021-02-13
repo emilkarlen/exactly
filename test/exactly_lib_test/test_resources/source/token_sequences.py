@@ -37,6 +37,12 @@ class OptionWMandatoryValue(TokenSequence):
                        ) -> 'OptionWMandatoryValue':
         return OptionWMandatoryValue(option.long, value)
 
+    @staticmethod
+    def of_option_name__str_arg(option: OptionName,
+                                value: str,
+                                ) -> 'OptionWMandatoryValue':
+        return OptionWMandatoryValue.of_option_name(option, TokenSequence.singleton(value))
+
     @property
     def tokens(self) -> Sequence[Token]:
         return (

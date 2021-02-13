@@ -38,10 +38,11 @@ class Checker(Generic[T]):
     def check_invalid_syntax__abs_stx(self,
                                       put: unittest.TestCase,
                                       invalid_source: AbstractSyntax,
+                                      **sub_test_identifiers,
                                       ):
         for layout_case in STANDARD_LAYOUT_SPECS:
             parse_source = ParseSource(invalid_source.tokenization().layout(layout_case.value))
-            with put.subTest(layout=layout_case.name):
+            with put.subTest(layout=layout_case.name, **sub_test_identifiers):
                 self.check_invalid_arguments(put, parse_source)
 
     def check_invalid_syntax__src_var_consume_last_line_abs_stx(self,

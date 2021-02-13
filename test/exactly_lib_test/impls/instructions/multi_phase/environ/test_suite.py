@@ -1,7 +1,8 @@
 import unittest
 from typing import Dict
 
-from exactly_lib.impls.instructions.multi_phase import env as sut
+from exactly_lib.impls.instructions.multi_phase.environ import parse as sut, defs, doc
+from exactly_lib.impls.instructions.multi_phase.environ.impl import Phase
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType
@@ -11,22 +12,20 @@ from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.abst
     SetVariableArgumentsAbsStx, UnsetVariableArgumentsAbsStx, env_var_ref_syntax
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    Arrangement
 from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.test_resources.source.abstract_syntax_impls import CustomAbsStx
 from exactly_lib_test.test_resources.source.custom_abstract_syntax import SequenceAbsStx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringLiteralAbsStx, \
     QUOTED_STR__SOFT, MISSING_END_QUOTE__SOFT, MISSING_END_QUOTE_STR__HARD
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
+    StringSymbolContext
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
+        suite_for_instruction_documentation(doc.TheInstructionDocumentation('instruction name')),
         TestInvalidSyntaxOfSetShouldBeDetected(),
         TestInvalidSyntaxOfUnsetShouldBeDetected(),
         unittest.makeSuite(TestSet),
@@ -35,66 +34,82 @@ def suite() -> unittest.TestSuite:
     ])
 
 
+PHASE_SPECS = [
+    None,
+    Phase.ACT,
+    Phase.NON_ACT,
+]
+
+
 class TestInvalidSyntaxOfSetShouldBeDetected(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        cases = [
-            NameAndValue(
-                'missing arguments',
-                CustomAbsStx.empty(),
-            ),
-            NameAndValue(
-                'more than three arguments',
-                SetVariableArgumentsAbsStx('arg1',
-                                           StringLiteralAbsStx('arg2 arg3')),
-            ),
-            NameAndValue(
-                'variable name must not be quoted',
-                SetVariableArgumentsAbsStx(QUOTED_STR__SOFT,
-                                           StringLiteralAbsStx('value')),
-            ),
-            NameAndValue(
-                'invalid quoting of value',
-                SetVariableArgumentsAbsStx('name',
-                                           MISSING_END_QUOTE__SOFT),
-            ),
-        ]
-        for case in cases:
-            with self.subTest(case.name):
+        for phase_spec in PHASE_SPECS:
+            cases = [
+                NameAndValue(
+                    'missing arguments',
+                    SetVariableArgumentsAbsStx('',
+                                               StringLiteralAbsStx(''),
+                                               phase_spec=phase_spec),
+                ),
+                NameAndValue(
+                    'more than three arguments',
+                    SetVariableArgumentsAbsStx('arg1',
+                                               StringLiteralAbsStx('arg2 arg3'),
+                                               phase_spec=phase_spec),
+                ),
+                NameAndValue(
+                    'variable name must not be quoted',
+                    SetVariableArgumentsAbsStx(QUOTED_STR__SOFT,
+                                               StringLiteralAbsStx('value'),
+                                               phase_spec=phase_spec),
+                ),
+                NameAndValue(
+                    'invalid quoting of value',
+                    SetVariableArgumentsAbsStx('name',
+                                               MISSING_END_QUOTE__SOFT,
+                                               phase_spec=phase_spec),
+                ),
+            ]
+            for case in cases:
                 # ACT & ASSERT #
-                _PARSE_CHECKER.check_invalid_syntax__abs_stx(self, case.value)
+                _PARSE_CHECKER.check_invalid_syntax__abs_stx(self, case.value,
+                                                             phase_spec=phase_spec,
+                                                             variant=case.name)
 
 
 class TestInvalidSyntaxOfUnsetShouldBeDetected(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        cases = [
-            NameAndValue(
-                'invalid quoting',
-                UnsetVariableArgumentsAbsStx(MISSING_END_QUOTE_STR__HARD),
-            ),
-            NameAndValue(
-                'missing arguments',
-                UnsetVariableArgumentsAbsStx(''),
-            ),
-            NameAndValue(
-                'more than one argument',
-                SequenceAbsStx.followed_by_superfluous(
-                    UnsetVariableArgumentsAbsStx('name')
-                )
-            ),
-            NameAndValue(
-                'unset identifier must not be quoted',
-                SequenceAbsStx([
-                    StringLiteralAbsStx(sut.UNSET_IDENTIFIER, QuoteType.HARD),
-                    StringLiteralAbsStx('var_name'),
-                ])
-            ),
-        ]
-        for case in cases:
-            with self.subTest(case.name):
+        for phase_spec in PHASE_SPECS:
+            cases = [
+                NameAndValue(
+                    'invalid quoting',
+                    UnsetVariableArgumentsAbsStx(MISSING_END_QUOTE_STR__HARD, phase_spec=phase_spec),
+                ),
+                NameAndValue(
+                    'missing arguments',
+                    UnsetVariableArgumentsAbsStx('', phase_spec=phase_spec),
+                ),
+                NameAndValue(
+                    'more than one argument',
+                    SequenceAbsStx.followed_by_superfluous(
+                        UnsetVariableArgumentsAbsStx('name', phase_spec=phase_spec)
+                    )
+                ),
+                NameAndValue(
+                    'unset identifier must not be quoted',
+                    SequenceAbsStx([
+                        StringLiteralAbsStx(defs.UNSET_IDENTIFIER, QuoteType.HARD),
+                        StringLiteralAbsStx('var_name'),
+                    ])
+                ),
+            ]
+            for case in cases:
                 # ACT & ASSERT #
-                _PARSE_CHECKER.check_invalid_syntax__abs_stx(self, case.value)
+                _PARSE_CHECKER.check_invalid_syntax__abs_stx(self, case.value,
+                                                             phase_spec=phase_spec,
+                                                             variant=case.name)
 
 
 class TestSet(unittest.TestCase):
@@ -104,7 +119,7 @@ class TestSet(unittest.TestCase):
 
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
-            SetVariableArgumentsAbsStx.of_nav(var),
+            SetVariableArgumentsAbsStx.of_nav(var, phase_spec=None),
             embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 proc_exe_env_for_test(
@@ -132,8 +147,8 @@ class TestSet(unittest.TestCase):
 
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
-            SetVariableArgumentsAbsStx.of_nav(var_to_set),
-            Arrangement.phase_agnostic(
+            SetVariableArgumentsAbsStx.of_nav(var_to_set, phase_spec=None),
+            embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 proc_exe_env_for_test(environ=None),
                 default_environ_getter=get_default_environ,
@@ -148,11 +163,11 @@ class TestSet(unittest.TestCase):
 
     def test_variable_with_same_name_as_unset_keyword(self):
         # ACT & ASSERT #
-        var = NameAndValue(sut.UNSET_IDENTIFIER, 'value')
+        var = NameAndValue(defs.UNSET_IDENTIFIER, 'value')
 
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
-            SetVariableArgumentsAbsStx.of_nav(var),
+            SetVariableArgumentsAbsStx.of_nav(var, phase_spec=None),
             embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 proc_exe_env_for_test(
@@ -178,7 +193,9 @@ class TestSet(unittest.TestCase):
         # ACT & ASSERT #
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
-            SetVariableArgumentsAbsStx.of_str(var.name, var.value, QuoteType.HARD),
+            SetVariableArgumentsAbsStx.of_str(var.name, var.value,
+                                              phase_spec=None,
+                                              quoting=QuoteType.HARD),
             embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 proc_exe_env_for_test(
@@ -208,7 +225,7 @@ class TestSet(unittest.TestCase):
 
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
-            SetVariableArgumentsAbsStx.of_str(var_name, value_after),
+            SetVariableArgumentsAbsStx.of_str(var_name, value_after, phase_spec=None),
             embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 proc_exe_env_for_test(
@@ -247,14 +264,15 @@ class TestSet(unittest.TestCase):
 
         source_syntax = SetVariableArgumentsAbsStx.of_str(variable_name,
                                                           value_source_string,
-                                                          QuoteType.SOFT)
+                                                          phase_spec=None,
+                                                          quoting=QuoteType.SOFT)
 
         # ACT & ASSERT #
 
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             source_syntax,
-            Arrangement.phase_agnostic(
+            embryo_check.Arrangement.phase_agnostic(
                 symbols=
                 SymbolContext.symbol_table_of_contexts([my_symbol, your_symbol]),
                 process_execution_settings=
@@ -290,14 +308,15 @@ class TestSet(unittest.TestCase):
 
         source_syntax = SetVariableArgumentsAbsStx.of_str(variable_name,
                                                           value_source_string,
-                                                          QuoteType.HARD)
+                                                          phase_spec=None,
+                                                          quoting=QuoteType.HARD)
 
         # ACT & ASSERT #
 
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             source_syntax,
-            Arrangement.phase_agnostic(
+            embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ({}),
             ),
@@ -328,14 +347,56 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             SetVariableArgumentsAbsStx.of_str(defined_env_var.name,
-                                              env_var_ref_syntax(existing_env_var.name)),
+                                              env_var_ref_syntax(existing_env_var.name),
+                                              phase_spec=None),
             arrangement=
-            Arrangement.phase_agnostic(
+            embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
             ),
             expectation=
             embryo_check.MultiSourceExpectation.phase_agnostic(
+                main_side_effect_on_environment_variables=asrt.equals(environ__after),
+            )
+        )
+
+    def test_set_value_that_references_an_env_var_in_string_ref_value(self):
+        # ARRANGE #
+
+        existing_env_var = NameAndValue('MY_VAR', 'MY_VAL')
+        defined_env_var = NameAndValue('name', existing_env_var.value)
+
+        string_symbol_w_env_var_ref = StringSymbolContext.of_constant(
+            'SYMBOL_W_ENV_VAR_REF',
+            env_var_ref_syntax(existing_env_var.name)
+        )
+
+        environ__before = {
+            existing_env_var.name: existing_env_var.value,
+        }
+        environ__after = {
+            defined_env_var.name: defined_env_var.value,
+            existing_env_var.name: existing_env_var.value,
+        }
+
+        # ACT & ASSERT #
+
+        _CHECKER.check__abs_stx__std_layouts_and_source_variants(
+            self,
+            SetVariableArgumentsAbsStx(defined_env_var.name,
+                                       string_symbol_w_env_var_ref.abstract_syntax,
+                                       phase_spec=None),
+            arrangement=
+            embryo_check.Arrangement.phase_agnostic(
+                symbols=string_symbol_w_env_var_ref.symbol_table,
+                process_execution_settings=
+                ProcessExecutionSettings.with_environ(environ__before),
+            ),
+            expectation=
+            embryo_check.MultiSourceExpectation.phase_agnostic(
+                symbol_usages=asrt.matches_singleton_sequence(
+                    string_symbol_w_env_var_ref.reference_assertion__convertible_to_string
+                ),
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),
             )
         )
@@ -355,7 +416,8 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
                 my_var=env_var_ref_syntax(my_var.name),
                 your_var=env_var_ref_syntax(your_var.name),
             ),
-            QuoteType.SOFT,
+            phase_spec=None,
+            quoting=QuoteType.SOFT,
         )
 
         expected_value = value_template.format(
@@ -380,7 +442,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
             self,
             source,
             arrangement=
-            Arrangement.phase_agnostic(
+            embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
             ),
@@ -398,7 +460,8 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
 
         source = SetVariableArgumentsAbsStx.of_str(
             new_var_to_set__name,
-            env_var_ref_syntax(non_existing_var__name)
+            env_var_ref_syntax(non_existing_var__name),
+            phase_spec=None,
         )
         # ACT & ASSERT #
 
@@ -435,8 +498,8 @@ class TestUnset(unittest.TestCase):
 
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
-            UnsetVariableArgumentsAbsStx(var_a.name),
-            Arrangement.phase_agnostic(
+            UnsetVariableArgumentsAbsStx(var_a.name, phase_spec=None),
+            embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
             ),
@@ -457,8 +520,8 @@ class TestUnset(unittest.TestCase):
 
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
-            UnsetVariableArgumentsAbsStx(var_a.name),
-            Arrangement.phase_agnostic(
+            UnsetVariableArgumentsAbsStx(var_a.name, phase_spec=None),
+            embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 proc_exe_env_for_test(environ=None),
                 default_environ_getter=get_default_environ,
@@ -477,8 +540,8 @@ class TestUnset(unittest.TestCase):
 
         _CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
-            UnsetVariableArgumentsAbsStx(non_existing_var_name),
-            Arrangement.phase_agnostic(
+            UnsetVariableArgumentsAbsStx(non_existing_var_name, phase_spec=None),
+            embryo_check.Arrangement.phase_agnostic(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
             ),

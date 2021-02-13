@@ -1,4 +1,5 @@
 import unittest
+from abc import ABC
 from typing import Dict
 
 from exactly_lib.util.name_and_value import NameAndValue
@@ -24,7 +25,7 @@ def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
                            ])
 
 
-class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
+class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType, ABC):
     def __init__(self, conf: ConfigurationBase):
         super().__init__(conf)
         self.conf = conf
@@ -34,7 +35,7 @@ class TestSet(TestCaseBase):
     def runTest(self):
         # ARRANGE #
         var_val = NameAndValue('name', 'value')
-        instruction_argument = SetVariableArgumentsAbsStx.of_nav(var_val)
+        instruction_argument = SetVariableArgumentsAbsStx.of_nav(var_val, phase_spec=None)
         expected_environ = {var_val.name: var_val.value}
 
         empty_environ = {}
@@ -64,7 +65,7 @@ class TestSetWhenCurrentEnvironIsNone(TestCaseBase):
         def get_default_environ() -> Dict[str, str]:
             return NameAndValue.as_dict([var_in_default])
 
-        instruction_argument = SetVariableArgumentsAbsStx.of_nav(var_to_set)
+        instruction_argument = SetVariableArgumentsAbsStx.of_nav(var_to_set, phase_spec=None)
 
         def mk_arrangement():
             return self.conf.arrangement(
@@ -89,7 +90,7 @@ class TestUnsetExistingVariable(TestCaseBase):
         # ARRANGE #
         var_name = 'var_to_unset'
         other_var = NameAndValue('other_var', 'val of other var')
-        instruction_argument = UnsetVariableArgumentsAbsStx(var_name)
+        instruction_argument = UnsetVariableArgumentsAbsStx(var_name, phase_spec=None)
         environ_w_var_to_unset = {var_name: 'value of var to unset',
                                   other_var.name: other_var.value}
         environ_wo_var_to_unset = {other_var.name: other_var.value}
@@ -115,7 +116,7 @@ class TestUnsetExistingVariableWhenEnvironIsNone(TestCaseBase):
         var_to_unset = NameAndValue('var_to_unset', 'value of var to unset')
 
         other_var = NameAndValue('other_var', 'val of other var')
-        instruction_argument = UnsetVariableArgumentsAbsStx(var_to_unset.name)
+        instruction_argument = UnsetVariableArgumentsAbsStx(var_to_unset.name, phase_spec=None)
         vars_from_defaults_getter = [var_to_unset, other_var]
 
         environ_wo_var_to_unset = NameAndValue.as_dict([other_var])
@@ -145,7 +146,7 @@ class TestUnsetNonExistingVariable(TestCaseBase):
     def runTest(self):
         # ARRANGE #
         var_name = 'var_to_unset'
-        instruction_argument = UnsetVariableArgumentsAbsStx(var_name)
+        instruction_argument = UnsetVariableArgumentsAbsStx(var_name, phase_spec=None)
         environ_wo_var_to_unset = {'other_var': 'val of other var'}
 
         def mk_arrangement():
