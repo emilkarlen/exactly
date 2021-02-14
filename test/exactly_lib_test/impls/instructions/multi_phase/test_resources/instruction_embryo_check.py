@@ -1,7 +1,7 @@
 import enum
 import pathlib
 import unittest
-from typing import Optional
+from typing import Optional, Mapping
 from typing import Sequence, Dict, Generic
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -39,6 +39,7 @@ from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_populato
 from exactly_lib_test.test_case.test_resources import instruction_settings as _instruction_settings
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
+from exactly_lib_test.test_case.test_resources.settings_builder_assertions import SettingsBuilderAssertionModel
 from exactly_lib_test.test_resources.source import layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.layout import LayoutSpec
@@ -87,6 +88,21 @@ class MainMethodType(enum.Enum):
     SETUP_PHASE_AWARE = 2
 
 
+class SetupSettingsArr:
+    def __init__(self, environ: Optional[Mapping[str, str]]):
+        self.environ = environ
+
+    @staticmethod
+    def empty() -> 'SetupSettingsArr':
+        return SetupSettingsArr(None)
+
+    def as_settings_builder(self) -> SetupSettingsBuilder:
+        return SetupSettingsBuilder(
+            stdin=None,
+            environ=functional.map_optional(dict, self.environ)
+        )
+
+
 class Arrangement(ArrangementWithSds):
     def __init__(self,
                  pre_contents_population_action: TcdsAction = TcdsAction(),
@@ -100,7 +116,7 @@ class Arrangement(ArrangementWithSds):
                  post_sds_population_action: TcdsAction = TcdsAction(),
                  symbols: SymbolTable = None,
                  fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
-                 setup_settings: Optional[SetupSettingsBuilder] = None,
+                 setup_settings: Optional[SetupSettingsArr] = None,
                  ):
         super().__init__(hds_contents=hds_contents,
                          process_execution_settings=process_execution_settings,
@@ -152,7 +168,7 @@ class Arrangement(ArrangementWithSds):
             sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
             non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
             tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
-            setup_settings: Optional[SetupSettingsBuilder] = None,
+            setup_settings: Optional[SetupSettingsArr] = None,
             os_services: OsServices = os_services_access.new_for_current_os(),
             process_execution_settings: ProcessExecutionSettings = proc_exe_env_for_test(),
             default_environ_getter: DefaultEnvironGetter = get_empty_environ,
@@ -196,7 +212,7 @@ class Expectation(Generic[T]):
                  = asrt.is_instance(InstructionSettings),
                  assertion_on_instruction_environment:
                  Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
-                 setup_settings: Assertion[Optional[SetupSettingsBuilder]] = asrt.is_none,
+                 setup_settings: Assertion[Optional[SettingsBuilderAssertionModel]] = asrt.is_none,
                  ):
         self.main_method_type = main_method_type
         self.validation_pre_sds = validation_pre_sds
@@ -309,7 +325,7 @@ class Expectation(Generic[T]):
             instruction_settings: Assertion[InstructionSettings]
             = asrt.is_instance(InstructionSettings),
             instruction_environment: Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
-            setup_settings: Assertion[Optional[SetupSettingsBuilder]] = asrt.is_none,
+            setup_settings: Assertion[Optional[SettingsBuilderAssertionModel]] = asrt.is_none,
     ) -> 'Expectation[T]':
         return Expectation(
             MainMethodType.SETUP_PHASE_AWARE,
@@ -349,6 +365,7 @@ class MultiSourceExpectation(Generic[T]):
                  = asrt.is_instance(InstructionSettings),
                  instruction_environment:
                  Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
+                 setup_settings: Assertion[Optional[SettingsBuilderAssertionModel]] = asrt.is_none,
                  ):
         self.main_method_type = main_method_type
         self.validation = validation
@@ -363,6 +380,7 @@ class MultiSourceExpectation(Generic[T]):
         self.symbols_after_main = symbols_after_main
         self.main_side_effect_on_environment_variables = main_side_effect_on_environment_variables
         self.instruction_application_environment = instruction_environment
+        self.setup_settings = setup_settings
 
     @staticmethod
     def phase_agnostic(
@@ -396,10 +414,11 @@ class MultiSourceExpectation(Generic[T]):
             proc_exe_settings,
             instruction_settings,
             instruction_environment,
+            asrt.is_none,
         )
 
     @staticmethod
-    def phase_setup_phase_aware(
+    def setup_phase_aware(
             validation: ValidationAssertions = ValidationAssertions.all_passes(),
             main_result: Assertion[T] = asrt.anything_goes(),
             main_raises_hard_error: bool = False,
@@ -415,6 +434,7 @@ class MultiSourceExpectation(Generic[T]):
             = asrt.is_instance(InstructionSettings),
             instruction_environment:
             Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
+            setup_settings: Assertion[Optional[SettingsBuilderAssertionModel]] = asrt.is_none,
     ) -> 'MultiSourceExpectation[T]':
         return MultiSourceExpectation(
             MainMethodType.SETUP_PHASE_AWARE,
@@ -430,6 +450,7 @@ class MultiSourceExpectation(Generic[T]):
             proc_exe_settings,
             instruction_settings,
             instruction_environment,
+            setup_settings,
         )
 
     def as_w_source(self, source: Assertion[ParseSource]) -> Expectation[T]:
@@ -449,6 +470,7 @@ class MultiSourceExpectation(Generic[T]):
             self.proc_exe_settings,
             self.instruction_settings,
             self.instruction_application_environment,
+            self.setup_settings,
         )
 
 
@@ -621,8 +643,9 @@ class Executor(Generic[T]):
 
             instr_settings = _instruction_settings.from_proc_exe_settings(self.arrangement.process_execution_settings,
                                                                           self.arrangement.default_environ_getter)
+            setup_settings = self._setup_settings_from_arrangement()
 
-            result_of_main = self._execute_main(environment, instr_settings, instruction)
+            result_of_main = self._execute_main(environment, instr_settings, setup_settings, instruction)
 
             self.expectation.main_side_effect_on_environment_variables.apply_with_message(
                 self.put,
@@ -640,7 +663,11 @@ class Executor(Generic[T]):
                                                                   'proc exe settings')
             self.expectation.instruction_settings.apply_with_message(self.put, instr_settings,
                                                                      'instruction settings')
-            self.expectation.setup_settings.apply_with_message(self.put, self.arrangement.setup_settings,
+            self.expectation.setup_settings.apply_with_message(self.put,
+                                                               self._setup_settings_assertion_model(
+                                                                   setup_settings,
+                                                                   environment,
+                                                               ),
                                                                'setup settings')
             self.expectation.main_side_effects_on_sds.apply_with_message(self.put, tcds.sds,
                                                                          'side_effects_on_files')
@@ -681,13 +708,14 @@ class Executor(Generic[T]):
     def _execute_main(self,
                       environment: InstructionEnvironmentForPostSdsStep,
                       settings: InstructionSettings,
+                      setup_settings: Optional[SetupSettingsBuilder],
                       instruction: InstructionEmbryo[T]) -> T:
         executor = _MainMethodExecutor(self.put,
                                        self.expectation.main_method_type,
                                        environment,
                                        settings,
                                        self.arrangement.os_services,
-                                       self.arrangement.setup_settings)
+                                       setup_settings)
         try:
             result = instruction.main_method().accept(executor)
         except HardErrorException as ex:
@@ -701,6 +729,25 @@ class Executor(Generic[T]):
             self.put.fail('main does not raise ' + str(HardErrorException))
 
         return result
+
+    def _setup_settings_from_arrangement(self) -> Optional[SetupSettingsBuilder]:
+        return functional.map_optional(SetupSettingsArr.as_settings_builder,
+                                       self.arrangement.setup_settings)
+
+    def _setup_settings_assertion_model(self,
+                                        settings_builder: Optional[SetupSettingsBuilder],
+                                        environment: InstructionEnvironmentForPostSdsStep,
+                                        ) -> Optional[SettingsBuilderAssertionModel]:
+        return (
+            None
+            if settings_builder is None
+            else SettingsBuilderAssertionModel(
+                settings_builder,
+                environment,
+                self.arrangement.os_services,
+            )
+
+        )
 
 
 class _MainMethodExecutor(Generic[RET], MainMethodVisitor[RET, RET]):

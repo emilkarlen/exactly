@@ -1,5 +1,5 @@
 import unittest
-from typing import Optional, Callable
+from typing import Optional, Callable, Dict
 
 from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.test_case.os_services import OsServices
@@ -35,29 +35,40 @@ class SettingsBuilderAssertionModel(tuple):
         return self[2]
 
 
-def stdin(expectation: Assertion[Optional[AdvWvAssertionModel[StringSource]]]
-          ) -> Assertion[SettingsBuilderAssertionModel]:
-    return _OptionalSettingsBuilderComponentAssertion(
-        'stdin',
-        _get_stdin,
-        expectation,
+def matches(stdin: Assertion[Optional[AdvWvAssertionModel[StringSource]]] = asrt.anything_goes(),
+            environ: Assertion[Optional[Dict[str, str]]] = asrt.is_none_or_instance(dict)
+            ) -> Assertion[SettingsBuilderAssertionModel]:
+    return asrt.is_instance_with__many(
+        SettingsBuilderAssertionModel,
+        [
+            asrt.sub_component(
+                'environ',
+                _get_environ,
+                environ,
+            ),
+            _OptionalSettingsBuilderComponentAssertion(
+                'stdin',
+                _get_stdin,
+                stdin,
+            ),
+        ]
     )
 
 
 def stdin_is_not_present() -> Assertion[SettingsBuilderAssertionModel]:
-    return stdin(asrt.is_none)
+    return matches(stdin=asrt.is_none)
 
 
 def stdin_is_present_but_invalid() -> Assertion[SettingsBuilderAssertionModel]:
-    return stdin(
-        asrt.is_not_none_and(asrt_adv_w_validation.is_invalid())
+    return matches(
+        stdin=asrt.is_not_none_and(asrt_adv_w_validation.is_invalid())
     )
 
 
 def stdin_is_present_and_valid(expected: Assertion[StringSource]
                                ) -> Assertion[SettingsBuilderAssertionModel]:
-    return stdin(
-        asrt.is_not_none_and(asrt_adv_w_validation.is_valid(expected))
+    return matches(
+        stdin=asrt.is_not_none_and(asrt_adv_w_validation.is_valid(expected))
     )
 
 
@@ -100,3 +111,7 @@ class _OptionalSettingsBuilderComponentAssertion(AssertionBase[SettingsBuilderAs
 
 def _get_stdin(x: SetupSettingsBuilder) -> Optional[AdvWValidation[StringSource]]:
     return x.stdin
+
+
+def _get_environ(x: SettingsBuilderAssertionModel) -> Optional[Dict[str, str]]:
+    return x.actual.environ
