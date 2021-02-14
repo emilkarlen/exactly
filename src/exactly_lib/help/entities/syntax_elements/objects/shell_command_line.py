@@ -1,5 +1,5 @@
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -14,11 +14,12 @@ depends on the current operating system environment's shell.
 
 On POSIX, the shell defaults to /bin/sh.
 
-On Windows, the COMSPEC environment variable specifies the default shell.
+On Windows, the COMSPEC {env_var} specifies the default shell.
 """
 
 _TEXT_PARSER = TextParser({
-    'SYNTAX_ELEMENT': formatting.syntax_element_(syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT)
+    'SYNTAX_ELEMENT': formatting.syntax_element_(syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT),
+    'env_var': concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.name,
 
 })
 DOCUMENTATION = syntax_element_documentation(None,

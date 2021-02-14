@@ -38,7 +38,7 @@ class Checker(Generic[T]):
     def check_invalid_syntax__abs_stx(self,
                                       put: unittest.TestCase,
                                       invalid_source: AbstractSyntax,
-                                      **sub_test_identifiers,
+                                      **sub_test_identifiers
                                       ):
         for layout_case in STANDARD_LAYOUT_SPECS:
             parse_source = ParseSource(invalid_source.tokenization().layout(layout_case.value))

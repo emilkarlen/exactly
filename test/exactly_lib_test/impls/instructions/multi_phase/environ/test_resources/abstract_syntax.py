@@ -38,7 +38,7 @@ class InstructionArgumentsAbsStx(AbstractSyntax, ABC):
             if self.phase_spec is None
             else
             OptionWMandatoryValue.of_option_name__str_arg(
-                defs.PHASE_SPEC__OPTION,
+                defs.PHASE_SPEC__OPTION_NAME,
                 _PHASE_SPEC_VALUES[self.phase_spec],
             )
         )

@@ -1,4 +1,4 @@
-from typing import Set
+from typing import FrozenSet
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.instructions.multi_phase.environ import defs, impl as _impl
@@ -20,11 +20,12 @@ from exactly_lib.util.str_.formatter import StringFormatter
 class EmbryoParser(embryo.InstructionEmbryoParserFromTokensWoFileSystemLocationInfo[None]):
     def _parse_from_tokens(self, token_parser: TokenParser) -> InstructionEmbryo[None]:
         try:
+            phases = self._parse_phases(token_parser)
+
             unset_keyword_or_var_name = token_parser.consume_mandatory_unquoted_string__w_err_msg(
                 False,
                 _MISSING_UNSET_KEYWORD_OR_VAR_NAME_ERROR_MESSAGE
             )
-            phases = self._parse_phases(token_parser)
 
             modifier = (
                 self._parse_unset_or_set_var_with_same_name_as_unset_keyword(token_parser)
@@ -65,9 +66,32 @@ class EmbryoParser(embryo.InstructionEmbryoParserFromTokensWoFileSystemLocationI
         return _impl.ModifierResolverOfSet(var_name, value)
 
     @staticmethod
-    def _parse_phases(token_parser: TokenParser) -> Set[_impl.Phase]:
-        return {_impl.Phase.NON_ACT}
+    def _parse_phases(token_parser: TokenParser) -> FrozenSet[_impl.Phase]:
+        return token_parser.consume_and_handle_optional_option(
+            _ALL_PHASES,
+            _parse_phase_spec_option_argument,
+            defs.PHASE_SPEC__OPTION_NAME,
+        )
 
+
+def _parse_phase_spec_option_argument(token_parser: TokenParser) -> FrozenSet[_impl.Phase]:
+    return token_parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
+        _SET_SPEC_ARGUMENTS,
+        _SET_SPEC_ARGUMENT_2_SPEC.get,
+        _INVALID_PHASE_SPEC_ARGUMENT__ERR_MSG,
+    )
+
+
+_INVALID_PHASE_SPEC_ARGUMENT__ERR_MSG = 'Invalid phase spec <TODO>'
+
+_SET_SPEC_ARGUMENTS = (defs.PHASE_SPEC__ACT, defs.PHASE_SPEC__NON_ACT)
+
+_SET_SPEC_ARGUMENT_2_SPEC = {
+    defs.PHASE_SPEC__ACT: frozenset((_impl.Phase.ACT,)),
+    defs.PHASE_SPEC__NON_ACT: frozenset((_impl.Phase.NON_ACT,)),
+}
+
+_ALL_PHASES = frozenset(_impl.Phase)
 
 PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
                                            MainStepResultTranslatorForUnconditionalSuccess())

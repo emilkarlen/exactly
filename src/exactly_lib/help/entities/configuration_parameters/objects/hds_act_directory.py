@@ -2,12 +2,12 @@ from typing import List
 
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.entity import conf_params
+from exactly_lib.definitions.entity import conf_params, concepts
 from exactly_lib.definitions.path import REL_HDS_ACT_OPTION
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import HDS_ACT_DIRECTORY_INSTRUCTION_NAME
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.tcfs.tcds_symbols import SYMBOL_HDS_ACT
+from exactly_lib.tcfs import tcds_symbols
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -20,9 +20,11 @@ class _HdsActDirectoryConfigurationParameter(ConfigurationParameterDocumentation
         parser = TextParser({
             'phase': phase_names.PHASE_NAME_DICTIONARY,
             'the_concept': formatting.conf_param_(conf_params.HDS_ACT_DIRECTORY_CONF_PARAM_INFO),
-            'home_dir_env_var': SYMBOL_HDS_ACT,
+            'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
+            'dir_symbol': tcds_symbols.SYMBOL_HDS_ACT,
             'rel_option': formatting.cli_option(REL_HDS_ACT_OPTION),
             'executable_file': formatting.misc_name_with_formatting(misc_texts.EXECUTABLE_FILE),
+            'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
         })
         return from_simple_description(
             Description(self.single_line_description(),
@@ -37,7 +39,7 @@ class _HdsActDirectoryConfigurationParameter(ConfigurationParameterDocumentation
 DOCUMENTATION = _HdsActDirectoryConfigurationParameter()
 
 _REST_DESCRIPTION = """\
-Instructions and phases may use files
+{instruction:s/u} and phases may use files
 that are supposed to exist before the test case is executed.
 
 
@@ -47,7 +49,7 @@ to be {executable_file:a}.
 If the path to this file is relative, then it is relative the {the_concept}.
 
 
-The environment variable {home_dir_env_var} contains the absolute path of this directory.
+The {symbol} {dir_symbol} is the absolute path of this directory.
 
 
 The option {rel_option} (accepted by many instructions) refers to this directory.

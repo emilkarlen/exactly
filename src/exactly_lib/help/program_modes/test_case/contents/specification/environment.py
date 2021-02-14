@@ -46,6 +46,7 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
         'def_instruction': InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
 
         'os_process': misc_texts.OS_PROCESS_NAME,
+        'env_var': concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.name,
         'time_out_conf_param': formatting.conf_param_(conf_params.TIMEOUT_CONF_PARAM_INFO),
 
         'relativity': formatting.concept(misc_texts.RELATIVITY.singular),
@@ -119,7 +120,7 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
                     ),
                     const_paragraphs_child(
                         'env-vars',
-                        'Environment variables',
+                        tp.format('{env_var:s/u}'),
                         tp.fnap(_OS_PROC_ENVIRONMENT_VARIABLES),
                     ),
                     const_paragraphs_child(
@@ -287,12 +288,12 @@ Part of their environment is controlled by {program_name}.
 # - Manipulating env vars
 ############################################################
 _OS_PROC_ENVIRONMENT_VARIABLES = """\
-All OS environment variables
+All OS {env_var:s}
 that are set when {program_name} is started
 are available in {os_process:s} run from the test case.
 
 
-Environment variables can be manipulated by the {env} instruction.
+{env_var:s/u} can be manipulated by the {env} instruction.
 """
 
 _OS_PROC_CURRENT_DIRECTORY = """\

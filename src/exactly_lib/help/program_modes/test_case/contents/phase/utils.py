@@ -24,6 +24,7 @@ _TEXT_PARSER = TextParser({
     'phase': PHASE_NAME_DICTIONARY,
     'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
     'SYMBOL': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
+    'env_var': concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.name,
 })
 
 
@@ -151,5 +152,5 @@ the {result_subdir}/ directory.
 """
 
 ENV_VARS_PROLOGUE_FOR_INHERITED_FROM_PREVIOUS_PHASE = """\
-Environment variables are inherited from the previous phase.
+{env_var:s/u} are inherited from the previous phase.
 """

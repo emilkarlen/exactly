@@ -30,6 +30,8 @@ from exactly_lib_test.common.test_resources import text_doc_assertions
 from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ
 from exactly_lib_test.impls.test_resources.validation import validation as validation_utils
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions, ValidationResultAssertion
+from exactly_lib_test.impls.types.parse.test_resources import \
+    single_line_source_instruction_utils as equivalent_source_variants
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line_2
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
@@ -40,17 +42,19 @@ from exactly_lib_test.test_case.test_resources import instruction_settings as _i
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_case.test_resources.settings_builder_assertions import SettingsBuilderAssertionModel
+from exactly_lib_test.test_resources.source import abs_stx_utils
 from exactly_lib_test.test_resources.source import layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.layout import LayoutSpec
-from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
+from exactly_lib_test.util.test_resources import symbol_table_assertions as asrt_sym_tbl
 
 
 class PostActionCheck:
@@ -192,7 +196,233 @@ class Arrangement(ArrangementWithSds):
         )
 
 
-class Expectation(Generic[T]):
+class ExecutionExpectation(Generic[T]):
+    def __init__(self,
+                 main_method_type: MainMethodType,
+                 validation: ValidationAssertions = ValidationAssertions.all_passes(),
+                 main_result: Assertion[T] = asrt.anything_goes(),
+                 main_raises_hard_error: bool = False,
+                 main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+                 side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+                 side_effects_on_hds: Assertion[pathlib.Path] = asrt.anything_goes(),
+                 main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
+                 proc_exe_settings: Assertion[ProcessExecutionSettings]
+                 = asrt.is_instance(ProcessExecutionSettings),
+                 instruction_settings: Assertion[InstructionSettings]
+                 = asrt.is_instance(InstructionSettings),
+                 instruction_environment:
+                 Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
+                 setup_settings: Assertion[Optional[SettingsBuilderAssertionModel]] = asrt.is_none,
+                 ):
+        self.main_method_type = main_method_type
+        self.validation = validation
+        self.main_result = main_result
+        self.main_raises_hard_error = main_raises_hard_error
+        self.proc_exe_settings = proc_exe_settings
+        self.instruction_settings = instruction_settings
+        self.main_side_effects_on_sds = main_side_effects_on_sds
+        self.side_effects_on_tcds = side_effects_on_tcds
+        self.side_effects_on_hds = side_effects_on_hds
+        self.main_side_effect_on_environment_variables = main_side_effect_on_environment_variables
+        self.instruction_application_environment = instruction_environment
+        self.setup_settings = setup_settings
+
+    @staticmethod
+    def phase_agnostic(
+            validation: ValidationAssertions = ValidationAssertions.all_passes(),
+            main_result: Assertion[T] = asrt.anything_goes(),
+            main_raises_hard_error: bool = False,
+            main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+            side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+            side_effects_on_hds: Assertion[pathlib.Path] = asrt.anything_goes(),
+            main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
+            proc_exe_settings: Assertion[ProcessExecutionSettings]
+            = asrt.is_instance(ProcessExecutionSettings),
+            instruction_settings: Assertion[InstructionSettings]
+            = asrt.is_instance(InstructionSettings),
+            instruction_environment:
+            Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
+    ) -> 'ExecutionExpectation[T]':
+        return ExecutionExpectation(
+            MainMethodType.PHASE_AGNOSTIC,
+            validation,
+            main_result,
+            main_raises_hard_error,
+            main_side_effects_on_sds,
+            side_effects_on_tcds,
+            side_effects_on_hds,
+            main_side_effect_on_environment_variables,
+            proc_exe_settings,
+            instruction_settings,
+            instruction_environment,
+            asrt.is_none,
+        )
+
+    @staticmethod
+    def setup_phase_aware(
+            validation: ValidationAssertions = ValidationAssertions.all_passes(),
+            main_result: Assertion[T] = asrt.anything_goes(),
+            main_raises_hard_error: bool = False,
+            symbols_after_main: Assertion[SymbolTable] = asrt.anything_goes(),
+            main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+            side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+            side_effects_on_hds: Assertion[pathlib.Path] = asrt.anything_goes(),
+            main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
+            proc_exe_settings: Assertion[ProcessExecutionSettings]
+            = asrt.is_instance(ProcessExecutionSettings),
+            instruction_settings: Assertion[InstructionSettings]
+            = asrt.is_instance(InstructionSettings),
+            instruction_environment:
+            Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
+            setup_settings: Assertion[Optional[SettingsBuilderAssertionModel]] = asrt.is_none,
+    ) -> 'ExecutionExpectation[T]':
+        return ExecutionExpectation(
+            MainMethodType.SETUP_PHASE_AWARE,
+            validation,
+            main_result,
+            main_raises_hard_error,
+            main_side_effects_on_sds,
+            side_effects_on_tcds,
+            side_effects_on_hds,
+            main_side_effect_on_environment_variables,
+            proc_exe_settings,
+            instruction_settings,
+            instruction_environment,
+            setup_settings,
+        )
+
+
+class MultiSourceExpectation(Generic[T], ExecutionExpectation[T]):
+    def __init__(self,
+                 main_method_type: MainMethodType,
+                 validation: ValidationAssertions = ValidationAssertions.all_passes(),
+                 main_result: Assertion[T] = asrt.anything_goes(),
+                 main_raises_hard_error: bool = False,
+                 symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                 symbols_after_main: Assertion[SymbolTable] = asrt.anything_goes(),
+                 main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+                 side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+                 side_effects_on_hds: Assertion[pathlib.Path] = asrt.anything_goes(),
+                 main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
+                 proc_exe_settings: Assertion[ProcessExecutionSettings]
+                 = asrt.is_instance(ProcessExecutionSettings),
+                 instruction_settings: Assertion[InstructionSettings]
+                 = asrt.is_instance(InstructionSettings),
+                 instruction_environment:
+                 Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
+                 setup_settings: Assertion[Optional[SettingsBuilderAssertionModel]] = asrt.is_none,
+                 ):
+        super().__init__(
+            main_method_type,
+            validation,
+            main_result,
+            main_raises_hard_error,
+            main_side_effects_on_sds,
+            side_effects_on_tcds,
+            side_effects_on_hds,
+            main_side_effect_on_environment_variables,
+            proc_exe_settings,
+            instruction_settings,
+            instruction_environment,
+            setup_settings,
+
+        )
+        self.symbol_usages = symbol_usages
+        self.symbols_after_main = symbols_after_main
+
+    @staticmethod
+    def phase_agnostic(
+            validation: ValidationAssertions = ValidationAssertions.all_passes(),
+            main_result: Assertion[T] = asrt.anything_goes(),
+            main_raises_hard_error: bool = False,
+            symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+            symbols_after_main: Assertion[SymbolTable] = asrt.anything_goes(),
+            main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+            side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+            side_effects_on_hds: Assertion[pathlib.Path] = asrt.anything_goes(),
+            main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
+            proc_exe_settings: Assertion[ProcessExecutionSettings]
+            = asrt.is_instance(ProcessExecutionSettings),
+            instruction_settings: Assertion[InstructionSettings]
+            = asrt.is_instance(InstructionSettings),
+            instruction_environment:
+            Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
+    ) -> 'MultiSourceExpectation[T]':
+        return MultiSourceExpectation(
+            MainMethodType.PHASE_AGNOSTIC,
+            validation,
+            main_result,
+            main_raises_hard_error,
+            symbol_usages,
+            symbols_after_main,
+            main_side_effects_on_sds,
+            side_effects_on_tcds,
+            side_effects_on_hds,
+            main_side_effect_on_environment_variables,
+            proc_exe_settings,
+            instruction_settings,
+            instruction_environment,
+            asrt.is_none,
+        )
+
+    @staticmethod
+    def setup_phase_aware(
+            validation: ValidationAssertions = ValidationAssertions.all_passes(),
+            main_result: Assertion[T] = asrt.anything_goes(),
+            main_raises_hard_error: bool = False,
+            symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+            symbols_after_main: Assertion[SymbolTable] = asrt.anything_goes(),
+            main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+            side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+            side_effects_on_hds: Assertion[pathlib.Path] = asrt.anything_goes(),
+            main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
+            proc_exe_settings: Assertion[ProcessExecutionSettings]
+            = asrt.is_instance(ProcessExecutionSettings),
+            instruction_settings: Assertion[InstructionSettings]
+            = asrt.is_instance(InstructionSettings),
+            instruction_environment:
+            Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
+            setup_settings: Assertion[Optional[SettingsBuilderAssertionModel]] = asrt.is_none,
+    ) -> 'MultiSourceExpectation[T]':
+        return MultiSourceExpectation(
+            MainMethodType.SETUP_PHASE_AWARE,
+            validation,
+            main_result,
+            main_raises_hard_error,
+            symbol_usages,
+            symbols_after_main,
+            main_side_effects_on_sds,
+            side_effects_on_tcds,
+            side_effects_on_hds,
+            main_side_effect_on_environment_variables,
+            proc_exe_settings,
+            instruction_settings,
+            instruction_environment,
+            setup_settings,
+        )
+
+    def as_w_source(self, source: Assertion[ParseSource]) -> 'Expectation[T]':
+        return Expectation(
+            self.main_method_type,
+            self.validation.pre_sds,
+            self.validation.post_sds,
+            self.main_result,
+            self.main_raises_hard_error,
+            self.symbol_usages,
+            self.symbols_after_main,
+            self.main_side_effects_on_sds,
+            self.side_effects_on_tcds,
+            self.side_effects_on_hds,
+            source,
+            self.main_side_effect_on_environment_variables,
+            self.proc_exe_settings,
+            self.instruction_settings,
+            self.instruction_application_environment,
+            self.setup_settings,
+        )
+
+
+class Expectation(Generic[T], MultiSourceExpectation[T]):
     def __init__(self,
                  main_method_type: MainMethodType,
                  validation_pre_sds: ValidationResultAssertion = asrt.is_none,
@@ -214,22 +444,27 @@ class Expectation(Generic[T]):
                  Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
                  setup_settings: Assertion[Optional[SettingsBuilderAssertionModel]] = asrt.is_none,
                  ):
-        self.main_method_type = main_method_type
-        self.validation_pre_sds = validation_pre_sds
-        self.validation_post_sds = validation_post_sds
-        self.main_result = main_result
-        self.main_raises_hard_error = main_raises_hard_error
-        self.instruction_settings = instruction_settings
-        self.proc_exe_settings = proc_exe_settings
-        self.main_side_effects_on_sds = main_side_effects_on_sds
-        self.side_effects_on_tcds = side_effects_on_tcds
-        self.side_effects_on_hds = side_effects_on_hds
+        super().__init__(
+            main_method_type,
+            ValidationAssertions(validation_pre_sds,
+                                 validation_post_sds),
+            main_result,
+            main_raises_hard_error,
+
+            symbol_usages,
+            symbols_after_main,
+
+            main_side_effects_on_sds,
+            side_effects_on_tcds,
+            side_effects_on_hds,
+            main_side_effect_on_environment_variables,
+
+            proc_exe_settings,
+            instruction_settings,
+            assertion_on_instruction_environment,
+            setup_settings,
+        )
         self.source = source
-        self.symbol_usages = symbol_usages
-        self.symbols_after_main = symbols_after_main
-        self.main_side_effect_on_environment_variables = main_side_effect_on_environment_variables
-        self.instruction_application_environment = assertion_on_instruction_environment
-        self.setup_settings = setup_settings
 
     @staticmethod
     def phase_agnostic(
@@ -347,133 +582,6 @@ class Expectation(Generic[T]):
         )
 
 
-class MultiSourceExpectation(Generic[T]):
-    def __init__(self,
-                 main_method_type: MainMethodType,
-                 validation: ValidationAssertions = ValidationAssertions.all_passes(),
-                 main_result: Assertion[T] = asrt.anything_goes(),
-                 main_raises_hard_error: bool = False,
-                 symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
-                 symbols_after_main: Assertion[SymbolTable] = asrt.anything_goes(),
-                 main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
-                 side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
-                 side_effects_on_hds: Assertion[pathlib.Path] = asrt.anything_goes(),
-                 main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
-                 proc_exe_settings: Assertion[ProcessExecutionSettings]
-                 = asrt.is_instance(ProcessExecutionSettings),
-                 instruction_settings: Assertion[InstructionSettings]
-                 = asrt.is_instance(InstructionSettings),
-                 instruction_environment:
-                 Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
-                 setup_settings: Assertion[Optional[SettingsBuilderAssertionModel]] = asrt.is_none,
-                 ):
-        self.main_method_type = main_method_type
-        self.validation = validation
-        self.main_result = main_result
-        self.main_raises_hard_error = main_raises_hard_error
-        self.proc_exe_settings = proc_exe_settings
-        self.instruction_settings = instruction_settings
-        self.main_side_effects_on_sds = main_side_effects_on_sds
-        self.side_effects_on_tcds = side_effects_on_tcds
-        self.side_effects_on_hds = side_effects_on_hds
-        self.symbol_usages = symbol_usages
-        self.symbols_after_main = symbols_after_main
-        self.main_side_effect_on_environment_variables = main_side_effect_on_environment_variables
-        self.instruction_application_environment = instruction_environment
-        self.setup_settings = setup_settings
-
-    @staticmethod
-    def phase_agnostic(
-            validation: ValidationAssertions = ValidationAssertions.all_passes(),
-            main_result: Assertion[T] = asrt.anything_goes(),
-            main_raises_hard_error: bool = False,
-            symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
-            symbols_after_main: Assertion[SymbolTable] = asrt.anything_goes(),
-            main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
-            side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
-            side_effects_on_hds: Assertion[pathlib.Path] = asrt.anything_goes(),
-            main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
-            proc_exe_settings: Assertion[ProcessExecutionSettings]
-            = asrt.is_instance(ProcessExecutionSettings),
-            instruction_settings: Assertion[InstructionSettings]
-            = asrt.is_instance(InstructionSettings),
-            instruction_environment:
-            Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
-    ) -> 'MultiSourceExpectation[T]':
-        return MultiSourceExpectation(
-            MainMethodType.PHASE_AGNOSTIC,
-            validation,
-            main_result,
-            main_raises_hard_error,
-            symbol_usages,
-            symbols_after_main,
-            main_side_effects_on_sds,
-            side_effects_on_tcds,
-            side_effects_on_hds,
-            main_side_effect_on_environment_variables,
-            proc_exe_settings,
-            instruction_settings,
-            instruction_environment,
-            asrt.is_none,
-        )
-
-    @staticmethod
-    def setup_phase_aware(
-            validation: ValidationAssertions = ValidationAssertions.all_passes(),
-            main_result: Assertion[T] = asrt.anything_goes(),
-            main_raises_hard_error: bool = False,
-            symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
-            symbols_after_main: Assertion[SymbolTable] = asrt.anything_goes(),
-            main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
-            side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
-            side_effects_on_hds: Assertion[pathlib.Path] = asrt.anything_goes(),
-            main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
-            proc_exe_settings: Assertion[ProcessExecutionSettings]
-            = asrt.is_instance(ProcessExecutionSettings),
-            instruction_settings: Assertion[InstructionSettings]
-            = asrt.is_instance(InstructionSettings),
-            instruction_environment:
-            Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
-            setup_settings: Assertion[Optional[SettingsBuilderAssertionModel]] = asrt.is_none,
-    ) -> 'MultiSourceExpectation[T]':
-        return MultiSourceExpectation(
-            MainMethodType.SETUP_PHASE_AWARE,
-            validation,
-            main_result,
-            main_raises_hard_error,
-            symbol_usages,
-            symbols_after_main,
-            main_side_effects_on_sds,
-            side_effects_on_tcds,
-            side_effects_on_hds,
-            main_side_effect_on_environment_variables,
-            proc_exe_settings,
-            instruction_settings,
-            instruction_environment,
-            setup_settings,
-        )
-
-    def as_w_source(self, source: Assertion[ParseSource]) -> Expectation[T]:
-        return Expectation(
-            self.main_method_type,
-            self.validation.pre_sds,
-            self.validation.post_sds,
-            self.main_result,
-            self.main_raises_hard_error,
-            self.symbol_usages,
-            self.symbols_after_main,
-            self.main_side_effects_on_sds,
-            self.side_effects_on_tcds,
-            self.side_effects_on_hds,
-            source,
-            self.main_side_effect_on_environment_variables,
-            self.proc_exe_settings,
-            self.instruction_settings,
-            self.instruction_application_environment,
-            self.setup_settings,
-        )
-
-
 class TestCaseBase(Generic[T], unittest.TestCase):
     def _check(self,
                parser: InstructionEmbryoParser[T],
@@ -492,7 +600,7 @@ def check(put: unittest.TestCase,
           source: ParseSource,
           arrangement: Arrangement,
           expectation: Expectation[T]):
-    Executor(put, arrangement, expectation).execute(parser, source)
+    _ParseAndExecutionChecker(put, arrangement, expectation).execute(parser, source)
 
 
 class Checker(Generic[T]):
@@ -505,7 +613,7 @@ class Checker(Generic[T]):
               arrangement: Arrangement,
               expectation: Expectation[T],
               ):
-        Executor(put, arrangement, expectation).execute(self.parser, source)
+        _ParseAndExecutionChecker(put, arrangement, expectation).execute(self.parser, source)
 
     def check__abs_stx(self,
                        put: unittest.TestCase,
@@ -515,7 +623,7 @@ class Checker(Generic[T]):
                        layout: LayoutSpec = LayoutSpec.of_default(),
                        ):
         source = remaining_source(source.tokenization().layout(layout))
-        Executor(put, arrangement, expectation_).execute(self.parser, source)
+        _ParseAndExecutionChecker(put, arrangement, expectation_).execute(self.parser, source)
 
     def check__abs_stx__std_layouts_and_source_variants(
             self,
@@ -523,7 +631,7 @@ class Checker(Generic[T]):
             source: AbstractSyntax,
             arrangement: Arrangement,
             expectation: MultiSourceExpectation[T],
-            **sub_test_identifiers,
+            **sub_test_identifiers
     ):
         self.check__abs_stx__layout_and_source_variants(
             put,
@@ -531,8 +639,47 @@ class Checker(Generic[T]):
             arrangement,
             expectation,
             layout.STANDARD_LAYOUT_SPECS,
-            **sub_test_identifiers,
+            **sub_test_identifiers
         )
+
+    def check__abs_stx__multi__std_layouts_and_source_variants(
+            self,
+            put: unittest.TestCase,
+            source: AbstractSyntax,
+            symbol_usages: Assertion[Sequence[SymbolUsage]],
+            execution_cases: Sequence[NArrEx[Arrangement, ExecutionExpectation[T]]],
+            **sub_test_identifiers
+    ):
+        """This method cannot be used for instructions who's main populate the symbol table
+        (ie instructions that define symbols).
+        """
+        for source_formatting_case in abs_stx_utils.formatting_cases(source):
+            source_str = source_formatting_case.value
+            for source_case in equivalent_source_variants.consume_last_line__s__nsc(source_str):
+                parse_checker = _ParseChecker(put,
+                                              symbol_usages,
+                                              source_case.expectation)
+                instruction = self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source_case.source)
+                for arr_exp_case in execution_cases:
+                    symbol_table_after_main = asrt_sym_tbl.assert_symbol_table_keys_equals(
+                        arr_exp_case.arrangement.symbols.names_set
+                    )
+                    with put.subTest(_source_variant=source_case.name,
+                                     _source_formatting=source_formatting_case.name,
+                                     _execution_case=arr_exp_case.name,
+                                     **sub_test_identifiers):
+                        parse_checker.check(instruction, source_case.source)
+                        # ^ Checks same source and sym-refs multiple times.
+                        # Bad, but put here to make the check part of the same sub-test.
+
+                        executor = _ExecutionChecker(
+                            put,
+                            arr_exp_case.arrangement,
+                            symbol_usages,
+                            symbol_table_after_main,
+                            arr_exp_case.expectation)
+
+                        executor.check(instruction)
 
     def check__abs_stx__layout_and_source_variants(
             self,
@@ -541,31 +688,12 @@ class Checker(Generic[T]):
             arrangement: Arrangement,
             expectation: MultiSourceExpectation[T],
             layouts: Sequence[NameAndValue[LayoutSpec]] = layout.STANDARD_LAYOUT_SPECS,
-            **sub_test_identifiers,
+            **sub_test_identifiers
     ):
-        self.check__token_sequence__layout_and_source_variants(
-            put,
-            source.tokenization(),
-            arrangement,
-            expectation,
-            layouts,
-            **sub_test_identifiers,
-        )
-
-    def check__token_sequence__layout_and_source_variants(
-            self,
-            put: unittest.TestCase,
-            source: TokenSequence,
-            arrangement: Arrangement,
-            expectation: MultiSourceExpectation[T],
-            layouts: Sequence[NameAndValue[LayoutSpec]],
-            **sub_test_identifiers,
-    ):
-        for layout_ in layouts:
-            with put.subTest(layout=layout_.name,
+        for source_formatting_case in abs_stx_utils.formatting_cases(source, layouts):
+            with put.subTest(layout=source_formatting_case.name,
                              **sub_test_identifiers):
-                source_str = source.layout(layout_.value)
-                self.check__w_source_variants(put, source_str, arrangement, expectation)
+                self.check__w_source_variants(put, source_formatting_case.value, arrangement, expectation)
 
     def check__w_source_variants(self,
                                  put: unittest.TestCase,
@@ -575,11 +703,12 @@ class Checker(Generic[T]):
                                  ):
         for parse_source, source_asrt in equivalent_source_variants__with_source_check__consume_last_line_2(source):
             with put.subTest(remaining_source=parse_source.remaining_source):
-                executor = Executor(put, arrangement, expectation.as_w_source(source_asrt), source_asrt)
+                executor = _ParseAndExecutionChecker(put, arrangement, expectation.as_w_source(source_asrt),
+                                                     source_asrt)
                 executor.execute(self.parser, parse_source)
 
 
-class Executor(Generic[T]):
+class _ParseAndExecutionChecker(Generic[T]):
     def __init__(self,
                  put: unittest.TestCase,
                  arrangement: Arrangement,
@@ -591,20 +720,81 @@ class Executor(Generic[T]):
         self.expectation = expectation
         self.message_builder = asrt.MessageBuilder()
         self.extra_source_expectation = extra_source_expectation
+        self.parse_checker = _ParseChecker(self.put,
+                                           expectation.symbol_usages,
+                                           expectation.source,
+                                           extra_source_expectation)
+        self.execution_checker = _ExecutionChecker(self.put,
+                                                   arrangement,
+                                                   expectation.symbol_usages,
+                                                   expectation.symbols_after_main,
+                                                   expectation)
 
     def execute(self,
                 parser: InstructionEmbryoParser,
                 source: ParseSource):
         instruction = parser.parse(self.arrangement.fs_location_info, source)
+        instruction = self.parse_checker.check(instruction, source)
+        self.execution_checker.check(instruction)
+
+
+class _ParseChecker(Generic[T]):
+    def __init__(self,
+                 put: unittest.TestCase,
+                 symbol_usages_after_parse: Assertion[Sequence[SymbolUsage]],
+                 source_expectation: Assertion[ParseSource],
+                 extra_source_expectation: Assertion[ParseSource] = asrt.anything_goes(),
+                 ):
+        self.put = put
+        self.symbol_usages_after_parse = symbol_usages_after_parse
+        self.source_expectation = source_expectation
+        self.extra_source_expectation = extra_source_expectation
+
+    def parse_and_check(self,
+                        parser: InstructionEmbryoParser,
+                        source: ParseSource,
+                        fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
+                        ) -> InstructionEmbryo[T]:
+        instruction = parser.parse(fs_location_info, source)
+        return self.check(
+            instruction,
+            source,
+        )
+
+    def check(self,
+              instruction,
+              source_after_parse: ParseSource,
+              ) -> InstructionEmbryo[T]:
+        self.source_expectation.apply_with_message(self.put, source_after_parse, 'source')
+        self.extra_source_expectation.apply_with_message(self.put, source_after_parse, 'source')
+
         asrt.is_instance(InstructionEmbryo).apply_with_message(self.put, instruction,
                                                                'Instruction class')
-        self.expectation.source.apply_with_message(self.put, source, 'source')
-        self.extra_source_expectation.apply_with_message(self.put, source, 'source')
 
         assert isinstance(instruction, InstructionEmbryo)
-        self.expectation.symbol_usages.apply_with_message(self.put,
+        self.symbol_usages_after_parse.apply_with_message(self.put,
                                                           instruction.symbol_usages,
                                                           'symbol-usages after parse')
+
+        return instruction
+
+
+class _ExecutionChecker(Generic[T]):
+    def __init__(self,
+                 put: unittest.TestCase,
+                 arrangement: Arrangement,
+                 symbols_after_parse: Assertion[Sequence[SymbolUsage]],
+                 symbols_after_main: Assertion[SymbolTable],
+                 expectation: ExecutionExpectation[T],
+                 ):
+        self.put = put
+        self.arrangement = arrangement
+        self.symbols_after_parse = symbols_after_parse
+        self.symbols_after_main = symbols_after_main
+        self.expectation = expectation
+        self.message_builder = asrt.MessageBuilder()
+
+    def check(self, instruction: InstructionEmbryo[T]):
         with tcds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 hds_contents=self.arrangement.hds_contents,
@@ -626,18 +816,18 @@ class Executor(Generic[T]):
 
             environment = environment_builder.build_pre_sds()
             validate_result = self._execute_validate_pre_sds(environment, instruction)
-            self.expectation.symbol_usages.apply_with_message(self.put,
-                                                              instruction.symbol_usages,
-                                                              'symbol-usages after ' +
-                                                              phase_step.STEP__VALIDATE_PRE_SDS)
+            self.symbols_after_parse.apply_with_message(self.put,
+                                                        instruction.symbol_usages,
+                                                        'symbol-usages after ' +
+                                                        phase_step.STEP__VALIDATE_PRE_SDS)
             if validate_result is not None:
                 return
             environment = environment_builder.build_post_sds()
             validate_result = self._execute_validate_post_setup(environment, instruction)
-            self.expectation.symbol_usages.apply_with_message(self.put,
-                                                              instruction.symbol_usages,
-                                                              'symbol-usages after ' +
-                                                              phase_step.STEP__VALIDATE_POST_SETUP)
+            self.symbols_after_parse.apply_with_message(self.put,
+                                                        instruction.symbol_usages,
+                                                        'symbol-usages after ' +
+                                                        phase_step.STEP__VALIDATE_POST_SETUP)
             if validate_result is not None:
                 return
 
@@ -651,14 +841,14 @@ class Executor(Generic[T]):
                 self.put,
                 instr_settings.environ(),
                 'main side effects on environment variables')
-            self.expectation.symbols_after_main.apply_with_message(
-                self.put,
-                environment.symbols,
-                'symbols_after_main')
-            self.expectation.symbol_usages.apply_with_message(self.put,
-                                                              instruction.symbol_usages,
-                                                              'symbol-usages after ' +
-                                                              phase_step.STEP__MAIN)
+            self.symbols_after_parse.apply_with_message(self.put,
+                                                        instruction.symbol_usages,
+                                                        'symbol-usages after ' +
+                                                        phase_step.STEP__MAIN)
+            self.symbols_after_main.apply_with_message(self.put,
+                                                       environment.symbols,
+                                                       'symbols in symbol table after ' +
+                                                       phase_step.STEP__MAIN)
             self.expectation.proc_exe_settings.apply_with_message(self.put, environment.proc_exe_settings,
                                                                   'proc exe settings')
             self.expectation.instruction_settings.apply_with_message(self.put, instr_settings,
@@ -692,7 +882,7 @@ class Executor(Generic[T]):
             environment: InstructionEnvironmentForPreSdsStep,
             instruction: InstructionEmbryo[T]) -> Optional[TextRenderer]:
         result = instruction.validator.validate_pre_sds_if_applicable(environment.path_resolving_environment)
-        self.expectation.validation_pre_sds.apply_with_message(self.put, result,
+        self.expectation.validation.pre_sds.apply_with_message(self.put, result,
                                                                'validation_pre_sds')
         return result
 
@@ -701,7 +891,7 @@ class Executor(Generic[T]):
             environment: InstructionEnvironmentForPostSdsStep,
             instruction: InstructionEmbryo[T]) -> Optional[TextRenderer]:
         result = instruction.validator.validate_post_sds_if_applicable(environment.path_resolving_environment)
-        self.expectation.validation_post_sds.apply_with_message(self.put, result,
+        self.expectation.validation.post_sds.apply_with_message(self.put, result,
                                                                 'validation_post_sds')
         return result
 
@@ -724,6 +914,7 @@ class Executor(Generic[T]):
                 return
             else:
                 self.put.fail('unexpected {} from main'.format(HardErrorException))
+                return
 
         if self.expectation.main_raises_hard_error:
             self.put.fail('main does not raise ' + str(HardErrorException))

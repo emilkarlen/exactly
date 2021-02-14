@@ -84,13 +84,13 @@ SDS_CONCEPT_INFO = name_and_ref_target(
 
 CURRENT_WORKING_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
     NameWithGender('a', _CURRENT_DIRECTORY_SINGULAR, 'current directories'),
-    _format('The current directory of the environment in which instruction and {os_process:s} are executed.'),
+    _format('The current directory of the environment in which instructions and {os_process:s} are executed.'),
     'CD',
 )
 
 ENVIRONMENT_VARIABLE_CONCEPT_INFO = name_and_ref_target(
     an_name_with_plural_s('environment variable'),
-    _format('OS environment variables available to processes executed from within a test case.')
+    _format('OS environment variables available to {os_process:s} executed from within a test case.')
 )
 
 PREPROCESSOR_CONCEPT_INFO = name_and_ref_target(

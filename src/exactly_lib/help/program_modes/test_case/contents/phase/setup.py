@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.test_case import phase_names, phase_infos
@@ -23,6 +23,9 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
         self._tp = TextParser({
             'phase': phase_names.PHASE_NAME_DICTIONARY,
             'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
+            'env_var': concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.name,
+            'stdin': misc_texts.STDIN,
+            'SDS': concepts.SDS_CONCEPT_INFO.name,
         })
 
     def purpose(self) -> Description:
@@ -60,9 +63,9 @@ REST_OF_DESCRIPTION = """\
 E.g.
 
 
- * populating the current directory with files and directories
- * setting the contents of stdin
- * setting environment variables
+ * populating the {SDS:/q} with files and directories
+ * setting the contents of {stdin}
+ * setting {env_var:s}
  * setting up external resources, such as databases.
 """
 
@@ -73,9 +76,9 @@ the {ATC}.
 
 SEQUENCE_INFO__PRECEDING_PHASE = """\
 This phase follows the {phase[conf]} phase,
-and is the first phase that is executed in the sandbox.
+and is the first phase that is executed with the {SDS:/q}.
 """
 
 ENV_VARS_PROLOGUE = """\
-Environment variables are inherited from the parent process.
+{env_var:s/u} are inherited from the parent process.
 """

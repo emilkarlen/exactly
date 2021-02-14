@@ -1,4 +1,5 @@
 import unittest
+from typing import Iterable
 
 from exactly_lib.util.symbol_table import SymbolTable, SymbolTableValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -10,7 +11,7 @@ def assert_symbol_table_is_singleton(expected_name: str,
     return _AssertSymbolTableIsSingleton(expected_name, value_assertion)
 
 
-def assert_symbol_table_keys_equals(expected_keys: iter) -> Assertion[SymbolTable]:
+def assert_symbol_table_keys_equals(expected_keys: Iterable[str]) -> Assertion[SymbolTable]:
     return _AssertSymbolTableKeysEquals(expected_keys)
 
 
@@ -37,8 +38,7 @@ class _AssertSymbolTableIsSingleton(AssertionBase[SymbolTable]):
 
 
 class _AssertSymbolTableKeysEquals(AssertionBase):
-    def __init__(self,
-                 expected_keys: iter):
+    def __init__(self, expected_keys: Iterable[str]):
         self.expected_keys = expected_keys
 
     def _apply(self,

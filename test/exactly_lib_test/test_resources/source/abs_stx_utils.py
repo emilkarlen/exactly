@@ -16,10 +16,12 @@ def of_lines(on_separate_lines: Sequence[AbstractSyntax]) -> str:
     ])
 
 
-def formatting_cases(syntax: AbstractSyntax) -> Sequence[NameAndValue[str]]:
+def formatting_cases(syntax: AbstractSyntax,
+                     layouts: Sequence[NameAndValue[layout.LayoutSpec]] = layout.STANDARD_LAYOUT_SPECS,
+                     ) -> Sequence[NameAndValue[str]]:
     tokens = syntax.tokenization()
     return [
         NameAndValue(layout_case.name,
                      tokens.layout(layout_case.value))
-        for layout_case in layout.STANDARD_LAYOUT_SPECS
+        for layout_case in layouts
     ]
