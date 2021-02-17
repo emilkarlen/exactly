@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import Sequence, TypeVar, Generic, Optional
 
+from exactly_lib.impls.actors.util import atc_proc_exe_settings
 from exactly_lib.impls.svh_validators import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act.actor import ActionToCheck, Actor
-from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
+from exactly_lib.test_case.phases.act.execution_input import AtcExecutionInput
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
@@ -17,6 +18,7 @@ from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.std import StdOutputFiles
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 
 
 class Validator(ABC):
@@ -46,6 +48,7 @@ class Executor(ABC):
     @abstractmethod
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                settings: ProcessExecutionSettings,
                 stdin: Optional[StringSource],
                 output: StdOutputFiles,
                 ) -> int:
@@ -210,11 +213,12 @@ class ActionToCheckFromParts(Generic[EXECUTABLE_OBJECT], ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                input_: ActExecutionInput,
+                atc_input: AtcExecutionInput,
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
+        settings = atc_proc_exe_settings.for_atc(environment, atc_input)
         try:
-            exit_code = self._executor.execute(environment, input_.stdin, output)
+            exit_code = self._executor.execute(environment, settings, atc_input.stdin, output)
             return eh.new_eh_exit_code(exit_code)
         except HardErrorException as ex:
             return eh.new_eh_hard_error(FailureDetails.new_message(ex.error))

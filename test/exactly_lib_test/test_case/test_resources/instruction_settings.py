@@ -1,6 +1,7 @@
 from typing import Optional, Dict, Mapping
 
-from exactly_lib.test_case.phases.instruction_settings import InstructionSettings, DefaultEnvironGetter
+from exactly_lib.test_case.phases.environ import DefaultEnvironGetter
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.util import functional
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ

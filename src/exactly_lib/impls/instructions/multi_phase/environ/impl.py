@@ -1,9 +1,9 @@
 import enum
 import re
 from abc import ABC, abstractmethod
-from typing import Sequence, Dict, Optional, FrozenSet
+from typing import Dict
+from typing import Sequence, Optional, FrozenSet
 
-from exactly_lib.impls.instructions.multi_phase.environ.modifier import Modifier, ModifierApplier
 from exactly_lib.impls.instructions.multi_phase.utils import instruction_embryo as embryo
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case.os_services import OsServices
@@ -17,6 +17,18 @@ from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 class Phase(enum.Enum):
     ACT = 1
     NON_ACT = 2
+
+
+class Modifier(ABC):
+    @abstractmethod
+    def modify(self, environ: Dict[str, str]):
+        pass
+
+
+class ModifierApplier(ABC):
+    @abstractmethod
+    def apply(self, modifier: Modifier):
+        pass
 
 
 class ModifierResolver(ABC):
@@ -152,31 +164,32 @@ class SequenceOfAppliers(ModifierApplier):
 
 class ModifierResolverOfSet(ModifierResolver):
     def __init__(self,
-                 var_name: str,
+                 var_name: StringSdv,
                  var_value: StringSdv,
                  ):
         self._var_name = var_name
         self._var_value = var_value
+        self._references = tuple(var_name.references) + tuple(var_value.references)
 
     def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Modifier:
-        return _SetModifier(self._var_name,
+        return _SetModifier(self._var_name.resolve_value_of_any_dependency(environment),
                             self._var_value.resolve_value_of_any_dependency(environment))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return self._var_value.references
+        return self._references
 
 
 class ModifierResolverOfUnset(ModifierResolver):
-    def __init__(self, var_name: str, ):
+    def __init__(self, var_name: StringSdv):
         self._var_name = var_name
 
     def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Modifier:
-        return _UnsetModifier(self._var_name)
+        return _UnsetModifier(self._var_name.resolve_value_of_any_dependency(environment))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return ()
+        return self._var_name.references
 
 
 class _SetModifier(Modifier):

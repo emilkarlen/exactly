@@ -1,7 +1,7 @@
 from exactly_lib.definitions.entity import actors
 from exactly_lib.impls.actors.program import actor as command_line_actor
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
+from exactly_lib.test_case.phases.act.execution_input import AtcExecutionInput
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
@@ -36,6 +36,6 @@ class PrintStringOnStdout:
 
     def __call__(self,
                  environment: InstructionEnvironmentForPostSdsStep,
-                 input_: ActExecutionInput,
+                 atc_input: AtcExecutionInput,
                  output: StdOutputFiles):
         output.out.write(self.string_to_print)

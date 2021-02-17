@@ -16,9 +16,9 @@ from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.environ import DefaultEnvironGetter
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.instruction_settings import DefaultEnvironGetter
 from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.util import functional

@@ -1,24 +1,29 @@
 [setup]
 
-run @ ENV_VAR_IS_NOT_SET BEFORE_ASSERT_VAR
+run @ ENV_VAR_IS_NOT_SET BeforeAssertVar
 
 [before-assert]
 
 
 def string VAR_VAL = 'the value of the before-assert env var'
 
-env BEFORE_ASSERT_VAR = @[VAR_VAL]@
+env BeforeAssertVar = @[VAR_VAL]@
 
-run @ ENV_VAR_EQUALS BEFORE_ASSERT_VAR @[VAR_VAL]@
+env -of act ActVar = 'value of var for act phase'
+
+run @ ENV_VAR_EQUALS     BeforeAssertVar @[VAR_VAL]@
+run @ ENV_VAR_IS_NOT_SET ActVar
 
 
 [assert]
 
 
-run @ ENV_VAR_EQUALS BEFORE_ASSERT_VAR @[VAR_VAL]@
+run @ ENV_VAR_EQUALS     BeforeAssertVar @[VAR_VAL]@
+run @ ENV_VAR_IS_NOT_SET ActVar
 
 
 [cleanup]
 
 
-run @ ENV_VAR_EQUALS BEFORE_ASSERT_VAR @[VAR_VAL]@
+run @ ENV_VAR_EQUALS     BeforeAssertVar @[VAR_VAL]@
+run @ ENV_VAR_IS_NOT_SET ActVar

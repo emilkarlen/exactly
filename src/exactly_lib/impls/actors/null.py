@@ -10,6 +10,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.std import StdOutputFiles
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 
 
 def actor() -> Actor:
@@ -32,6 +33,7 @@ class _Parser(ExecutableObjectParser):
 class _Executor(parts.Executor):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                settings: ProcessExecutionSettings,
                 stdin: Optional[StringSource],
                 output: StdOutputFiles,
                 ) -> int:

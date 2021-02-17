@@ -12,9 +12,10 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.environ import DefaultEnvironGetter
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.instruction_settings import InstructionSettings, DefaultEnvironGetter
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.phases.setup.instruction import SetupPhaseInstruction
 from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
@@ -121,6 +122,7 @@ class MultiSourceExpectation:
             source,
             self.symbols_after_main,
             self.proc_exe_settings,
+            self.instruction_settings,
         )
 
 

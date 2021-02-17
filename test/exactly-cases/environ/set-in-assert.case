@@ -1,11 +1,11 @@
 [setup]
 
 
-run @ ENV_VAR_IS_NOT_SET ASSERT_VAR
+run @ ENV_VAR_IS_NOT_SET AssertVar
 
 [act]
 
-@ PRINT_ENV_VAR ASSERT_VAR
+@ PRINT_ENV_VAR AssertVar
 
 [assert]
 
@@ -15,12 +15,16 @@ stdout is-empty
 
 def string VAR_VAL = 'the value of the assert env var'
 
-env ASSERT_VAR = @[VAR_VAL]@
+env AssertVar = @[VAR_VAL]@
 
-run @ ENV_VAR_EQUALS ASSERT_VAR @[VAR_VAL]@
+env -of act ActVar = 'value of var for act phase'
+
+run @ ENV_VAR_EQUALS     AssertVar @[VAR_VAL]@
+run @ ENV_VAR_IS_NOT_SET ActVar
 
 
 [cleanup]
 
 
-run @ ENV_VAR_EQUALS ASSERT_VAR @[VAR_VAL]@
+run @ ENV_VAR_EQUALS     AssertVar @[VAR_VAL]@
+run @ ENV_VAR_IS_NOT_SET ActVar

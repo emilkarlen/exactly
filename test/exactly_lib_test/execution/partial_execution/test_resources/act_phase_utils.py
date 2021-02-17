@@ -5,7 +5,7 @@ import sys
 from exactly_lib.impls.types.string_source import as_stdin
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act.actor import Actor
-from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
+from exactly_lib.test_case.phases.act.execution_input import AtcExecutionInput
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.util.file_utils.std import StdOutputFiles
@@ -24,13 +24,13 @@ class AtcThatExecutesPythonProgramSource(ActionToCheckThatJustReturnsSuccess):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                input_: ActExecutionInput,
+                atc_input: AtcExecutionInput,
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         python_file = pathlib.Path() / self.PYTHON_FILE_NAME
         with python_file.open(mode='w') as f:
             f.write(self.python_program_source)
-        with as_stdin.of_optional(input_.stdin) as stdin_f:
+        with as_stdin.of_optional(atc_input.stdin) as stdin_f:
             exit_code = subprocess.call([sys.executable, str(python_file)],
                                         timeout=60,
                                         stdin=stdin_f,

@@ -3,7 +3,8 @@ import unittest
 from exactly_lib.impls.actors.program import actor
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.impls.actors.test_resources import integration_check
-from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation, PostSdsExpectation
+from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation, PostSdsExpectation, \
+    AtcExeInputArr
 from exactly_lib_test.impls.types.program.parse_program.test_resources import pgm_and_args_cases
 from exactly_lib_test.impls.types.program.test_resources.stdin_test_setups import \
     StdinCheckViaCopyToOutputFileTestSetup, SingleStdinOfProgramTestSetup, MultipleStdinOfProgramTestSetup
@@ -35,7 +36,9 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
                     Arrangement(
                         symbols=pgm_and_args_case.symbol_table,
                         process_execution=test_setup.proc_exe_env__w_stdin_check,
-                        stdin_contents=test_setup.STRING_SOURCE_CONTENTS,
+                        atc_exe_input=AtcExeInputArr(
+                            stdin_contents=test_setup.STRING_SOURCE_CONTENTS,
+                        ),
                         tcds=TcdsArrangementPreAct(
                             tcds_contents=pgm_and_args_case.tcds,
                         ),
@@ -65,7 +68,9 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
                     Arrangement(
                         symbols=pgm_and_args_case.symbol_table,
                         process_execution=test_setup.proc_exe_env__w_stdin_check,
-                        stdin_contents=model_contents,
+                        atc_exe_input=AtcExeInputArr(
+                            stdin_contents=model_contents,
+                        ),
                         tcds=TcdsArrangementPreAct(
                             tcds_contents=pgm_and_args_case.tcds,
                         ),
@@ -92,7 +97,9 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
             Arrangement(
                 symbols=test_setup.program_symbol.symbol_table,
                 process_execution=test_setup.proc_exe_env__w_stdin_check,
-                stdin_contents=model_contents,
+                atc_exe_input=AtcExeInputArr(
+                    stdin_contents=model_contents,
+                ),
                 tcds=TcdsArrangementPreAct(),
             ),
             Expectation(
@@ -124,7 +131,9 @@ class TestViaExecutionThatStdinShouldBeStdinOfProgramFollowedByStdinOfActExeEnv(
             test_setup.program_that_copies_stdin_syntax(),
             Arrangement(
                 symbols=SymbolContext.symbol_table_of_contexts(test_setup.symbols),
-                stdin_contents=stdin_from_act_exe_input,
+                atc_exe_input=AtcExeInputArr(
+                    stdin_contents=stdin_from_act_exe_input,
+                ),
                 tcds=TcdsArrangementPreAct(),
             ),
             Expectation(

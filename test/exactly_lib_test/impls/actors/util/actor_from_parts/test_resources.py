@@ -15,6 +15,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.result import svh
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.std import StdOutputFiles
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.test_case.actor.test_resources.execute_methods import BeforeExecuteMethod, ExecuteFunction
 from exactly_lib_test.test_resources.actions import do_nothing, do_return
 
@@ -124,6 +125,7 @@ class _ExecutorConstructorForConstant(Generic[EXECUTABLE_OBJECT], sut.ExecutorCo
 class UnconditionallySuccessfulExecutor(sut.Executor):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                settings: ProcessExecutionSettings,
                 stdin: Optional[StringSource],
                 output: StdOutputFiles,
                 ) -> int:
@@ -147,6 +149,7 @@ class ExecutorThat(sut.Executor):
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                settings: ProcessExecutionSettings,
                 stdin: Optional[StringSource],
                 output: StdOutputFiles,
                 ) -> int:
@@ -184,6 +187,7 @@ class ExecutorThatRecordsSteps(sut.Executor):
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                settings: ProcessExecutionSettings,
                 stdin: Optional[StringSource],
                 output: StdOutputFiles,
                 ) -> int:

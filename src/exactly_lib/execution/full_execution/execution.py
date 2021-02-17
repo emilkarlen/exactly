@@ -43,7 +43,7 @@ def execute(conf: ExecutionConfiguration,
                  test_case.cleanup_phase),
         conf,
         conf_phase_values,
-        StandardSetupSettingsHandler.new_empty(),
+        StandardSetupSettingsHandler.new_from_environ,
         is_keep_sandbox)
     return new_from_result_of_partial_execution(configuration_builder.test_case_status,
                                                 partial_result)

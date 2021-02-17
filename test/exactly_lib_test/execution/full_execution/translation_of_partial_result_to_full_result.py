@@ -5,6 +5,10 @@ from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.test_case.test_case_status import TestCaseStatus
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(Test)
+
+
 class Test(unittest.TestCase):
     def test_PASS(self):
         self.assertEqual(FullExeResultStatus.PASS,
@@ -39,3 +43,7 @@ class Test(unittest.TestCase):
         self.assertEqual(FullExeResultStatus.INTERNAL_ERROR,
                          translate_status(TestCaseStatus.FAIL,
                                           ExecutionFailureStatus.INTERNAL_ERROR))
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

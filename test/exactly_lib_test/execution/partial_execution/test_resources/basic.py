@@ -14,7 +14,7 @@ from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases.act.actor import Actor
-from exactly_lib.test_case.phases.instruction_settings import DefaultEnvironGetter
+from exactly_lib.test_case.phases.environ import DefaultEnvironGetter
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.functional import Composition
@@ -218,11 +218,10 @@ def test__va(put: unittest.TestCase,
 def _execute(test_case: TestCase,
              arrangement: Arrangement,
              is_keep_sandbox: bool = True) -> Result:
-    environ = arrangement.environ
     partial_result = sut.execute(
         test_case,
         ExecutionConfiguration(arrangement.default_environ_getter,
-                               environ,
+                               arrangement.environ,
                                arrangement.os_services,
                                sandbox_root_name_resolver.for_test(),
                                arrangement.mem_buff_size,
@@ -231,7 +230,7 @@ def _execute(test_case: TestCase,
         ConfPhaseValues(NameAndValue('the actor', arrangement.actor),
                         arrangement.hds,
                         timeout_in_seconds=arrangement.timeout_in_seconds),
-        StandardSetupSettingsHandler.new_empty(),
+        StandardSetupSettingsHandler.new_from_environ,
         is_keep_sandbox)
     return Result(arrangement.hds,
                   partial_result)

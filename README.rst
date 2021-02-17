@@ -714,7 +714,6 @@ Future development
 More functionality is needed, smaller and larger.
 Including (but by no means limited to):
 
-* Separate environment variables for ``[act]`` and other phases
 * Improved string character escaping
 * Improved syntax using parentheses
 * Concurrent execution of processes

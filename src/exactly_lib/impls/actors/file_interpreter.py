@@ -3,6 +3,7 @@ from typing import Sequence, TypeVar, Callable
 from exactly_lib.definitions.test_case import actor as help_texts
 from exactly_lib.impls import file_properties
 from exactly_lib.impls.actors.common import relativity_configuration_of_action_to_check
+from exactly_lib.impls.actors.util import atc_proc_exe_settings
 from exactly_lib.impls.actors.util import std_files
 from exactly_lib.impls.actors.util.actor_from_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
@@ -20,7 +21,7 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act.actor import ParseException, Actor, ActionToCheck
-from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
+from exactly_lib.test_case.phases.act.execution_input import AtcExecutionInput
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -134,14 +135,15 @@ class _ActionToCheck(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                input_: ActExecutionInput,
+                atc_input: AtcExecutionInput,
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         resolving_environment = full_resolving_env_for_instruction_env(os_services, environment)
         try:
             command = self._make_command(resolving_environment)
-            with std_files.of_optional_stdin(input_.stdin, output) as std_files_:
-                exit_code = os_services.command_executor.execute(command, environment.proc_exe_settings, std_files_)
+            settings = atc_proc_exe_settings.for_atc(environment, atc_input)
+            with std_files.of_optional_stdin(atc_input.stdin, output) as std_files_:
+                exit_code = os_services.command_executor.execute(command, settings, std_files_)
             return eh.new_eh_exit_code(exit_code)
         except HardErrorException as ex:
             return eh.new_eh_hard_error(FailureDetails.new_message(ex.error))

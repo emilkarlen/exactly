@@ -1,20 +1,23 @@
 [setup]
 
-run @ ENV_VAR_IS_NOT_SET CLEANUP_VAR
+run @ ENV_VAR_IS_NOT_SET CleanupVar
 
 [before-assert]
 
-run @ ENV_VAR_IS_NOT_SET CLEANUP_VAR
+run @ ENV_VAR_IS_NOT_SET CleanupVar
 
 [assert]
 
-run @ ENV_VAR_IS_NOT_SET CLEANUP_VAR
+run @ ENV_VAR_IS_NOT_SET CleanupVar
 
 [cleanup]
 
 
 def string VAR_VAL = 'the value of the cleanup env var'
 
-env CLEANUP_VAR = @[VAR_VAL]@
+env CleanupVar = @[VAR_VAL]@
 
-run @ ENV_VAR_EQUALS CLEANUP_VAR @[VAR_VAL]@
+env -of act ActVar = 'value of var for act phase'
+
+run @ ENV_VAR_EQUALS     CleanupVar @[VAR_VAL]@
+run @ ENV_VAR_IS_NOT_SET ActVar

@@ -4,7 +4,7 @@ from typing import Sequence
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
+from exactly_lib.test_case.phases.act.execution_input import AtcExecutionInput
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
@@ -65,7 +65,7 @@ class ActionToCheck(SymbolUser):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                input_: ActExecutionInput,
+                atc_input: AtcExecutionInput,
                 output_files: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         """

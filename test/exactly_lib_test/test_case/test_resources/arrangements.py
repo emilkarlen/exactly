@@ -3,7 +3,7 @@ from typing import Optional
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.instruction_settings import DefaultEnvironGetter
+from exactly_lib.test_case.phases.environ import DefaultEnvironGetter
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ

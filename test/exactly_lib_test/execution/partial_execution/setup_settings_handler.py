@@ -5,7 +5,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution.partial_execution import setup_settings_handler as sut
 from exactly_lib.impls.types.string_source.factory import RootStringSourceFactory
 from exactly_lib.test_case.app_env import ApplicationEnvironment
-from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
+from exactly_lib.test_case.phases.act.execution_input import AtcExecutionInput
 from exactly_lib.test_case.phases.setup.settings_handler import SetupSettingsHandler
 from exactly_lib.type_val_deps.dep_variants.adv_w_validation.impls import ConstantAdvWValidation, \
     unconditionally_successful_validator
@@ -49,7 +49,7 @@ class TestConstructionOfEmpty(unittest.TestCase):
         # ASSERT #
         expectation = _Assertion(
             settings_builder=asrt_settings_builder.stdin_is_not_present(),
-            act_execution_info=asrt_adv_w.is_valid(
+            atc_exe_input=asrt_adv_w.is_valid(
                 resolved_value=_resolved_stdin(asrt.is_none),
             )
         )
@@ -65,7 +65,7 @@ class TestSetStdinToNone(unittest.TestCase):
         # ASSERT #
         expectation = _Assertion(
             settings_builder=asrt_settings_builder.stdin_is_not_present(),
-            act_execution_info=asrt_adv_w.is_valid(
+            atc_exe_input=asrt_adv_w.is_valid(
                 resolved_value=_resolved_stdin(asrt.is_none),
             )
         )
@@ -89,7 +89,7 @@ class TestSetStdinToValidValue(unittest.TestCase):
         expected_string_source = _contents_as_str_equals(stdin_contents)
         expectation = _Assertion(
             settings_builder=asrt_settings_builder.stdin_is_present_and_valid(expected_string_source),
-            act_execution_info=asrt_adv_w.is_valid(
+            atc_exe_input=asrt_adv_w.is_valid(
                 resolved_value=_resolved_stdin(expected_string_source),
             )
         )
@@ -111,7 +111,7 @@ class TestSetStdinToInvalidValue(unittest.TestCase):
         # ASSERT #
         expectation = _Assertion(
             settings_builder=asrt_settings_builder.stdin_is_present_but_invalid(),
-            act_execution_info=asrt_adv_w.is_invalid()
+            atc_exe_input=asrt_adv_w.is_invalid()
         )
 
         expectation.apply_without_message(self, actual)
@@ -124,10 +124,10 @@ class _Assertion(AssertionBase[SetupSettingsHandler]):
 
     def __init__(self,
                  settings_builder: Assertion[SettingsBuilderAssertionModel],
-                 act_execution_info: Assertion[AdvWvAssertionModel[ActExecutionInput]],
+                 atc_exe_input: Assertion[AdvWvAssertionModel[AtcExecutionInput]],
                  ):
         self._settings_builder = settings_builder
-        self._act_execution_info = act_execution_info
+        self._atc_exe_input = atc_exe_input
 
     def _apply(self,
                put: unittest.TestCase,
@@ -152,17 +152,17 @@ class _Assertion(AssertionBase[SetupSettingsHandler]):
                                    self.ENVIRONMENT.tmp_dir__path_access.paths_access,
                                    self.ENVIRONMENT.mem_buff_size,
                                    ),
-            value.as_act_execution_input(),
+            value.as_atc_execution_input(),
         )
 
-        self._act_execution_info.apply(
+        self._atc_exe_input.apply(
             put,
             aei_model,
             message_builder.for_sub_component('act execution info'),
         )
 
 
-def _resolved_stdin(expectation: Assertion[Optional[StringSource]]) -> Assertion[ActExecutionInput]:
+def _resolved_stdin(expectation: Assertion[Optional[StringSource]]) -> Assertion[AtcExecutionInput]:
     return asrt.sub_component(
         'stdin',
         _get_stdin,
@@ -170,7 +170,7 @@ def _resolved_stdin(expectation: Assertion[Optional[StringSource]]) -> Assertion
     )
 
 
-def _get_stdin(x: ActExecutionInput) -> Optional[StringSource]:
+def _get_stdin(x: AtcExecutionInput) -> Optional[StringSource]:
     return x.stdin
 
 

@@ -5,13 +5,13 @@ from typing import Optional
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
+from exactly_lib.execution.partial_execution.execution import MkSetupSettingsHandler
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.predefined_properties import os_environ_getter
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act.actor import Actor
-from exactly_lib.test_case.phases.setup.settings_handler import SetupSettingsHandler
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
@@ -26,13 +26,13 @@ class Arrangement:
     def __init__(self,
                  test_case: TestCase,
                  actor: Actor,
-                 settings_handler: Optional[SetupSettingsHandler] = None,
+                 settings_handler: Optional[MkSetupSettingsHandler] = None,
                  os_services: OsServices = os_services_access.new_for_current_os(),
                  mem_buff_size: int = 2 ** 10,
                  ):
         self.test_case = test_case
         self.actor = actor
-        self.settings_handler = settings_handlers.from_optional(settings_handler)
+        self.settings_handler = settings_handlers.mk_from_optional(settings_handler)
         self.os_services = os_services
         self.mem_buff_size = mem_buff_size
 

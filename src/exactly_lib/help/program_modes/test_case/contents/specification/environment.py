@@ -5,6 +5,7 @@ from exactly_lib.definitions.entity import concepts, types, conf_params
 from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
+from exactly_lib.help.entities.concepts.objects import environment_variable
 from exactly_lib.help.render import see_also
 from exactly_lib.util.textformat.constructor import paragraphs
 from exactly_lib.util.textformat.constructor import sections
@@ -121,7 +122,7 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
                     const_paragraphs_child(
                         'env-vars',
                         tp.format('{env_var:s/u}'),
-                        tp.fnap(_OS_PROC_ENVIRONMENT_VARIABLES),
+                        environment_variable.common_description(),
                     ),
                     const_paragraphs_child(
                         'timeout',
@@ -287,15 +288,6 @@ Part of their environment is controlled by {program_name}.
 # - Which env vars are available.
 # - Manipulating env vars
 ############################################################
-_OS_PROC_ENVIRONMENT_VARIABLES = """\
-All OS {env_var:s}
-that are set when {program_name} is started
-are available in {os_process:s} run from the test case.
-
-
-{env_var:s/u} can be manipulated by the {env} instruction.
-"""
-
 _OS_PROC_CURRENT_DIRECTORY = """\
 The current directory (PWD) is the same as for instructions.
 

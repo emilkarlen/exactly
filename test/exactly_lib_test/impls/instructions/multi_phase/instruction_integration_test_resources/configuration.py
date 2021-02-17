@@ -12,7 +12,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.instruction_settings import InstructionSettings, DefaultEnvironGetter
+from exactly_lib.test_case.phases.environ import DefaultEnvironGetter
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance

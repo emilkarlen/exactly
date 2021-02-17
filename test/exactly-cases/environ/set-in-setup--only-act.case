@@ -1,0 +1,25 @@
+[setup]
+
+def string VAR_VAL = 'the value of the env var'
+
+env -of act ActVar = @[VAR_VAL]@
+
+run @ ENV_VAR_IS_NOT_SET ActVar
+
+[act]
+
+@ PRINT_ENV_VAR ActVar
+
+[before-assert]
+
+run @ ENV_VAR_IS_NOT_SET ActVar
+
+[assert]
+
+stdout equals @[VAR_VAL]@
+
+run @ ENV_VAR_IS_NOT_SET ActVar
+
+[cleanup]
+
+run @ ENV_VAR_IS_NOT_SET ActVar

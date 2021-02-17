@@ -1,6 +1,5 @@
-import enum
 import unittest
-from typing import List, Dict, Optional, Callable
+from typing import List, Optional, Callable
 
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases.act.actor import Actor
@@ -11,6 +10,8 @@ from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.execution.partial_execution.test_resources.basic import test__va, Arrangement, \
     result_is_pass
+from exactly_lib_test.execution.partial_execution.test_resources.recording.phase_propagation import PosInPhase, \
+    StepInfo, RecordingEntry
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     before_assert_phase_instruction_that, assert_phase_instruction_that, \
     cleanup_phase_instruction_that, act_phase_instruction_with_source
@@ -308,63 +309,6 @@ class TestPropagationOfEnvironInSettings(unittest.TestCase):
         self.assertEqual(dict__initial,
                          env_vars_in_arrangement__read_write,
                          'env vars given to executor should not be modified')
-
-
-class PosInPhase(enum.Enum):
-    BEFORE_MODIFY = 1
-    AFTER_MODIFY = 2
-
-
-class StepInfo(tuple):
-    SOURCE__SETTINGS = 'vars-in-settings'
-    SOURCE__ENVIRONMENT = 'vars-in-environment'
-
-    def __new__(cls,
-                phase: PhaseEnum,
-                pos_in_phase: Optional[PosInPhase],
-                source: str
-                ):
-        pos_in_phase_str = (
-            '<no position>'
-            if pos_in_phase is None
-            else
-            pos_in_phase.name
-        )
-        return tuple.__new__(cls, (phase.name, pos_in_phase_str, source))
-
-    @staticmethod
-    def of_settings(phase: PhaseEnum, pos_in_phase: Optional[PosInPhase]) -> 'StepInfo':
-        return StepInfo(phase, pos_in_phase, StepInfo.SOURCE__SETTINGS)
-
-    @staticmethod
-    def of_environment(phase: PhaseEnum, pos_in_phase: Optional[PosInPhase]) -> 'StepInfo':
-        return StepInfo(phase, pos_in_phase, StepInfo.SOURCE__ENVIRONMENT)
-
-
-class RecordingEntry(tuple):
-    def __new__(cls,
-                step_info: StepInfo,
-                value: Optional[Dict[str, str]]
-                ):
-        value_to_record = (
-            None
-            if value is None
-            else
-            dict(value)
-        )
-        return tuple.__new__(cls, (step_info, value_to_record))
-
-    @staticmethod
-    def from_settings(phase: PhaseEnum,
-                      pos_in_phase: Optional[PosInPhase],
-                      value: Optional[Dict[str, str]]) -> 'RecordingEntry':
-        return RecordingEntry(StepInfo.of_settings(phase, pos_in_phase), value)
-
-    @staticmethod
-    def from_environment(phase: PhaseEnum,
-                         pos_in_phase: Optional[PosInPhase],
-                         value: Optional[Dict[str, str]]) -> 'RecordingEntry':
-        return RecordingEntry(StepInfo.of_environment(phase, pos_in_phase), value)
 
 
 def _empty_recording_media() -> List[RecordingEntry]:

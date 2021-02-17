@@ -46,7 +46,7 @@ class InstructionArgumentsAbsStx(AbstractSyntax, ABC):
 
 class SetVariableArgumentsAbsStx(InstructionArgumentsAbsStx):
     def __init__(self,
-                 var_name: str,
+                 var_name: NonHereDocStringAbsStx,
                  value: NonHereDocStringAbsStx,
                  phase_spec: Optional[Phase],
                  ):
@@ -60,7 +60,7 @@ class SetVariableArgumentsAbsStx(InstructionArgumentsAbsStx):
                phase_spec: Optional[Phase],
                quoting: Optional[QuoteType] = None,
                ) -> 'SetVariableArgumentsAbsStx':
-        return SetVariableArgumentsAbsStx(var_name,
+        return SetVariableArgumentsAbsStx(StringLiteralAbsStx(var_name),
                                           StringLiteralAbsStx(value, quoting),
                                           phase_spec)
 
@@ -72,7 +72,7 @@ class SetVariableArgumentsAbsStx(InstructionArgumentsAbsStx):
 
     def _variant_tokenization(self) -> TokenSequence:
         return TokenSequence.concat([
-            TokenSequence.singleton(self.var_name),
+            self.var_name.tokenization(),
             TokenSequence.optional_new_line(),
             TokenSequence.singleton(defs.ASSIGNMENT_IDENTIFIER),
             TokenSequence.optional_new_line(),
@@ -82,19 +82,31 @@ class SetVariableArgumentsAbsStx(InstructionArgumentsAbsStx):
 
 class UnsetVariableArgumentsAbsStx(InstructionArgumentsAbsStx):
     def __init__(self,
-                 var_name: str,
+                 var_name: NonHereDocStringAbsStx,
                  phase_spec: Optional[Phase],
                  ):
         super().__init__(phase_spec)
         self.var_name = var_name
 
+    @staticmethod
+    def of_str(var_name: str,
+               phase_spec: Optional[Phase],
+               quoting: Optional[QuoteType] = None,
+               ) -> 'UnsetVariableArgumentsAbsStx':
+        return UnsetVariableArgumentsAbsStx(StringLiteralAbsStx(var_name, quoting),
+                                            phase_spec)
+
     def _variant_tokenization(self) -> TokenSequence:
         return TokenSequence.concat([
             TokenSequence.singleton(defs.UNSET_IDENTIFIER),
             TokenSequence.optional_new_line(),
-            TokenSequence.singleton(self.var_name),
+            self.var_name.tokenization(),
         ])
 
 
 def env_var_ref_syntax(var_name: str) -> str:
     return str(Surrounded('${', '}', var_name))
+
+
+def end_of_1st_var_ref(expr: str) -> int:
+    return expr.find('}')

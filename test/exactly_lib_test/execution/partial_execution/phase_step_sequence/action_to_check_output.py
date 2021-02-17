@@ -17,7 +17,7 @@ from exactly_lib.util.line_source import LineSequence, single_line_sequence
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.recording.settings_handler import \
-    SetupSettingsHandlerThatRecordsValidation
+    MkSetupSettingsHandlerThatRecordsValidation
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList, \
     TestCaseGeneratorForExecutionRecording
@@ -106,7 +106,7 @@ def check(put: unittest.TestCase,
                 arrangement.test_case_generator.test_case,
                 exe_conf,
                 conf_phase_values,
-                SetupSettingsHandlerThatRecordsValidation(arrangement.test_case_generator.recorder),
+                MkSetupSettingsHandlerThatRecordsValidation(arrangement.test_case_generator.recorder).make,
                 False,
             )
 

@@ -14,17 +14,16 @@ from exactly_lib_test.impls.actors.program.test_resources import ConfigurationWi
     valid_source_variants, tmp_dir_in_path_with_files, invalid_source_variants
 from exactly_lib_test.impls.actors.test_resources import integration_check
 from exactly_lib_test.impls.actors.test_resources.action_to_check import suite_for_execution, TestCaseSourceSetup
-from exactly_lib_test.impls.actors.test_resources.integration_check import Expectation, arrangement_w_tcds
+from exactly_lib_test.impls.actors.test_resources.integration_check import Expectation, arrangement_w_tcds, \
+    AtcExeInputArr
 from exactly_lib_test.impls.actors.test_resources.validation_cases import VALIDATION_CASES
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
-from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 from exactly_lib_test.util.test_resources import py_program
 
 
@@ -159,10 +158,8 @@ class TestSourceVariants(unittest.TestCase):
                         [instr([program_line])],
                         arrangement_w_tcds(
                             symbol_table=program_symbol.symbol_table,
-                            process_execution=ProcessExecutionArrangement(
-                                process_execution_settings=proc_exe_env_for_test(
-                                    environ=environ
-                                )
+                            act_exe_input=AtcExeInputArr(
+                                environ=environ
                             ),
                             hds_contents=hds_populators.contents_in(
                                 RelHdsOptionType.REL_HDS_CASE,

@@ -1,6 +1,6 @@
-from typing import Dict, Optional, Callable
+from typing import Dict, Optional
 
-DefaultEnvironGetter = Callable[[], Dict[str, str]]
+from exactly_lib.test_case.phases.environ import DefaultEnvironGetter
 
 
 class InstructionSettings:

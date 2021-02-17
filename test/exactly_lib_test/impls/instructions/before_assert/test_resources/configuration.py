@@ -6,7 +6,8 @@ from exactly_lib.impls.os_services.os_services_access import new_for_current_os
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.instruction_settings import InstructionSettings, DefaultEnvironGetter
+from exactly_lib.test_case.phases.environ import DefaultEnvironGetter
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc

@@ -8,9 +8,10 @@ from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
+from exactly_lib.test_case.phases.environ import DefaultEnvironGetter
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.instruction_settings import InstructionSettings, DefaultEnvironGetter
+from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings

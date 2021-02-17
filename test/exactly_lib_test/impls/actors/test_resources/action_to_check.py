@@ -15,7 +15,7 @@ from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_t
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.impls.actors.test_resources import integration_check
 from exactly_lib_test.impls.actors.test_resources.integration_check import \
-    Expectation, Arrangement, PostSdsExpectation, arrangement_w_tcds
+    Expectation, Arrangement, PostSdsExpectation, arrangement_w_tcds, AtcExeInputArr
 from exactly_lib_test.impls.instructions.multi_phase.change_dir import CwdSdsAssertion
 from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.tcfs.test_resources.dir_populator import HdsPopulator
@@ -88,7 +88,7 @@ def suite_for_execution(setup: Configuration) -> unittest.TestSuite:
                                TestStderrIsConnectedToProgram,
                                TestStdinAndStdoutAreConnectedToProgram,
                                TestExitCodeIsReturned,
-                               TestEnvironmentVariablesAreAccessibleByProgram,
+                               TestEnvVarsOfAtAreThoseFromActExecutionInput,
                                TestCwdOfAtcIsCurrentDirCurrentDirIsNotChangedByTheActor,
                                TestTimeoutValueIsUsed,
                                TestHardErrorFromExecutorIsDetected,
@@ -130,7 +130,9 @@ class TestStdoutIsConnectedToProgram(TestBase):
                 arrangement_w_tcds(
                     symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
-                    process_execution=_proc_exe_arr_w_environ(setup.environ),
+                    act_exe_input=AtcExeInputArr(
+                        environ=setup.environ
+                    ),
                 ),
                 Expectation(
                     symbol_usages=setup.symbol_usages,
@@ -152,7 +154,9 @@ class TestStderrIsConnectedToProgram(TestBase):
                 arrangement_w_tcds(
                     symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
-                    process_execution=_proc_exe_arr_w_environ(setup.environ),
+                    act_exe_input=AtcExeInputArr(
+                        environ=setup.environ
+                    ),
                 ),
                 Expectation(
                     symbol_usages=setup.symbol_usages,
@@ -174,8 +178,10 @@ class TestStdinAndStdoutAreConnectedToProgram(TestBase):
                 arrangement_w_tcds(
                     symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
-                    stdin_contents=stdin_contents,
-                    process_execution=_proc_exe_arr_w_environ(setup.environ),
+                    act_exe_input=AtcExeInputArr(
+                        stdin_contents=stdin_contents,
+                        environ=setup.environ,
+                    ),
                 ),
                 Expectation(
                     symbol_usages=setup.symbol_usages,
@@ -196,7 +202,9 @@ class TestExitCodeIsReturned(TestBase):
                 arrangement_w_tcds(
                     symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
-                    process_execution=_proc_exe_arr_w_environ(setup.environ),
+                    act_exe_input=AtcExeInputArr(
+                        environ=setup.environ
+                    ),
                 ),
                 Expectation(
                     symbol_usages=setup.symbol_usages,
@@ -205,12 +213,17 @@ class TestExitCodeIsReturned(TestBase):
             )
 
 
-class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
+class TestEnvVarsOfAtAreThoseFromActExecutionInput(TestBase):
     def runTest(self):
-        var_name = 'THIS_IS_A_TEST_VAR_23026509234'
+        var_name = 'This_Is_A_Test_Var_23026509234'
         var_value = str(random.getrandbits(32))
         with self.config.program_that_prints_value_of_environment_variable_to_stdout(var_name) as setup:
-            environ = dict(os.environ) if setup.environ is None else setup.environ
+            environ = (
+                dict(os.environ)
+                if setup.environ is None
+                else
+                setup.environ
+            )
             environ[var_name] = var_value
             self._check(
                 setup.act_phase_instructions,
@@ -218,10 +231,11 @@ class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
                     symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     process_execution=ProcessExecutionArrangement(
-                        process_execution_settings=proc_exe_env_for_test(
-                            environ=environ
-                        )
-                    )
+                        process_execution_settings=proc_exe_env_for_test()
+                    ),
+                    act_exe_input=AtcExeInputArr(
+                        environ=environ,
+                    ),
                 ),
                 Expectation(
                     symbol_usages=setup.symbol_usages,
@@ -260,7 +274,9 @@ class TestCwdOfAtcIsCurrentDirCurrentDirIsNotChangedByTheActor(TestBase):
                     post_sds_action=MkSubDirAndMakeItCurrentDirectory(
                         SdsSubDirResolverWithRelSdsRoot(RelSdsOptionType.REL_ACT, cwd_sub_dir_of_act)
                     ),
-                    process_execution=_proc_exe_arr_w_environ(setup.environ),
+                    act_exe_input=AtcExeInputArr(
+                        environ=setup.environ
+                    ),
                 ),
                 Expectation(
                     symbol_usages=setup.symbol_usages,
@@ -322,14 +338,6 @@ class TestHardErrorFromExecutorIsDetected(TestBase):
                     error_message=asrt_text_doc.is_single_pre_formatted_text_that_equals(hard_error_message),
                 )
             )
-
-
-def _proc_exe_arr_w_environ(environ: Optional[Mapping[str, str]]) -> ProcessExecutionArrangement:
-    return ProcessExecutionArrangement(
-        process_execution_settings=proc_exe_env_for_test(
-            environ=environ
-        )
-    )
 
 
 def _hds_pop_of(setup: TestCaseSourceSetup) -> HdsPopulator:

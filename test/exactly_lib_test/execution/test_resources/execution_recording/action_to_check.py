@@ -4,7 +4,7 @@ from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act.actor import ActionToCheck
-from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
+from exactly_lib.test_case.phases.act.execution_input import AtcExecutionInput
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh, sh
@@ -46,8 +46,8 @@ class ActionToCheckWrapperThatRecordsSteps(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                input_: ActExecutionInput,
+                atc_input: AtcExecutionInput,
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         self.__recorder.recording_of(phase_step.ACT__EXECUTE).record()
-        return self.__wrapped.execute(environment, os_services, input_, output)
+        return self.__wrapped.execute(environment, os_services, atc_input, output)

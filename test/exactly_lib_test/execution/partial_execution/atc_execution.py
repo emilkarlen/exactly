@@ -9,6 +9,7 @@ from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
+from exactly_lib.execution.partial_execution.execution import MkSetupSettingsHandler
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.partial_execution.setup_settings_handler import StandardSetupSettingsHandler
 from exactly_lib.execution.phase_step import SimplePhaseStep
@@ -21,7 +22,8 @@ from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act.actor import ActionToCheck, Actor, ParseException
-from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
+from exactly_lib.test_case.phases.act.execution_input import AtcExecutionInput
+from exactly_lib.test_case.phases.environ import OptionalEnvVarsDict
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup.settings_handler import SetupSettingsHandler
@@ -188,18 +190,24 @@ class TestExecute(unittest.TestCase):
         file_with_stdin_contents = fs.File('redirected-to-stdin.txt', 'contents of file to redirect')
         with tmp_dir(fs.DirContents([file_with_stdin_contents])) as abs_tmp_dir_path:
             absolute_name_of_file_to_redirect = abs_tmp_dir_path / file_with_stdin_contents.name
-            setup_settings = StandardSetupSettingsHandler.new_empty()
-            setup_settings.builder.stdin = ConstantAdvWValidation.new_wo_validation(
-                file_source.string_source_of_file__poorly_described(
-                    absolute_name_of_file_to_redirect,
-                    DirFileSpaceThatMustNoBeUsed())
-            )
+
+            def mk_setup_settings_handler(environ: OptionalEnvVarsDict) -> SetupSettingsHandler:
+                ret_val = StandardSetupSettingsHandler.new_empty()
+                builder = ret_val.builder
+                builder.environ = environ
+                builder.stdin = ConstantAdvWValidation.new_wo_validation(
+                    file_source.string_source_of_file__poorly_described(
+                        absolute_name_of_file_to_redirect,
+                        DirFileSpaceThatMustNoBeUsed())
+                )
+                return ret_val
+
             _check_contents_of_stdin_for_setup_settings(self,
-                                                        setup_settings,
+                                                        mk_setup_settings_handler,
                                                         file_with_stdin_contents.contents)
 
     def test_WHEN_stdin_is_not_set_in_setup_THEN_it_should_be_empty(self):
-        setup_settings = StandardSetupSettingsHandler.new_empty()
+        setup_settings = StandardSetupSettingsHandler.new_from_environ
         setup_settings.stdin = None
         expected_contents_of_stdin = ''
         _check_contents_of_stdin_for_setup_settings(self,
@@ -226,7 +234,7 @@ def _stderr_result_file_contains(expected_contents: str) -> Assertion:
 
 
 def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
-                                                settings_handler: SetupSettingsHandler,
+                                                settings_handler: MkSetupSettingsHandler,
                                                 expected_contents_of_stdin: str) -> PartialExeResult:
     """
     Tests contents of stdin by executing a Python program that stores
@@ -281,7 +289,7 @@ class _ActionToCheckThatRecordsCurrentDir(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                input_: ActExecutionInput,
+                atc_input: AtcExecutionInput,
                 output_files: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         self.cwd_registerer.register_cwd_for(phase_step.ACT__EXECUTE)
@@ -299,10 +307,10 @@ class _AtcThatExecutesPythonProgramFile(ActionToCheckThatJustReturnsSuccess):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                input_: ActExecutionInput,
+                atc_input: AtcExecutionInput,
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
-        with as_stdin.of_optional(input_.stdin) as stdin_f:
+        with as_stdin.of_optional(atc_input.stdin) as stdin_f:
             exit_code = subprocess.call([sys.executable, str(self.python_program_file)],
                                         timeout=60,
                                         stdin=stdin_f,
@@ -318,7 +326,7 @@ class _AtcThatReturnsConstantExitCode(ActionToCheckThatJustReturnsSuccess):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                input_: ActExecutionInput,
+                atc_input: AtcExecutionInput,
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         return new_eh_exit_code(self.exit_code)
@@ -334,7 +342,7 @@ def _empty_test_case() -> TestCase:
 
 def _execute(actor: Actor,
              test_case: TestCase,
-             setup_settings_handler: Optional[SetupSettingsHandler] = None,
+             setup_settings_handler: Optional[MkSetupSettingsHandler] = None,
              is_keep_sandbox: bool = False,
              current_directory: pathlib.Path = None,
              mem_buff_size: int = 2 ** 10,
@@ -353,7 +361,7 @@ def _execute(actor: Actor,
                                        mem_buff_size),
                 ConfPhaseValues(NameAndValue('the actor', actor),
                                 hds),
-                settings_handlers.from_optional(setup_settings_handler),
+                settings_handlers.mk_from_optional(setup_settings_handler),
                 is_keep_sandbox)
 
 

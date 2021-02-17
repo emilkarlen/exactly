@@ -7,6 +7,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.std import StdOutputFiles
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from . import parts
 
 
@@ -18,6 +19,7 @@ class OsProcessExecutor(parts.Executor, ABC):
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                settings: ProcessExecutionSettings,
                 stdin: Optional[StringSource],
                 output: StdOutputFiles,
                 ) -> int:
@@ -30,7 +32,7 @@ class OsProcessExecutor(parts.Executor, ABC):
         with std_files.of_optional_stdin(stdin, output) as std_files_:
             return self.os_services.command_executor.execute(
                 command,
-                environment.proc_exe_settings,
+                settings,
                 std_files_,
             )
 

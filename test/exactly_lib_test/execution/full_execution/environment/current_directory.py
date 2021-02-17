@@ -18,6 +18,17 @@ from exactly_lib_test.execution.test_resources.test_case_generation import full_
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        TheTest(),
+    ])
+
+
+class TheTest(unittest.TestCase):
+    def runTest(self):
+        TestExecutor(self).execute()
+
+
 def current_directory() -> str:
     return os.getcwd()
 
@@ -61,12 +72,13 @@ class _RecordCurrDirAndReturn(_ActionWithPhaseStepAndRecording):
         return self.return_value
 
 
-class Test(FullExecutionTestCaseBase):
+class TestExecutor(FullExecutionTestCaseBase):
     def __init__(self,
-                 unittest_case: unittest.TestCase,
-                 dbg_do_not_delete_dir_structure=False):
+                 put: unittest.TestCase,
+                 dbg_do_not_delete_dir_structure=False,
+                 ):
         self.recorder = instr_setup.Recorder()
-        super().__init__(unittest_case,
+        super().__init__(put,
                          dbg_do_not_delete_dir_structure)
 
     def _actor(self) -> Actor:
@@ -164,3 +176,7 @@ class Test(FullExecutionTestCaseBase):
             self.utc.assertEqual(expected[k],
                                  actual[k],
                                  'Value for %s %s' % (key_entity, str(k)))
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

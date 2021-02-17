@@ -8,7 +8,7 @@ from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act.actor import ActionToCheck
 from exactly_lib.test_case.phases.act.adv_w_validation import AdvWValidation
-from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
+from exactly_lib.test_case.phases.act.execution_input import AtcExecutionInput
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.test_case.result.failure_details import FailureDetails
@@ -36,30 +36,30 @@ class ActionToCheckExecutor:
                  environment_for_validate_post_setup: InstructionEnvironmentForPostSdsStep,
                  environment_for_other_steps: InstructionEnvironmentForPostSdsStep,
                  os_services: OsServices,
-                 execution_input: AdvWValidation[ActExecutionInput],
+                 atc_input: AdvWValidation[AtcExecutionInput],
                  exe_atc_and_skip_assertions: Optional[StdOutputFiles]):
         self.atc = atc
         self.environment_for_validate_post_setup = environment_for_validate_post_setup
         self.environment_for_other_steps = environment_for_other_steps
         self.os_services = os_services
         self.tcds = environment_for_other_steps.tcds
-        self.execution_input = execution_input
+        self.atc_input = atc_input
         self.exe_atc_and_skip_assertions = exe_atc_and_skip_assertions
 
-        self._action_to_check_outcome = None
+        self._atc_outcome = None
 
     @property
     def action_to_check_outcome(self) -> Optional[ActionToCheckOutcome]:
         """
         :return: Not None iff all steps have executed successfully.
         """
-        return self._action_to_check_outcome
+        return self._atc_outcome
 
     def validate_execution_info(self,
                                 failure_con: PhaseStepFailureConstructorType,
                                 ) -> ActionThatRaisesPhaseStepFailureException:
         def action():
-            mb_failure_message = self.execution_input.validate()
+            mb_failure_message = self.atc_input.validate()
             if mb_failure_message:
                 raise PhaseStepFailureException(
                     failure_con(ExecutionFailureStatus.HARD_ERROR,
@@ -111,7 +111,7 @@ class ActionToCheckExecutor:
         exit_code_or_hard_error = self.atc.execute(
             self.environment_for_other_steps,
             self.os_services,
-            self.execution_input.resolve(self._app_env_for_execute()),
+            self.atc_input.resolve(self._app_env_for_execute()),
             output,
         )
         self._register_outcome(exit_code_or_hard_error)
@@ -129,7 +129,7 @@ class ActionToCheckExecutor:
 
     def _register_outcome(self, exit_code_or_hard_error: ExitCodeOrHardError):
         if exit_code_or_hard_error.is_exit_code:
-            self._action_to_check_outcome = ActionToCheckOutcome(exit_code_or_hard_error.exit_code)
+            self._atc_outcome = ActionToCheckOutcome(exit_code_or_hard_error.exit_code)
             if self.exe_atc_and_skip_assertions is None:
                 self._store_exit_code(exit_code_or_hard_error.exit_code)
 

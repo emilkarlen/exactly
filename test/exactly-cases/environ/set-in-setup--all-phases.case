@@ -1,0 +1,25 @@
+[setup]
+
+def string VAR_VAL = 'the value of the env var'
+
+env SetupVar = @[VAR_VAL]@
+
+run @ ENV_VAR_EQUALS SetupVar @[VAR_VAL]@
+
+[act]
+
+@ PRINT_ENV_VAR SetupVar
+
+[before-assert]
+
+run @ ENV_VAR_EQUALS SetupVar @[VAR_VAL]@
+
+[assert]
+
+stdout equals @[VAR_VAL]@
+
+run @ ENV_VAR_EQUALS SetupVar @[VAR_VAL]@
+
+[cleanup]
+
+run @ ENV_VAR_EQUALS SetupVar @[VAR_VAL]@

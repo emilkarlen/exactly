@@ -12,6 +12,7 @@ from exactly_lib.execution.predefined_properties import os_environ_getter
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.phases.act.actor import Actor
+from exactly_lib.test_case.phases.environ import OptionalEnvVarsDict
 from exactly_lib.test_case.phases.setup.settings_handler import SetupSettingsHandler
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.name_and_value import NameAndValue
@@ -47,7 +48,7 @@ class PartialExecutionTestCaseBase:
                                            2 ** 10),
                     ConfPhaseValues(NameAndValue('the actor', self.__actor),
                                     hds),
-                    self._settings_handler(),
+                    self._mk_settings_handler,
                     self.__dbg_do_not_delete_dir_structure)
 
                 # ASSERT #
@@ -65,8 +66,8 @@ class PartialExecutionTestCaseBase:
     def _test_case(self) -> TestCase:
         raise NotImplementedError()
 
-    def _settings_handler(self) -> SetupSettingsHandler:
-        return StandardSetupSettingsHandler.new_empty()
+    def _mk_settings_handler(self, environ: OptionalEnvVarsDict) -> SetupSettingsHandler:
+        return StandardSetupSettingsHandler.new_from_environ(environ)
 
     def _assertions(self):
         raise NotImplementedError()

@@ -5,13 +5,14 @@ from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.act.actor import Actor
-from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
+from exactly_lib.test_case.phases.act.execution_input import AtcExecutionInput
+from exactly_lib.test_case.phases.environ import OptionalEnvVarsDict
 from exactly_lib.test_case.phases.setup.settings_handler import SetupSettingsHandler
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.type_val_deps.dep_variants.adv_w_validation import impls as adv_impls
 from exactly_lib.type_val_deps.dep_variants.adv_w_validation.impls import ValidatorFunction
 from exactly_lib_test.execution.partial_execution.test_resources.recording.settings_handler import \
-    SetupSettingsHandlerThatRecordsValidation
+    MkSetupSettingsHandlerThatRecordsValidation
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_base import PartialExecutionTestCaseBase
@@ -27,7 +28,7 @@ from exactly_lib_test.test_case.actor.test_resources.test_actions import \
 from exactly_lib_test.test_resources.actions import do_nothing, do_return
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
-_VALID_EMPTY_AEI = adv_impls.ConstantAdvWValidation(ActExecutionInput.empty(),
+_VALID_EMPTY_AEI = adv_impls.ConstantAdvWValidation(AtcExecutionInput.empty(),
                                                     adv_impls.unconditionally_successful_validator)
 
 
@@ -121,11 +122,11 @@ class _TestCaseThatRecordsExecution(PartialExecutionTestCaseBase):
     def _test_case(self) -> test_case_doc.TestCase:
         return self._test_case_generator.test_case
 
-    def _settings_handler(self) -> SetupSettingsHandler:
-        return SetupSettingsHandlerThatRecordsValidation(
+    def _mk_settings_handler(self, environ: OptionalEnvVarsDict) -> SetupSettingsHandler:
+        return MkSetupSettingsHandlerThatRecordsValidation(
             self._test_case_generator.recorder,
             self._custom_act_execution_input_validator,
-        )
+        ).make(environ)
 
     def _assertions(self):
         self.__expectation.result.apply_with_message(self.put,

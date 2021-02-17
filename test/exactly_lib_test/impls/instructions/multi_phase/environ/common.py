@@ -17,7 +17,7 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.custom_abstract_syntax import SequenceAbsStx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringLiteralAbsStx, \
-    QUOTED_STR__SOFT, MISSING_END_QUOTE__SOFT, MISSING_END_QUOTE_STR__HARD
+    MISSING_END_QUOTE__SOFT, MISSING_END_QUOTE_STR__HARD
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
     StringSymbolContext
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
@@ -41,25 +41,19 @@ class TestInvalidSyntaxOfSetShouldBeDetected(unittest.TestCase):
             cases = [
                 NameAndValue(
                     'missing arguments',
-                    SetVariableArgumentsAbsStx('',
+                    SetVariableArgumentsAbsStx(StringLiteralAbsStx(''),
                                                StringLiteralAbsStx(''),
                                                phase_spec=phase_spec),
                 ),
                 NameAndValue(
                     'more than three arguments',
-                    SetVariableArgumentsAbsStx('arg1',
+                    SetVariableArgumentsAbsStx(StringLiteralAbsStx('arg1'),
                                                StringLiteralAbsStx('arg2 arg3'),
                                                phase_spec=phase_spec),
                 ),
                 NameAndValue(
-                    'variable name must not be quoted',
-                    SetVariableArgumentsAbsStx(QUOTED_STR__SOFT,
-                                               StringLiteralAbsStx('value'),
-                                               phase_spec=phase_spec),
-                ),
-                NameAndValue(
                     'invalid quoting of value',
-                    SetVariableArgumentsAbsStx('name',
+                    SetVariableArgumentsAbsStx(StringLiteralAbsStx('name'),
                                                MISSING_END_QUOTE__SOFT,
                                                phase_spec=phase_spec),
                 ),
@@ -78,16 +72,18 @@ class TestInvalidSyntaxOfUnsetShouldBeDetected(unittest.TestCase):
             cases = [
                 NameAndValue(
                     'invalid quoting',
-                    UnsetVariableArgumentsAbsStx(MISSING_END_QUOTE_STR__HARD, phase_spec=phase_spec),
+                    UnsetVariableArgumentsAbsStx.of_str(MISSING_END_QUOTE_STR__HARD, phase_spec=phase_spec),
                 ),
                 NameAndValue(
                     'missing arguments',
-                    UnsetVariableArgumentsAbsStx('', phase_spec=phase_spec),
+                    UnsetVariableArgumentsAbsStx(StringLiteralAbsStx(''),
+                                                 phase_spec=phase_spec),
                 ),
                 NameAndValue(
                     'more than one argument',
                     SequenceAbsStx.followed_by_superfluous(
-                        UnsetVariableArgumentsAbsStx('name', phase_spec=phase_spec)
+                        UnsetVariableArgumentsAbsStx(StringLiteralAbsStx('name'),
+                                                     phase_spec=phase_spec)
                     )
                 ),
                 NameAndValue(
@@ -150,29 +146,6 @@ class TestSet(unittest.TestCase):
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     NameAndValue.as_dict([var_in_default, var_to_set])
-                )
-            )
-        )
-
-    def test_variable_with_same_name_as_unset_keyword(self):
-        # ACT & ASSERT #
-        var = NameAndValue(defs.UNSET_IDENTIFIER, 'value')
-
-        CHECKER.check__abs_stx__std_layouts_and_source_variants(
-            self,
-            SetVariableArgumentsAbsStx.of_nav(var, phase_spec=None),
-            embryo_check.Arrangement.setup_phase_aware(
-                process_execution_settings=
-                proc_exe_env_for_test(
-                    environ={}
-                )
-            ),
-            embryo_check.MultiSourceExpectation.setup_phase_aware(
-                main_result=asrt.is_none,
-                main_side_effect_on_environment_variables=asrt.equals(
-                    {
-                        var.name: var.value
-                    }
                 )
             )
         )
@@ -376,7 +349,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
 
         CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
-            SetVariableArgumentsAbsStx(defined_env_var.name,
+            SetVariableArgumentsAbsStx(StringLiteralAbsStx(defined_env_var.name),
                                        string_symbol_w_env_var_ref.abstract_syntax,
                                        phase_spec=None),
             arrangement=
@@ -491,7 +464,7 @@ class TestUnset(unittest.TestCase):
 
         CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
-            UnsetVariableArgumentsAbsStx(var_a.name, phase_spec=None),
+            UnsetVariableArgumentsAbsStx.of_str(var_a.name, phase_spec=None),
             embryo_check.Arrangement.setup_phase_aware(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
@@ -513,7 +486,7 @@ class TestUnset(unittest.TestCase):
 
         CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
-            UnsetVariableArgumentsAbsStx(var_a.name, phase_spec=None),
+            UnsetVariableArgumentsAbsStx.of_str(var_a.name, phase_spec=None),
             embryo_check.Arrangement.setup_phase_aware(
                 process_execution_settings=
                 proc_exe_env_for_test(environ=None),
@@ -533,7 +506,7 @@ class TestUnset(unittest.TestCase):
 
         CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
-            UnsetVariableArgumentsAbsStx(non_existing_var_name, phase_spec=None),
+            UnsetVariableArgumentsAbsStx.of_str(non_existing_var_name, phase_spec=None),
             embryo_check.Arrangement.setup_phase_aware(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),

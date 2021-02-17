@@ -14,26 +14,26 @@ from exactly_lib.section_document.element_parsers.misc_utils import \
     std_error_message_text_for_token_syntax_error_from_exception
 from exactly_lib.section_document.element_parsers.token_stream import TokenSyntaxError
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions
+from exactly_lib.util.parse import token_matchers
 from exactly_lib.util.str_.formatter import StringFormatter
+
+_VALUE_PARSE_CONFIGURATION = parse_string.Configuration(syntax_elements.STRING_SYNTAX_ELEMENT.singular_name)
 
 
 class EmbryoParser(embryo.InstructionEmbryoParserFromTokensWoFileSystemLocationInfo[None]):
+    def __init__(self):
+        self._name_parser = parse_string.StringFromTokensParser(
+            parse_string.Configuration(defs.VAR_NAME_ELEMENT,
+                                       reference_restrictions.string_made_up_by_just_strings())
+        )
+        self._value_parser = parse_string.StringFromTokensParser(_VALUE_PARSE_CONFIGURATION)
+        self._unset_keyword_matcher = token_matchers.is_unquoted_and_equals(defs.UNSET_IDENTIFIER)
+
     def _parse_from_tokens(self, token_parser: TokenParser) -> InstructionEmbryo[None]:
         try:
             phases = self._parse_phases(token_parser)
-
-            unset_keyword_or_var_name = token_parser.consume_mandatory_unquoted_string__w_err_msg(
-                False,
-                _MISSING_UNSET_KEYWORD_OR_VAR_NAME_ERROR_MESSAGE
-            )
-
-            modifier = (
-                self._parse_unset_or_set_var_with_same_name_as_unset_keyword(token_parser)
-                if unset_keyword_or_var_name == defs.UNSET_IDENTIFIER
-                else
-                self._parse_set(token_parser, unset_keyword_or_var_name)
-            )
-
+            modifier = self._parse_modifier(token_parser)
             token_parser.report_superfluous_arguments_if_not_at_eol()
 
             return _impl.TheInstructionEmbryo(phases, modifier)
@@ -42,25 +42,21 @@ class EmbryoParser(embryo.InstructionEmbryoParserFromTokensWoFileSystemLocationI
             raise SingleInstructionInvalidArgumentException(
                 std_error_message_text_for_token_syntax_error_from_exception(ex))
 
-    def _parse_unset_or_set_var_with_same_name_as_unset_keyword(self,
-                                                                token_parser: TokenParser,
-                                                                ) -> _impl.ModifierResolver:
-        if token_parser.has_valid_head_token():
-            head = token_parser.head
-            if head.is_plain and head.string == defs.ASSIGNMENT_IDENTIFIER:
-                return self._parse_set(token_parser, defs.UNSET_IDENTIFIER)
+    def _parse_modifier(self, token_parser: TokenParser) -> _impl.ModifierResolver:
+        if (token_parser.has_valid_head_token() and
+                self._unset_keyword_matcher.matches(token_parser.head)):
+            token_parser.consume_head()
+            return self._parse_unset(token_parser)
+        else:
+            return self._parse_set(token_parser)
 
-        var_name = token_parser.consume_mandatory_unquoted_string__w_err_msg(
-            False,
-            _MISSING_VAR_NAME_ERROR_MESSAGE
-        )
-
+    def _parse_unset(self, token_parser: TokenParser) -> _impl.ModifierResolver:
+        var_name = self._name_parser.parse(token_parser)
         return _impl.ModifierResolverOfUnset(var_name)
 
-    @staticmethod
-    def _parse_set(token_parser: TokenParser, var_name: str) -> _impl.ModifierResolver:
+    def _parse_set(self, token_parser: TokenParser) -> _impl.ModifierResolver:
+        var_name = self._name_parser.parse(token_parser)
         token_parser.consume_mandatory_keyword(defs.ASSIGNMENT_IDENTIFIER, False)
-
         value = parse_string.parse_string_from_token_parser(token_parser, _VALUE_PARSE_CONFIGURATION)
 
         return _impl.ModifierResolverOfSet(var_name, value)
@@ -109,7 +105,7 @@ class _VarNameErrorMessage(token_stream_parser.ErrorMessageGenerator):
 
 _MISSING_UNSET_KEYWORD_OR_VAR_NAME_ERROR_MESSAGE = _MissingUnsetKeywordOrVarNameErrorMessage()
 _MISSING_VAR_NAME_ERROR_MESSAGE = _VarNameErrorMessage()
-_VALUE_PARSE_CONFIGURATION = parse_string.Configuration(syntax_elements.STRING_SYNTAX_ELEMENT.singular_name)
+
 _SF = StringFormatter({
     'unset_keyword': defs.UNSET_IDENTIFIER,
     'var_name': defs.VAR_NAME_ELEMENT,

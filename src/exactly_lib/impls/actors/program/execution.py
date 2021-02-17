@@ -15,6 +15,7 @@ from exactly_lib.type_val_prims.string_source.impls import concat as ss_concat
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.file_utils.std import StdFiles, StdOutputFiles
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from ..util.actor_from_parts import parts
 
 
@@ -34,16 +35,17 @@ class Executor(parts.Executor, ABC):
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                settings: ProcessExecutionSettings,
                 stdin: Optional[StringSource],
                 output: StdOutputFiles,
                 ) -> int:
-        program = self._resolve_program(environment)
+        program = self._resolve_program(environment, settings)
         stdin_string_source = self._resolve_stdin(stdin,
                                                   program.stdin,
                                                   environment.mem_buff_size)
         with std_files.of_optional_stdin(stdin_string_source, output) as std_files_:
             executor = self._resolve_execution_variant(
-                self._app_env(environment),
+                self._app_env(environment, settings),
                 program,
                 std_files_,
             )
@@ -76,19 +78,21 @@ class Executor(parts.Executor, ABC):
 
     def _resolve_program(self,
                          environment: InstructionEnvironmentForPostSdsStep,
+                         settings: ProcessExecutionSettings,
                          ) -> Program:
         return (
             self._program.resolve(environment.symbols)
                 .value_of_any_dependency(environment.tcds)
-                .primitive(self._app_env(environment))
+                .primitive(self._app_env(environment, settings))
         )
 
     def _app_env(self,
                  environment: InstructionEnvironmentForPostSdsStep,
+                 settings: ProcessExecutionSettings,
                  ) -> ApplicationEnvironment:
         return ApplicationEnvironment(
             self._os_services,
-            environment.proc_exe_settings,
+            settings,
             environment.tmp_dir__path_access.paths_access,
             environment.mem_buff_size,
         )

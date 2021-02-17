@@ -9,11 +9,23 @@ from exactly_lib_test.execution.test_resources.test_case_generation import full_
 from exactly_lib_test.test_case.actor.test_resources.actors import dummy_actor
 
 
-class Test(FullExecutionTestCaseBase):
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        TheTest(),
+    ])
+
+
+class TheTest(unittest.TestCase):
+    def runTest(self):
+        TestExecutor(self).execute()
+
+
+class TestExecutor(FullExecutionTestCaseBase):
     def __init__(self,
-                 unittest_case: unittest.TestCase,
-                 dbg_do_not_delete_dir_structure=False):
-        super().__init__(unittest_case,
+                 put: unittest.TestCase,
+                 dbg_do_not_delete_dir_structure=False,
+                 ):
+        super().__init__(put,
                          dbg_do_not_delete_dir_structure)
         self.recorder = instr_setup.Recorder()
         self.original_set_of_env_vars = dict(os.environ)
@@ -27,3 +39,7 @@ class Test(FullExecutionTestCaseBase):
     def _assertions(self):
         self.utc.assertDictEqual(self.original_set_of_env_vars,
                                  dict(os.environ))
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

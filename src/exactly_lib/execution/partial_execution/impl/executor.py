@@ -1,7 +1,7 @@
 import itertools
 import os
 from types import MappingProxyType
-from typing import Sequence, Optional, Tuple, Mapping
+from typing import Sequence, Optional, Tuple, Mapping, Callable
 
 from exactly_lib.execution import phase_file_space
 from exactly_lib.execution import phase_step
@@ -21,6 +21,7 @@ from exactly_lib.tcfs.sds import SandboxDs, construct_at
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.act.actor import ActionToCheck, Actor
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
+from exactly_lib.test_case.phases.environ import OptionalEnvVarsDict
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
@@ -37,11 +38,11 @@ class Configuration(tuple):
     def __new__(cls,
                 conf_from_outside: ExecutionConfiguration,
                 conf_phase_values: ConfPhaseValues,
-                setup_settings_handler: SetupSettingsHandler,
+                mk_setup_settings_handler: Callable[[OptionalEnvVarsDict], SetupSettingsHandler],
                 ):
         return tuple.__new__(cls, (conf_from_outside,
                                    conf_phase_values,
-                                   setup_settings_handler))
+                                   mk_setup_settings_handler))
 
     @property
     def exe_conf(self) -> ExecutionConfiguration:
@@ -52,7 +53,7 @@ class Configuration(tuple):
         return self[1]
 
     @property
-    def setup_settings_handler(self) -> SetupSettingsHandler:
+    def mk_setup_settings_handler(self) -> Callable[[OptionalEnvVarsDict], SetupSettingsHandler]:
         return self[2]
 
 
@@ -85,12 +86,15 @@ def parse_atc_and_validate_symbols(actor: NameAndValue[Actor],
 class _PartialExecutor:
     def __init__(self,
                  conf: Configuration,
-                 test_case: TestCase):
+                 test_case: TestCase,
+                 ):
         self.conf = conf
         self.exe_conf = conf.exe_conf
         self.conf_values = conf.conf_phase_values
         self._test_case = test_case
-        self._setup_settings_builder = conf.setup_settings_handler
+        self._setup_settings_handler = conf.mk_setup_settings_handler(
+            functional.map_optional(dict, conf.exe_conf.environ)
+        )
         self._source_setup = None
         self._os_services = conf.exe_conf.os_services
         self._act_phase_executor = _initial_atc_executor()
@@ -313,7 +317,7 @@ class _PartialExecutor:
                                         self._instruction_settings,
                                         self._os_services,
                                         self._post_sds_main_environments(phase_identifier.SETUP),
-                                        self._setup_settings_builder.builder),
+                                        self._setup_settings_handler.builder),
                                     self._test_case.setup_phase)
 
     def _setup__validate_post_setup(self):
@@ -335,7 +339,7 @@ class _PartialExecutor:
             ),
             env_for_non_validate_steps,
             self._os_services,
-            self._setup_settings_builder.as_act_execution_input(),
+            self._setup_settings_handler.as_atc_execution_input(),
             self.exe_conf.exe_atc_and_skip_assertions,
         )
 

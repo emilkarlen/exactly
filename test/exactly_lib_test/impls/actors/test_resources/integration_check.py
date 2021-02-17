@@ -10,8 +10,9 @@ from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act.actor import Actor, ActionToCheck
-from exactly_lib.test_case.phases.act.execution_input import ActExecutionInput
+from exactly_lib.test_case.phases.act.execution_input import AtcExecutionInput
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
+from exactly_lib.test_case.phases.environ import OptionalEnvVarsDict
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh, sh
@@ -51,6 +52,15 @@ class HardErrorResultError(Exception):
         self.failure_details = failure_details
 
 
+class AtcExeInputArr:
+    def __init__(self,
+                 environ: OptionalEnvVarsDict = None,
+                 stdin_contents: str = '',
+                 ):
+        self.environ = environ
+        self.stdin_contents = stdin_contents
+
+
 class Arrangement:
     def __init__(self,
                  tcds: Optional[TcdsArrangementPreAct] = None,
@@ -58,13 +68,13 @@ class Arrangement:
                  process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement(
                      process_execution_settings=proc_exe_env_for_test()
                  ),
-                 stdin_contents: str = '',
+                 atc_exe_input: AtcExeInputArr = AtcExeInputArr(),
                  mem_buff_size: int = 2 ** 10,
                  ):
         self.symbol_table = symbol_table_from_none_or_value(symbols)
         self.tcds = tcds
         self.process_execution = process_execution
-        self.stdin_contents = stdin_contents
+        self.atc_exe_input = atc_exe_input
         self.mem_buff_size = mem_buff_size
 
     @property
@@ -78,7 +88,7 @@ def arrangement_w_tcds(
         process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement(
             process_execution_settings=proc_exe_env_for_test()
         ),
-        stdin_contents: str = '',
+        act_exe_input: AtcExeInputArr = AtcExeInputArr(),
         post_sds_action: PlainTcdsAction = PlainTcdsAction(),
         mem_buff_size: int = 2 ** 10,
 ) -> Arrangement:
@@ -89,7 +99,7 @@ def arrangement_w_tcds(
         ),
         symbols=symbol_table,
         process_execution=process_execution,
-        stdin_contents=stdin_contents,
+        atc_exe_input=act_exe_input,
         mem_buff_size=mem_buff_size,
     )
 
@@ -353,7 +363,7 @@ class _Executor:
             env,
             self._arrangement.process_execution.os_services,
             atc,
-            self._act_exe_input(env)
+            self._atc_exe_input(env)
         )
         error_msg_extra_info = ''
         sub_process_result = None
@@ -376,13 +386,15 @@ class _Executor:
         self._check_symbols_after(atc, phase_step.STEP__ACT__EXECUTE)
         self._expectation.after_execution.apply_with_message(self._put, env.tcds, 'after execution')
 
-    def _act_exe_input(self, env: InstructionEnvironmentForPostSdsStep) -> ActExecutionInput:
-        stdin_contents = self._arrangement.stdin_contents
+    def _atc_exe_input(self, env: InstructionEnvironmentForPostSdsStep) -> AtcExecutionInput:
+        environ = self._arrangement.atc_exe_input.environ
+        stdin_contents = self._arrangement.atc_exe_input.stdin_contents
         if stdin_contents is None or not stdin_contents:
-            return ActExecutionInput.empty()
+            return AtcExecutionInput(None, environ)
         else:
             model_factory = RootStringSourceFactory(env.tmp_dir__path_access.paths_access)
-            return ActExecutionInput(model_factory.of_const_str(stdin_contents))
+            return AtcExecutionInput(model_factory.of_const_str(stdin_contents),
+                                     environ)
 
     def _check_symbols_after(self, atc: ActionToCheck, step: str):
         self._expectation.symbol_usages.apply_with_message(
@@ -400,18 +412,18 @@ class ProcessExecutorForProgramExecutorWoStdinThatRaisesIfResultIsNotExitCode(Pr
                  environment: InstructionEnvironmentForPostSdsStep,
                  os_services: OsServices,
                  atc: ActionToCheck,
-                 input_: ActExecutionInput,
+                 atc_input: AtcExecutionInput,
                  ):
         self.environment = environment
         self.os_services = os_services
         self.atc = atc
-        self.input_ = input_
+        self.atc_input = atc_input
 
     def execute(self, output: StdOutputFiles) -> int:
         """
          :raises HardErrorResultError: Return value from executor is not an exit code.
         """
-        exit_code_or_hard_error = self.atc.execute(self.environment, self.os_services, self.input_, output)
+        exit_code_or_hard_error = self.atc.execute(self.environment, self.os_services, self.atc_input, output)
         if exit_code_or_hard_error.is_exit_code:
             return exit_code_or_hard_error.exit_code
         raise HardErrorResultError(exit_code_or_hard_error,

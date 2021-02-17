@@ -39,6 +39,7 @@ _FORMAT_MAP = {
     'program_name': formatting.program_name(program_info.PROGRAM_NAME),
     'phase': phase_names.PHASE_NAME_DICTIONARY,
     'act': phase_infos.ACT.name,
+    'assert': phase_infos.ASSERT.name,
     'actor': formatting.concept(all_entity_types.ACTOR_ENTITY_TYPE_NAMES.name.singular),
     'action_to_check': formatting.concept(ACTION_TO_CHECK_NAME.singular),
     'current_directory_concept': formatting.concept(_CURRENT_DIRECTORY_SINGULAR),
@@ -125,7 +126,7 @@ ACTOR_CONCEPT_INFO = name_and_ref_target_for_entity_type(
 
 ACTION_TO_CHECK_CONCEPT_INFO = name_and_ref_target(
     ACTION_TO_CHECK_NAME,
-    _format('The action that is executed in the {act} phase.'),
+    _format('The action that is executed in the {act} phase and checked by the {assert} phase.'),
     'ATC',
 )
 

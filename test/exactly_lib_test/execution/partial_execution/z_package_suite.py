@@ -5,6 +5,7 @@ from exactly_lib_test.execution.partial_execution import \
     atc_execution, \
     instruction_environment, \
     propagation_of_instruction_settings, \
+    propagation_of_setup_settings, \
     deletion_of_sds, \
     propagation_of_symbols, \
     propagation_of_hds
@@ -17,6 +18,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(atc_execution.suite())
     ret_val.addTest(instruction_environment.suite())
     ret_val.addTest(propagation_of_instruction_settings.suite())
+    ret_val.addTest(propagation_of_setup_settings.suite())
     ret_val.addTest(deletion_of_sds.suite())
     ret_val.addTest(phase_step_sequence.suite())
     ret_val.addTest(propagation_of_hds.suite())

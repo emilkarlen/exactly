@@ -14,7 +14,7 @@ from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act.actor import Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
-from exactly_lib.test_case.phases.instruction_settings import DefaultEnvironGetter
+from exactly_lib.test_case.phases.environ import DefaultEnvironGetter
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources import utils, sandbox_root_name_resolver
