@@ -13,6 +13,8 @@ from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.inst
     PARSE_CHECKER, PHASE_SPECS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
+from exactly_lib_test.impls.types.string_source.test_resources import validation_cases as str_src_validation_cases
+from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.custom_abstract_syntax import SequenceAbsStx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -28,6 +30,7 @@ def suite() -> unittest.TestSuite:
         suite_for_instruction_documentation(doc.TheInstructionDocumentation('instruction name')),
         TestInvalidSyntaxOfSetShouldBeDetected(),
         TestInvalidSyntaxOfUnsetShouldBeDetected(),
+        TestSetValidationOfValue(),
         unittest.makeSuite(TestSet),
         unittest.makeSuite(TestSetWithReferencesToExistingEnvVars),
         unittest.makeSuite(TestUnset),
@@ -42,19 +45,19 @@ class TestInvalidSyntaxOfSetShouldBeDetected(unittest.TestCase):
                 NameAndValue(
                     'missing arguments',
                     SetVariableArgumentsAbsStx(StringLiteralAbsStx(''),
-                                               StringLiteralAbsStx(''),
+                                               StringSourceOfStringAbsStx.of_str(''),
                                                phase_spec=phase_spec),
                 ),
                 NameAndValue(
                     'more than three arguments',
                     SetVariableArgumentsAbsStx(StringLiteralAbsStx('arg1'),
-                                               StringLiteralAbsStx('arg2 arg3'),
+                                               StringSourceOfStringAbsStx.of_str('arg2 arg3'),
                                                phase_spec=phase_spec),
                 ),
                 NameAndValue(
                     'invalid quoting of value',
                     SetVariableArgumentsAbsStx(StringLiteralAbsStx('name'),
-                                               MISSING_END_QUOTE__SOFT,
+                                               StringSourceOfStringAbsStx(MISSING_END_QUOTE__SOFT),
                                                phase_spec=phase_spec),
                 ),
             ]
@@ -99,6 +102,27 @@ class TestInvalidSyntaxOfUnsetShouldBeDetected(unittest.TestCase):
                 PARSE_CHECKER.check_invalid_syntax__abs_stx(self, case.value,
                                                             phase_spec=phase_spec,
                                                             variant=case.name)
+
+
+class TestSetValidationOfValue(unittest.TestCase):
+    def runTest(self):
+        # ACT & ASSERT #
+        name = StringLiteralAbsStx('name')
+
+        for phase_spec in PHASE_SPECS:
+            for validation_case in str_src_validation_cases.failing_validation_cases():
+                CHECKER.check__abs_stx__std_layouts_and_source_variants(
+                    self,
+                    SetVariableArgumentsAbsStx(name,
+                                               validation_case.value.syntax,
+                                               phase_spec=phase_spec),
+                    embryo_check.Arrangement.setup_phase_aware(),
+                    embryo_check.MultiSourceExpectation.setup_phase_aware(
+                        validation=validation_case.value.assertion,
+                    ),
+                    phase_spec=phase_spec,
+                    validation_case=validation_case.name,
+                )
 
 
 class TestSet(unittest.TestCase):
@@ -350,7 +374,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
         CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             SetVariableArgumentsAbsStx(StringLiteralAbsStx(defined_env_var.name),
-                                       string_symbol_w_env_var_ref.abstract_syntax,
+                                       StringSourceOfStringAbsStx(string_symbol_w_env_var_ref.abstract_syntax),
                                        phase_spec=None),
             arrangement=
             embryo_check.Arrangement.setup_phase_aware(

@@ -194,7 +194,7 @@ class TestValidation(unittest.TestCase):
                         MultiSourceExpectation.of_const(
                             symbol_references=SymbolContext.references_assertion_of_contexts(symbols),
                             execution=ExecutionExpectation(
-                                validation=validation_case.value.expectation,
+                                validation=validation_case.value.assertion,
                             ),
                             primitive=asrt.anything_goes(),
                         )
@@ -255,7 +255,7 @@ class TestValidation(unittest.TestCase):
                                 symbols__expected_references
                             ),
                             execution=ExecutionExpectation(
-                                validation=validation_case.value.expectation,
+                                validation=validation_case.value.assertion,
                             ),
                             primitive=asrt.anything_goes(),
                         )

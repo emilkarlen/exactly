@@ -6,13 +6,16 @@ from exactly_lib.impls.instructions.multi_phase.environ.impl import Phase
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.abstract_syntax import \
     SetVariableArgumentsAbsStx, UnsetVariableArgumentsAbsStx
+from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.instruction_check import PHASE_SPECS
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
+from exactly_lib_test.impls.types.string_source.test_resources import validation_cases as str_src_validation_cases
 from exactly_lib_test.test_case.test_resources import instr_settings_assertions as asrt_is
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringLiteralAbsStx
 
 
 def suite_for_non_setup_phase(conf: ConfigurationBase) -> unittest.TestSuite:
@@ -211,7 +214,36 @@ class TestUnsetNonExistingVariable(TestCaseBase):
         )
 
 
+class TestSetValidationOfValue(TestCaseBase):
+    def runTest(self):
+        # ACT & ASSERT #
+        name = StringLiteralAbsStx('name')
+
+        def expectation_corresponding_to(case: str_src_validation_cases.ValidationCase):
+            return (
+                self.conf.expect_failing_validation_pre_sds(case.assertion.pre_sds)
+                if not case.expectation.passes_pre_sds
+                else
+                self.conf.expect_hard_error_of_main__any()
+            )
+
+        for phase_spec in PHASE_SPECS:
+            for validation_case in str_src_validation_cases.failing_validation_cases():
+                with self.subTest(phase_spec=phase_spec,
+                                  validation=validation_case.name):
+                    self.conf.instruction_checker.check_parsing__abs_stx__const(
+                        self,
+                        self.conf.parser(),
+                        SetVariableArgumentsAbsStx(name,
+                                                   validation_case.value.syntax,
+                                                   phase_spec=phase_spec),
+                        self.conf.arrangement(),
+                        expectation_corresponding_to(validation_case.value),
+                    )
+
+
 _COMMON = [
+    TestSetValidationOfValue,
     TestSet,
     TestUnsetExistingVariable,
     TestUnsetNonExistingVariable,

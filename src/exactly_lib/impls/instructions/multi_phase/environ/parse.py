@@ -7,6 +7,7 @@ from exactly_lib.impls.instructions.multi_phase.utils.instruction_embryo import 
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForUnconditionalSuccess
 from exactly_lib.impls.types.string_ import parse_string
+from exactly_lib.impls.types.string_source import parse as parse_str_src
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -22,12 +23,13 @@ _VALUE_PARSE_CONFIGURATION = parse_string.Configuration(syntax_elements.STRING_S
 
 
 class EmbryoParser(embryo.InstructionEmbryoParserFromTokensWoFileSystemLocationInfo[None]):
-    def __init__(self):
+    def __init__(self, phase_is_after_act: bool):
+        self._phase_is_after_act = phase_is_after_act
         self._name_parser = parse_string.StringFromTokensParser(
             parse_string.Configuration(defs.VAR_NAME_ELEMENT,
                                        reference_restrictions.string_made_up_by_just_strings())
         )
-        self._value_parser = parse_string.StringFromTokensParser(_VALUE_PARSE_CONFIGURATION)
+        self._value_parser = parse_str_src.default_parser_for(phase_is_after_act=self._phase_is_after_act)
         self._unset_keyword_matcher = token_matchers.is_unquoted_and_equals(defs.UNSET_IDENTIFIER)
 
     def _parse_from_tokens(self, token_parser: TokenParser) -> InstructionEmbryo[None]:
@@ -42,7 +44,7 @@ class EmbryoParser(embryo.InstructionEmbryoParserFromTokensWoFileSystemLocationI
             raise SingleInstructionInvalidArgumentException(
                 std_error_message_text_for_token_syntax_error_from_exception(ex))
 
-    def _parse_modifier(self, token_parser: TokenParser) -> _impl.ModifierResolver:
+    def _parse_modifier(self, token_parser: TokenParser) -> _impl.ModifierSdv:
         if (token_parser.has_valid_head_token() and
                 self._unset_keyword_matcher.matches(token_parser.head)):
             token_parser.consume_head()
@@ -50,16 +52,16 @@ class EmbryoParser(embryo.InstructionEmbryoParserFromTokensWoFileSystemLocationI
         else:
             return self._parse_set(token_parser)
 
-    def _parse_unset(self, token_parser: TokenParser) -> _impl.ModifierResolver:
+    def _parse_unset(self, token_parser: TokenParser) -> _impl.ModifierSdv:
         var_name = self._name_parser.parse(token_parser)
-        return _impl.ModifierResolverOfUnset(var_name)
+        return _impl.ModifierSdvOfUnset(var_name)
 
-    def _parse_set(self, token_parser: TokenParser) -> _impl.ModifierResolver:
+    def _parse_set(self, token_parser: TokenParser) -> _impl.ModifierSdv:
         var_name = self._name_parser.parse(token_parser)
         token_parser.consume_mandatory_keyword(defs.ASSIGNMENT_IDENTIFIER, False)
-        value = parse_string.parse_string_from_token_parser(token_parser, _VALUE_PARSE_CONFIGURATION)
+        value = self._value_parser.parse_from_token_parser(token_parser)
 
-        return _impl.ModifierResolverOfSet(var_name, value)
+        return _impl.ModifierSdvOfSet(var_name, value)
 
     @staticmethod
     def _parse_phases(token_parser: TokenParser) -> FrozenSet[_impl.Phase]:
@@ -89,8 +91,10 @@ _SET_SPEC_ARGUMENT_2_SPEC = {
 
 _ALL_PHASES = frozenset(_impl.Phase)
 
-PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
-                                           MainStepResultTranslatorForUnconditionalSuccess())
+
+def parts_parser(phase_is_after_act: bool):
+    return PartsParserFromEmbryoParser(EmbryoParser(phase_is_after_act),
+                                       MainStepResultTranslatorForUnconditionalSuccess())
 
 
 class _MissingUnsetKeywordOrVarNameErrorMessage(token_stream_parser.ErrorMessageGenerator):

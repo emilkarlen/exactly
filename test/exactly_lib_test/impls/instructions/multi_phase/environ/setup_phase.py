@@ -16,6 +16,7 @@ from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
     ExecutionExpectation, SetupSettingsArr, Arrangement
+from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case.test_resources import instr_settings_assertions as asrt_instr_settings
 from exactly_lib_test.test_case.test_resources import settings_builder_assertions as asrt_setup_settings
@@ -506,7 +507,7 @@ class TestSetWithSymbolAndVarReferences(unittest.TestCase):
         CHECKER.check__abs_stx__multi__std_layouts_and_source_variants(
             self,
             SetVariableArgumentsAbsStx(NameWSymRefs.STRING_ABS_STX,
-                                       ValueWSymRefsAndVarRefs.STRING_ABS_STX,
+                                       StringSourceOfStringAbsStx(ValueWSymRefsAndVarRefs.STRING_ABS_STX),
                                        phase_spec=None),
             symbol_usages=SymbolContext.usages_assertion_of_contexts(all_symbols),
             execution_cases=execution_cases,

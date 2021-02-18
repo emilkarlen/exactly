@@ -11,6 +11,10 @@ with exception of a "0." prefix until version 1 is released.
 
  - Instruction `setup`/`env` - Ability to set variables separately for the `action to check` 
 
+### Changed
+
+ - Instruction `setup`/`env` - VALUE argument is a `STRING-SOURCE`
+
 ## [0.13.0] - 2021-02-07
 
 ### Added

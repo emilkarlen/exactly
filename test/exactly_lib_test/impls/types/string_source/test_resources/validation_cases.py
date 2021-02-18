@@ -17,15 +17,19 @@ class ValidationCase:
     def __init__(self,
                  syntax: StringSourceAbsStx,
                  sdv: StringSourceSdv,
-                 expectation: ValidationAssertions,
+                 expectation: validation.Expectation,
                  ):
         self.syntax = syntax
         self.sdv = sdv
         self._expectation = expectation
 
     @property
-    def expectation(self) -> ValidationAssertions:
+    def expectation(self) -> validation.Expectation:
         return self._expectation
+
+    @property
+    def assertion(self) -> ValidationAssertions:
+        return validation.ValidationAssertions.of_expectation(self._expectation)
 
 
 def failing_validation_cases() -> Sequence[NameAndValue[ValidationCase]]:
@@ -46,7 +50,7 @@ def failing_validation_cases() -> Sequence[NameAndValue[ValidationCase]]:
                     ),
                 )
             ),
-            validation.ValidationAssertions.of_expectation(expectation),
+            expectation,
         )
 
     return [

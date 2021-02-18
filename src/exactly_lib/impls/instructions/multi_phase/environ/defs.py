@@ -4,6 +4,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 UNSET_IDENTIFIER = 'unset'
 ASSIGNMENT_IDENTIFIER = instruction_arguments.ASSIGNMENT_OPERATOR
 VAR_NAME_ELEMENT = 'NAME'
+VAR_VALUE_ELEMENT = 'VALUE'
 PHASE_SPEC_ELEMENT = 'PHASE-SPEC'
 
 PHASE_SPEC__OPTION_NAME = a.OptionName('of')

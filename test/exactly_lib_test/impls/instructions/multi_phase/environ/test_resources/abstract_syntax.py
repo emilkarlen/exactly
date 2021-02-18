@@ -5,11 +5,13 @@ from exactly_lib.impls.instructions.multi_phase.environ import defs
 from exactly_lib.impls.instructions.multi_phase.environ.impl import Phase
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType
+from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.source.token_sequences import OptionWMandatoryValue
 from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import NonHereDocStringAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringLiteralAbsStx
+from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
 from exactly_lib_test.util.test_resources.quoting import Surrounded
 
 _PHASE_SPEC_VALUES = {
@@ -47,7 +49,7 @@ class InstructionArgumentsAbsStx(AbstractSyntax, ABC):
 class SetVariableArgumentsAbsStx(InstructionArgumentsAbsStx):
     def __init__(self,
                  var_name: NonHereDocStringAbsStx,
-                 value: NonHereDocStringAbsStx,
+                 value: StringSourceAbsStx,
                  phase_spec: Optional[Phase],
                  ):
         super().__init__(phase_spec)
@@ -61,13 +63,14 @@ class SetVariableArgumentsAbsStx(InstructionArgumentsAbsStx):
                quoting: Optional[QuoteType] = None,
                ) -> 'SetVariableArgumentsAbsStx':
         return SetVariableArgumentsAbsStx(StringLiteralAbsStx(var_name),
-                                          StringLiteralAbsStx(value, quoting),
+                                          StringSourceOfStringAbsStx.of_str(value, quoting),
                                           phase_spec)
 
     @staticmethod
     def of_nav(var_and_val: NameAndValue[str],
                phase_spec: Optional[Phase]) -> 'SetVariableArgumentsAbsStx':
-        return SetVariableArgumentsAbsStx.of_str(var_and_val.name, var_and_val.value,
+        return SetVariableArgumentsAbsStx.of_str(var_and_val.name,
+                                                 var_and_val.value,
                                                  phase_spec=phase_spec)
 
     def _variant_tokenization(self) -> TokenSequence:

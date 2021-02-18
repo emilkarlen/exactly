@@ -44,11 +44,12 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def invokation_variants(self) -> Sequence[InvokationVariant]:
         phase_spec_args = self._phase_spec_args()
         name = a.Single(a.Multiplicity.MANDATORY, a.Named(defs.VAR_NAME_ELEMENT))
+        value = a.Single(a.Multiplicity.MANDATORY, a.Named(defs.VAR_VALUE_ELEMENT))
         assignment = a.Single(a.Multiplicity.MANDATORY, a.Constant(defs.ASSIGNMENT_IDENTIFIER))
         unset_kw = a.Single(a.Multiplicity.MANDATORY, a.Constant(defs.UNSET_IDENTIFIER))
         return [
             invokation_variant_from_args(
-                phase_spec_args + [name, assignment, _VALUE_SE.single_mandatory],
+                phase_spec_args + [name, assignment, value],
                 self._tp.fnap(_DESCRIPTION_OF_SET),
             ),
             invokation_variant_from_args(
@@ -70,7 +71,10 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
         if self._is_in_setup_phase:
             ret_val.append(self._phase_spec_sed())
-        ret_val.append(self._name_sed())
+        ret_val += [
+            self._name_sed(),
+            self._value_sed()
+        ]
 
         return ret_val
 
@@ -78,6 +82,17 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return SyntaxElementDescription(
             defs.VAR_NAME_ELEMENT,
             self._tp.fnap(_DESCRIPTION__NAME),
+            (),
+        )
+
+    def _value_sed(self) -> SyntaxElementDescription:
+        before_invokation_variants = self._tp.fnap(_DESCRIPTION__VALUE)
+        if self._is_in_setup_phase:
+            before_invokation_variants += self._tp.fnap(_DESCRIPTION__VALUE__ACT)
+
+        return SyntaxElementDescription(
+            defs.VAR_VALUE_ELEMENT,
+            before_invokation_variants,
             (),
         )
 
@@ -103,10 +118,11 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return name_and_cross_ref.cross_reference_id_list([
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO,
             syntax_elements.STRING_SYNTAX_ELEMENT,
+            syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT,
         ])
 
 
-_VALUE_SE = syntax_elements.STRING_SYNTAX_ELEMENT
+_VALUE_SE = syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT
 
 
 def _format_dict(is_in_setup_phase: bool) -> Dict[str, str]:
@@ -119,14 +135,16 @@ def _format_dict(is_in_setup_phase: bool) -> Dict[str, str]:
     return {
         'Note': headers.NOTE_LINE_HEADER,
         'NAME': defs.VAR_NAME_ELEMENT,
-        'VALUE': _VALUE_SE.singular_name,
+        'VALUE': defs.VAR_VALUE_ELEMENT,
         'PHASE_SPEC': defs.PHASE_SPEC_ELEMENT,
         'env_var': concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.name,
         'ATC': concepts.ACTION_TO_CHECK_CONCEPT_INFO.name,
+        'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
         'os_process': misc_texts.OS_PROCESS_NAME,
         'act_phase': phase_names.ACT,
         'setup_phase': phase_names.SETUP,
         'string_se': syntax_elements.STRING_SYNTAX_ELEMENT.singular_name,
+        'string_source_se': syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.singular_name,
         'in_the_specified_phase': in_the_specified_phase,
     }
 
@@ -156,6 +174,16 @@ The manipulation will affect the {env_var:s} of all
 
 _DESCRIPTION__NAME = """\
 A {string_se}.
+"""
+
+_DESCRIPTION__VALUE = """\
+A {string_source_se}.
+"""
+
+_DESCRIPTION__VALUE__ACT = """\
+If the {string_source_se} involves a {PROGRAM},
+it will be executed in an environment with the {env_var:s}
+of the specified phase.
 """
 
 _NOTES__NON_SETUP = """\

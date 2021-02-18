@@ -1,0 +1,21 @@
+[setup]
+
+def string VAL_IN_ACT = 'the value in the act phase'
+
+def string VAL_IN_NOT_ACT = 'the value in the !act phase'
+
+env -of act  VarWValueDepOnPhase = @[VAL_IN_ACT]@
+env -of !act VarWValueDepOnPhase = @[VAL_IN_NOT_ACT]@
+
+env VarWValFromProgram = -stdout-from @ PRINT_ENV_VAR VarWValueDepOnPhase
+
+[act]
+
+@ PRINT_ENV_VAR VarWValFromProgram
+
+[assert]
+
+stdout equals @[VAL_IN_ACT]@
+
+stdout -from @ PRINT_ENV_VAR VarWValFromProgram
+       equals @[VAL_IN_NOT_ACT]@

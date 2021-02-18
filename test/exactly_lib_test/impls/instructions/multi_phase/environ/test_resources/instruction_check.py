@@ -9,6 +9,6 @@ PHASE_SPECS = [
     Phase.NON_ACT,
 ]
 
-CHECKER = embryo_check.Checker(sut.EmbryoParser())
+CHECKER = embryo_check.Checker(sut.EmbryoParser(phase_is_after_act=False))
 
-PARSE_CHECKER = parse_checker.Checker(sut.EmbryoParser())
+PARSE_CHECKER = parse_checker.Checker(sut.EmbryoParser(phase_is_after_act=False))
