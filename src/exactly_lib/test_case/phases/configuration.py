@@ -1,5 +1,4 @@
 import pathlib
-from typing import Optional
 
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
@@ -15,11 +14,9 @@ class ConfigurationBuilder:
                  home_case_dir_path: pathlib.Path,
                  home_act_dir_path: pathlib.Path,
                  actor: NameAndValue[Actor],
-                 timeout_in_seconds: Optional[int] = None,
                  test_case_status: TestCaseStatus = TestCaseStatus.PASS):
         self.__actor = actor
         self.__test_case_status = test_case_status
-        self.__timeout_in_seconds = timeout_in_seconds
         self.__hds_dirs = {
             RelHdsOptionType.REL_HDS_CASE: home_case_dir_path,
             RelHdsOptionType.REL_HDS_ACT: home_act_dir_path,
@@ -49,16 +46,6 @@ class ConfigurationBuilder:
 
     def set_actor(self, x: NameAndValue[Actor]):
         self.__actor = x
-
-    @property
-    def timeout_in_seconds(self) -> int:
-        """
-        :return: None if no timeout
-        """
-        return self.__timeout_in_seconds
-
-    def set_timeout_in_seconds(self, num_seconds: int):
-        self.__timeout_in_seconds = num_seconds
 
 
 class ConfigurationPhaseInstruction(TestCaseInstruction):

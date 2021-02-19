@@ -1,15 +1,12 @@
 import os
 from typing import List, Callable
 
-from exactly_lib.cli.definitions import common_cli_options
-from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.cli.test_case_def import TestCaseDefinitionForMainProgram
 from exactly_lib.cli.test_suite_def import TestSuiteDefinition
 from exactly_lib.common.process_result_reporter import Environment, ProcessResultReporter
 from exactly_lib.common.process_result_reporters import ProcessResultReporterWithInitialExitValueOutput
 from exactly_lib.execution.configuration import PredefinedProperties
-from exactly_lib.execution.predefined_properties import os_environ_getter
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.processing import exit_values
@@ -21,6 +18,8 @@ from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
+from .definitions import common_cli_options, exit_codes
+from ..definitions import os_proc_env
 
 
 class MainProgram:
@@ -43,8 +42,9 @@ class MainProgram:
         self._test_case_definition = TestCaseDefinition(
             test_case_definition.test_case_parsing_setup,
             PredefinedProperties(
-                os_environ_getter,
-                None,
+                os_proc_env.ENV_VARS_GETTER__DEFAULT,
+                os_proc_env.ENV_VARS__DEFAULT,
+                os_proc_env.TIMEOUT__DEFAULT,
                 predefined_symbols,
             )
         )

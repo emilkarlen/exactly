@@ -81,6 +81,7 @@ class Configuration:
     def execution_configuration(self) -> ExecutionConfiguration:
         return ExecutionConfiguration(self.test_case_definition.predefined_properties.default_environ_getter,
                                       self.test_case_definition.predefined_properties.environ,
+                                      self.test_case_definition.predefined_properties.timeout_in_seconds,
                                       self.os_services,
                                       self.sandbox_root_dir_resolver,
                                       self.mem_buff_size,
@@ -209,6 +210,7 @@ class _Executor(processing_utils.Executor):
         ec = self._exe_conf
         return ExecutionConfiguration(ec.default_environ_getter,
                                       functional.map_optional(dict, ec.environ),
+                                      ec.timeout_in_seconds,
                                       ec.os_services,
                                       ec.sds_root_dir_resolver,
                                       ec.mem_buff_size,

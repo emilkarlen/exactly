@@ -109,6 +109,7 @@ class _PartialExecutor:
         self._instruction_settings = InstructionSettings(
             functional.map_optional(dict, conf.exe_conf.environ),
             conf.exe_conf.default_environ_getter,
+            conf.exe_conf.timeout_in_seconds,
         )
 
     def execute(self) -> PartialExeResult:
@@ -217,7 +218,7 @@ class _PartialExecutor:
         self._action_to_check = atc
         self._instruction_environment_pre_sds = InstructionEnvironmentForPreSdsStep(
             self.conf_values.hds,
-            ProcessExecutionSettings(self.conf_values.timeout_in_seconds,
+            ProcessExecutionSettings(self._instruction_settings.timeout_in_seconds(),
                                      self._env_vars__read_only(),
                                      ),
             symbols,
@@ -414,7 +415,7 @@ class _PartialExecutor:
                               ) -> InstructionEnvironmentForPostSdsStep:
         return InstructionEnvironmentForPostSdsStep(
             self.conf_values.hds,
-            ProcessExecutionSettings(self.conf_values.timeout_in_seconds,
+            ProcessExecutionSettings(self._instruction_settings.timeout_in_seconds(),
                                      self._env_vars__read_only()),
             self.__sandbox_directory_structure,
             tmp_file_storage,

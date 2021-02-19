@@ -17,10 +17,12 @@ class PredefinedProperties:
     def __init__(self,
                  default_environ_getter: DefaultEnvironGetter,
                  environ: Optional[Dict[str, str]],
+                 timeout_in_seconds: Optional[int],
                  predefined_symbols: Optional[SymbolTable] = None,
                  ):
         self._default_environ_getter = default_environ_getter
         self._environ = environ
+        self._timeout_in_seconds = timeout_in_seconds
         self._predefined_symbols = predefined_symbols
 
     @property
@@ -35,6 +37,10 @@ class PredefinedProperties:
         return self._default_environ_getter
 
     @property
+    def timeout_in_seconds(self) -> Optional[int]:
+        return self._timeout_in_seconds
+
+    @property
     def predefined_symbols(self) -> Optional[SymbolTable]:
         return self._predefined_symbols
 
@@ -45,6 +51,7 @@ class ExecutionConfiguration(tuple):
     def __new__(cls,
                 default_environ_getter: DefaultEnvironGetter,
                 environ: Optional[Mapping[str, str]],
+                timeout_in_seconds: Optional[int],
                 os_services: OsServices,
                 sandbox_root_dir_resolver: SandboxRootDirNameResolver,
                 mem_buff_size: int,
@@ -57,7 +64,8 @@ class ExecutionConfiguration(tuple):
                                    exe_atc_and_skip_assertions,
                                    os_services,
                                    mem_buff_size,
-                                   default_environ_getter))
+                                   default_environ_getter,
+                                   timeout_in_seconds))
 
     @property
     def environ(self) -> Optional[Mapping[str, str]]:
@@ -72,6 +80,10 @@ class ExecutionConfiguration(tuple):
         The set of environment variables to use as default, when the environ is None.
         """
         return self[6]
+
+    @property
+    def timeout_in_seconds(self) -> Optional[int]:
+        return self[7]
 
     @property
     def os_services(self) -> OsServices:

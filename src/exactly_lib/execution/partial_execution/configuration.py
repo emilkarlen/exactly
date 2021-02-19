@@ -1,5 +1,3 @@
-from typing import Optional
-
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.test_case.phases.act.actor import Actor
@@ -12,14 +10,8 @@ class ConfPhaseValues(tuple):
     def __new__(cls,
                 actor: NameAndValue[Actor],
                 hds: HomeDs,
-                timeout_in_seconds: Optional[int] = None):
-        """
-        :param timeout_in_seconds: None if no timeout
-        """
-        return tuple.__new__(cls, (actor,
-                                   hds,
-                                   timeout_in_seconds,
-                                   ))
+                ):
+        return tuple.__new__(cls, (actor, hds,))
 
     @property
     def actor(self) -> NameAndValue[Actor]:
@@ -28,10 +20,6 @@ class ConfPhaseValues(tuple):
     @property
     def hds(self) -> HomeDs:
         return self[1]
-
-    @property
-    def timeout_in_seconds(self) -> Optional[int]:
-        return self[2]
 
 
 class TestCase(tuple):

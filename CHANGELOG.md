@@ -14,6 +14,7 @@ with exception of a "0." prefix until version 1 is released.
 ### Changed
 
  - Instruction `setup`/`env` - VALUE argument is a `STRING-SOURCE`
+ - Instruction `conf`/`timeout` - Move to later phases (breaking)
 
 ## [0.13.0] - 2021-02-07
 

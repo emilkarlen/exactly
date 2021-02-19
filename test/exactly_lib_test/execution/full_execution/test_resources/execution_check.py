@@ -4,7 +4,6 @@ from typing import Optional
 from exactly_lib.execution.configuration import PredefinedProperties, ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.execution.full_execution.result import FullExeResult
-from exactly_lib.execution.predefined_properties import os_environ_getter
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.os_services import OsServices
@@ -44,8 +43,9 @@ def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expectation: Expectation,
           is_keep_sandbox: bool = False):
-    exe_conf = ExecutionConfiguration(os_environ_getter,
-                                      None,
+    exe_conf = ExecutionConfiguration(arrangement.predefined_properties.default_environ_getter,
+                                      arrangement.predefined_properties.environ,
+                                      arrangement.predefined_properties.timeout_in_seconds,
                                       arrangement.os_services,
                                       sandbox_root_name_resolver.for_test(),
                                       arrangement.mem_buff_size,

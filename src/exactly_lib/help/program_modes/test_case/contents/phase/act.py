@@ -36,7 +36,6 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             'setup': phase_infos.SETUP.name,
             'action_to_check': concepts.ACTION_TO_CHECK_CONCEPT_INFO.name,
             'home_directory': formatting.conf_param_(conf_params.HDS_CASE_DIRECTORY_CONF_PARAM_INFO),
-            'timeout_conf_param': formatting.conf_param_(conf_params.TIMEOUT_CONF_PARAM_INFO),
             'sandbox': formatting.concept_(concepts.SDS_CONCEPT_INFO),
             'result_dir': tc_fs.SDS_RESULT_INFO.identifier,
             'actor_option': OPTION_FOR_ACTOR,
@@ -49,6 +48,9 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
             'stdin_instruction': InstructionName(instruction_names.CONTENTS_OF_STDIN_INSTRUCTION_NAME),
             'env_instruction': InstructionName(instruction_names.ENV_VAR_INSTRUCTION_NAME),
+            'timeout': concepts.TIMEOUT_CONCEPT_INFO.name,
+            'timeout_default': concepts.TIMEOUT_CONCEPT_INFO.default,
+            'timeout_instruction': InstructionName(instruction_names.TIMEOUT_INSTRUCTION_NAME),
             'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.name,
             'env_var': concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.name,
 
@@ -81,11 +83,11 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
     def _custom_environment_info_items(self) -> Sequence[docs.lists.HeaderContentListItem]:
         return [
             docs.list_item(
-                'stdin',
+                misc_texts.STDIN.capitalize(),
                 self._tp.fnap(_STDIN)
             ),
             docs.list_item(
-                conf_params.TIMEOUT_CONF_PARAM_INFO.singular_name.capitalize(),
+                concepts.TIMEOUT_CONCEPT_INFO.singular_name.capitalize(),
                 self._tp.fnap(_TIMEOUT)
             ),
         ]
@@ -97,12 +99,13 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             concepts.ACTION_TO_CHECK_CONCEPT_INFO.cross_reference_target,
             concepts.SDS_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
+            concepts.TIMEOUT_CONCEPT_INFO.cross_reference_target,
             conf_params.ACTOR_CONF_PARAM_INFO.cross_reference_target,
-            conf_params.TIMEOUT_CONF_PARAM_INFO.cross_reference_target,
             PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_CASE_CLI),
             phase_infos.SETUP.cross_reference_target,
             phase_infos.BEFORE_ASSERT.cross_reference_target,
             phase_infos.ASSERT.cross_reference_target,
+            phase_infos.SETUP.instruction_cross_reference_target(instruction_names.TIMEOUT_INSTRUCTION_NAME),
             phase_infos.SETUP.instruction_cross_reference_target(instruction_names.ENV_VAR_INSTRUCTION_NAME),
             phase_infos.SETUP.instruction_cross_reference_target(instruction_names.CONTENTS_OF_STDIN_INSTRUCTION_NAME),
         ]
@@ -117,7 +120,10 @@ Empty otherwise.
 """
 
 _TIMEOUT = """\
-The value specified via the {timeout_conf_param} {conf_param}.
+Default: {timeout_default}
+
+
+The {timeout} can be changed by the {timeout_instruction} {instruction}.
 """
 
 ONE_LINE_DESCRIPTION = """\

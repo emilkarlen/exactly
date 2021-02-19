@@ -12,9 +12,17 @@ class InstructionSettings:
     def __init__(self,
                  environ: Optional[Dict[str, str]],
                  default_environ_getter: DefaultEnvironGetter,
+                 timeout_in_seconds: Optional[int],
                  ):
         self._environ = environ
         self._default_environ_getter = default_environ_getter
+        self._timeout_in_seconds = timeout_in_seconds
+
+    def timeout_in_seconds(self) -> Optional[int]:
+        return self._timeout_in_seconds
+
+    def set_timeout(self, seconds: Optional[int]):
+        self._timeout_in_seconds = seconds
 
     def environ(self) -> Optional[Dict[str, str]]:
         return self._environ

@@ -1,0 +1,3 @@
+from exactly_lib.definitions import instruction_arguments
+
+ASSIGNMENT_IDENTIFIER = instruction_arguments.ASSIGNMENT_OPERATOR

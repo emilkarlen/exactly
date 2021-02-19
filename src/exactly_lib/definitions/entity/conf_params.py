@@ -104,17 +104,9 @@ HDS_CASE_DIRECTORY_CONF_PARAM_INFO = _of_tc_dir_info(test_case_file_structure.HD
 
 HDS_ACT_DIRECTORY_CONF_PARAM_INFO = _of_tc_dir_info(test_case_file_structure.HDS_ACT_INFO)
 
-TIMEOUT_CONF_PARAM_INFO = _conf_param_info(
-    'timeout',
-    conf_params.TIMEOUT,
-    'No timeout.',
-    _format('Timeout of sub processes executed by instructions and the {phase[act]} phase.'),
-)
-
 ALL_CONF_PARAM_INFOS = (
     ACTOR_CONF_PARAM_INFO,
     TEST_CASE_STATUS_CONF_PARAM_INFO,
     HDS_CASE_DIRECTORY_CONF_PARAM_INFO,
     HDS_ACT_DIRECTORY_CONF_PARAM_INFO,
-    TIMEOUT_CONF_PARAM_INFO,
 )

@@ -152,7 +152,7 @@ class TestEnvironVariablesAreNoneIfValueInConfigIsNone(unittest.TestCase):
             self,
             test_case,
             Arrangement(
-                actor=_actor_that_records_environ_of_environment(recording_media),
+                actor=_actor_that_records_values_of_environment(recording_media),
                 environ=mb_dict__in_arrangement
             ),
             result_is_pass(),
@@ -184,56 +184,78 @@ class TestPropagationOfEnvironInSettings(unittest.TestCase):
                                                     var__before_assert,
                                                     var__assert,
                                                     var__cleanup])
+        timeout__initial = 1
+        timeout__after_setup = 2
+        timeout__after_before_assert = 3
+        timeout__after_assert = 4
+        timeout__after_cleanup = 5
 
         recording_media = _empty_recording_media()
         expected_recordings = [
             # setup #
             RecordingEntry.from_environment(PhaseEnum.SETUP, PosInPhase.BEFORE_MODIFY,
-                                            dict__initial),
+                                            dict__initial,
+                                            timeout__initial),
             RecordingEntry.from_settings(PhaseEnum.SETUP, PosInPhase.BEFORE_MODIFY,
-                                         dict__initial),
+                                         dict__initial,
+                                         timeout__initial),
 
             RecordingEntry.from_environment(PhaseEnum.SETUP, PosInPhase.AFTER_MODIFY,
-                                            dict__after_setup),
+                                            dict__after_setup,
+                                            timeout__after_setup),
             RecordingEntry.from_settings(PhaseEnum.SETUP, PosInPhase.AFTER_MODIFY,
-                                         dict__after_setup),
+                                         dict__after_setup,
+                                         timeout__after_setup),
 
             # act #
             RecordingEntry.from_environment(PhaseEnum.ACT, None,
-                                            dict__after_setup),
+                                            dict__after_setup,
+                                            timeout__after_setup),
 
             # before-assert #
             RecordingEntry.from_environment(PhaseEnum.BEFORE_ASSERT, PosInPhase.BEFORE_MODIFY,
-                                            dict__after_setup),
+                                            dict__after_setup,
+                                            timeout__after_setup),
             RecordingEntry.from_settings(PhaseEnum.BEFORE_ASSERT, PosInPhase.BEFORE_MODIFY,
-                                         dict__after_setup),
+                                         dict__after_setup,
+                                         timeout__after_setup),
 
             RecordingEntry.from_environment(PhaseEnum.BEFORE_ASSERT, PosInPhase.AFTER_MODIFY,
-                                            dict__after_before_assert),
+                                            dict__after_before_assert,
+                                            timeout__after_before_assert),
             RecordingEntry.from_settings(PhaseEnum.BEFORE_ASSERT, PosInPhase.AFTER_MODIFY,
-                                         dict__after_before_assert),
+                                         dict__after_before_assert,
+                                         timeout__after_before_assert),
 
             # assert #
             RecordingEntry.from_environment(PhaseEnum.ASSERT, PosInPhase.BEFORE_MODIFY,
-                                            dict__after_before_assert),
+                                            dict__after_before_assert,
+                                            timeout__after_before_assert),
             RecordingEntry.from_settings(PhaseEnum.ASSERT, PosInPhase.BEFORE_MODIFY,
-                                         dict__after_before_assert),
+                                         dict__after_before_assert,
+                                         timeout__after_before_assert),
 
             RecordingEntry.from_environment(PhaseEnum.ASSERT, PosInPhase.AFTER_MODIFY,
-                                            dict__after_assert),
+                                            dict__after_assert,
+                                            timeout__after_assert),
             RecordingEntry.from_settings(PhaseEnum.ASSERT, PosInPhase.AFTER_MODIFY,
-                                         dict__after_assert),
+                                         dict__after_assert,
+                                         timeout__after_assert),
 
             # cleanup #
             RecordingEntry.from_environment(PhaseEnum.CLEANUP, PosInPhase.BEFORE_MODIFY,
-                                            dict__after_assert),
+                                            dict__after_assert,
+                                            timeout__after_assert),
             RecordingEntry.from_settings(PhaseEnum.CLEANUP, PosInPhase.BEFORE_MODIFY,
-                                         dict__after_assert),
+                                         dict__after_assert,
+                                         timeout__after_assert),
 
             RecordingEntry.from_environment(PhaseEnum.CLEANUP, PosInPhase.AFTER_MODIFY,
-                                            dict__after_cleanup),
+                                            dict__after_cleanup,
+                                            timeout__after_cleanup),
             RecordingEntry.from_settings(PhaseEnum.CLEANUP, PosInPhase.AFTER_MODIFY,
-                                         dict__after_cleanup),
+                                         dict__after_cleanup,
+                                         timeout__after_cleanup),
         ]
 
         helper = RecordingsHelper(recording_media)
@@ -244,7 +266,8 @@ class TestPropagationOfEnvironInSettings(unittest.TestCase):
                                                                          PosInPhase.BEFORE_MODIFY),
                 ),
                 setup_phase_instruction_that(
-                    main_initial_action=ActionThatSetsVarInSettings(var__setup).initial_action,
+                    main_initial_action=ActionThatSetsVarInSettings(var__setup,
+                                                                    timeout__after_setup).initial_action,
                 ),
                 setup_phase_instruction_that(
                     main_initial_action=helper.action_for_recordings_for(PhaseEnum.SETUP,
@@ -258,7 +281,8 @@ class TestPropagationOfEnvironInSettings(unittest.TestCase):
                                                                          PosInPhase.BEFORE_MODIFY),
                 ),
                 before_assert_phase_instruction_that(
-                    main_initial_action=ActionThatSetsVarInSettings(var__before_assert).initial_action,
+                    main_initial_action=ActionThatSetsVarInSettings(var__before_assert,
+                                                                    timeout__after_before_assert).initial_action,
                 ),
                 before_assert_phase_instruction_that(
                     main_initial_action=helper.action_for_recordings_for(PhaseEnum.BEFORE_ASSERT,
@@ -271,7 +295,8 @@ class TestPropagationOfEnvironInSettings(unittest.TestCase):
                                                                          PosInPhase.BEFORE_MODIFY),
                 ),
                 assert_phase_instruction_that(
-                    main_initial_action=ActionThatSetsVarInSettings(var__assert).initial_action,
+                    main_initial_action=ActionThatSetsVarInSettings(var__assert,
+                                                                    timeout__after_assert).initial_action,
                 ),
                 assert_phase_instruction_that(
                     main_initial_action=helper.action_for_recordings_for(PhaseEnum.ASSERT,
@@ -284,7 +309,8 @@ class TestPropagationOfEnvironInSettings(unittest.TestCase):
                                                                          PosInPhase.BEFORE_MODIFY),
                 ),
                 cleanup_phase_instruction_that(
-                    main_initial_action=ActionThatSetsVarInSettings(var__cleanup).initial_action,
+                    main_initial_action=ActionThatSetsVarInSettings(var__cleanup,
+                                                                    timeout__after_cleanup).initial_action,
                 ),
                 cleanup_phase_instruction_that(
                     main_initial_action=helper.action_for_recordings_for(PhaseEnum.CLEANUP,
@@ -298,8 +324,9 @@ class TestPropagationOfEnvironInSettings(unittest.TestCase):
             self,
             test_case,
             Arrangement(
-                actor=_actor_that_records_environ_of_environment(recording_media),
-                environ=env_vars_in_arrangement__read_write
+                actor=_actor_that_records_values_of_environment(recording_media),
+                timeout_in_seconds=timeout__initial,
+                environ=env_vars_in_arrangement__read_write,
             ),
             result_is_pass(),
         )
@@ -322,7 +349,7 @@ class RecordingsHelper:
         self.recording_media = recording_media
 
     def action_for_recordings_for(self, phase: PhaseEnum, pos_in_phase: Optional[PosInPhase]) -> Callable:
-        return RecordEnvironmentVariables(phase, pos_in_phase, self.recording_media).call
+        return RecordEnvVarsAndTimeout(phase, pos_in_phase, self.recording_media).call
 
     def action_for_recording_of_default_environ(self, phase: PhaseEnum,
                                                 pos_in_phase: Optional[PosInPhase] = None) -> Callable:
@@ -346,7 +373,7 @@ class SetEnvironmentVariableInInstructionSettings:
         environ_before[self.val_var.name] = self.val_var.value
 
 
-class RecordEnvironmentVariables:
+class RecordEnvVarsAndTimeout:
     def __init__(self,
                  phase: PhaseEnum,
                  pos_in_phase: Optional[PosInPhase],
@@ -362,9 +389,11 @@ class RecordEnvironmentVariables:
              *args):
         self.recording_media += [
             RecordingEntry(StepInfo.of_environment(self.phase, self.pos_in_phase),
-                           environment.proc_exe_settings.environ),
+                           environment.proc_exe_settings.environ,
+                           environment.proc_exe_settings.timeout_in_seconds),
             RecordingEntry(StepInfo.of_settings(self.phase, self.pos_in_phase),
-                           settings.environ()),
+                           settings.environ(),
+                           settings.timeout_in_seconds()),
         ]
 
 
@@ -388,13 +417,13 @@ class RecordDefaultEnviron:
         ]
 
 
-def _actor_that_records_environ_of_environment(recording_media: List[RecordingEntry]) -> Actor:
+def _actor_that_records_values_of_environment(recording_media: List[RecordingEntry]) -> Actor:
     return ActorThatRunsConstantActions(
-        execute_initial_action=StepRecorderOfValueFromEnvironment(PhaseEnum.ACT, None, recording_media).initial_action,
+        execute_initial_action=StepRecorderOfValuesFromEnvironment(PhaseEnum.ACT, None, recording_media).initial_action,
     )
 
 
-class StepRecorderOfValueFromEnvironment:
+class StepRecorderOfValuesFromEnvironment:
     def __init__(self,
                  phase: PhaseEnum,
                  pos_in_phase: Optional[PosInPhase],
@@ -408,38 +437,26 @@ class StepRecorderOfValueFromEnvironment:
         self._recording_media.append(
             RecordingEntry(
                 StepInfo.of_environment(self._phase, self._pos_in_phase),
-                environment.proc_exe_settings.environ
-            )
-        )
-
-
-class StepRecorderOfValueFromSettings:
-    def __init__(self,
-                 phase: PhaseEnum,
-                 pos_in_phase: Optional[PosInPhase],
-                 recording_media: List[RecordingEntry],
-                 ):
-        self._phase = phase
-        self._pos_in_phase = pos_in_phase
-        self._recording_media = recording_media
-
-    def initial_action(self, environment: InstructionEnvironmentForPostSdsStep, settings: InstructionSettings, *args):
-        self._recording_media.append(
-            RecordingEntry(
-                StepInfo.of_settings(self._phase, self._pos_in_phase),
-                settings.environ()
+                environment.proc_exe_settings.environ,
+                environment.proc_exe_settings.timeout_in_seconds,
             )
         )
 
 
 class ActionThatSetsVarInSettings:
-    def __init__(self, env_var: NameAndValue[str]):
+    def __init__(self,
+                 env_var: NameAndValue[str],
+                 timeout: Optional[int],
+                 ):
         self._env_var = env_var
+        self._timeout = timeout
 
     def initial_action(self,
                        environment: InstructionEnvironmentForPostSdsStep,
                        settings: InstructionSettings,
                        *args):
+        settings.set_timeout(self._timeout)
+
         if settings.environ() is None:
             settings.set_environ({})
         environ = settings.environ()

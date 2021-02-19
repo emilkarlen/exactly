@@ -13,7 +13,8 @@ def optionally_from_proc_exe_settings(x: Optional[InstructionSettings],
                                       ) -> InstructionSettings:
     return (
         InstructionSettings(environ_copy_or_none(pes.environ),
-                            default_environ_getter)
+                            default_environ_getter,
+                            pes.timeout_in_seconds)
         if x is None
         else
         x
@@ -24,7 +25,8 @@ def from_proc_exe_settings(pes: ProcessExecutionSettings,
                            default_environ_getter: DefaultEnvironGetter = get_empty_environ,
                            ) -> InstructionSettings:
     return InstructionSettings(environ_copy_or_none(pes.environ),
-                               default_environ_getter)
+                               default_environ_getter,
+                               pes.timeout_in_seconds)
 
 
 def environ_copy_or_none(environ: Optional[Mapping[str, str]]) -> Optional[Dict[str, str]]:

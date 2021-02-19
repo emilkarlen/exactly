@@ -3,7 +3,7 @@ from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.impls.instructions.assert_ import contents_of_dir
 from exactly_lib.impls.instructions.assert_ import define_symbol, change_dir, \
     contents_of_file, env, run, new_file, new_dir, copy, \
-    shell, existence_of_file, sys_cmd
+    shell, existence_of_file, sys_cmd, timeout
 from exactly_lib.impls.instructions.assert_.process_output import stderr, stdout, exit_code
 
 INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
@@ -20,6 +20,7 @@ INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
         (instruction_names.NEW_DIR_INSTRUCTION_NAME, new_dir.setup),
         (instruction_names.COPY_INSTRUCTION_NAME, copy.setup),
         (instruction_names.ENV_VAR_INSTRUCTION_NAME, env.setup),
+        (instruction_names.TIMEOUT_INSTRUCTION_NAME, timeout.setup),
         (instruction_names.RUN_INSTRUCTION_NAME, run.setup),
         (instruction_names.SYS_CMD_INSTRUCTION_NAME, sys_cmd.setup),
         (instruction_names.SHELL_INSTRUCTION_NAME, shell.setup),

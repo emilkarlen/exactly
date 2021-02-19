@@ -43,6 +43,7 @@ class PartialExecutionTestCaseBase:
                     self._test_case(),
                     ExecutionConfiguration(os_environ_getter,
                                            None,
+                                           None,
                                            os_services_access.new_for_current_os(),
                                            sandbox_root_name_resolver.for_test(),
                                            2 ** 10),

@@ -29,9 +29,11 @@ class Arrangement:
                  settings_handler: Optional[MkSetupSettingsHandler] = None,
                  os_services: OsServices = os_services_access.new_for_current_os(),
                  mem_buff_size: int = 2 ** 10,
+                 timeout_in_seconds: Optional[int] = None,
                  ):
         self.test_case = test_case
         self.actor = actor
+        self.timeout_in_seconds = timeout_in_seconds
         self.settings_handler = settings_handlers.mk_from_optional(settings_handler)
         self.os_services = os_services
         self.mem_buff_size = mem_buff_size
@@ -54,6 +56,7 @@ def execute_and_check(put: unittest.TestCase,
                 arrangement.test_case,
                 ExecutionConfiguration(os_environ_getter,
                                        None,
+                                       arrangement.timeout_in_seconds,
                                        arrangement.os_services,
                                        sandbox_root_name_resolver.for_test(),
                                        arrangement.mem_buff_size),

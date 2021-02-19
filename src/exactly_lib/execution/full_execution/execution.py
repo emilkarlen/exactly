@@ -33,7 +33,6 @@ def execute(conf: ExecutionConfiguration,
     conf_phase_values = ConfPhaseValues(
         configuration_builder.actor,
         configuration_builder.hds,
-        configuration_builder.timeout_in_seconds,
     )
     partial_result = execution.execute(
         TestCase(test_case.setup_phase,

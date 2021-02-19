@@ -2,6 +2,7 @@ import enum
 from typing import Optional, Dict
 
 from exactly_lib.test_case.phase_identifier import PhaseEnum
+from exactly_lib.util import functional
 
 
 class PosInPhase(enum.Enum):
@@ -38,24 +39,24 @@ class StepInfo(tuple):
 class RecordingEntry(tuple):
     def __new__(cls,
                 step_info: StepInfo,
-                value: Optional[Dict[str, str]]
+                environ: Optional[Dict[str, str]],
+                timeout: Optional[int] = None,
                 ):
-        value_to_record = (
-            None
-            if value is None
-            else
-            dict(value)
-        )
-        return tuple.__new__(cls, (step_info, value_to_record))
+        environ_to_record = functional.map_optional(dict, environ)
+        return tuple.__new__(cls, (step_info, environ_to_record, timeout))
 
     @staticmethod
     def from_settings(phase: PhaseEnum,
                       pos_in_phase: Optional[PosInPhase],
-                      value: Optional[Dict[str, str]]) -> 'RecordingEntry':
-        return RecordingEntry(StepInfo.of_settings(phase, pos_in_phase), value)
+                      environ: Optional[Dict[str, str]],
+                      timeout: Optional[int] = None,
+                      ) -> 'RecordingEntry':
+        return RecordingEntry(StepInfo.of_settings(phase, pos_in_phase), environ, timeout)
 
     @staticmethod
     def from_environment(phase: PhaseEnum,
                          pos_in_phase: Optional[PosInPhase],
-                         value: Optional[Dict[str, str]]) -> 'RecordingEntry':
-        return RecordingEntry(StepInfo.of_environment(phase, pos_in_phase), value)
+                         value: Optional[Dict[str, str]],
+                         timeout: Optional[int] = None,
+                         ) -> 'RecordingEntry':
+        return RecordingEntry(StepInfo.of_environment(phase, pos_in_phase), value, timeout)

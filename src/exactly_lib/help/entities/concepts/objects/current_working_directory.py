@@ -32,13 +32,12 @@ class _CurrentWorkingDirectoryConcept(ConceptDocumentation):
             'sds_concept': formatting.concept_(concepts.SDS_CONCEPT_INFO),
             'act_sub_dir': SUB_DIRECTORY__ACT + '/',
             'path_type': formatting.symbol_type_(types.PATH_TYPE_INFO),
-            'act_phase': phase_names.ACT.syntax,
+            'act_phase': phase_names.ACT.emphasis,
             'rel_cd_option': formatting.cli_option(path.REL_CWD_OPTION),
 
             'cd_instruction': InstructionName(instruction_names.CHANGE_DIR_INSTRUCTION_NAME),
-            'run_instruction': InstructionName(instruction_names.RUN_INSTRUCTION_NAME),
-            'shell_instruction': InstructionName(instruction_names.SHELL_INSTRUCTION_NAME),
             'def_instruction': InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
+            'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
 
             'os_process': misc_texts.OS_PROCESS_NAME,
 
@@ -100,7 +99,7 @@ A change of {CD} stay in effect for all following instructions and phases.
 _USING_THE_CD_HEADER = 'Using the {cd_concept}'
 
 _USING_THE_CD = """\
-Instruction arguments of type {path_type} that are relative to the {CD}
+{instruction:/u} arguments of type {path_type} that are relative to the {CD}
 (via the {rel_cd_option} option).
 
 
@@ -109,7 +108,7 @@ have the {CD} as Present Working Directory (PWD)
 when the process starts.
 
 This applies to the {act_phase} phase (as a whole),
-and the {run_instruction} and {shell_instruction} instructions.
+and {instruction:s} that execute {os_process:s}.
 
 The {act_phase} phase is always executed as a single
 {os_process} execution.

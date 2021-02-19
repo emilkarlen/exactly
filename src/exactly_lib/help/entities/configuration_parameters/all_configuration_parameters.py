@@ -1,5 +1,5 @@
 from exactly_lib.help.entities.configuration_parameters.objects import actor, test_case_status, \
-    hds_act_directory, hds_case_directory, timeout
+    hds_act_directory, hds_case_directory
 
 
 def all_configuration_parameters() -> list:
@@ -11,5 +11,4 @@ def all_configuration_parameters() -> list:
         test_case_status.DOCUMENTATION,
         hds_case_directory.DOCUMENTATION,
         hds_act_directory.DOCUMENTATION,
-        timeout.DOCUMENTATION,
     ]

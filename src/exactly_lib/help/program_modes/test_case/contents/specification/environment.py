@@ -1,7 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.definitions import formatting, type_system, misc_texts
 from exactly_lib.definitions import test_case_file_structure
-from exactly_lib.definitions.entity import concepts, types, conf_params
+from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
@@ -48,7 +48,9 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
 
         'os_process': misc_texts.OS_PROCESS_NAME,
         'env_var': concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.name,
-        'time_out_conf_param': formatting.conf_param_(conf_params.TIMEOUT_CONF_PARAM_INFO),
+        'timeout': concepts.TIMEOUT_CONCEPT_INFO.name,
+        'timeout_instruction': InstructionName(instruction_names.TIMEOUT_INSTRUCTION_NAME),
+        'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
 
         'relativity': formatting.concept(misc_texts.RELATIVITY.singular),
         'relativities': formatting.concept(misc_texts.RELATIVITY.plural),
@@ -296,7 +298,7 @@ It is changed by the {cd} instruction.
 """
 
 _OS_PROC_TIMEOUT = """\
-Timeout for all {os_process:s} is determined by the {conf_param} {time_out_conf_param}.
+{timeout:/u} for all {os_process:s} can be set by the {timeout_instruction} {instruction}.
 """
 
 
@@ -305,5 +307,7 @@ def _os_process_see_also_targets() -> List[see_also.SeeAlsoTarget]:
         concepts.TCDS_CONCEPT_INFO.cross_reference_target,
         concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
         concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-        conf_params.TIMEOUT_CONF_PARAM_INFO.cross_reference_target,
+        concepts.TIMEOUT_CONCEPT_INFO.cross_reference_target,
+        phase_infos.SETUP.instruction_cross_reference_target(instruction_names.ENV_VAR_INSTRUCTION_NAME),
+        phase_infos.SETUP.instruction_cross_reference_target(instruction_names.TIMEOUT_INSTRUCTION_NAME),
     ]

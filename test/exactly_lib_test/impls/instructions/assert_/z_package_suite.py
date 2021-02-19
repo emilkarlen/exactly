@@ -9,6 +9,7 @@ from exactly_lib_test.impls.instructions.assert_ import \
     shell, \
     sys_cmd, \
     env, \
+    timeout, \
     define_symbol
 from exactly_lib_test.impls.instructions.assert_ import test_resources_test
 from exactly_lib_test.impls.instructions.assert_.contents_of_dir import z_package_suite as contents_of_dir
@@ -35,6 +36,7 @@ def suite() -> unittest.TestSuite:
         run.suite(),
         sys_cmd.suite(),
         shell.suite(),
+        timeout.suite(),
         env.suite(),
     ])
 

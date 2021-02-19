@@ -29,6 +29,7 @@ class FullExecutionTestCaseBase:
                  default_environ_getter: DefaultEnvironGetter = os_environ_getter,
                  environ: Optional[Mapping[str, str]] = None,
                  os_services: OsServices = os_services_access.new_for_current_os(),
+                 timeout_in_seconds: Optional[int] = None,
                  ):
         self.__unittest_case = unittest_case
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
@@ -39,6 +40,7 @@ class FullExecutionTestCaseBase:
         self.__os_services = os_services
         self.__default_environ_getter = default_environ_getter
         self.__environ = environ
+        self.__timeout_in_seconds = timeout_in_seconds
 
     def execute(self):
         # SETUP #
@@ -47,6 +49,7 @@ class FullExecutionTestCaseBase:
         initial_hds_dir_path = self.initial_hds_dir_path.resolve()
         exe_conf = ExecutionConfiguration(self.__default_environ_getter,
                                           self.__environ,
+                                          self.__timeout_in_seconds,
                                           self.__os_services,
                                           sandbox_root_name_resolver.for_test(),
                                           2 ** 10,

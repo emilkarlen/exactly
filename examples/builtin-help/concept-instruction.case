@@ -1,8 +1,6 @@
-[conf]
+[setup]
 
 timeout = 10
-
-[setup]
 
 stdin   = "contents of stdin"
 

@@ -1,0 +1,17 @@
+[setup]
+
+timeout = 1
+
+[before-assert]
+
+timeout = 1+1
+
+[assert]
+
+timeout = 10//2
+
+[cleanup]
+
+def string TIMEOUT = '8 // 2 + 1'
+
+timeout = @[TIMEOUT]@

@@ -7,25 +7,20 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case import phase_infos, phase_names
 from exactly_lib.definitions.test_case.instructions import instruction_names
-from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.util.description import DescriptionWithSubSections
-from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.help.entities.concepts.contents_structure import ConceptWDefaultDocumentation
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class _EnvironmentVariableConcept(ConceptDocumentation):
+class _EnvironmentVariableConcept(ConceptWDefaultDocumentation):
     def __init__(self):
         super().__init__(concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO)
 
-    def purpose(self) -> DescriptionWithSubSections:
+    def purpose__before_default(self) -> SectionContents:
         description = common_description()
         description += _TP.fnap(_DESCRIPTION_TAIL)
-
-        return DescriptionWithSubSections(
-            self.single_line_description(),
-            docs.section_contents(description)
-        )
+        return SectionContents(description)
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
@@ -33,24 +28,18 @@ class _EnvironmentVariableConcept(ConceptDocumentation):
         ]
 
 
-############################################################
-# MENTION
-#
-# - Which env vars are available
-# - Two sets of env vars
-# - Manipulating env vars
-# - Scope of change of env vars
-############################################################
 def common_description() -> List[ParagraphItem]:
     return _TP.fnap(_DESCRIPTION__COMMON)
 
 
+############################################################
+# MENTION
+#
+# - Two sets of env vars
+# - Manipulating env vars
+# - Scope of change of env vars
+############################################################
 _DESCRIPTION__COMMON = """\
-All OS {env_var:s}
-that are set when {program_name} is started
-are available in {process:s} run from a test case.
-
-
 {program_name} has two sets of {env_var:s}:
 
 

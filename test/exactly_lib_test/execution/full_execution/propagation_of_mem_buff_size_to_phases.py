@@ -34,8 +34,7 @@ class Test(unittest.TestCase):
             actor = actor_that_records_property_of_env_for_each_step_post_sds(recorder_builder)
             configuration_builder = ConfigurationBuilder(tmp_dir_path,
                                                          tmp_dir_path,
-                                                         NameAndValue('the actor', actor),
-                                                         timeout_in_seconds=30)
+                                                         NameAndValue('the actor', actor))
             arrangement = execution_check.Arrangement(test_case,
                                                       configuration_builder,
                                                       mem_buff_size=expected_mem_buff_size)

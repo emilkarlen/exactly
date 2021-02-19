@@ -52,7 +52,7 @@ class TestCaseBaseForParser(TestCaseBase):
                         source,
                         Arrangement(test_case_status=initial,
                                     actor=actor_that_runs_constant_actions()),
-                        Expectation(configuration=asrt_conf.has(test_case_status=asrt.is_(expected))))
+                        Expectation(configuration=asrt_conf.matches(status=asrt.is_(expected))))
 
 
 class TestChangeStatus(TestCaseBaseForParser):

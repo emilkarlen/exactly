@@ -158,7 +158,7 @@ class WhenTimeoutThenOutputShouldOutputFromAtcFollowedByErrorReportingOnStderr(S
         )
 
         test_case_source = """\
-[conf]
+[setup]
 
 timeout = 1
 

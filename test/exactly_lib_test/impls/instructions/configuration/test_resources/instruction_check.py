@@ -32,7 +32,6 @@ class Arrangement(ArrangementBase):
         self.root_dir_contents = root_dir_contents
         self.actor = actor
         self.test_case_status = test_case_status
-        self.timeout_in_seconds = timeout_in_seconds
 
 
 class Expectation:
@@ -89,7 +88,6 @@ class Executor:
                 configuration_builder = ConfigurationBuilder(hds.case_dir,
                                                              hds.act_dir,
                                                              NameAndValue('the actor', self.arrangement.actor),
-                                                             timeout_in_seconds=self.arrangement.timeout_in_seconds,
                                                              test_case_status=self.arrangement.test_case_status)
 
                 self._execute_main(configuration_builder, instruction)

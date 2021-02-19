@@ -1,16 +1,39 @@
 from typing import Optional
 
 from exactly_lib import program_info
-from exactly_lib.definitions import formatting, misc_texts
+from exactly_lib.definitions import formatting, misc_texts, os_proc_env
+from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames, \
     SingularAndPluralAndAcronymNameAndCrossReferenceId
 from exactly_lib.definitions.entity import all_entity_types
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.section_document import defs as syntax_defs
-from exactly_lib.util.str_.name import NameWithGender, an_name_with_plural_s, a_name_with_plural_s
+from exactly_lib.util.str_.name import NameWithGender, an_name_with_plural_s, a_name_with_plural_s, \
+    NameWithGenderWithFormatting
 
 _CURRENT_DIRECTORY_SINGULAR = 'current directory'
+
+
+class ConceptWDefaultCrossReferenceId(SingularAndPluralAndAcronymNameAndCrossReferenceId):
+    def __init__(self,
+                 name: NameWithGenderWithFormatting,
+                 single_line_description_str: str,
+                 cross_reference_target: CrossReferenceId,
+                 default: str,
+                 acronym: Optional[str] = None,
+                 ):
+        super().__init__(
+            name,
+            single_line_description_str,
+            cross_reference_target,
+            acronym
+        )
+        self._default = default
+
+    @property
+    def default(self) -> str:
+        return self._default
 
 
 def concept_cross_ref(concept_name: str) -> EntityCrossReferenceId:
@@ -89,9 +112,18 @@ CURRENT_WORKING_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
     'CD',
 )
 
-ENVIRONMENT_VARIABLE_CONCEPT_INFO = name_and_ref_target(
-    an_name_with_plural_s('environment variable'),
-    _format('OS environment variables available to {os_process:s} executed from within a test case.')
+ENVIRONMENT_VARIABLE_CONCEPT_INFO = ConceptWDefaultCrossReferenceId(
+    formatting.concept_name_with_formatting(an_name_with_plural_s('environment variable')),
+    _format('OS environment variables available to {os_process:s} executed from within a test case.'),
+    concept_cross_ref('environment variable'),
+    _format('All OS environment variables set when {program_name} is started')
+)
+
+TIMEOUT_CONCEPT_INFO = ConceptWDefaultCrossReferenceId(
+    formatting.concept_name_with_formatting(a_name_with_plural_s('timeout')),
+    _format('Timeout of {os_process:s} executed from within a test case.'),
+    concept_cross_ref('timeout'),
+    os_proc_env.render_timeout_value(os_proc_env.TIMEOUT__DEFAULT)
 )
 
 PREPROCESSOR_CONCEPT_INFO = name_and_ref_target(

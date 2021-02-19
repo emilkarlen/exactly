@@ -9,11 +9,13 @@ from exactly_lib_test.impls.instructions.multi_phase.environ import z_package_su
 from exactly_lib_test.impls.instructions.multi_phase.new_file import z_package_suite as new_file
 from exactly_lib_test.impls.instructions.multi_phase.run_program import z_package_suite as run_program
 from exactly_lib_test.impls.instructions.multi_phase.test_resources_test import z_package_suite as test_resources_test
+from exactly_lib_test.impls.instructions.multi_phase.timeout import z_package_suite as timeout
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         test_resources_test.suite(),
+        timeout.suite(),
         new_dir.suite(),
         change_dir.suite(),
         new_file.suite(),

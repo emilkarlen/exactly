@@ -41,12 +41,13 @@ class TestPredefinedSymbols(unittest.TestCase):
             'predefined string value (not used by this test)').symbol_table
         predefined_properties = PredefinedProperties(default_environ_getter=get_empty_environ,
                                                      environ=None,
-                                                     predefined_symbols=predefined_symbols_table)
+                                                     predefined_symbols=predefined_symbols_table,
+                                                     timeout_in_seconds=None)
         self._check(predefined_properties, assert_symbol_table_keys_equals(predefined_symbols_table.names_set))
 
     def _check(self,
                predefined_properties: PredefinedProperties,
-               assertion_on_recorded_symbol_table: Assertion):
+               assertion_on_recorded_symbol_table: Assertion[SymbolTable]):
         # ARRANGE #
         actual_recorded_steps = {}
         recorder_builder = PropertyRecorderBuilder(

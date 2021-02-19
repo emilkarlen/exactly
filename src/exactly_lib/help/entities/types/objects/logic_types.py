@@ -1,7 +1,9 @@
-from exactly_lib.definitions import misc_texts, formatting
+from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
-from exactly_lib.definitions.entity import types, syntax_elements, conf_params, concepts
+from exactly_lib.definitions.entity import types, syntax_elements, concepts
+from exactly_lib.definitions.test_case import phase_infos
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.types.contents_structure import TypeWithExpressionGrammarDocumentation, \
     TypeDocumentation
 from exactly_lib.symbol.value_type import TypeCategory
@@ -12,7 +14,6 @@ _TP = TextParser({
     'os_process': misc_texts.OS_PROCESS_NAME,
     'program_type': types.PROGRAM_TYPE_INFO.name,
     'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.name,
-    'timeout_conf_param': formatting.conf_param_(conf_params.TIMEOUT_CONF_PARAM_INFO),
     'os_proc_env_section_header': misc_texts.OS_PROCESS_ENVIRONMENT_SECTION_HEADER,
     'test_case_spec_title': misc_texts.TEST_CASE_SPEC_TITLE,
     'current_OS': misc_texts.CURRENT_OS,
@@ -85,19 +86,18 @@ _PROGRAM_DESCRIPTION_REST = """\
 {program_type:a/uq} is executed as an {os_process}.
 
 
-The timeout of the {os_process} is determined by the {timeout_conf_param} {conf_param}.
-
-
 The environment in which a {program_type} is executed
 is described in "{test_case_spec_title}" / "{os_proc_env_section_header}".
 """
 
-PROGRAM_DOCUMENTATION = TypeDocumentation(TypeCategory.LOGIC,
-                                          types.PROGRAM_TYPE_INFO,
-                                          syntax_elements.PROGRAM_SYNTAX_ELEMENT,
-                                          _TP.section_contents(_PROGRAM_DESCRIPTION_REST),
-                                          [
-                                              conf_params.TIMEOUT_CONF_PARAM_INFO.cross_reference_target,
-                                              PredefinedHelpContentsPartReference(
-                                                  HelpPredefinedContentsPart.TEST_CASE_SPEC),
-                                          ])
+PROGRAM_DOCUMENTATION = TypeDocumentation(
+    TypeCategory.LOGIC,
+    types.PROGRAM_TYPE_INFO,
+    syntax_elements.PROGRAM_SYNTAX_ELEMENT,
+    _TP.section_contents(_PROGRAM_DESCRIPTION_REST),
+    [
+        PredefinedHelpContentsPartReference(
+            HelpPredefinedContentsPart.TEST_CASE_SPEC),
+        phase_infos.SETUP.instruction_cross_reference_target(instruction_names.ENV_VAR_INSTRUCTION_NAME),
+        phase_infos.SETUP.instruction_cross_reference_target(instruction_names.TIMEOUT_INSTRUCTION_NAME),
+    ])
