@@ -7,7 +7,7 @@ file b
 
 [assert]
 
-dir-contents . matches -full {
+dir-contents . : matches -full {
  a
  b : type dir
 }

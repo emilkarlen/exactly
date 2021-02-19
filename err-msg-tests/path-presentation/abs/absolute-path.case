@@ -1,4 +1,4 @@
 [assert]
 
 
-dir-contents /usr is-empty
+dir-contents /usr : is-empty

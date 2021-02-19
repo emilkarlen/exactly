@@ -40,7 +40,7 @@ def common_description() -> List[ParagraphItem]:
 # - Scope of change of env vars
 ############################################################
 _DESCRIPTION__COMMON = """\
-{program_name} has two sets of {env_var:s}:
+{program_name} maintains two sets of {env_var:s}:
 
 
   * variables of the {atc:/q} executed by the {act_phase:emphasis} phase

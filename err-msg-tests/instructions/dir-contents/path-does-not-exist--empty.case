@@ -4,4 +4,4 @@
 [assert]
 
 
-dir-contents -rel-act checked-dir is-empty
+dir-contents -rel-act checked-dir : is-empty

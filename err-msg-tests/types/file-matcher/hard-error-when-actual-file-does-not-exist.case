@@ -4,4 +4,4 @@ dir a-dir
 
 [assert]
 
-dir-contents . every file : contents equals 'contents of regular file'
+dir-contents . : every file : contents equals 'contents of regular file'

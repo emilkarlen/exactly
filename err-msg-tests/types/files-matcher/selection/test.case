@@ -1,6 +1,6 @@
 [assert]
 
 
-dir-contents .
+dir-contents . :
              -selection type file
              ! is-empty

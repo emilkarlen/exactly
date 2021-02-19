@@ -7,7 +7,7 @@ file z
 
 [assert]
 
-dir-contents . matches -full {
+dir-contents . : matches -full {
  b : type dir
  a : type file
 }

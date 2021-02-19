@@ -9,7 +9,7 @@ EOF
 [assert]
 
 
-dir-contents the-dir every file :
+dir-contents the-dir : every file :
                          contents
                              -transformed-by char-case -to-upper
                                  ! any line :

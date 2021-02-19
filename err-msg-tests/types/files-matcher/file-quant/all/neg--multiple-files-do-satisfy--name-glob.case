@@ -5,4 +5,4 @@ file ok-2
 
 [assert]
 
-dir-contents . ! every file : name ok*
+dir-contents . : ! every file : name ok*

@@ -2,6 +2,6 @@
 
 [assert]
 
-dir-contents . matches -full {
+dir-contents . : matches -full {
  a
 }
