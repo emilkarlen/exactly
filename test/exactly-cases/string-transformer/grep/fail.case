@@ -1,0 +1,25 @@
+[conf]
+
+status = FAIL
+
+[setup]
+
+file f.txt = <<-
+1 a
+1 b
+2 a
+2 b
+3 a
+3 b
+-
+
+[assert]
+
+contents f.txt :
+  -transformed-by
+    grep 1$
+    equals
+<<-
+1 a
+1 b
+-

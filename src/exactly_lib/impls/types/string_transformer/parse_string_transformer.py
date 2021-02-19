@@ -41,6 +41,13 @@ GRAMMAR = grammar.Grammar(
             )
         ),
         NameAndValue(
+            names.GREP_TRANSFORMER_NAME,
+            grammar.Primitive(
+                parse_filter.GrepShortcutParser(names.FILTER_TRANSFORMER_NAME).parse,
+                parse_filter.GrepShortcutSyntaxDescription(names.FILTER_TRANSFORMER_NAME),
+            )
+        ),
+        NameAndValue(
             names.REPLACE_TRANSFORMER_NAME,
             grammar.Primitive(replace.parse_replace,
                               replace.SyntaxDescription())

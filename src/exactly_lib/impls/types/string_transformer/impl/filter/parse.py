@@ -8,10 +8,14 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.primitives import line_matcher as line_matcher_primitives
 from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
 from exactly_lib.impls.types.expression import grammar
 from exactly_lib.impls.types.line_matcher import parse_line_matcher
+from exactly_lib.impls.types.line_matcher.impl.contents import parse as parse_line_matcher_contents
 from exactly_lib.impls.types.string_ import parse_string
+from exactly_lib.impls.types.string_matcher import matcher_options as sm_matcher_options
+from exactly_lib.impls.types.string_matcher.parse import matches as parse_sm_matches
 from exactly_lib.section_document.element_parsers import token_stream_parsing as parsing
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
 from exactly_lib.symbol.value_type import ValueType
@@ -30,6 +34,16 @@ from .line_nums import resolvers as line_nums_resolvers
 from ... import names
 
 
+class GrepShortcutParser(ParserFromTokens[StringTransformerSdv]):
+    def __init__(self, name_of_primitive: str):
+        self._name__line_matcher = _name__line_matcher(name_of_primitive)
+
+    def parse(self, token_parser: TokenParser) -> StringTransformerSdv:
+        string_matcher = parse_sm_matches.parse(token_parser)
+        line_matcher_ = parse_line_matcher_contents.sdv(string_matcher)
+        return line_matcher.sdv(self._name__line_matcher, line_matcher_)
+
+
 class Parser(ParserFromTokens[StringTransformerSdv]):
     def __init__(self, name_of_primitive: str):
         self._name__line_nums = ' '.join((
@@ -37,10 +51,7 @@ class Parser(ParserFromTokens[StringTransformerSdv]):
             cl_syntax.cl_syntax_for_args(_ARGUMENTS__LINE_NUMS),
         ))
 
-        self._name__line_matcher = ' '.join((
-            name_of_primitive,
-            syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.singular_name,
-        ))
+        self._name__line_matcher = _name__line_matcher(name_of_primitive)
 
         self._range_expr_parser = parse_string.StringFromTokensParser(
             parse_string.Configuration(names.RANGE_EXPR_SED_NAME,
@@ -182,6 +193,37 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
         )
 
 
+class GrepShortcutSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
+    def __init__(self, name_of_aliased: str):
+        target_components = (name_of_aliased,
+                             line_matcher_primitives.CONTENTS_MATCHER_NAME,
+                             sm_matcher_options.MATCHES_ARGUMENT)
+        self._tp = TextParser({
+            'grep_shortcut_target': formatting.keyword(' '.join(target_components)),
+        })
+
+    @property
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        return parse_sm_matches.Description.ARGUMENT_USAGE_LIST
+
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        return self._tp.fnap(_DESCRIPTION__MAIN__GREP_SHORTCUT)
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return [
+            syntax_elements.REGEX_SYNTAX_ELEMENT.cross_reference_target,
+        ]
+
+
+def _name__line_matcher(name_of_primitive: str) -> str:
+    return ' '.join((
+        name_of_primitive,
+        syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.singular_name,
+    ))
+
+
 _DESCRIPTION__MAIN = """\
 Keeps lines matched by {MATCHER},
 and discards lines not matched.
@@ -233,4 +275,8 @@ Line numbers from {FIRST_LINE_NUMBER} to {INT} (including).
 
 _RANGE_EXPR__DESCRIPTION__LOWER_UPPER = """\
 Line numbers from {INT} (to the left) to {INT} (to the right) (including).
+"""
+
+_DESCRIPTION__MAIN__GREP_SHORTCUT = """\
+Shortcut for {grep_shortcut_target}.
 """

@@ -1,0 +1,45 @@
+[setup]
+
+file f.txt = <<-
+1 a
+1 b
+2 a
+2 b
+3 a
+3 b
+-
+
+[assert]
+
+contents f.txt :
+  -transformed-by
+    grep ^1
+    equals
+<<-
+1 a
+1 b
+-
+
+contents f.txt :
+  -transformed-by
+    grep a$
+    equals
+<<-
+1 a
+2 a
+3 a
+-
+
+
+contents f.txt :
+  -transformed-by
+    ( grep a$ | grep ^3 )
+    equals
+<<-
+3 a
+-
+
+contents f.txt :
+  -transformed-by
+    grep -full 1
+    is-empty

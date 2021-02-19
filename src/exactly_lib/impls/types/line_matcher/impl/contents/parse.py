@@ -26,13 +26,13 @@ class _Parser(ParserFromTokens[LineMatcherSdv]):
         from exactly_lib.impls.types.string_matcher import parse_string_matcher
         string_matcher_parser = parse_string_matcher.parsers(False).simple
         contents_matcher = string_matcher_parser.parse_from_token_parser(token_parser)
-        return _sdv(contents_matcher)
+        return sdv(contents_matcher)
 
 
 PARSER = _Parser()
 
 
-def _sdv(string_matcher: StringMatcherSdv) -> LineMatcherSdv:
+def sdv(string_matcher: StringMatcherSdv) -> LineMatcherSdv:
     def make_ddv(symbols: SymbolTable) -> LineMatcherDdv:
         return _LineContentsMatcherDdv(string_matcher.resolve(symbols))
 
