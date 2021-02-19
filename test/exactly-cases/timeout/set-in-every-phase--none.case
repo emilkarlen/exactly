@@ -1,0 +1,15 @@
+[setup]
+
+timeout = none
+
+[before-assert]
+
+timeout = none
+
+[assert]
+
+timeout = none
+
+[cleanup]
+
+timeout = none

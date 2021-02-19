@@ -10,6 +10,7 @@ with exception of a "0." prefix until version 1 is released.
 ### Added
 
  - Instruction `setup`/`env` - Ability to set variables separately for the `action to check` 
+ - Instruction `timeout` - Ability to set no-timeout 
 
 ### Changed
 

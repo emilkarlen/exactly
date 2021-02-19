@@ -25,7 +25,8 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         TestFailingParse(),
         TestInvalidValue(),
-        TestValidValue(),
+        TestValidIntValue(),
+        TestNone(),
         TestSymbolReferences(),
         suite_for_instruction_documentation(doc.TheInstructionDocumentation('instruction name')),
     ])
@@ -46,7 +47,7 @@ class TestInvalidValue(unittest.TestCase):
         for value_case in INVALID_INT_VALUES:
             CHECKER.check__abs_stx__layout_and_source_variants(
                 self,
-                InstructionArgumentsAbsStx(StringLiteralAbsStx(value_case)),
+                InstructionArgumentsAbsStx.of_int(StringLiteralAbsStx(value_case)),
                 embryo_check.Arrangement.phase_agnostic(),
                 embryo_check.MultiSourceExpectation.phase_agnostic(
                     validation=ValidationAssertions.pre_sds_fails__w_any_msg()
@@ -55,7 +56,7 @@ class TestInvalidValue(unittest.TestCase):
             )
 
 
-class TestValidValue(unittest.TestCase):
+class TestValidIntValue(unittest.TestCase):
     def runTest(self):
         cases = [
             NIE('constant 5',
@@ -87,7 +88,7 @@ class TestValidValue(unittest.TestCase):
             with self.subTest(case.name):
                 CHECKER.check__abs_stx__layout_and_source_variants(
                     self,
-                    InstructionArgumentsAbsStx(case.input_value),
+                    InstructionArgumentsAbsStx.of_int(case.input_value),
                     embryo_check.Arrangement.phase_agnostic(),
                     embryo_check.MultiSourceExpectation.phase_agnostic(
                         instruction_settings=asrt_instr_settings.matches(
@@ -95,6 +96,20 @@ class TestValidValue(unittest.TestCase):
                         )
                     ),
                 )
+
+
+class TestNone(unittest.TestCase):
+    def runTest(self):
+        CHECKER.check__abs_stx__layout_and_source_variants(
+            self,
+            InstructionArgumentsAbsStx.of_none(),
+            embryo_check.Arrangement.phase_agnostic(),
+            embryo_check.MultiSourceExpectation.phase_agnostic(
+                instruction_settings=asrt_instr_settings.matches(
+                    timeout=asrt.is_none
+                )
+            ),
+        )
 
 
 class TestSymbolReferences(unittest.TestCase):
@@ -119,7 +134,7 @@ class TestSymbolReferences(unittest.TestCase):
         ])
         CHECKER.check__abs_stx__layout_and_source_variants(
             self,
-            InstructionArgumentsAbsStx(value_syntax),
+            InstructionArgumentsAbsStx.of_int(value_syntax),
             embryo_check.Arrangement.phase_agnostic(
                 symbols=SymbolContext.symbol_table_of_contexts(all_symbols),
             ),

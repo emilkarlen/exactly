@@ -65,7 +65,7 @@ class TestSetValidValue(TestCaseBase):
         self.conf.instruction_checker.check_parsing__abs_stx__const(
             self,
             self.conf.parser(),
-            InstructionArgumentsAbsStx(value_syntax),
+            InstructionArgumentsAbsStx.of_int(value_syntax),
             self.conf.arrangement(
                 symbols=SymbolContext.symbol_table_of_contexts(all_symbols),
             ),
@@ -87,7 +87,7 @@ class TestInvalidValue(TestCaseBase):
                 self.conf.instruction_checker.check_parsing__abs_stx__const(
                     self,
                     self.conf.parser(),
-                    InstructionArgumentsAbsStx(StringLiteralAbsStx(value_case)),
+                    InstructionArgumentsAbsStx.of_int(StringLiteralAbsStx(value_case)),
                     self.conf.arrangement(),
                     self.conf.expect_failing_validation_pre_sds()
                 )

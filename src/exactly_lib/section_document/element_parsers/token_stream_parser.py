@@ -15,7 +15,7 @@ from exactly_lib.util.cli_syntax.elements.argument import OptionName, Option
 from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.messages import expected_found
-from exactly_lib.util.parse.token import Token
+from exactly_lib.util.parse.token import Token, TokenMatcher
 from exactly_lib.util.str_ import english_text
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.str_.str_constructor import ToStringObject, StringConstructor
@@ -506,6 +506,18 @@ class TokenParser:
             return False
         head = self.head
         return head.is_plain and head.string == s
+
+    def has_valid_head_matching(self, matcher: TokenMatcher) -> bool:
+        if not self.has_valid_head_token():
+            return False
+        return matcher.matches(self.head)
+
+    def has_valid_head_matching__consume(self, matcher: TokenMatcher) -> bool:
+        """If matcher matches head, consumes the head."""
+        ret_val = self.has_valid_head_matching(matcher)
+        if ret_val:
+            self.consume_head()
+        return ret_val
 
     def parse_optional_command(self, command_name_2_parser: Dict[str, Callable[['TokenParser'], T]]) -> T:
         """
