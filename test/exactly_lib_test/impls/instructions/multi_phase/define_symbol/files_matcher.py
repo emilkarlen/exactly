@@ -18,10 +18,8 @@ from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resource
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
     INSTRUCTION_CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    Arrangement, Expectation
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    InstructionApplicationEnvironment
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import \
+    InstructionApplicationEnvironment, Arrangement, Expectation
 from exactly_lib_test.impls.types.file_matcher.test_resources import argument_syntax as fm_args
 from exactly_lib_test.impls.types.files_matcher.test_resources import arguments_building as arg_syntax
 from exactly_lib_test.impls.types.files_matcher.test_resources import arguments_building as fsm_args

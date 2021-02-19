@@ -17,8 +17,8 @@ from exactly_lib_test.impls.actors.program.test_resources import tmp_dir_in_path
 from exactly_lib_test.impls.instructions.configuration.actor.test_resources import ExecutedCommandAssertion
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    Arrangement
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
+    MultiSourceExpectation, Expectation
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.sys_cmd import command_line
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
@@ -198,7 +198,7 @@ class TestArgumentsShouldBeValidated(unittest.TestCase):
                         )
                     ).as_str,
                     Arrangement.phase_agnostic(),
-                    embryo_check.MultiSourceExpectation.phase_agnostic(
+                    MultiSourceExpectation.phase_agnostic(
                         validation=case.value[1],
                     ),
                 )
@@ -218,7 +218,7 @@ class TestHardErrorFromExecution(unittest.TestCase):
                     )
                 ),
             ),
-            embryo_check.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 main_raises_hard_error=True
             ),
         )
@@ -238,7 +238,7 @@ class TestNonZeroExitCodeFromExecution(unittest.TestCase):
             Arrangement.phase_agnostic(
                 os_services=os_services_access.new_for_cmd_exe(executor),
             ),
-            embryo_check.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 main_result=result_assertions.equals(executor.constant_return_value,
                                                      executor.string_to_write_to_stderr),
             ),
@@ -262,7 +262,7 @@ class TestContentsOfStdinShouldBeEmpty(unittest.TestCase):
                 Arrangement.phase_agnostic(
                     process_execution_settings=proc_exe_env_for_test(environ=env)
                 ),
-                embryo_check.Expectation.phase_agnostic_2(
+                Expectation.phase_agnostic_2(
                     source=asrt_source.source_is_at_end,
                     main_result=result_assertions.equals(non_zero_exit_code, ''),
                 ),
@@ -311,7 +311,7 @@ def check_successful_execution(put: unittest.TestCase,
             os_services=os_services_access.new_for_cmd_exe(executor_that_records_arguments),
             symbols=symbols,
         ),
-        embryo_check.MultiSourceExpectation.phase_agnostic(
+        MultiSourceExpectation.phase_agnostic(
             symbol_usages=symbol_usages,
             side_effects_on_tcds=ExecutedCommandAssertion(
                 executor_that_records_arguments,

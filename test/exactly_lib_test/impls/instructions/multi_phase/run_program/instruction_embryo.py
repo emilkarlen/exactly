@@ -7,13 +7,10 @@ from exactly_lib.impls.instructions.multi_phase import run as sut
 from exactly_lib.impls.types.path import path_relativities
 from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    Arrangement, Expectation
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    MultiSourceExpectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
+    MultiSourceExpectation, Expectation
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.program.parse_program.test_resources import pgm_and_args_cases
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args, result_assertions
@@ -94,7 +91,7 @@ class TestValidationAndSymbolUsagesOfExecute(unittest.TestCase):
                 executable_file=EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0.file_name,
             )
 
-            expectation = embryo_check.MultiSourceExpectation.phase_agnostic(
+            expectation = MultiSourceExpectation.phase_agnostic(
                 symbol_usages=asrt.matches_sequence(relativity_option_conf.symbols.usage_expectation_assertions()),
             )
 
@@ -129,7 +126,7 @@ class TestValidationAndSymbolUsagesOfExecute(unittest.TestCase):
             ]),
         )
 
-        expectation = embryo_check.Expectation.phase_agnostic(
+        expectation = Expectation.phase_agnostic(
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([
@@ -164,7 +161,7 @@ class TestValidationAndSymbolUsagesOfInterpret(unittest.TestCase):
                     source_file=source_file.file_name,
                 )
 
-                expectation = embryo_check.MultiSourceExpectation.phase_agnostic(
+                expectation = MultiSourceExpectation.phase_agnostic(
                     symbol_usages=asrt.matches_sequence(roc_executable_file.symbols.usage_expectation_assertions() +
                                                         roc_source_file.symbols.usage_expectation_assertions()),
                 )
@@ -266,7 +263,7 @@ class TestValidationAndSymbolUsagesOfInterpret(unittest.TestCase):
             ]),
         )
 
-        expectation = embryo_check.Expectation.phase_agnostic(
+        expectation = Expectation.phase_agnostic(
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([
@@ -312,7 +309,7 @@ class TestProgramViaSymbolReference(unittest.TestCase):
                 ),
                 symbols=self.symbols
             ),
-            instruction_embryo_check.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 main_result=result_assertions.equals(0, None),
                 symbol_usages=asrt.matches_sequence([
                     self.program_that_executes_py_pgm_symbol.reference_assertion
@@ -335,7 +332,7 @@ class TestProgramViaSymbolReference(unittest.TestCase):
                 ),
                 symbols=self.symbols
             ),
-            instruction_embryo_check.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 main_result=result_assertions.equals(exit_code,
                                                      self.output_to_stderr),
                 symbol_usages=asrt.matches_sequence([
@@ -354,7 +351,7 @@ class TestValidationAndSymbolUsagesOfSource(unittest.TestCase):
                 source_option=syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
             )
 
-            expectation = embryo_check.MultiSourceExpectation.phase_agnostic(
+            expectation = MultiSourceExpectation.phase_agnostic(
                 symbol_usages=asrt.matches_sequence(relativity_option_conf.symbols.usage_expectation_assertions()),
             )
 
@@ -412,7 +409,7 @@ class TestValidationAndSymbolUsagesOfSource(unittest.TestCase):
         source = remaining_source(argument,
                                   ['following line'])
 
-        expectation = embryo_check.Expectation.phase_agnostic(
+        expectation = Expectation.phase_agnostic(
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([
@@ -430,21 +427,21 @@ class TestValidationAndSymbolUsagesOfSource(unittest.TestCase):
 
 
 def _expect_validation_error_and_symbol_usages_of(relativity_option_conf: rel_opt_conf.RelativityOptionConfiguration
-                                                  ) -> embryo_check.MultiSourceExpectation:
+                                                  ) -> MultiSourceExpectation:
     return _expect_validation_error_and_symbol_usages(relativity_option_conf,
                                                       relativity_option_conf.symbols.usage_expectation_assertions())
 
 
 def _expect_validation_error_and_symbol_usages(relativity_option_conf: rel_opt_conf.RelativityOptionConfiguration,
-                                               expected_symbol_usage: list) -> embryo_check.MultiSourceExpectation:
+                                               expected_symbol_usage: list) -> MultiSourceExpectation:
     expected_symbol_usages_assertion = asrt.matches_sequence(expected_symbol_usage)
     if relativity_option_conf.exists_pre_sds:
-        return embryo_check.MultiSourceExpectation.phase_agnostic(
+        return MultiSourceExpectation.phase_agnostic(
             validation=ValidationAssertions.pre_sds_fails__w_any_msg(),
             symbol_usages=expected_symbol_usages_assertion,
         )
     else:
-        return embryo_check.MultiSourceExpectation.phase_agnostic(
+        return MultiSourceExpectation.phase_agnostic(
             validation=ValidationAssertions.post_sds_fails__w_any_msg(),
             symbol_usages=expected_symbol_usages_assertion,
         )

@@ -7,8 +7,8 @@ from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resource
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
     INSTRUCTION_CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    MultiSourceExpectation, Arrangement
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
+    MultiSourceExpectation
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.data.test_resources import references

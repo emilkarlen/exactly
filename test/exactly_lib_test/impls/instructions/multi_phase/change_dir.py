@@ -18,8 +18,8 @@ from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check, path_name_variants
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    Arrangement
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
+    MultiSourceExpectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.tcfs.test_resources import tcds_populators
@@ -160,7 +160,7 @@ class TestParse(unittest.TestCase):
                                     DirContents([Dir.empty(case.expected_value)])
                                 )
                             ),
-                            embryo_check.MultiSourceExpectation.phase_agnostic(
+                            MultiSourceExpectation.phase_agnostic(
                                 side_effects_on_tcds=CwdAssertion(
                                     relativity,
                                     case.expected_value,

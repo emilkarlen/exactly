@@ -11,8 +11,8 @@ from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.abst
     SetVariableArgumentsAbsStx, UnsetVariableArgumentsAbsStx, env_var_ref_syntax
 from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.instruction_check import CHECKER, \
     PARSE_CHECKER, PHASE_SPECS
-from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
-    instruction_embryo_check as embryo_check
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
+    MultiSourceExpectation
 from exactly_lib_test.impls.types.string_source.test_resources import validation_cases as str_src_validation_cases
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
@@ -116,8 +116,8 @@ class TestSetValidationOfValue(unittest.TestCase):
                     SetVariableArgumentsAbsStx(name,
                                                validation_case.value.syntax,
                                                phase_spec=phase_spec),
-                    embryo_check.Arrangement.setup_phase_aware(),
-                    embryo_check.MultiSourceExpectation.setup_phase_aware(
+                    Arrangement.setup_phase_aware(),
+                    MultiSourceExpectation.setup_phase_aware(
                         validation=validation_case.value.assertion,
                     ),
                     phase_spec=phase_spec,
@@ -133,13 +133,13 @@ class TestSet(unittest.TestCase):
         CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             SetVariableArgumentsAbsStx.of_nav(var, phase_spec=None),
-            embryo_check.Arrangement.setup_phase_aware(
+            Arrangement.setup_phase_aware(
                 process_execution_settings=
                 proc_exe_env_for_test(
                     environ={}
                 )
             ),
-            embryo_check.MultiSourceExpectation.setup_phase_aware(
+            MultiSourceExpectation.setup_phase_aware(
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     {
@@ -161,12 +161,12 @@ class TestSet(unittest.TestCase):
         CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             SetVariableArgumentsAbsStx.of_nav(var_to_set, phase_spec=None),
-            embryo_check.Arrangement.setup_phase_aware(
+            Arrangement.setup_phase_aware(
                 process_execution_settings=
                 proc_exe_env_for_test(environ=None),
                 default_environ_getter=get_default_environ,
             ),
-            embryo_check.MultiSourceExpectation.setup_phase_aware(
+            MultiSourceExpectation.setup_phase_aware(
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     NameAndValue.as_dict([var_in_default, var_to_set])
@@ -186,13 +186,13 @@ class TestSet(unittest.TestCase):
             SetVariableArgumentsAbsStx.of_str(var.name, var.value,
                                               phase_spec=None,
                                               quoting=QuoteType.HARD),
-            embryo_check.Arrangement.setup_phase_aware(
+            Arrangement.setup_phase_aware(
                 process_execution_settings=
                 proc_exe_env_for_test(
                     environ=environ__before
                 )
             ),
-            embryo_check.MultiSourceExpectation.setup_phase_aware(
+            MultiSourceExpectation.setup_phase_aware(
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     environ__after)
@@ -216,13 +216,13 @@ class TestSet(unittest.TestCase):
         CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             SetVariableArgumentsAbsStx.of_str(var_name, value_after, phase_spec=None),
-            embryo_check.Arrangement.setup_phase_aware(
+            Arrangement.setup_phase_aware(
                 process_execution_settings=
                 proc_exe_env_for_test(
                     environ=environ__before
                 )
             ),
-            embryo_check.MultiSourceExpectation.setup_phase_aware(
+            MultiSourceExpectation.setup_phase_aware(
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     environ__after
@@ -262,13 +262,13 @@ class TestSet(unittest.TestCase):
         CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             source_syntax,
-            embryo_check.Arrangement.setup_phase_aware(
+            Arrangement.setup_phase_aware(
                 symbols=
                 SymbolContext.symbol_table_of_contexts([my_symbol, your_symbol]),
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ({}),
             ),
-            embryo_check.MultiSourceExpectation.setup_phase_aware(
+            MultiSourceExpectation.setup_phase_aware(
                 main_side_effect_on_environment_variables=asrt.equals(expected_environ_after_main),
                 symbol_usages=asrt.matches_sequence([
                     my_symbol.usage_assertion__any_data_type,
@@ -306,11 +306,11 @@ class TestSet(unittest.TestCase):
         CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             source_syntax,
-            embryo_check.Arrangement.setup_phase_aware(
+            Arrangement.setup_phase_aware(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ({}),
             ),
-            embryo_check.MultiSourceExpectation.setup_phase_aware(
+            MultiSourceExpectation.setup_phase_aware(
                 main_side_effect_on_environment_variables=asrt.equals(expected_environ_after_main),
                 symbol_usages=asrt.matches_sequence([]),
             ),
@@ -340,12 +340,12 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
                                               env_var_ref_syntax(existing_env_var.name),
                                               phase_spec=None),
             arrangement=
-            embryo_check.Arrangement.setup_phase_aware(
+            Arrangement.setup_phase_aware(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
             ),
             expectation=
-            embryo_check.MultiSourceExpectation.setup_phase_aware(
+            MultiSourceExpectation.setup_phase_aware(
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),
             )
         )
@@ -377,13 +377,13 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
                                        StringSourceOfStringAbsStx(string_symbol_w_env_var_ref.abstract_syntax),
                                        phase_spec=None),
             arrangement=
-            embryo_check.Arrangement.setup_phase_aware(
+            Arrangement.setup_phase_aware(
                 symbols=string_symbol_w_env_var_ref.symbol_table,
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
             ),
             expectation=
-            embryo_check.MultiSourceExpectation.setup_phase_aware(
+            MultiSourceExpectation.setup_phase_aware(
                 symbol_usages=asrt.matches_singleton_sequence(
                     string_symbol_w_env_var_ref.reference_assertion__convertible_to_string
                 ),
@@ -432,12 +432,12 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
             self,
             source,
             arrangement=
-            embryo_check.Arrangement.setup_phase_aware(
+            Arrangement.setup_phase_aware(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
             ),
             expectation=
-            embryo_check.MultiSourceExpectation.setup_phase_aware(
+            MultiSourceExpectation.setup_phase_aware(
                 main_side_effect_on_environment_variables=asrt.equals(expected_environ__after),
             )
         )
@@ -458,7 +458,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
         CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             source,
-            embryo_check.Arrangement.setup_phase_aware(
+            Arrangement.setup_phase_aware(
                 process_execution_settings=
                 proc_exe_env_for_test(
                     environ={
@@ -466,7 +466,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
                     }
                 )
             ),
-            embryo_check.MultiSourceExpectation.setup_phase_aware(
+            MultiSourceExpectation.setup_phase_aware(
                 main_result=asrt.is_none,
                 main_side_effect_on_environment_variables=asrt.equals(
                     {
@@ -489,11 +489,11 @@ class TestUnset(unittest.TestCase):
         CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             UnsetVariableArgumentsAbsStx.of_str(var_a.name, phase_spec=None),
-            embryo_check.Arrangement.setup_phase_aware(
+            Arrangement.setup_phase_aware(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
             ),
-            embryo_check.MultiSourceExpectation.setup_phase_aware(
+            MultiSourceExpectation.setup_phase_aware(
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),
             )
         )
@@ -511,12 +511,12 @@ class TestUnset(unittest.TestCase):
         CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             UnsetVariableArgumentsAbsStx.of_str(var_a.name, phase_spec=None),
-            embryo_check.Arrangement.setup_phase_aware(
+            Arrangement.setup_phase_aware(
                 process_execution_settings=
                 proc_exe_env_for_test(environ=None),
                 default_environ_getter=get_default_environ,
             ),
-            embryo_check.MultiSourceExpectation.setup_phase_aware(
+            MultiSourceExpectation.setup_phase_aware(
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),
             )
         )
@@ -531,11 +531,11 @@ class TestUnset(unittest.TestCase):
         CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             UnsetVariableArgumentsAbsStx.of_str(non_existing_var_name, phase_spec=None),
-            embryo_check.Arrangement.setup_phase_aware(
+            Arrangement.setup_phase_aware(
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
             ),
-            embryo_check.MultiSourceExpectation.setup_phase_aware(
+            MultiSourceExpectation.setup_phase_aware(
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),
             )
         )

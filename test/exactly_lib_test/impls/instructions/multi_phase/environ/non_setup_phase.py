@@ -12,10 +12,8 @@ from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.envi
 from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.instruction_check import CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.referenses_setup import \
     ValueWSymRefsAndVarRefs, NameWSymRefs
-from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
-    instruction_embryo_check as embryo_check
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    ExecutionExpectation, Arrangement
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
+    ExecutionExpectation
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case.test_resources import instr_settings_assertions as asrt_instr_settings
@@ -36,7 +34,7 @@ def suite() -> unittest.TestSuite:
 
 class EnvironsSetupForSet(EnvironsSetupForSetBase):
     def expectation_of_addition_to_phase(self, phase: Phase, var_to_add: EnvVar) -> ExecutionExpectation:
-        return embryo_check.ExecutionExpectation.setup_phase_aware(
+        return ExecutionExpectation.setup_phase_aware(
             main_result=asrt.is_none,
             instruction_settings=asrt_instr_settings.matches(
                 environ=asrt.equals(self.with_added__as_dict(phase, var_to_add))
@@ -46,7 +44,7 @@ class EnvironsSetupForSet(EnvironsSetupForSetBase):
 
 class EnvironsSetupForUnset(EnvironsSetupForUnsetBase):
     def expectation_of_removal_from_phase(self, phase: Phase, var_to_remove: str) -> ExecutionExpectation:
-        return embryo_check.ExecutionExpectation.setup_phase_aware(
+        return ExecutionExpectation.setup_phase_aware(
             main_result=asrt.is_none,
             instruction_settings=asrt_instr_settings.matches(
                 environ=asrt.equals(self.with_removed__as_dict(phase, var_to_remove))
@@ -229,7 +227,7 @@ class TestUnsetWithSymbolReferences(unittest.TestCase):
             )
 
 
-def _arr_for(setup: EnvironsSetup, phase: Phase) -> Sequence[NameAndValue[embryo_check.Arrangement]]:
+def _arr_for(setup: EnvironsSetup, phase: Phase) -> Sequence[NameAndValue[Arrangement]]:
     def get_environ_of_modified_before_action() -> EnvVarDict:
         return setup.as_dict(phase)
 
@@ -253,7 +251,7 @@ def arr(values: Optional[Mapping[str, str]],
         default_environ_getter: Callable[[], EnvVarDict],
         symbols: Optional[SymbolTable] = None,
         ) -> Arrangement:
-    return embryo_check.Arrangement.setup_phase_aware(
+    return Arrangement.setup_phase_aware(
         symbols=symbols,
         process_execution_settings=
         proc_exe_env_for_test(
@@ -265,7 +263,7 @@ def arr(values: Optional[Mapping[str, str]],
 
 
 def expectation(expected: Optional[Mapping[str, str]]) -> ExecutionExpectation[None]:
-    return embryo_check.ExecutionExpectation.setup_phase_aware(
+    return ExecutionExpectation.setup_phase_aware(
         main_result=asrt.is_none,
         instruction_settings=asrt_instr_settings.matches(
             environ=asrt.equals(expected),

@@ -9,8 +9,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
     INSTRUCTION_CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    Arrangement, Expectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, Expectation
 from exactly_lib_test.impls.types.files_condition.test_resources import arguments_building as arg_syntax
 from exactly_lib_test.impls.types.files_condition.test_resources import primitive_assertions as asrt_primitive
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO

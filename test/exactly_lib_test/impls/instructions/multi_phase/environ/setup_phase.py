@@ -12,10 +12,8 @@ from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.envi
 from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.instruction_check import CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.referenses_setup import NameWSymRefs, \
     ValueWSymRefsAndVarRefs
-from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
-    instruction_embryo_check as embryo_check
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    ExecutionExpectation, SetupSettingsArr, Arrangement
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import SetupSettingsArr, Arrangement, \
+    ExecutionExpectation
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case.test_resources import instr_settings_assertions as asrt_instr_settings
@@ -542,7 +540,7 @@ def arr(non_act: Optional[Mapping[str, str]],
         defaults_getter: Callable[[], EnvVarDict],
         symbols: Optional[SymbolTable] = None,
         ) -> Arrangement:
-    return embryo_check.Arrangement.setup_phase_aware(
+    return Arrangement.setup_phase_aware(
         symbols=symbols,
         process_execution_settings=
         proc_exe_env_for_test(
@@ -557,7 +555,7 @@ def arr(non_act: Optional[Mapping[str, str]],
 
 def expectation(non_act: Optional[Mapping[str, str]],
                 the_act: Optional[Mapping[str, str]]) -> ExecutionExpectation[None]:
-    return embryo_check.ExecutionExpectation.setup_phase_aware(
+    return ExecutionExpectation.setup_phase_aware(
         main_result=asrt.is_none,
         instruction_settings=asrt_instr_settings.matches(
             environ=asrt.equals(non_act),

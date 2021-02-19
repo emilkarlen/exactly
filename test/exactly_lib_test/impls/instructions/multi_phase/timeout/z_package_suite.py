@@ -3,8 +3,8 @@ import unittest
 from exactly_lib.impls.instructions.multi_phase.timeout import doc
 from exactly_lib.util.parse.token import QuoteType
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
-from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
-    instruction_embryo_check as embryo_check
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
+    MultiSourceExpectation
 from exactly_lib_test.impls.instructions.multi_phase.timeout.test_resources.abstract_syntax import \
     InstructionArgumentsAbsStx, SYNTAX_ERROR_ARGUMENTS, INVALID_INT_VALUES
 from exactly_lib_test.impls.instructions.multi_phase.timeout.test_resources.instruction_check import PARSE_CHECKER, \
@@ -48,8 +48,8 @@ class TestInvalidValue(unittest.TestCase):
             CHECKER.check__abs_stx__layout_and_source_variants(
                 self,
                 InstructionArgumentsAbsStx.of_int(StringLiteralAbsStx(value_case)),
-                embryo_check.Arrangement.phase_agnostic(),
-                embryo_check.MultiSourceExpectation.phase_agnostic(
+                Arrangement.phase_agnostic(),
+                MultiSourceExpectation.phase_agnostic(
                     validation=ValidationAssertions.pre_sds_fails__w_any_msg()
                 ),
                 value_case=value_case,
@@ -89,8 +89,8 @@ class TestValidIntValue(unittest.TestCase):
                 CHECKER.check__abs_stx__layout_and_source_variants(
                     self,
                     InstructionArgumentsAbsStx.of_int(case.input_value),
-                    embryo_check.Arrangement.phase_agnostic(),
-                    embryo_check.MultiSourceExpectation.phase_agnostic(
+                    Arrangement.phase_agnostic(),
+                    MultiSourceExpectation.phase_agnostic(
                         instruction_settings=asrt_instr_settings.matches(
                             timeout=asrt.equals(case.expected_value)
                         )
@@ -103,8 +103,8 @@ class TestNone(unittest.TestCase):
         CHECKER.check__abs_stx__layout_and_source_variants(
             self,
             InstructionArgumentsAbsStx.of_none(),
-            embryo_check.Arrangement.phase_agnostic(),
-            embryo_check.MultiSourceExpectation.phase_agnostic(
+            Arrangement.phase_agnostic(),
+            MultiSourceExpectation.phase_agnostic(
                 instruction_settings=asrt_instr_settings.matches(
                     timeout=asrt.is_none
                 )
@@ -135,10 +135,10 @@ class TestSymbolReferences(unittest.TestCase):
         CHECKER.check__abs_stx__layout_and_source_variants(
             self,
             InstructionArgumentsAbsStx.of_int(value_syntax),
-            embryo_check.Arrangement.phase_agnostic(
+            Arrangement.phase_agnostic(
                 symbols=SymbolContext.symbol_table_of_contexts(all_symbols),
             ),
-            embryo_check.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 symbol_usages=SymbolContext.usages_assertion_of_contexts(all_symbols),
                 instruction_settings=asrt_instr_settings.matches(
                     timeout=asrt.equals(expected)

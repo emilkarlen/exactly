@@ -12,8 +12,7 @@ from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resource
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
     INSTRUCTION_CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    Arrangement, Expectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, Expectation
 from exactly_lib_test.impls.types.line_matcher.test_resources import argument_syntax
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage

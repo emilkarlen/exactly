@@ -27,8 +27,9 @@ from exactly_lib_test.common.test_resources.text_doc_assertions import new_singl
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     do_return
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check as sut
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    InstructionApplicationEnvironment, Arrangement, SetupSettingsArr
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import \
+    InstructionApplicationEnvironment, SetupSettingsArr, Arrangement, ExecutionExpectation, MultiSourceExpectation, \
+    Expectation
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_instruction import \
     instruction_embryo_that__phase_agnostic, instruction_embryo_that__setup_phase_aware
 from exactly_lib_test.impls.test_resources.symbol_table_check_help import \
@@ -79,13 +80,13 @@ class TestCaseBase(unittest.TestCase):
                parser: embryo.InstructionEmbryoParser,
                source: ParseSource,
                arrangement: Arrangement,
-               expectation: sut.Expectation):
+               expectation: Expectation):
         sut.check(self.tc, parser, source, arrangement, expectation)
 
     def _check_source_and_exe_variants__failing_assertions(self,
                                                            parser: embryo.InstructionEmbryoParser[T],
                                                            arrangement: Arrangement,
-                                                           expectation: sut.MultiSourceExpectation[T],
+                                                           expectation: MultiSourceExpectation[T],
                                                            **sub_test_identifiers
                                                            ):
         """Runs check methods for both single and multi-source.
@@ -131,7 +132,7 @@ class TestCaseBase(unittest.TestCase):
     def _check_source_and_exe_variants(self,
                                        parser: embryo.InstructionEmbryoParser[T],
                                        arrangement: Arrangement,
-                                       expectation: sut.MultiSourceExpectation[T],
+                                       expectation: MultiSourceExpectation[T],
                                        **sub_test_identifiers
                                        ):
         """Runs check methods for both single and multi-source.
@@ -177,14 +178,14 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             single_line_source(),
             Arrangement.phase_agnostic(),
-            sut.Expectation.phase_agnostic(source=asrt.IsInstance(ParseSource)),
+            Expectation.phase_agnostic(source=asrt.IsInstance(ParseSource)),
         )
 
     def test_side_effects_on_files(self):
         self._check_source_and_exe_variants(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 main_side_effects_on_sds=asrt.IsInstance(SandboxDs)
             ),
         )
@@ -193,7 +194,7 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
         self._check_source_and_exe_variants(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 side_effects_on_tcds=asrt.IsInstance(TestCaseDs)
             ),
         )
@@ -202,7 +203,7 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
         self._check_source_and_exe_variants(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 side_effects_on_hds=asrt.IsInstance(pathlib.Path)
             ),
         )
@@ -213,7 +214,7 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
             Arrangement.phase_agnostic(
                 process_execution_settings=ProcessExecutionSettings.with_environ({})
             ),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 main_side_effect_on_environment_variables=asrt.equals({})
             ),
         )
@@ -222,7 +223,7 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
         self._check_source_and_exe_variants(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 symbols_after_main=asrt.is_instance(SymbolTable)
             ),
         )
@@ -231,7 +232,7 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
         self._check_source_and_exe_variants(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 instruction_environment=
                 asrt.is_instance_with__many(
                     InstructionApplicationEnvironment,
@@ -259,7 +260,7 @@ class TestSymbols(TestCaseBase):
                 instruction_embryo_that__phase_agnostic(
                     symbol_usages=do_return(unexpected_symbol_usages))),
             Arrangement.phase_agnostic(),
-            sut.Expectation.phase_agnostic(),
+            Expectation.phase_agnostic(),
         )
 
     def test_that_fails_due_to_missing_symbol_reference(self):
@@ -269,7 +270,7 @@ class TestSymbols(TestCaseBase):
                 instruction_embryo_that__phase_agnostic(
                     symbol_usages=do_return(symbol_usages_of_instruction))),
             Arrangement.phase_agnostic(),
-            sut.Expectation.phase_agnostic(
+            Expectation.phase_agnostic(
                 symbol_usages=asrt.matches_singleton_sequence(
                     matches_data_type_symbol_reference(
                         'symbol_name',
@@ -300,7 +301,7 @@ class TestSymbols(TestCaseBase):
                     main_initial_action=assertion_for_main,
                 )),
             Arrangement.phase_agnostic(symbols=symbol_table_of_arrangement),
-            sut.MultiSourceExpectation.phase_agnostic(),
+            MultiSourceExpectation.phase_agnostic(),
         )
 
     def test_symbols_populated_by_main_SHOULD_appear_in_symbol_table_given_to_symbols_after_main(self):
@@ -315,7 +316,7 @@ class TestSymbols(TestCaseBase):
                 instruction_embryo_that__phase_agnostic(
                     main_initial_action=add_symbol_to_symbol_table)),
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 symbols_after_main=asrt.sub_component('names_set',
                                                       SymbolTable.names_set.fget,
                                                       asrt.equals({symbol.name}))),
@@ -327,7 +328,7 @@ class TestHdsDirHandling(TestCaseBase):
         self._check_source_and_exe_variants__failing_assertions(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 side_effects_on_hds=f_asrt.dir_contains_at_least(
                     DirContents([File.empty('file-name.txt')]))
             ),
@@ -339,7 +340,7 @@ class TestHdsDirHandling(TestCaseBase):
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(
                 hds_contents=hds_case_dir_contents(home_dir_contents)),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 side_effects_on_hds=f_asrt.dir_contains_exactly(home_dir_contents)),
         )
 
@@ -352,7 +353,7 @@ class TestPopulate(TestCaseBase):
             Arrangement.phase_agnostic(
                 non_hds_contents=non_hds_populator.rel_option(RelNonHdsOptionType.REL_TMP,
                                                               populated_dir_contents)),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 main_side_effects_on_sds=tmp_user_dir_contains_exactly(
                     populated_dir_contents)),
         )
@@ -364,7 +365,7 @@ class TestPopulate(TestCaseBase):
             Arrangement.phase_agnostic(
                 sds_contents=sds_populator.contents_in(RelSdsOptionType.REL_RESULT,
                                                        populated_dir_contents)),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 main_side_effects_on_sds=result_dir_contains_exactly(
                     populated_dir_contents)),
         )
@@ -400,7 +401,7 @@ class TestExecution(TestCaseBase):
             ParserThatGives(instruction_that_records_steps),
             single_line_source(),
             Arrangement.phase_agnostic(),
-            sut.Expectation.phase_agnostic())
+            Expectation.phase_agnostic())
 
         self.assertEqual(expected_recordings,
                          recorder,
@@ -410,14 +411,14 @@ class TestExecution(TestCaseBase):
         self._check_source_and_exe_variants(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(),
+            MultiSourceExpectation.phase_agnostic(),
         )
 
     def test_fail_due_to_unexpected_result_from__validate_pre_sds(self):
         self._check_source_and_exe_variants__failing_assertions(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 validation=ValidationAssertions.pre_sds_fails()
             ),
         )
@@ -426,7 +427,7 @@ class TestExecution(TestCaseBase):
         self._check_source_and_exe_variants__failing_assertions(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 validation=ValidationAssertions.post_sds_fails()
             ),
         )
@@ -435,7 +436,7 @@ class TestExecution(TestCaseBase):
         self._check_source_and_exe_variants__failing_assertions(
             ParserThatGives(instruction_embryo_that__phase_agnostic(main=do_return('actual'))),
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 main_result=asrt.equals('different-from-actual'),
             ),
         )
@@ -446,7 +447,7 @@ class TestExecution(TestCaseBase):
                 main=do_raise(HardErrorException(new_single_string_text_for_test('hard error message'))))
             ),
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 main_result=asrt.anything_goes()
             ),
         )
@@ -457,7 +458,7 @@ class TestExecution(TestCaseBase):
                 main=do_raise(HardErrorException(new_single_string_text_for_test('hard error message'))))
             ),
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 main_raises_hard_error=True
             ),
         )
@@ -470,7 +471,7 @@ class TestExecution(TestCaseBase):
         self._check_source_and_exe_variants(
             ParserThatGives(instruction_that_raises_exception_if_unexpected_state),
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(),
+            MultiSourceExpectation.phase_agnostic(),
         )
 
 
@@ -480,15 +481,15 @@ class TestMainMethodTypeOfPhaseAgnostic(TestCaseBase):
             self._check(
                 ParserThatGives(instruction_embryo_that__setup_phase_aware()),
                 single_line_source(),
-                sut.Arrangement.phase_agnostic(),
-                sut.Expectation.phase_agnostic(),
+                Arrangement.phase_agnostic(),
+                Expectation.phase_agnostic(),
             )
 
     def test_fail_if_instruction_is_not_phase_agnostic__variants(self):
         self._check_source_and_exe_variants__failing_assertions(
             ParserThatGives(instruction_embryo_that__setup_phase_aware()),
-            sut.Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(),
+            Arrangement.phase_agnostic(),
+            MultiSourceExpectation.phase_agnostic(),
         )
 
     def test_main_method_arguments(self):
@@ -520,7 +521,7 @@ class TestMainMethodTypeOfPhaseAgnostic(TestCaseBase):
                 process_execution_settings=ProcessExecutionSettings(the_timeout, the_environ),
                 os_services=the_os_services,
             ),
-            sut.MultiSourceExpectation.phase_agnostic(),
+            MultiSourceExpectation.phase_agnostic(),
         )
 
 
@@ -530,15 +531,15 @@ class TestMainMethodTypeOfSetupPhaseAware(TestCaseBase):
             self._check(
                 ParserThatGives(instruction_embryo_that__phase_agnostic()),
                 single_line_source(),
-                sut.Arrangement.setup_phase_aware(),
-                sut.Expectation.setup_phase_aware(),
+                Arrangement.setup_phase_aware(),
+                Expectation.setup_phase_aware(),
             )
 
     def test_fail_if_instruction_is_not_setup_phase_aware__source_variant(self):
         self._check_source_and_exe_variants__failing_assertions(
             ParserThatGives(instruction_embryo_that__phase_agnostic()),
-            sut.Arrangement.setup_phase_aware(),
-            sut.MultiSourceExpectation.setup_phase_aware(),
+            Arrangement.setup_phase_aware(),
+            MultiSourceExpectation.setup_phase_aware(),
         )
 
     def test_fail_if_instruction_is_not_phase_agnostic__multi(self):
@@ -551,8 +552,8 @@ class TestMainMethodTypeOfSetupPhaseAware(TestCaseBase):
                 execution_cases=[
                     NArrEx(
                         'the one and only case',
-                        sut.Arrangement.setup_phase_aware(),
-                        sut.ExecutionExpectation.setup_phase_aware(),
+                        Arrangement.setup_phase_aware(),
+                        ExecutionExpectation.setup_phase_aware(),
                     )
                 ]
             )
@@ -606,7 +607,7 @@ class TestMainMethodTypeOfSetupPhaseAware(TestCaseBase):
                     setup_settings=setup_settings_case.arrangement,
                     os_services=the_os_services,
                 ),
-                sut.MultiSourceExpectation.setup_phase_aware(
+                MultiSourceExpectation.setup_phase_aware(
                     setup_settings=asrt.anything_goes(),
                 ),
             )
@@ -640,7 +641,7 @@ class TestMainMethodTypeOfSetupPhaseAware(TestCaseBase):
                 Arrangement.setup_phase_aware(
                     setup_settings=setup_settings_case.arrangement,
                 ),
-                sut.MultiSourceExpectation.setup_phase_aware(
+                MultiSourceExpectation.setup_phase_aware(
                     setup_settings=setup_settings_case.expectation,
                 ),
                 setup_settings=setup_settings_case.name,
@@ -652,7 +653,7 @@ class TestSideEffectsOfMain(TestCaseBase):
         self._check_source_and_exe_variants__failing_assertions(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 main_side_effects_on_sds=act_dir_contains_exactly(
                     DirContents([File.empty('non-existing-file.txt')]))
             ),
@@ -662,7 +663,7 @@ class TestSideEffectsOfMain(TestCaseBase):
         self._check_source_and_exe_variants__failing_assertions(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 side_effects_on_tcds=asrt.not_(asrt.is_instance(TestCaseDs))
             ),
         )
@@ -680,7 +681,7 @@ class TestSideEffectsOfMain(TestCaseBase):
                 default_environ_getter=default_environ_getter,
                 process_execution_settings=ProcessExecutionSettings.from_non_immutable(environ=default_environs),
             ),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 instruction_settings=asrt_instr_settings.matches(
                     environ=asrt.equals(default_environs),
                     return_value_from_default_getter=asrt.equals(default_from_default_getter)
@@ -695,7 +696,7 @@ class TestSideEffectsOfMain(TestCaseBase):
         self._check_source_and_exe_variants__failing_assertions(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 proc_exe_settings=asrt.not_(asrt.is_instance(ProcessExecutionSettings)),
             ),
         )
@@ -704,7 +705,7 @@ class TestSideEffectsOfMain(TestCaseBase):
         self._check_source_and_exe_variants__failing_assertions(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 instruction_settings=asrt.not_(asrt.is_instance(InstructionSettings)),
             ),
         )
@@ -713,7 +714,7 @@ class TestSideEffectsOfMain(TestCaseBase):
         self._check_source_and_exe_variants__failing_assertions(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 instruction_environment=asrt.fail('unconditional failure')
             ),
         )
@@ -730,7 +731,7 @@ class TestSideEffectsOfMain(TestCaseBase):
             Arrangement.phase_agnostic(
                 process_execution_settings=ProcessExecutionSettings.with_environ({})
             ),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 main_side_effect_on_environment_variables=asrt.equals(expected_environment_variables)
             ),
         )
@@ -753,7 +754,7 @@ class TestSideEffectsOfMain(TestCaseBase):
             ParserThatGives(instruction),
             Arrangement.phase_agnostic(
                 process_execution_settings=ProcessExecutionSettings.with_environ(environ_of_arrangement)),
-            sut.MultiSourceExpectation.phase_agnostic(
+            MultiSourceExpectation.phase_agnostic(
                 main_side_effect_on_environment_variables=
                 asrt.equals(expected_environment_variables)),
         )

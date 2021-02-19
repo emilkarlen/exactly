@@ -17,10 +17,8 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.par
     check_invalid_syntax__abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import \
     IS_SUCCESS
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    Arrangement, Expectation
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    MultiSourceExpectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
+    MultiSourceExpectation, Expectation
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any

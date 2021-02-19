@@ -9,6 +9,7 @@ from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check, path_name_variants
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import MultiSourceExpectation
 from exactly_lib_test.impls.types.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
 from exactly_lib_test.impls.types.test_resources.relativity_options import \
@@ -87,7 +88,7 @@ class TestParse(unittest.TestCase):
                     self,
                     case.input_value,
                     embryo_check.Arrangement.phase_agnostic(),
-                    embryo_check.MultiSourceExpectation.phase_agnostic(
+                    MultiSourceExpectation.phase_agnostic(
                         main_result=asrt.is_none,
                         side_effects_on_tcds=asrt_tcds_contents.dir_contains_exactly(
                             sut.RELATIVITY_VARIANTS.options.default_option,
@@ -106,7 +107,7 @@ class TestParse(unittest.TestCase):
                     self,
                     path_argument.as_str,
                     embryo_check.Arrangement.phase_agnostic(),
-                    embryo_check.MultiSourceExpectation.phase_agnostic(
+                    MultiSourceExpectation.phase_agnostic(
                         main_result=asrt.is_none,
                         side_effects_on_tcds=asrt_tcds_contents.dir_contains_exactly(
                             path_argument.relativity_option,

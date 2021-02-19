@@ -17,8 +17,8 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.par
     check_invalid_syntax, check_invalid_syntax__abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import \
     IS_SUCCESS
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    MultiSourceExpectation, Arrangement
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
+    MultiSourceExpectation
 from exactly_lib_test.impls.types.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source

@@ -5,7 +5,7 @@ from exactly_lib.impls.instructions.multi_phase.define_symbol import parser as s
 from exactly_lib.symbol.value_type import LogicValueType
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import src3
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import \
     InstructionApplicationEnvironment
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO

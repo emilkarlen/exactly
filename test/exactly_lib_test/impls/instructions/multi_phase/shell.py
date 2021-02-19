@@ -8,8 +8,7 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    Arrangement
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, Expectation
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.impls.types.program.test_resources import result_assertions
@@ -68,7 +67,7 @@ class TestSymbolReferences(unittest.TestCase):
             ]),
         )
 
-        expectation = embryo_check.Expectation.phase_agnostic(
+        expectation = Expectation.phase_agnostic(
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([

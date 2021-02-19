@@ -12,10 +12,8 @@ from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_t
 from exactly_lib_test.impls.instructions.multi_phase.copy_.test_resources import argument_syntax as args
 from exactly_lib_test.impls.instructions.multi_phase.copy_.test_resources import case_definitions, defs
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    Arrangement, Expectation
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import \
-    MultiSourceExpectation
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
+    MultiSourceExpectation, Expectation
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.impls.types.test_resources.relativity_options import RelativityOptionConfigurationRelHds, \
