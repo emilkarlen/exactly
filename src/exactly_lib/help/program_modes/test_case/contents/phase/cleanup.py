@@ -8,7 +8,7 @@ from exactly_lib.definitions.test_case.instructions.instruction_names import TES
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__not_executed_if_execution_mode_is_skip, \
-    env_vars_prologue_for_inherited_from_previous_phase
+    env_vars_prologue_for_inherited_from_previous_phase, timeout_prologue_for_inherited_from_previous_phase
 from exactly_lib.help.program_modes.test_case.contents_structure.phase_documentation import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.test_case.test_case_status import NAME_SKIP
@@ -44,13 +44,17 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(
             cwd_at_start_of_phase_for_non_first_phases(),
-            environment_variables_prologue=env_vars_prologue_for_inherited_from_previous_phase())
+            environment_variables_prologue=env_vars_prologue_for_inherited_from_previous_phase(),
+            timeout_prologue=timeout_prologue_for_inherited_from_previous_phase(),
+        )
 
     @property
     def _see_also_targets_specific(self) -> List[SeeAlsoTarget]:
         return [
             concepts.SDS_CONCEPT_INFO.cross_reference_target,
+            concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
+            concepts.TIMEOUT_CONCEPT_INFO.cross_reference_target,
             conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.cross_reference_target,
             phase_infos.ASSERT.cross_reference_target,
             phase_infos.CONFIGURATION.instruction_cross_reference_target(TEST_CASE_STATUS_INSTRUCTION_NAME),

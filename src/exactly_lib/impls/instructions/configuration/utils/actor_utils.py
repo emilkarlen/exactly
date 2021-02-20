@@ -155,7 +155,7 @@ def _parse_source_actor(token_parser: TokenParser) -> NameAndValue[Actor]:
                         actor.actor(act_interpreter))
 
 
-_SINGLE_LINE_DESCRIPTION = 'Specifies the {actor} that will execute the {act_phase} phase'
+_SINGLE_LINE_DESCRIPTION = 'Specifies the {actor} that will interpret and execute the {act_phase} phase'
 
 _NOTES = """\
 The {actor} specified by this instruction has precedence over all other ways

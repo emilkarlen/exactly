@@ -14,6 +14,7 @@ from exactly_lib.util.textformat.structure.table import TableCell
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _TEXT_PARSER = TextParser({
+    'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
     'act_dir': test_case_file_structure.SDS_ACT_INFO.identifier,
     'cwd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
     'execution_mode': formatting.conf_param_(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO),
@@ -25,6 +26,7 @@ _TEXT_PARSER = TextParser({
     'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
     'SYMBOL': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
     'env_var': concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.name,
+    'timeout': concepts.TIMEOUT_CONCEPT_INFO.name,
 })
 
 
@@ -49,6 +51,10 @@ def cwd_at_start_of_phase_for_non_first_phases() -> List[ParagraphItem]:
 
 def env_vars_prologue_for_inherited_from_previous_phase() -> List[ParagraphItem]:
     return _TEXT_PARSER.fnap(ENV_VARS_PROLOGUE_FOR_INHERITED_FROM_PREVIOUS_PHASE)
+
+
+def timeout_prologue_for_inherited_from_previous_phase() -> List[ParagraphItem]:
+    return _TEXT_PARSER.fnap(TIMEOUT_PROLOGUE_FOR_INHERITED_FROM_PREVIOUS_PHASE)
 
 
 def symbols_for_configuration_phase() -> List[str]:
@@ -142,7 +148,7 @@ Otherwise, the {phase[before_assert]} phase follows.
 """
 
 _ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_DIR = """\
-Instructions have access to the result of the {ATC} via
+{instruction:s/u} have access to the result of the {ATC} via
 the files in the {result_subdir}/ sub directory of the {sandbox}:
 """
 
@@ -153,4 +159,8 @@ the {result_subdir}/ directory.
 
 ENV_VARS_PROLOGUE_FOR_INHERITED_FROM_PREVIOUS_PHASE = """\
 {env_var:s/u} are inherited from the previous phase.
+"""
+
+TIMEOUT_PROLOGUE_FOR_INHERITED_FROM_PREVIOUS_PHASE = """\
+{timeout:/u} is inherited from the previous phase.
 """

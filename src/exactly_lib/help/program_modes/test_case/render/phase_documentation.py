@@ -57,6 +57,7 @@ class TestCasePhaseDocumentationConstructor(SectionDocumentationConstructorBase)
         list_items = []
         list_items += self._current_directory_items()
         list_items += self._environment_variables_items()
+        list_items += self._timeout_items()
         list_items += self.doc.execution_environment_info().custom_items
         if list_items:
             properties_list = docs.simple_list_with_space_between_elements_and_content(list_items,
@@ -82,6 +83,19 @@ class TestCasePhaseDocumentationConstructor(SectionDocumentationConstructorBase)
         if paragraphs:
             list_item = docs.list_item(
                 '{ev:s/u}'.format(ev=concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.name),
+                paragraphs
+            )
+            return [list_item]
+        else:
+            return []
+
+    def _timeout_items(self) -> List[lists.HeaderContentListItem]:
+        eei = self.doc.execution_environment_info()
+        paragraphs = []
+        paragraphs += eei.timeout_prologue
+        if paragraphs:
+            list_item = docs.list_item(
+                '{timeout:/u}'.format(timeout=concepts.TIMEOUT_CONCEPT_INFO.name),
                 paragraphs
             )
             return [list_item]

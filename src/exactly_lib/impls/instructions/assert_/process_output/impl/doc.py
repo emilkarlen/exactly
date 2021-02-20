@@ -1,5 +1,6 @@
 from typing import List
 
+from exactly_lib.common.help import headers
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
@@ -41,7 +42,8 @@ class FileContentsCheckerHelp(InstructionDocumentationWithTextParserBase, WithAs
                  ):
         transformations_are_ignored_text = (
             TRANSFORMATION_ARE_IGNORED__TMPL.format(
-                PROGRAM=syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name
+                Note=headers.NOTE_LINE_HEADER,
+                PROGRAM=syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
             )
             if transformations_are_ignored
             else
@@ -116,8 +118,8 @@ Asserts that {checked_file} from {program_type:a/q} satisfies {matcher}.
 The {program_type} is executed once, and only once.
 
 
-{Transformations_are_ignored}
-
-
 {The_program_type_must_terminate}
+
+
+{Transformations_are_ignored}
 """

@@ -146,5 +146,5 @@ _STRING_TRANSFORMER_PARSER = parse_string_transformer.parsers().simple
 _STRING_MATCHER_COMPONENT_PARSER = parsers().simple
 
 _DESCRIPTION__ON_TRANSFORMED = """\
-Applies {MATCHER} to the {MODEL} transformed by {TRANSFORMER}.
+Applies {MATCHER} to the original {MODEL} transformed by {TRANSFORMER}.
 """

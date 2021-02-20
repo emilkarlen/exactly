@@ -8,7 +8,7 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionInst
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, \
     sequence_info__not_executed_if_execution_mode_is_skip, execution_environment_prologue_for_post_act_phase, \
-    env_vars_prologue_for_inherited_from_previous_phase
+    env_vars_prologue_for_inherited_from_previous_phase, timeout_prologue_for_inherited_from_previous_phase
 from exactly_lib.help.program_modes.test_case.contents_structure.phase_documentation import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.processing import exit_values
@@ -56,7 +56,8 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
         return ExecutionEnvironmentInfo(
             cwd_at_start_of_phase_for_non_first_phases(),
             prologue=execution_environment_prologue_for_post_act_phase(),
-            environment_variables_prologue=env_vars_prologue_for_inherited_from_previous_phase())
+            environment_variables_prologue=env_vars_prologue_for_inherited_from_previous_phase(),
+            timeout_prologue=timeout_prologue_for_inherited_from_previous_phase())
 
     @property
     def instruction_group_by(self) -> Callable[[List[WithAssertPhasePurpose]], List[InstructionGroup]]:
@@ -66,7 +67,9 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
     def _see_also_targets_specific(self) -> List[SeeAlsoTarget]:
         return [
             concepts.SDS_CONCEPT_INFO.cross_reference_target,
+            concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
+            concepts.TIMEOUT_CONCEPT_INFO.cross_reference_target,
             phase_infos.BEFORE_ASSERT.cross_reference_target,
             phase_infos.CLEANUP.cross_reference_target,
         ]

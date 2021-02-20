@@ -24,6 +24,8 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
             'phase': phase_names.PHASE_NAME_DICTIONARY,
             'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
             'env_var': concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.name,
+            'env_vars_default': concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.default,
+            'timeout_default': concepts.TIMEOUT_CONCEPT_INFO.default,
             'stdin': misc_texts.STDIN,
             'SDS': concepts.SDS_CONCEPT_INFO.name,
         })
@@ -42,13 +44,16 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(cwd_at_start_of_phase_first_phase_executed_in_the_sandbox(),
-                                        environment_variables_prologue=self._tp.fnap(ENV_VARS_PROLOGUE))
+                                        environment_variables_prologue=self._tp.fnap(ENV_VARS_PROLOGUE),
+                                        timeout_prologue=self._tp.fnap(TIMEOUT_PROLOGUE))
 
     @property
     def _see_also_targets_specific(self) -> List[SeeAlsoTarget]:
         return [
             concepts.SDS_CONCEPT_INFO.cross_reference_target,
+            concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
+            concepts.TIMEOUT_CONCEPT_INFO.cross_reference_target,
             phase_infos.CONFIGURATION.cross_reference_target,
             phase_infos.ACT.cross_reference_target,
         ]
@@ -80,5 +85,9 @@ and is the first phase that is executed with the {SDS:/q}.
 """
 
 ENV_VARS_PROLOGUE = """\
-{env_var:s/u} are inherited from the parent process.
+Default: {env_vars_default}.
+"""
+
+TIMEOUT_PROLOGUE = """\
+Default: {timeout_default}.
 """

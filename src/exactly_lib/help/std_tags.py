@@ -1,4 +1,4 @@
-"""Tags that are used ass CSS classes."""
+"""Tags that are used as CSS classes."""
 
 ENTITY = 'entity'
 SECTION = 'section'

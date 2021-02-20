@@ -1,4 +1,4 @@
-from exactly_lib.definitions import formatting, misc_texts
+from exactly_lib.definitions import formatting, misc_texts, doc_format
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
@@ -7,6 +7,7 @@ from exactly_lib.definitions.entity.all_entity_types import TYPE_ENTITY_TYPE_NAM
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.util.str_.name import NameWithGender, NameWithGenderWithFormatting, \
     a_name_with_plural_s, an_name_with_plural_s
+from exactly_lib.util.textformat.structure.core import StringText
 
 
 def type_cross_ref(type_name: str) -> EntityCrossReferenceId:
@@ -30,6 +31,10 @@ class TypeNameAndCrossReferenceId(SingularAndPluralNameAndCrossReferenceId):
     @property
     def value_type(self) -> ValueType:
         return self._value_type
+
+    @property
+    def singular_name_text(self) -> StringText:
+        return doc_format.syntax_text(self._single_string_type_name)
 
     @property
     def name(self) -> NameWithGenderWithFormatting:

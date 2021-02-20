@@ -7,7 +7,7 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
 from exactly_lib.definitions.doc_format import literal_source_text
-from exactly_lib.definitions.entity import concepts, conf_params, actors, directives
+from exactly_lib.definitions.entity import concepts, conf_params, actors, directives, syntax_elements
 from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
@@ -15,7 +15,7 @@ from exactly_lib.definitions.test_case.instructions.instruction_names import ACT
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, \
     sequence_info__not_executed_if_execution_mode_is_skip, result_sub_dir_files_table, \
-    sequence_info__succeeding_phase_of_act
+    sequence_info__succeeding_phase_of_act, timeout_prologue_for_inherited_from_previous_phase
 from exactly_lib.help.program_modes.test_case.contents_structure.phase_documentation import \
     PhaseSequenceInfo, ExecutionEnvironmentInfo, \
     TestCasePhaseDocumentationForPhaseWithoutInstructions
@@ -34,6 +34,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             'program_name': program_info.PROGRAM_NAME,
             'phase': phase_names.PHASE_NAME_DICTIONARY,
             'setup': phase_infos.SETUP.name,
+            'act': phase_infos.ACT.name,
             'action_to_check': concepts.ACTION_TO_CHECK_CONCEPT_INFO.name,
             'home_directory': formatting.conf_param_(conf_params.HDS_CASE_DIRECTORY_CONF_PARAM_INFO),
             'sandbox': formatting.concept_(concepts.SDS_CONCEPT_INFO),
@@ -44,7 +45,6 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             'default_actor': actors.DEFAULT_ACTOR_SINGLE_LINE_VALUE,
             'null_actor': formatting.entity_(actors.NULL_ACTOR),
             'os_process': misc_texts.OS_PROCESS_NAME,
-            'act': phase_infos.ACT.name,
             'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
             'stdin_instruction': InstructionName(instruction_names.CONTENTS_OF_STDIN_INSTRUCTION_NAME),
             'env_instruction': InstructionName(instruction_names.ENV_VAR_INSTRUCTION_NAME),
@@ -53,6 +53,8 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             'timeout_instruction': InstructionName(instruction_names.TIMEOUT_INSTRUCTION_NAME),
             'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.name,
             'env_var': concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.name,
+            'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
+            'stdin': misc_texts.STDIN,
 
             'directive': concepts.DIRECTIVE_CONCEPT_INFO.name,
             'including': formatting.keyword(directives.INCLUDING_DIRECTIVE_INFO.singular_name),
@@ -78,6 +80,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         return ExecutionEnvironmentInfo(
             cwd_at_start_of_phase_for_non_first_phases(),
             environment_variables_prologue=self._tp.fnap(_ENV_VARS_DESCRIPTION),
+            timeout_prologue=timeout_prologue_for_inherited_from_previous_phase(),
             custom_items=self._custom_environment_info_items())
 
     def _custom_environment_info_items(self) -> Sequence[docs.lists.HeaderContentListItem]:
@@ -85,10 +88,6 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             docs.list_item(
                 misc_texts.STDIN.capitalize(),
                 self._tp.fnap(_STDIN)
-            ),
-            docs.list_item(
-                concepts.TIMEOUT_CONCEPT_INFO.singular_name.capitalize(),
-                self._tp.fnap(_TIMEOUT)
             ),
         ]
 
@@ -98,6 +97,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
             concepts.ACTION_TO_CHECK_CONCEPT_INFO.cross_reference_target,
             concepts.SDS_CONCEPT_INFO.cross_reference_target,
+            concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
             concepts.TIMEOUT_CONCEPT_INFO.cross_reference_target,
             conf_params.ACTOR_CONF_PARAM_INFO.cross_reference_target,
@@ -112,22 +112,20 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
 
 
 _STDIN = """\
-The contents set by the {stdin_instruction} instruction
+The contents set by the {stdin_instruction} {instruction}
 in the {setup} phase.
 
 
-Empty otherwise.
-"""
-
-_TIMEOUT = """\
-Default: {timeout_default}
+If the {action_to_check:/q} is a {PROGRAM} that defines {stdin},
+then the {stdin} set in the {setup:emphasis} phase is appended to the {stdin}
+of the {PROGRAM}.
 
 
-The {timeout} can be changed by the {timeout_instruction} {instruction}.
+If not set in either way, {stdin} is empty.
 """
 
 ONE_LINE_DESCRIPTION = """\
-Contains the {action_to_check}; executes it and stores the outcome for later inspection.
+Contains the {action_to_check:/q}; executes it and stores the outcome for later inspection.
 """
 
 REST_OF_DESCRIPTION = """\
@@ -166,13 +164,11 @@ The escape sequences are only recognized at the first non-space characters of a 
 """
 
 _ENV_VARS_DESCRIPTION = """\
-The {env_var:s} set for the {action_to_check:/q}.
+The {env_var:s} set for the {act:emphasis} phase.
 
 
-By default, these are all OS {env_var:s} set when {program_name} is started.
-
-
-The {env_instruction} {instruction} manipulates the {env_var:s} of the {action_to_check:/q}.
+The {env_instruction} {instruction} in the {setup:emphasis} phase
+manipulates the {env_var:s} of the {act:emphasis} phase/{action_to_check:/q}.
 """
 
 
