@@ -8,7 +8,8 @@ Tools for integration testing of logic values the use the XDV-structure:
 """
 import unittest
 from contextlib import contextmanager
-from typing import Sequence, Generic, ContextManager, Callable, TypeVar
+from types import MappingProxyType
+from typing import Sequence, Generic, ContextManager, Callable, TypeVar, Any, Mapping
 
 from exactly_lib.common.report_rendering import print_
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
@@ -127,13 +128,15 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
             arrangement: Arrangement,
             expectation_: MultiSourceExpectation[PRIMITIVE, OUTPUT],
             layouts: Sequence[NameAndValue[LayoutSpec]] = layout.STANDARD_LAYOUT_SPECS,
+            sub_test_identifiers: Mapping[str, Any] = MappingProxyType({}),
     ):
         tokens = source.tokenization()
         for layout_case in layouts:
             source_str = tokens.layout(layout_case.value)
             for source_case in mk_source_variants(source_str):
-                with put.subTest(layout=layout_case.name,
-                                 source_variant=source_case.name):
+                with put.subTest(_layout=layout_case.name,
+                                 _source_variant=source_case.name,
+                                 **sub_test_identifiers):
                     self._check__parse_source(
                         put,
                         source_case.source,
@@ -170,6 +173,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
             arrangement: Arrangement,
             expectation_: MultiSourceExpectation[PRIMITIVE, OUTPUT],
             layouts: Sequence[NameAndValue[LayoutSpec]] = layout.STANDARD_LAYOUT_SPECS,
+            sub_test_identifiers: Mapping[str, Any] = MappingProxyType({}),
     ):
         self.check__abs_stx__layouts__source_variants(
             put,
@@ -179,6 +183,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
             arrangement,
             expectation_,
             layouts,
+            sub_test_identifiers,
         )
 
     def check__abs_stx__layouts__std_source_variants__wo_input(

@@ -241,7 +241,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
             expected_path = path_ddvs.of_rel_option(rel_option_type,
                                                     path_ddvs.constant_path_part(file_name_argument))
             expected_path_sdv = path_sdvs.constant(expected_path)
-            option_str = option_string_for(rel_option_info.option_name)
+            option_str = option_string_for(rel_option_info._option_name)
             source_and_token_stream_assertion_variants = [
                 (
                     '{option_str} {file_name_argument} arg3 arg4',
@@ -280,7 +280,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
         for rel_option_type, rel_option_info in REL_OPTIONS_MAP.items():
             expected_path = path_ddvs.absolute_file_name(file_name_argument)
             expected_path_sdv = path_sdvs.constant(expected_path)
-            option_str = option_string_for(rel_option_info.option_name)
+            option_str = option_string_for(rel_option_info._option_name)
             source_and_token_stream_assertion_variants = [
                 (
                     '{option_str} {file_name_argument} arg3 arg4',
@@ -367,7 +367,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
 
         for used_option, default_option, accepted_options in used_and_default_and_accepted_options_variants:
             for path_suffix_is_required in [False, True]:
-                option_str = option_string_for(REL_OPTIONS_MAP[used_option].option_name)
+                option_str = option_string_for(REL_OPTIONS_MAP[used_option]._option_name)
                 arg_config = RelOptionArgumentConfiguration(
                     RelOptionsConfiguration(
                         PathRelativityVariants(accepted_options, True),
@@ -391,7 +391,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
     def test_parse_with_option_fails_when_no_file_argument(self):
         for rel_option_info in REL_OPTIONS_MAP.values():
             with self.subTest(msg=rel_option_info.informative_name):
-                option_str = option_string_for(rel_option_info.option_name)
+                option_str = option_string_for(rel_option_info._option_name)
                 ts = TokenStream(option_str)
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     sut.parse_path(ts, ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(True))
@@ -1189,7 +1189,7 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
         ]
 
         for used_option, default_option, accepted_options in used_and_default_and_accepted_options_variants:
-            option_str = option_string_for(REL_OPTIONS_MAP[used_option].option_name)
+            option_str = option_string_for(REL_OPTIONS_MAP[used_option]._option_name)
             arg_config = RelOptionArgumentConfiguration(
                 RelOptionsConfiguration(
                     PathRelativityVariants(accepted_options, True),
@@ -1242,7 +1242,7 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
         ]
 
         for used_option, default_option, accepted_options in used_and_default_and_accepted_options_variants:
-            option_str = option_string_for(REL_OPTIONS_MAP[used_option].option_name)
+            option_str = option_string_for(REL_OPTIONS_MAP[used_option]._option_name)
             arg_config = RelOptionArgumentConfiguration(
                 RelOptionsConfiguration(
                     PathRelativityVariants(accepted_options, True),

@@ -21,6 +21,41 @@ class Option(TokenSequence):
         return [tokens.option(self.option_name)]
 
 
+class OptionalOption(TokenSequence):
+    def __init__(self,
+                 option_name: str,
+                 is_present: bool,
+                 may_be_followed_by_new_line: bool = False,
+                 ):
+        self._option_name = option_name
+        self._is_present = is_present
+        self._may_be_followed_by_new_line = may_be_followed_by_new_line
+        if not isinstance(option_name, str):
+            raise NotImplementedError('Not a str: ' + str(option_name))
+
+    @staticmethod
+    def of_option_name(option: OptionName,
+                       is_present: bool,
+                       may_be_followed_by_new_line: bool = False,
+                       ) -> 'OptionalOption':
+        return OptionalOption(option.long, is_present, may_be_followed_by_new_line)
+
+    @property
+    def tokens(self) -> Sequence[Token]:
+        return (
+            self._tokens__present()
+            if self._is_present
+            else
+            ()
+        )
+
+    def _tokens__present(self) -> Sequence[Token]:
+        ret_val = [tokens.option(self._option_name)]
+        if self._may_be_followed_by_new_line:
+            ret_val += [tokens.OPTIONAL_NEW_LINE]
+        return ret_val
+
+
 class OptionWMandatoryValue(TokenSequence):
     def __init__(self,
                  option_name: str,
@@ -50,6 +85,18 @@ class OptionWMandatoryValue(TokenSequence):
                 [tokens.OPTIONAL_NEW_LINE] +
                 list(self.value.tokens)
         )
+
+
+class FollowedByOptionalNewLineIfNonEmpty(TokenSequence):
+    def __init__(self, token_sequence: TokenSequence):
+        self._token_sequence = token_sequence
+
+    @property
+    def tokens(self) -> Sequence[Token]:
+        ret_val = list(self._token_sequence.tokens)
+        if ret_val:
+            ret_val.append(tokens.OPTIONAL_NEW_LINE)
+        return ret_val
 
 
 class WithinParens(TokenSequence):

@@ -23,6 +23,10 @@ class StringLiteralAbsStx(NonHereDocStringAbsStx):
         self.quoting = quoting_
 
     @staticmethod
+    def empty_string() -> 'StringLiteralAbsStx':
+        return StringLiteralAbsStx('', QuoteType.HARD)
+
+    @staticmethod
     def of_shlex_quoted(unquoted: str) -> 'StringLiteralAbsStx':
         return StringLiteralAbsStx(shlex.quote(unquoted))
 

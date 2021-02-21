@@ -1,4 +1,4 @@
-from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR, HARD_QUOTE_CHAR
+from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR, HARD_QUOTE_CHAR, QuoteType
 from exactly_lib_test.test_resources.strings import WithToString
 
 
@@ -37,3 +37,13 @@ def surrounded_by_hard_quotes(surrounded: WithToString) -> Surrounded:
 
 def surrounded_by_hard_quotes_str(surrounded: WithToString) -> str:
     return str(Surrounded.with_identical(HARD_QUOTE_CHAR, surrounded))
+
+
+def surrounded_by_str(surrounded: WithToString,
+                      quoting: QuoteType) -> str:
+    return (
+        surrounded_by_hard_quotes_str(surrounded)
+        if quoting is QuoteType.HARD
+        else
+        surrounded_by_soft_quotes_str(surrounded)
+    )

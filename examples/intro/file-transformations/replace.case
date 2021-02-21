@@ -1,0 +1,43 @@
+[setup]
+
+file checked.txt = <<-
+timing 00:01 begin
+some kind of interesting data: 90:10
+timing 01:10 preprocessing
+timing 02:20 validation
+timing 03:30 execution
+timing 04:40 end
+-
+
+[assert]
+
+contents checked.txt :
+    -transformed-by
+      replace [0-9]{2}:[0-9]{2} TIMESTAMP
+      equals
+<<-
+timing TIMESTAMP begin
+some kind of interesting data: TIMESTAMP
+timing TIMESTAMP preprocessing
+timing TIMESTAMP validation
+timing TIMESTAMP execution
+timing TIMESTAMP end
+-
+
+
+# Limit replacement to "timing" lines
+
+contents checked.txt :
+    -transformed-by
+      replace
+        -at contents ~ '^timing'
+        [0-9]{2}:[0-9]{2} TIMESTAMP
+      equals
+<<-
+timing TIMESTAMP begin
+some kind of interesting data: 90:10
+timing TIMESTAMP preprocessing
+timing TIMESTAMP validation
+timing TIMESTAMP execution
+timing TIMESTAMP end
+-

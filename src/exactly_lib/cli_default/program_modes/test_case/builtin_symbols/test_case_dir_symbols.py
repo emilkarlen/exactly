@@ -20,7 +20,7 @@ def _builtin(symbol_name: str, relativity: RelOptionType) -> BuiltinSymbol:
     tp = TextParser({
         'relativity_option':
             formatting.cli_argument_option_string(
-                option_syntax.option_syntax(relative_path_options.REL_OPTIONS_MAP[relativity].option_name)
+                option_syntax.option_syntax(relative_path_options.REL_OPTIONS_MAP[relativity]._option_name)
             )
     })
 

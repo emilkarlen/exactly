@@ -1,6 +1,7 @@
 from typing import Sequence, Optional, Callable
 
 from exactly_lib.definitions import logic
+from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib_test.test_resources.source import token_sequences, layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
@@ -20,6 +21,37 @@ class OptionalAbsStx(AbstractSyntax):
             if self._optional is None
             else
             self._tokenizer(self._optional.tokenization())
+        )
+
+
+class OptionalOptionWMandatoryArgumentAbsStx(AbstractSyntax):
+    """An option w argument, if argument is present. Otherwise empty."""
+
+    def __init__(self,
+                 option_name: str,
+                 argument: Optional[AbstractSyntax],
+                 ):
+        self._option_name = option_name
+        self._argument = argument
+
+    @staticmethod
+    def of_option_name(option: a.OptionName,
+                       argument: Optional[AbstractSyntax],
+                       ) -> AbstractSyntax:
+        return OptionalOptionWMandatoryArgumentAbsStx(
+            option.long,
+            argument,
+        )
+
+    def tokenization(self) -> TokenSequence:
+        return (
+            TokenSequence.empty()
+            if self._argument is None
+            else
+            token_sequences.OptionWMandatoryValue(
+                self._option_name,
+                self._argument.tokenization()
+            )
         )
 
 

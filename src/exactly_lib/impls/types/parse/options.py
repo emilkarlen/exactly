@@ -32,7 +32,7 @@ class OptionalOptionWMandatoryArgumentParser(Generic[T],
         self._option = option
         self._argument_parser = argument_parser
 
-    def parse_from_token_parser(self, parser: TokenParser) -> bool:
+    def parse_from_token_parser(self, parser: TokenParser) -> Optional[T]:
         return parser.consume_and_handle_optional_option3(
             self._argument_parser.parse_from_token_parser,
             self._option,

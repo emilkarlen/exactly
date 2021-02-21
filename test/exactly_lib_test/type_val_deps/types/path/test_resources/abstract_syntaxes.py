@@ -45,7 +45,7 @@ class OptionRelativityAbsStx(RelativityAbsStx):
 
     def tokenization(self) -> TokenSequence:
         return token_sequences.Option.of_option_name(
-            REL_OPTIONS_MAP[self._relativity_option].option_name,
+            REL_OPTIONS_MAP[self._relativity_option]._option_name,
         )
 
 

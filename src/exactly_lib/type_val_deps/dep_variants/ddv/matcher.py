@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Generic
+from typing import Generic, Optional
 
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
@@ -19,3 +19,13 @@ class MatcherDdv(Generic[MODEL],
     @abstractmethod
     def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         pass
+
+    @staticmethod
+    def value_of_any_dependency__optional(ddv: Optional['MatcherDdv[MODEL]'],
+                                          tcds: TestCaseDs) -> Optional[MatcherAdv[MODEL]]:
+        return (
+            None
+            if ddv is None
+            else
+            ddv.value_of_any_dependency(tcds)
+        )

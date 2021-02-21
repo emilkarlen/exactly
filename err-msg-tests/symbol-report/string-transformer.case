@@ -2,8 +2,10 @@
 
 def string-transformer IDENTITY = identity
 
-def string-transformer REPLACE            = replace abc ABC
-def string-transformer REPLACE__PRESERVE  = replace -preserve-new-lines abc ABC
+def string-transformer REPLACE              = replace abc ABC
+def string-transformer REPLACE__PRESERVE    = replace -preserve-new-lines abc ABC
+def string-transformer REPLACE__AT          = replace -at line-num == 1 abc ABC
+def string-transformer REPLACE__AT_PRESERVE = replace -at line-num == 1 -preserve-new-lines abc ABC
 
 def string-transformer FILTER = filter line-num == 3
 

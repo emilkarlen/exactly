@@ -136,7 +136,7 @@ def option_string_for(option_name: argument.OptionName) -> str:
 
 
 def option_string_for_relativity(relativity: RelOptionType) -> str:
-    return option_string_for(REL_OPTIONS_MAP[relativity].option_name)
+    return option_string_for(REL_OPTIONS_MAP[relativity]._option_name)
 
 
 def expect(resolved_path: PathDdv,

@@ -9,7 +9,7 @@ from exactly_lib.impls.types.regex.regex_ddv import RegexSdv, RegexDdv
 from exactly_lib.impls.types.string_.parse_string_or_here_doc import parse_string_or_here_doc_from_token_parser
 from exactly_lib.section_document.element_parsers.ps_or_tp import parsers
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
-from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
@@ -39,6 +39,13 @@ MISSING_STRING_ARGUMENT_FOR_REGEX_ERR_MSG = 'Missing {} argument for {}'.format(
 
 def regex_parser() -> Parser[RegexSdv]:
     return _PARSER
+
+
+class ParserOfRegex(ParserFromTokens[RegexSdv]):
+    def parse(self, token_parser: TokenParser) -> RegexSdv:
+        return parse_regex2(token_parser,
+                            must_be_on_same_line=False,
+                            consume_last_here_doc_line=False)
 
 
 def parse_regex(parser: TokenParser,

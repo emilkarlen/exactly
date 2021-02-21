@@ -8,9 +8,10 @@ from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib_test.impls.types.logic.test_resources import integration_check as logic_integration_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expectation, ParseExpectation, \
-    ExecutionExpectation, prim_asrt__constant, adv_asrt__any, AssertionResolvingEnvironment
+    ExecutionExpectation, prim_asrt__constant, adv_asrt__any, AssertionResolvingEnvironment, MultiSourceExpectation
 from exactly_lib_test.impls.types.string_transformer.test_resources.transformer_checker import \
     StringTransformerPropertiesConfiguration
+from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
@@ -18,6 +19,7 @@ from exactly_lib_test.type_val_prims.string_transformer.test_resources import \
     string_transformer_assertions as asrt_string_transformer
 
 StExpectation = Expectation[StringTransformer, StringSource]
+StMultiSourceExpectation = MultiSourceExpectation[StringTransformer, StringSource]
 
 CHECKER__PARSE_FULL = logic_integration_check.IntegrationChecker(
     parse_string_transformer.parsers(True).full,
@@ -35,6 +37,14 @@ CHECKER__PARSE_SIMPLE__WO_IMPLICIT_MODEL_EVALUATION = logic_integration_check.In
     parse_string_transformer.parsers(True).simple,
     StringTransformerPropertiesConfiguration(avoid_model_evaluation=True),
     True,
+)
+
+PARSE_CHECKER__SIMPLE = parse_checker.checker_from_non_location_aware(
+    parse_string_transformer.parsers(True).simple
+)
+
+PARSE_CHECKER__FULL = parse_checker.checker_from_non_location_aware(
+    parse_string_transformer.parsers(True).full
 )
 
 
@@ -86,4 +96,30 @@ def expectation_of_successful_execution_2(output_lines: List[str],
         is_identity_transformer,
         source,
         adv,
+    )
+
+
+def expectation_of_successful_execution__multi(
+        output_lines: List[str],
+        may_depend_on_external_resources: bool,
+        symbol_references: Assertion[Sequence[SymbolReference]],
+        is_identity_transformer: bool = False,
+        adv: Callable[
+            [AssertionResolvingEnvironment],
+            Assertion[ApplicationEnvironmentDependentValue[StringTransformer]]
+        ] = adv_asrt__any,
+) -> StMultiSourceExpectation:
+    return MultiSourceExpectation(
+        symbol_references=symbol_references,
+        execution=ExecutionExpectation(
+            main_result=asrt_string_source.pre_post_freeze__matches_lines(
+                asrt.equals(output_lines),
+                may_depend_on_external_resources=asrt.equals(may_depend_on_external_resources),
+                frozen_may_depend_on_external_resources=asrt.equals(may_depend_on_external_resources),
+            ),
+        ),
+        primitive=prim_asrt__constant(
+            asrt_string_transformer.is_identity_transformer(is_identity_transformer)
+        ),
+        adv=adv,
     )

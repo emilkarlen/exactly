@@ -2,9 +2,9 @@ import unittest
 
 from exactly_lib_test.impls.types.string_transformer import \
     parse_string_transformer
-from exactly_lib_test.impls.types.string_transformer import tcds_paths_replacement, replace, \
-    case_converters, sequence, identity
+from exactly_lib_test.impls.types.string_transformer import tcds_paths_replacement, case_converters, sequence, identity
 from exactly_lib_test.impls.types.string_transformer.filter import z_package_suite as filter_
+from exactly_lib_test.impls.types.string_transformer.replace import z_package_suite as replace
 from exactly_lib_test.impls.types.string_transformer.run_program import \
     z_package_suite as run_program
 from exactly_lib_test.impls.types.string_transformer.sources import \

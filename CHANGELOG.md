@@ -12,6 +12,7 @@ with exception of a "0." prefix until version 1 is released.
  - Instruction `setup`/`env` - Ability to set variables separately for the `action to check` 
  - Instruction `timeout` - Ability to set no-timeout 
  - Type `string-transformer` - Shortcut `grep` for `filter contents matches`
+ - Type `string-transformer` - `replace` - `-at LINE-MATCHER` - Limits replacement to certain lines
 
 ### Changed
 

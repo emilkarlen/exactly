@@ -1,0 +1,51 @@
+[setup]
+
+
+file original.txt =
+<<-
+PATTERN_T LM-MATCH
+PATTERN_T lm-no-match
+pattern_f LM-MATCH
+pattern_f lm-no-match
+-
+
+file line-nums-input.txt =
+<<-
+1 PATTERN
+2 PATTERN
+3 PATTERN
+4 PATTERN
+5 PATTERN
+-
+
+
+[assert]
+
+
+contents original.txt :
+    -transformed-by
+      replace
+        -at contents ~ 'LM-MATCH'
+        'PATTERN_T' 'REPLACEMENT'
+      equals
+<<-
+REPLACEMENT LM-MATCH
+PATTERN_T lm-no-match
+pattern_f LM-MATCH
+pattern_f lm-no-match
+-
+
+
+contents line-nums-input.txt :
+    -transformed-by
+      replace
+        -at ( line-num == 1 || line-num == 4 )
+        'PATTERN' 'REPLACEMENT'
+      equals
+<<-
+1 REPLACEMENT
+2 PATTERN
+3 PATTERN
+4 REPLACEMENT
+5 PATTERN
+-

@@ -1,3 +1,4 @@
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import program, string_transformer
 from exactly_lib.util.cli_syntax.elements import argument as a
 
@@ -25,6 +26,10 @@ STRIP_TRAILING_SPACE_OPTION_NAME = a.OptionName(long_name='trailing-space')
 STRIP_TRAILING_NEW_LINES_OPTION_NAME = a.OptionName(long_name='trailing-new-lines')
 
 TCDS_PATH_REPLACEMENT = 'replace-test-case-dirs'
+
+LINES_SELECTION_OPTION_NAME = a.OptionName(long_name='at')
+LINES_SELECTION_OPTION = a.Option(LINES_SELECTION_OPTION_NAME,
+                                  syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.singular_name)
 
 PRESERVE_NEW_LINES_OPTION_NAME = a.OptionName(long_name='preserve-new-lines')
 PRESERVE_NEW_LINES_OPTION = a.Option(PRESERVE_NEW_LINES_OPTION_NAME)

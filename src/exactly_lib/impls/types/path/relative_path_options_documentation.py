@@ -162,7 +162,7 @@ class RelOptionRenderer:
 
     def sparse_item_for(self, rel_option_type: RelOptionType) -> lists.HeaderContentListItem:
         opt_info = REL_OPTIONS_MAP[rel_option_type]
-        return self.item_for(option_syntax.option_syntax(opt_info.option_name),
+        return self.item_for(option_syntax.option_syntax(opt_info._option_name),
                              opt_info.informative_name)
 
     def special_symbols(self) -> List[lists.HeaderContentListItem]:
@@ -215,7 +215,7 @@ def _rel_sds(rel: RelSdsOptionType,
              description: str) -> _RelOptionTypeInfo:
     ri = REL_SDS_OPTIONS_MAP[rel]
 
-    return _RelOptionTypeInfo(ri.option_name,
+    return _RelOptionTypeInfo(ri._option_name,
                               ri.directory_name,
                               description,
                               [ci.SDS_CONCEPT_INFO],
@@ -226,7 +226,7 @@ def _rel_hds(rel: RelHdsOptionType,
              description: str) -> _RelOptionTypeInfo:
     ri = REL_HDS_OPTIONS_MAP[rel]
 
-    return _RelOptionTypeInfo(ri.option_name,
+    return _RelOptionTypeInfo(ri._option_name,
                               formatting.concept_(ri.conf_param_info),
                               description,
                               [ri.conf_param_info],
@@ -243,7 +243,7 @@ _ALL = {
     RelOptionType.REL_RESULT: _rel_sds(RelSdsOptionType.REL_RESULT,
                                        _REL_RESULT_DESCRIPTION),
 
-    RelOptionType.REL_CWD: _RelOptionTypeInfo(REL_CWD_INFO.option_name,
+    RelOptionType.REL_CWD: _RelOptionTypeInfo(REL_CWD_INFO._option_name,
                                               formatting.concept_(REL_CWD_INFO.cross_ref_info),
                                               _REL_CWD_DESCRIPTION,
                                               [REL_CWD_INFO.cross_ref_info]),

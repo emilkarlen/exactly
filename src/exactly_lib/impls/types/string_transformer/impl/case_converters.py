@@ -52,7 +52,7 @@ class Parser(ParserFromTokens[StringTransformerSdv]):
                           ) -> TokenSyntaxSetup[StringTransformer]:
         def parse_variant(token_parser: TokenParser) -> StringTransformer:
             return _CaseConverter(
-                custom_details.OptionRenderer(option),
+                custom_details.OptionNameRenderer(option),
                 converter,
             )
 

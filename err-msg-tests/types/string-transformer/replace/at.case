@@ -1,0 +1,14 @@
+[setup]
+
+file original.txt = 'unexpected'
+
+
+[assert]
+
+contents original.txt :
+    -transformed-by
+      replace
+        -at line-num == 1
+        -preserve-new-lines
+         'A' 'B'
+      equals 'expected'

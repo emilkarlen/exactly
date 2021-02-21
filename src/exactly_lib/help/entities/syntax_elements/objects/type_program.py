@@ -177,14 +177,15 @@ def _stdin_description_rest() -> List[ParagraphItem]:
 def _stdin_sed() -> SyntaxElementDescription:
     return cli_argument_syntax_element_description(
         _STDIN_ARGUMENT,
-        _stdin_description_rest(),
+        (),
         [
             invokation_variant_from_args([
                 a.Single(a.Multiplicity.MANDATORY,
                          a.Option(program.STDIN_OPTION_NAME,
                                   argument=syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.singular_name))
             ]),
-        ]
+        ],
+        _stdin_description_rest(),
     )
 
 
@@ -200,11 +201,12 @@ def _transformation_description_rest() -> List[ParagraphItem]:
 def _transformation_sed() -> SyntaxElementDescription:
     return SyntaxElementDescription(
         _OUTPUT_TRANSFORMATION,
-        _transformation_description_rest(),
+        (),
         [
             invokation_variant_from_args([a.Single(a.Multiplicity.MANDATORY,
                                                    string_transformer.TRANSFORMATION_OPTION)]),
-        ]
+        ],
+        _transformation_description_rest(),
     )
 
 

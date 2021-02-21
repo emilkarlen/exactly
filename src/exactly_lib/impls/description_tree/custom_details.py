@@ -189,7 +189,7 @@ class PatternRenderer(DetailsRenderer):
         return renderer.render()
 
 
-class OptionRenderer(DetailsRenderer):
+class OptionNameRenderer(DetailsRenderer):
     def __init__(self, option: a.OptionName):
         self._option = option
 
@@ -198,10 +198,18 @@ class OptionRenderer(DetailsRenderer):
         return renderer.render()
 
 
+def option_str(option: a.Option) -> str:
+    parts = [option_syntax.option_syntax(option.name)]
+    if option.argument:
+        parts.append(option.argument)
+
+    return ' '.join(parts)
+
+
 def optional_option(option: a.OptionName,
                     has_option: bool) -> DetailsRenderer:
     return (
-        OptionRenderer(option)
+        OptionNameRenderer(option)
         if has_option
         else
         details.empty()

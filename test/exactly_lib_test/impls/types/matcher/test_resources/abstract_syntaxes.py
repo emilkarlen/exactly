@@ -12,3 +12,14 @@ class NegationMatcherAbsStx(AbstractSyntax):
             TokenSequence.singleton(logic.NOT_OPERATOR_NAME),
             self.operand.tokenization(),
         ])
+
+
+class ConstantMatcherAbsStx(AbstractSyntax):
+    def __init__(self, constant: bool):
+        self.constant = constant
+
+    def tokenization(self) -> TokenSequence:
+        return TokenSequence.sequence([
+            logic.CONSTANT_MATCHER,
+            logic.BOOLEANS[self.constant],
+        ])

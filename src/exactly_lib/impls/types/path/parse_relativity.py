@@ -108,7 +108,7 @@ def _raise_invalid_option(actual: str, options: RelOptionsConfiguration):
 
 def _resolve_relativity_option_type(option_argument: str) -> RelOptionType:
     for option_type in rel_opts.REL_OPTIONS_MAP:
-        option_name = rel_opts.REL_OPTIONS_MAP[option_type].option_name
+        option_name = rel_opts.REL_OPTIONS_MAP[option_type]._option_name
         if option_parsing.matches(option_name, option_argument):
             return option_type
     raise SingleInstructionInvalidArgumentException('Invalid option: {}'.format(option_argument))
@@ -120,7 +120,7 @@ def _valid_options_info_lines(options: RelOptionsConfiguration) -> list:
         rel_symbol_option=option_parsing.long_option_syntax(REL_SYMBOL_OPTION_NAME.long),
         symbol_syntax_element_name=instruction_arguments.SYMBOL_SYNTAX_ELEMENT_NAME))
     for option_type in options.accepted_options:
-        option_name = rel_opts.REL_OPTIONS_MAP[option_type].option_name
+        option_name = rel_opts.REL_OPTIONS_MAP[option_type]._option_name
         option_str = option_parsing.long_option_syntax(option_name.long)
         ret_val.append('  ' + option_str)
     return ret_val

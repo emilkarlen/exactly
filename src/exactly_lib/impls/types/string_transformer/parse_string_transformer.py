@@ -3,9 +3,10 @@ from exactly_lib.impls.types.expression import grammar, parser as ep
 from exactly_lib.impls.types.expression.parser import GrammarParsers
 from exactly_lib.impls.types.string_transformer import names
 from exactly_lib.impls.types.string_transformer import sdvs
-from exactly_lib.impls.types.string_transformer.impl import replace, sequence_sdv, identity, case_converters, \
+from exactly_lib.impls.types.string_transformer.impl import sequence_sdv, identity, case_converters, \
     tcds_paths_replacement, strip_space
 from exactly_lib.impls.types.string_transformer.impl.filter import parse as parse_filter
+from exactly_lib.impls.types.string_transformer.impl.replace import setup as _replace_setup
 from exactly_lib.impls.types.string_transformer.impl.run_program import parse as parse_run
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -49,8 +50,8 @@ GRAMMAR = grammar.Grammar(
         ),
         NameAndValue(
             names.REPLACE_TRANSFORMER_NAME,
-            grammar.Primitive(replace.parse_replace,
-                              replace.SyntaxDescription())
+            grammar.Primitive(_replace_setup.ParserOfReplace().parse,
+                              _replace_setup.SyntaxDescription())
         ),
         NameAndValue(
             names.CHARACTER_CASE,

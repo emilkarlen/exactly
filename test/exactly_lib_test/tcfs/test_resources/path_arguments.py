@@ -90,4 +90,4 @@ class RelOptPathArgument(PathArgument):
 
 
 def rel_option_type_arg(relativity: RelOptionType) -> ArgumentElementsRenderer:
-    return argument_renderer.OptionArgument(REL_OPTIONS_MAP[relativity].option_name)
+    return argument_renderer.OptionArgument(REL_OPTIONS_MAP[relativity]._option_name)

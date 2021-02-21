@@ -4,12 +4,14 @@ from typing import Callable, Sequence, Generic, TypeVar
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parsing import LocationAwareParser
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse import token
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line__abs_stx
+from exactly_lib_test.section_document.element_parsers.test_resources.parsing import ParserAsLocationAwareParser
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
@@ -79,6 +81,10 @@ class Checker(Generic[T]):
         put.assertIsNotNone(actual,
                             'parsed object')
         return actual
+
+
+def checker_from_non_location_aware(parser: Parser[T]) -> Checker[T]:
+    return Checker(ParserAsLocationAwareParser(parser))
 
 
 @contextmanager
