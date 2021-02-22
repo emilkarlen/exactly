@@ -50,27 +50,34 @@ class TestIsValueTypeRestriction(unittest.TestCase):
         # ARRANGE #
         expected_type = ValueType.FILE_MATCHER
 
-        assertion_to_check = sut.is_value_type_restriction(expected_type)
+        assertion_to_check = sut.is_value_type_restriction__single(expected_type)
 
-        restriction = ValueTypeRestriction(expected_type)
+        restriction = ValueTypeRestriction.of_single(expected_type)
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, restriction)
 
-    def test_fail_WHEN_type_category_is_unexpected(self):
+    def test_succeed__multi(self):
         # ARRANGE #
-        expected_type = ValueType.STRING
-        actual_type = ValueType.FILE_MATCHER
+        expected_types = [ValueType.FILE_MATCHER, ValueType.STRING]
 
-        assertion_to_check = sut.is_value_type_restriction(expected_type)
+        assertion_to_check = sut.is_value_type_restriction(expected_types)
 
-        restriction = ValueTypeRestriction(actual_type)
+        restriction = ValueTypeRestriction(expected_types)
         # ACT & ASSERT #
-        assert_that_assertion_fails(assertion_to_check, restriction)
+        assertion_to_check.apply_without_message(self, restriction)
 
     def test_fail_WHEN_restriction_is_of_other_type(self):
         # ARRANGE #
-        assertion_to_check = sut.is_value_type_restriction(ValueType.PATH)
+        assertion_to_check = sut.is_value_type_restriction__single(ValueType.PATH)
 
-        restriction = reference_restrictions.is_any_data_type()
+        restriction = reference_restrictions.string_made_up_by_just_strings()
+        # ACT & ASSERT #
+        assert_that_assertion_fails(assertion_to_check, restriction)
+
+    def test_fail_WHEN_restriction_is_of_other_type__multi(self):
+        # ARRANGE #
+        assertion_to_check = sut.is_value_type_restriction([ValueType.PATH, ValueType.PROGRAM])
+
+        restriction = reference_restrictions.string_made_up_by_just_strings()
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion_to_check, restriction)

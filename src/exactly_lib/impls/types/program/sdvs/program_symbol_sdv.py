@@ -19,7 +19,7 @@ class ProgramSdvForSymbolReference(ProgramSdv):
         self._accumulated_components = accumulated_elements
 
         self._symbol_reference = SymbolReference(symbol_name,
-                                                 ValueTypeRestriction(ValueType.PROGRAM))
+                                                 ValueTypeRestriction.of_single(ValueType.PROGRAM))
 
     def new_accumulated(self, additional: AccumulatedComponents) -> 'ProgramSdvForSymbolReference':
         return ProgramSdvForSymbolReference(self._symbol_name,

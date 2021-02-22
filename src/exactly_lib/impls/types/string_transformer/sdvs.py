@@ -73,7 +73,7 @@ class StringTransformerSdvReference(StringTransformerSdv):
     def __init__(self, name_of_referenced_sdv: str):
         self._name_of_referenced_sdv = name_of_referenced_sdv
         self._references = [SymbolReference(name_of_referenced_sdv,
-                                            ValueTypeRestriction(ValueType.STRING_TRANSFORMER))]
+                                            ValueTypeRestriction.of_single(ValueType.STRING_TRANSFORMER))]
 
     @property
     def references(self) -> Sequence[SymbolReference]:

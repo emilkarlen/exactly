@@ -19,7 +19,7 @@ from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertio
 from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.abstract_syntax import \
     FileMatcherSymbolReferenceAbsStx
 
-IS_FILE_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILE_MATCHER)
+IS_FILE_REFERENCE_RESTRICTION = is_value_type_restriction((ValueType.FILE_MATCHER,))
 
 
 def is_reference_to_file_matcher__usage(symbol_name: str) -> Assertion[SymbolUsage]:

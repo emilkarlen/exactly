@@ -172,7 +172,7 @@ class SymbolReferencesTestExecutor(TestExecutorBase, ABC):
                 list_sdvs.from_elements([
                     list_sdvs.symbol_element(
                         SymbolReference(arguments_of_referenced_sdv_symbol.name,
-                                        ValueTypeRestriction(ValueType.LIST)
+                                        ValueTypeRestriction.of_single(ValueType.LIST)
                                         ))
                 ])
             )

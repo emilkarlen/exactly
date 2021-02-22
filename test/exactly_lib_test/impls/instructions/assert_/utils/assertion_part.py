@@ -19,7 +19,8 @@ from exactly_lib_test.test_case.result.test_resources import pfh_assertions as a
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_case.test_resources.instruction_settings import optionally_from_proc_exe_settings
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import \
+    is_value_type_restriction__single
 
 
 def suite() -> unittest.TestSuite:
@@ -115,11 +116,11 @@ class TestSequence(unittest.TestCase):
         ref_1_info = NameAndValue('ref 1', ValueType.FILE_MATCHER)
 
         ref_1 = SymbolReference(ref_1_info.name,
-                                ValueTypeRestriction(ref_1_info.value))
+                                ValueTypeRestriction.of_single(ref_1_info.value))
 
         expected_references = asrt.matches_sequence([
             asrt_sym_usage.matches_reference(asrt.equals(ref_1_info.name),
-                                             is_value_type_restriction(ref_1_info.value)),
+                                             is_value_type_restriction__single(ref_1_info.value)),
         ])
 
         assertion_part_with_references = PartWithReference([ref_1])

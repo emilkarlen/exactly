@@ -111,7 +111,21 @@ class TestValueTypeRestriction(unittest.TestCase):
         for expected_value_type in ValueType:
             container_of_sdv = self.value_type_2_symbol_value_context_of_type[expected_value_type].container
             with self.subTest(element_type=str(expected_value_type)):
-                restriction_to_check = sut.ValueTypeRestriction(expected_value_type)
+                restriction_to_check = sut.ValueTypeRestriction.of_single(expected_value_type)
+                # ACT
+                error_message = restriction_to_check.is_satisfied_by(symbols,
+                                                                     'symbol name',
+                                                                     container_of_sdv)
+                # ASSERT #
+                self.assertIsNone(error_message)
+
+    def test_satisfied_restriction__multi(self):
+        # ARRANGE #
+        symbols = empty_symbol_table()
+        for expected_value_type in ValueType:
+            container_of_sdv = self.value_type_2_symbol_value_context_of_type[expected_value_type].container
+            with self.subTest(element_type=str(expected_value_type)):
+                restriction_to_check = sut.ValueTypeRestriction([expected_value_type, ValueType.STRING])
                 # ACT
                 error_message = restriction_to_check.is_satisfied_by(symbols,
                                                                      'symbol name',
@@ -139,7 +153,35 @@ class TestValueTypeRestriction(unittest.TestCase):
             container_of_unexpected = self.value_type_2_symbol_value_context_of_type[unexpected_value_type].container
             with self.subTest(expected_element_type=str(expected_value_type),
                               unexpected_element_type=str(unexpected_value_type)):
-                restriction_to_check = sut.ValueTypeRestriction(expected_value_type)
+                restriction_to_check = sut.ValueTypeRestriction.of_single(expected_value_type)
+                # ACT
+                error_message = restriction_to_check.is_satisfied_by(symbols,
+                                                                     'symbol name',
+                                                                     container_of_unexpected)
+                # ASSERT #
+                self.assertIsNotNone(error_message)
+
+    def test_dissatisfied_restriction__multiple(self):
+        # ARRANGE #
+        cases = {
+            ValueType.LIST: [ValueType.STRING, ValueType.INTEGER_MATCHER],
+            ValueType.PATH: [ValueType.LIST, ValueType.FILE_MATCHER],
+            ValueType.INTEGER_MATCHER: [ValueType.PATH, ValueType.LIST],
+            ValueType.FILE_MATCHER: [ValueType.INTEGER_MATCHER, ValueType.PATH],
+            ValueType.FILES_MATCHER: [ValueType.FILE_MATCHER, ValueType.STRING],
+            ValueType.STRING_MATCHER: [ValueType.FILES_MATCHER, ValueType.STRING],
+            ValueType.STRING_TRANSFORMER: [ValueType.STRING_MATCHER, ValueType.PATH],
+            ValueType.PROGRAM: [ValueType.STRING_TRANSFORMER, ValueType.PATH],
+            ValueType.FILES_CONDITION: [ValueType.PROGRAM, ValueType.PATH],
+            ValueType.STRING: [ValueType.FILES_CONDITION, ValueType.PATH],
+        }
+
+        symbols = empty_symbol_table()
+        for unexpected_value_type, expected_value_types in cases.items():
+            container_of_unexpected = self.value_type_2_symbol_value_context_of_type[unexpected_value_type].container
+            with self.subTest(expected_element_type=str(expected_value_types),
+                              unexpected_element_type=str(unexpected_value_type)):
+                restriction_to_check = sut.ValueTypeRestriction(expected_value_types)
                 # ACT
                 error_message = restriction_to_check.is_satisfied_by(symbols,
                                                                      'symbol name',

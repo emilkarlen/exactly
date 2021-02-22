@@ -443,11 +443,11 @@ class TestIsStringMadeUpOfJustStringsReferenceRestrictions(unittest.TestCase):
             ),
             NameAndValue(
                 'ValueTypeRestriction / STRING',
-                restrictions.ValueTypeRestriction(ValueType.STRING),
+                restrictions.ValueTypeRestriction.of_single(ValueType.STRING),
             ),
             NameAndValue(
                 'ValueTypeRestriction / FILE_MATCHER',
-                restrictions.ValueTypeRestriction(ValueType.FILE_MATCHER),
+                restrictions.ValueTypeRestriction.of_single(ValueType.FILE_MATCHER),
             ),
             NameAndValue(
                 'path_or_string_reference_restrictions',

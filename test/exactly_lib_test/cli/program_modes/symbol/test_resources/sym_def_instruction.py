@@ -90,7 +90,7 @@ def _parse_reference_arguments(rest_of_line: str) -> List[SymbolReference]:
 
     try:
         reference = SymbolReference(name,
-                                    ValueTypeRestriction(TYPE_IDENT_2_VALUE_TYPE[type_ident]))
+                                    ValueTypeRestriction.of_single(TYPE_IDENT_2_VALUE_TYPE[type_ident]))
         return [reference]
     except KeyError:
         raise SingleInstructionInvalidArgumentException('Not a symbol type: ' + type_ident)

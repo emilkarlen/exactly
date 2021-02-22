@@ -39,8 +39,7 @@ class TestErrorMessage(unittest.TestCase):
         # ACT #
         actual = sut.ErrorMessage(self.string_sym_def_1.name,
                                   self.symbol_table,
-                                  InvalidValueTypeFailure(ValueType.PATH,
-                                                          ValueType.STRING))
+                                  InvalidValueTypeFailure([ValueType.PATH]))
         # ASSERT #
         asrt_text_doc.assert_is_valid_text_renderer(self, actual)
 

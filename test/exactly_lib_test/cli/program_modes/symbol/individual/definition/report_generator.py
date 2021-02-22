@@ -111,7 +111,7 @@ class TestReferences(unittest.TestCase):
             string_matcher.string_matcher_sdv_constant_test_impl(
                 MatcherWithConstantResult(True),
                 [SymbolReference(referenced_symbol.name,
-                                 restrictions.ValueTypeRestriction(ValueType.STRING))]),
+                                 restrictions.ValueTypeRestriction.of_single(ValueType.STRING))]),
         )
 
         symbol_definitions = [

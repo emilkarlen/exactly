@@ -78,7 +78,7 @@ def value_with_result(result: bool,
     )
 
 
-IS_FILES_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILES_MATCHER)
+IS_FILES_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction((ValueType.FILES_MATCHER,))
 
 
 def is_reference_to_files_matcher__usage(name_of_matcher: str) -> Assertion[SymbolUsage]:

@@ -19,7 +19,7 @@ from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax
 
 NON_EXISTING_SYSTEM_PROGRAM = 'a-non-existing-system-program'
 
-IS_PROGRAM_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.PROGRAM)
+IS_PROGRAM_REFERENCE_RESTRICTION = is_value_type_restriction((ValueType.PROGRAM,))
 
 
 def is_reference_to_program__usage(symbol_name: str) -> Assertion[SymbolUsage]:

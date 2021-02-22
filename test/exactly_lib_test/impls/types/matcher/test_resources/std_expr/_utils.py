@@ -92,7 +92,7 @@ class AssertionsHelper(Generic[MODEL]):
 
     def is_sym_ref_to(self, symbol_name: str) -> Assertion[SymbolReference]:
         restriction_expectation = is_value_type_restriction(
-            LOGIC_VALUE_TYPE_2_VALUE_TYPE[self.conf.logic_type()]
+            [LOGIC_VALUE_TYPE_2_VALUE_TYPE[self.conf.logic_type()]]
         )
 
         return asrt_sym_usage.matches_reference__ref(asrt.equals(symbol_name),

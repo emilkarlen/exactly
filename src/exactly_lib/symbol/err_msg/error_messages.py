@@ -29,7 +29,7 @@ def undefined_symbol(reference: SymbolReference) -> TextRenderer:
         _undefined_symbol(reference))
 
 
-def invalid_type_msg(expected_value_types: List[ValueType],
+def invalid_type_msg(expected_value_types: Sequence[ValueType],
                      symbol_name: str,
                      container_of_actual: SymbolContainer) -> ErrorMessageWithFixTip:
     actual = container_of_actual.sdv
@@ -67,7 +67,7 @@ def _is_a_builtin_symbol(symbol_name: str) -> str:
     return symbol_name + ' ' + _IS_A_BUILTIN_SYMBOL
 
 
-def _invalid_type_header_lines(expected: List[ValueType],
+def _invalid_type_header_lines(expected: Sequence[ValueType],
                                actual: ValueType,
                                symbol_name: str,
                                container: SymbolContainer) -> List[str]:

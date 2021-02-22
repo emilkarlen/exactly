@@ -12,7 +12,7 @@ class ReferenceSdv(FilesConditionSdv):
         self._symbol_name = symbol_name
         self._references = (
             SymbolReference(symbol_name,
-                            restrictions.ValueTypeRestriction(ValueType.FILES_CONDITION)),
+                            restrictions.ValueTypeRestriction.of_single(ValueType.FILES_CONDITION)),
         )
 
     @property

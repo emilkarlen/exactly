@@ -42,10 +42,10 @@ class TestSymbolReferences(configuration.TestCaseBase):
                                          is_any_data_type_reference_restrictions())
 
         symbol_in_transformer_of_program = NameAndValue('SYMBOL_IN_TRANSFORMER_OF_PROGRAM',
-                                                        is_value_type_restriction(ValueType.STRING_TRANSFORMER))
+                                                        is_value_type_restriction([ValueType.STRING_TRANSFORMER]))
 
         symbol_in_transformer_of_instruction = NameAndValue('SYMBOL_IN_TRANSFORMER_OF_INSTRUCTION',
-                                                            is_value_type_restriction(ValueType.STRING_TRANSFORMER))
+                                                            is_value_type_restriction([ValueType.STRING_TRANSFORMER]))
 
         program_with_ref_to_symbols = pgm_args.program(
             pgm_args.interpret_py_source_line(

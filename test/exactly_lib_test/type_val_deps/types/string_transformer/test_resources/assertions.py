@@ -5,7 +5,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
 
-IS_STRING_TRANSFORMER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.STRING_TRANSFORMER)
+IS_STRING_TRANSFORMER_REFERENCE_RESTRICTION = is_value_type_restriction((ValueType.STRING_TRANSFORMER,))
 
 
 def is_reference_to_string_transformer__usage(name_of_transformer: str) -> Assertion[SymbolUsage]:

@@ -36,7 +36,7 @@ def string_matcher_sdv_constant_test_impl(resolved_value: StringMatcher,
     )
 
 
-IS_STRING_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.STRING_MATCHER)
+IS_STRING_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction((ValueType.STRING_MATCHER,))
 
 
 def is_reference_to_string_matcher__usage(name_of_matcher: str) -> Assertion[SymbolUsage]:

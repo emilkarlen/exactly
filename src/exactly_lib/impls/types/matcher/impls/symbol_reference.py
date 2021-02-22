@@ -27,7 +27,7 @@ class MatcherReferenceSdv(MatcherSdv[MODEL]):
         self._name_of_referenced_sdv = name_of_referenced_sdv
         self._value_type = value_type
         self._references = [SymbolReference(name_of_referenced_sdv,
-                                            ValueTypeRestriction(value_type))]
+                                            ValueTypeRestriction.of_single(value_type))]
 
     def resolve(self, symbols: SymbolTable) -> MatcherDdv[MODEL]:
         lookup_fun = self._TYPE_LOOKUP[self._value_type]

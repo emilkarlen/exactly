@@ -18,7 +18,7 @@ from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertio
 from exactly_lib_test.type_val_deps.types.files_condition.test_resources.abstract_syntax import \
     FilesConditionSymbolReferenceAbsStx
 
-IS_FILES_CONDITION_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILES_CONDITION)
+IS_FILES_CONDITION_REFERENCE_RESTRICTION = is_value_type_restriction((ValueType.FILES_CONDITION,))
 
 
 def arbitrary_sdv() -> FilesConditionSdv:

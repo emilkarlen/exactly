@@ -1,6 +1,5 @@
 from typing import Optional, Sequence
 
-from exactly_lib.symbol import value_type
 from exactly_lib.symbol.err_msg import error_messages
 from exactly_lib.symbol.sdv_structure import SymbolContainer, Failure, ReferenceRestrictions
 from exactly_lib.symbol.value_type import TypeCategory, ValueType, TYPE_CATEGORY_2_VALUE_TYPE_SEQUENCE
@@ -31,19 +30,15 @@ class InvalidTypeCategoryFailure(Failure):
 
 
 class InvalidValueTypeFailure(Failure):
-    def __init__(self,
-                 expected: ValueType,
-                 actual: ValueType,
-                 ):
-        self.actual = actual
-        self.expected = expected
+    def __init__(self, expected: Sequence[ValueType]):
+        self._expected = expected
 
     def render(self,
                failing_symbol: str,
                symbols: SymbolTable,
                ) -> Sequence[MajorBlock]:
         value_restriction_failure = error_messages.invalid_type_msg(
-            [self.expected],
+            self._expected,
             failing_symbol,
             symbol_lookup.lookup_container(symbols, failing_symbol),
         )
@@ -77,15 +72,15 @@ class TypeCategoryRestriction(ReferenceRestrictions):
 
 
 class ValueTypeRestriction(ReferenceRestrictions):
-    def __init__(self, expected: ValueType):
+    def __init__(self, expected: Sequence[ValueType]):
         self._expected = expected
 
-    @property
-    def type_category(self) -> TypeCategory:
-        return value_type.VALUE_TYPE_2_TYPE_CATEGORY[self._expected]
+    @staticmethod
+    def of_single(expected: ValueType) -> 'ValueTypeRestriction':
+        return ValueTypeRestriction((expected,))
 
     @property
-    def value_type(self) -> ValueType:
+    def value_types(self) -> Sequence[ValueType]:
         return self._expected
 
     def is_satisfied_by(self,
@@ -98,11 +93,10 @@ class ValueTypeRestriction(ReferenceRestrictions):
         :param container: The container of the value that the restriction applies to
         :return: None if satisfied, otherwise an error message
         """
-        if container.value_type is self._expected:
+        if container.value_type in self._expected:
             return None
         else:
-            return InvalidValueTypeFailure(self._expected,
-                                           container.value_type)
+            return InvalidValueTypeFailure(self._expected)
 
 
 class DataTypeReferenceRestrictions(ReferenceRestrictions):
