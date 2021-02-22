@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type, OrReferenceRestrictions
+from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import OrReferenceRestrictions, \
+    is_type_convertible_to_string
 from exactly_lib.type_val_deps.types.list_ import list_sdv as sut
 from exactly_lib.type_val_deps.types.list_ import list_sdvs
 from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
@@ -10,11 +11,11 @@ from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils as su
-from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import DataTypeSymbolReference
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.dir_dependent_value import \
     matches_multi_dir_dependent_value
 from exactly_lib_test.type_val_deps.dep_variants.test_resources_test.dir_dependent_value import AMultiDirDependentValue
+from exactly_lib_test.type_val_deps.test_resources.data import references as data_references
+from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import DataTypeSymbolReference
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_assertions import equals_list_sdv_element
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ddv_assertions import equals_list_ddv
@@ -83,7 +84,7 @@ class TestListResolver(unittest.TestCase):
             Case(
                 'single string symbol reference element',
                 sdv_to_check=
-                sut.ListSdv([list_sdvs.symbol_element(string_symbol.reference__any_data_type)]),
+                sut.ListSdv([list_sdvs.symbol_element(string_symbol.reference__convertible_to_string)]),
                 symbols=
                 string_symbol.symbol_table,
                 expected_resolved_value=
@@ -106,7 +107,7 @@ class TestListResolver(unittest.TestCase):
                 'THEN resolved value'
                 'SHOULD be an empty list',
                 sdv_to_check=
-                sut.ListSdv([list_sdvs.symbol_element(empty_list_symbol.reference__any_data_type)]),
+                sut.ListSdv([list_sdvs.symbol_element(empty_list_symbol.reference__convertible_to_string)]),
                 symbols=
                 empty_list_symbol.symbol_table,
                 expected_resolved_value=
@@ -117,7 +118,7 @@ class TestListResolver(unittest.TestCase):
                 'THEN resolved value'
                 'SHOULD be equal to the non-empty list',
                 sdv_to_check=
-                sut.ListSdv([list_sdvs.symbol_element(multi_element_list_symbol.reference__any_data_type)]),
+                sut.ListSdv([list_sdvs.symbol_element(multi_element_list_symbol.reference__convertible_to_string)]),
                 symbols=
                 multi_element_list_symbol.symbol_table,
                 expected_resolved_value=
@@ -128,9 +129,9 @@ class TestListResolver(unittest.TestCase):
                 'THEN resolved value'
                 'SHOULD be equal to the concatenation of referenced lists',
                 sdv_to_check=
-                sut.ListSdv([list_sdvs.symbol_element(multi_element_list_symbol.reference__any_data_type),
-                             list_sdvs.symbol_element(empty_list_symbol.reference__any_data_type),
-                             list_sdvs.symbol_element(multi_element_list_symbol.reference__any_data_type)]),
+                sut.ListSdv([list_sdvs.symbol_element(multi_element_list_symbol.reference__convertible_to_string),
+                             list_sdvs.symbol_element(empty_list_symbol.reference__convertible_to_string),
+                             list_sdvs.symbol_element(multi_element_list_symbol.reference__convertible_to_string)]),
                 symbols=
                 SymbolContext.symbol_table_of_contexts([
                     multi_element_list_symbol,
@@ -152,7 +153,7 @@ class TestListResolver(unittest.TestCase):
             Case(
                 'reference to string symbol',
                 sdv_to_check=
-                sut.ListSdv([list_sdvs.symbol_element(string_symbol.reference__any_data_type)]),
+                sut.ListSdv([list_sdvs.symbol_element(string_symbol.reference__convertible_to_string)]),
                 symbols=
                 string_symbol.symbol_table,
                 expected_resolved_value=
@@ -162,7 +163,7 @@ class TestListResolver(unittest.TestCase):
                 'reference to path symbol '
                 'SHOULD resolve to string representation of the path value',
                 sdv_to_check=
-                sut.ListSdv([list_sdvs.symbol_element(path_symbol.reference__any_data_type)]),
+                sut.ListSdv([list_sdvs.symbol_element(path_symbol.reference__convertible_to_string)]),
                 symbols=
                 path_symbol.symbol_table,
                 expected_resolved_value=
@@ -171,8 +172,8 @@ class TestListResolver(unittest.TestCase):
             Case(
                 'combination of string and path value',
                 sdv_to_check=
-                sut.ListSdv([list_sdvs.symbol_element(string_symbol.reference__any_data_type),
-                             list_sdvs.symbol_element(path_symbol.reference__any_data_type)]),
+                sut.ListSdv([list_sdvs.symbol_element(string_symbol.reference__convertible_to_string),
+                             list_sdvs.symbol_element(path_symbol.reference__convertible_to_string)]),
                 symbols=
                 SymbolContext.symbol_table_of_contexts([
                     string_symbol,
@@ -193,7 +194,7 @@ class TestListResolver(unittest.TestCase):
                 assertion.apply_without_message(self, actual)
 
     def test_references(self):
-        reference_1 = DataTypeSymbolReference('symbol_1_name', is_any_data_type())
+        reference_1 = DataTypeSymbolReference('symbol_1_name', is_type_convertible_to_string())
         reference_2 = DataTypeSymbolReference('symbol_2_name', OrReferenceRestrictions([]))
         cases = [
             (
@@ -227,7 +228,8 @@ class TestListResolver(unittest.TestCase):
     def test_elements(self):
         # ARRANGE #
         element_1 = list_sdvs.str_element('constant value')
-        element_2 = list_sdvs.symbol_element(su.symbol_reference('symbol_name'))
+        element_2 = list_sdvs.symbol_element(
+            data_references.reference_to__on_direct_and_indirect('symbol_name'))
         sdv = sut.ListSdv([element_1, element_2])
         # ACT #
         actual = sdv.elements

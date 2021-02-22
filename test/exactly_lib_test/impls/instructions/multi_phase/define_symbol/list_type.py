@@ -11,7 +11,7 @@ from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_e
     MultiSourceExpectation
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.data.test_resources import references
+from exactly_lib_test.type_val_deps.test_resources.data import references
 from exactly_lib_test.type_val_deps.types.list_.test_resources.abstract_syntax import ListAbsStx, \
     ListSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.list_.test_resources.abstract_syntaxes import EmptyListAbsStx, \
@@ -84,7 +84,7 @@ class TestListSuccessfulParse(unittest.TestCase):
     def test_assignment_of_list_with_symbol_references(self):
         # ARRANGE #
         referred_symbol_name = 'referred_symbol'
-        expected_symbol_reference = references.reference_to_any_data_type_value(referred_symbol_name)
+        expected_symbol_reference = references.reference_to__convertible_to_string(referred_symbol_name)
         symbol_to_assign = ListSymbolContext.of_sdv(
             'the_symbol_name',
             sdvs.from_elements([sdvs.symbol_element(expected_symbol_reference)])

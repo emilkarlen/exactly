@@ -58,11 +58,11 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import sds_2_tc
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils, \
-    symbol_structure_assertions as asrt_sym
-from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as sym_asrt
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.sdv_checker import \
     WithNodeDescriptionExecutionPropertiesChecker
+from exactly_lib_test.type_val_deps.test_resources.data import references as data_references, \
+    symbol_reference_assertions as sym_asrt
+from exactly_lib_test.type_val_deps.test_resources.data import symbol_structure_assertions as asrt_sym
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
@@ -222,7 +222,8 @@ class TestCaseBase(unittest.TestCase):
 class TestSymbolReferences(TestCaseBase):
     def test_that_fails_due_to_missing_symbol_reference(self):
         symbol_usages_of_matcher = []
-        symbol_usages_of_expectation = [data_symbol_utils.symbol_reference('symbol_name')]
+        symbol_usages_of_expectation = [
+            data_references.reference_to__on_direct_and_indirect('symbol_name')]
 
         self._check_raises_test_error__single_and_multi(
             _constant_line_matcher_type_parser_of_matcher_sdv(
@@ -230,7 +231,8 @@ class TestSymbolReferences(TestCaseBase):
             ),
             Expectation(
                 ParseExpectation(
-                    symbol_references=sym_asrt.equals_data_type_symbol_references(symbol_usages_of_expectation)
+                    symbol_references=sym_asrt.equals_symbol_references__convertible_to_string(
+                        symbol_usages_of_expectation)
                 ),
             )
         )
@@ -299,7 +301,8 @@ class TestDefault(TestCaseBase):
         self._check_raises_test_error__single_and_multi(
             _constant_line_matcher_type_parser_of_matcher_sdv(
                 sdv_ddv.sdv_from_primitive_value(
-                    references=[data_symbol_utils.symbol_reference('symbol_name')])
+                    references=[
+                        data_references.reference_to__on_direct_and_indirect('symbol_name')])
             ),
             is_expectation_of_execution_result_of(True),
         )

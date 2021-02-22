@@ -9,7 +9,7 @@ from exactly_lib_test.impls.types.file_matcher.test_resources.argument_building 
 from exactly_lib_test.impls.types.file_matcher.test_resources.integration_check import ARBITRARY_MODEL
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation, arrangement_wo_tcds
-from exactly_lib_test.impls.types.regex.test_resources.assertions import is_regex_reference_restrictions
+from exactly_lib_test.impls.types.regex.test_resources.assertions import is_reference_restrictions__regex
 from exactly_lib_test.impls.types.regex.test_resources.validation_cases import failing_regex_validation_cases
 from exactly_lib_test.impls.types.test_resources import glob_pattern
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
@@ -80,7 +80,7 @@ class TestSymbolReferences(configuration.TestCaseBase, ABC):
         match_anything_glob_pattern_string_symbol = StringSymbolContext.of_constant(
             'glob_pattern_symbol',
             '*',
-            default_restrictions=glob_pattern.is_glob_pattern_string_reference_restrictions()
+            default_restrictions=glob_pattern.is_reference_restrictions__glob_pattern_string()
         )
         arguments = self.conf.arguments(
             NameGlobPatternVariant(match_anything_glob_pattern_string_symbol.name__sym_ref_syntax)
@@ -114,7 +114,7 @@ class TestSymbolReferences(configuration.TestCaseBase, ABC):
         match_anything_regex_string_symbol = StringSymbolContext.of_constant(
             'regex_symbol',
             '.*',
-            default_restrictions=is_regex_reference_restrictions()
+            default_restrictions=is_reference_restrictions__regex()
         )
         arguments = self.conf.arguments(
             NameRegexVariant.of(match_anything_regex_string_symbol.name__sym_ref_syntax)

@@ -14,8 +14,8 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source_lines
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
-    equals_data_type_symbol_references
+from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
+    equals_symbol_references__convertible_to_string
 from exactly_lib_test.type_val_deps.types.string.test_resources import here_doc_assertion_utils as asrt_hd
 from exactly_lib_test.type_val_deps.types.string.test_resources import sdv_assertions
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
@@ -122,7 +122,7 @@ class TestString(unittest.TestCase):
                              ExpectedString(symbol.str_value,
                                             CommonExpectation(
                                                 symbol_references=[
-                                                    symbol.reference__any_data_type,
+                                                    symbol.reference__convertible_to_string,
                                                 ],
                                                 source=asrt_source.is_at_end_of_line(1),
                                                 symbol_table=symbol.symbol_table,
@@ -141,7 +141,7 @@ class TestString(unittest.TestCase):
                              ExpectedString(symbol.str_value,
                                             CommonExpectation(
                                                 symbol_references=[
-                                                    symbol.reference__any_data_type,
+                                                    symbol.reference__convertible_to_string,
                                                 ],
                                                 source=asrt_source.assert_source(
                                                     current_line_number=asrt.equals(1),
@@ -165,7 +165,7 @@ class TestString(unittest.TestCase):
                              ExpectedString(before_symbol + symbol.str_value + after_symbol,
                                             CommonExpectation(
                                                 symbol_references=[
-                                                    symbol.reference__any_data_type,
+                                                    symbol.reference__convertible_to_string,
                                                 ],
                                                 source=asrt_source.is_at_end_of_line(1),
                                                 symbol_table=symbol.symbol_table,
@@ -255,7 +255,7 @@ class TestHereDoc(unittest.TestCase):
             ],
             common=CommonExpectation(
                 symbol_references=[
-                    symbol1.reference__any_data_type,
+                    symbol1.reference__convertible_to_string,
                 ],
                 symbol_table=symbol1.symbol_table,
                 source=asrt_source.is_at_beginning_of_line(4),
@@ -327,7 +327,7 @@ def _expect_common(put: unittest.TestCase,
                    actual_source: ParseSource,
                    actual_result: StringSdv,
                    expectation: CommonExpectation):
-    symbol_references_assertion = equals_data_type_symbol_references(expectation.symbol_references)
+    symbol_references_assertion = equals_symbol_references__convertible_to_string(expectation.symbol_references)
     symbol_references_assertion.apply_with_message(put, actual_result.references,
                                                    'references')
 

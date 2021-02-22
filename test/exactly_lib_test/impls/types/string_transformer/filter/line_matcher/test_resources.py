@@ -80,7 +80,7 @@ class IntSymbol:
         return StringIntConstantSymbolContext(
             self.name,
             value,
-            default_restrictions=int_sym_refs.IS_INTEGER_STR_REFERENCE_RESTRICTIONS
+            default_restrictions=int_sym_refs.is_reference_restrictions__integer_expression()
         )
 
 

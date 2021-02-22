@@ -19,7 +19,7 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_ref_rest
+from exactly_lib_test.type_val_deps.test_resources.data import data_restrictions_assertions as asrt_ref_rest
 from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.abstract_syntax import LineMatcherAbsStx, \
     LineMatcherSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringLiteralAbsStx
@@ -219,7 +219,7 @@ class TestApplication(unittest.TestCase):
                         nl_string_symbol = StringConstantSymbolContext(
                             'NL',
                             case.value,
-                            default_restrictions=asrt_regex.is_regex_reference_restrictions(),
+                            default_restrictions=asrt_regex.is_reference_restrictions__regex(),
                         )
                         all_symbols = line_filter_case.value.symbols + [nl_string_symbol]
                         source = ReplaceRegexAbsStx(StringLiteralAbsStx('P'),
@@ -275,7 +275,7 @@ class TestApplication(unittest.TestCase):
                     nl_string_symbol = StringConstantSymbolContext(
                         'NL',
                         '\n',
-                        default_restrictions=asrt_regex.is_regex_reference_restrictions(),
+                        default_restrictions=asrt_regex.is_reference_restrictions__regex(),
                     )
                     all_symbols = line_filter_case.value.symbols + [nl_string_symbol]
                     source = ReplaceRegexAbsStx(nl_string_symbol.abstract_syntax,
@@ -326,7 +326,7 @@ class TestApplication(unittest.TestCase):
                     nl_string_symbol = StringConstantSymbolContext(
                         'NL',
                         '\n',
-                        default_restrictions=asrt_regex.is_regex_reference_restrictions(),
+                        default_restrictions=asrt_regex.is_reference_restrictions__regex(),
                     )
                     all_symbols = line_filter_case.value.symbols + [nl_string_symbol]
                     source = ReplaceRegexAbsStx(nl_string_symbol.abstract_syntax,
@@ -397,12 +397,12 @@ class ReferencedSymbolsShouldBeReportedAndUsed(unittest.TestCase):
         symbol_in_regex = StringConstantSymbolContext(
             'symbol_in_regex',
             'plain string pattern',
-            default_restrictions=asrt_regex.is_regex_reference_restrictions()
+            default_restrictions=asrt_regex.is_reference_restrictions__regex()
         )
         symbol_in_replacement = StringConstantSymbolContext(
             'symbol_in_replacement',
             'the replacement',
-            default_restrictions=asrt_ref_rest.is_reference_restrictions__to_type_convertible_to_string(),
+            default_restrictions=asrt_ref_rest.is_reference_restrictions__convertible_to_string(),
         )
 
         input_lines = [

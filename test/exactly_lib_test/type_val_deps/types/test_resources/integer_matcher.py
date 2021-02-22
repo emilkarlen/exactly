@@ -13,13 +13,14 @@ from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE
 from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
+from exactly_lib_test.type_val_deps.test_resources.any_.restrictions_assertions import \
+    is_reference_restrictions__value_type
+from exactly_lib_test.type_val_deps.test_resources.logic.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.abstract_syntax import \
     IntegerMatcherSymbolReferenceAbsStx
 
-IS_INTEGER_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction((ValueType.INTEGER_MATCHER,))
+IS_INTEGER_MATCHER_REFERENCE_RESTRICTION = is_reference_restrictions__value_type((ValueType.INTEGER_MATCHER,))
 
 
 def is_reference_to_integer_matcher__usage(symbol_name: str) -> Assertion[SymbolUsage]:

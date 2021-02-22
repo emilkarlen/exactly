@@ -26,8 +26,8 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
-    is_reference_restrictions__to_type_convertible_to_string
+from exactly_lib_test.type_val_deps.test_resources.data.data_restrictions_assertions import \
+    is_reference_restrictions__convertible_to_string
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import PgmAndArgsWArgumentsAbsStx, \
@@ -72,12 +72,12 @@ class TestDriverTypesWArgListExceptSymbolReference(unittest.TestCase):
         string_symbol_1 = StringConstantSymbolContext(
             'STRING_SYMBOL_1',
             'value of string symbol 1',
-            default_restrictions=is_reference_restrictions__to_type_convertible_to_string(),
+            default_restrictions=is_reference_restrictions__convertible_to_string(),
         )
         string_symbol_2 = StringConstantSymbolContext(
             'STRING_SYMBOL_2',
             'value of string symbol 2',
-            default_restrictions=is_reference_restrictions__to_type_convertible_to_string(),
+            default_restrictions=is_reference_restrictions__convertible_to_string(),
         )
         arguments_cases = [
             ArgumentsCase(

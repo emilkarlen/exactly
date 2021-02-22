@@ -32,9 +32,9 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, sy
 from exactly_lib_test.test_resources.source.layout import LayoutSpec
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
-    is_any_data_type_reference_restrictions
-from exactly_lib_test.type_val_deps.data.test_resources.data_symbol_utils import symbol_reference
+from exactly_lib_test.type_val_deps.test_resources.data.data_restrictions_assertions import \
+    is_reference_restrictions__convertible_to_string
+from exactly_lib_test.type_val_deps.test_resources.data.references import reference_to__on_direct_and_indirect
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
     ArgumentOfSymbolReferenceAbsStx, ArgumentOfTextUntilEndOfLineAbsStx, ArgumentOfExistingPathAbsStx, \
@@ -187,9 +187,9 @@ class TestSingleElement(unittest.TestCase):
                         string_symbol.symbol_table
                     ),
                     Expectation(
-                        elements=[list_sdvs.symbol_element(symbol_reference(symbol_name))],
+                        elements=[list_sdvs.symbol_element(reference_to__on_direct_and_indirect(symbol_name))],
                         validators=asrt.is_empty_sequence,
-                        references=asrt.matches_sequence([string_symbol.reference_assertion__any_data_type]),
+                        references=asrt.matches_sequence([string_symbol.reference_assertion__convertible_to_string]),
                     )
                     ),
         ]
@@ -231,14 +231,14 @@ class TestSingleElement(unittest.TestCase):
                     Expectation(
                         elements=[list_sdvs.string_element(string_sdvs.from_fragments([
                             string_sdvs.str_fragment('before'),
-                            string_sdvs.symbol_fragment(symbol_reference(symbol_name)),
+                            string_sdvs.symbol_fragment(reference_to__on_direct_and_indirect(symbol_name)),
                             string_sdvs.str_fragment('after'),
                         ]))
                         ],
                         validators=asrt.is_empty_sequence,
                         references=asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
                             symbol_name,
-                            is_any_data_type_reference_restrictions())
+                            is_reference_restrictions__convertible_to_string())
                         ]),
                     )),
         ]
@@ -623,20 +623,20 @@ class TestMultipleElements(unittest.TestCase):
                     ])
                 ),
                 Expectation(
-                    elements=[list_sdvs.symbol_element(symbol_reference(symbol_name_1)),
+                    elements=[list_sdvs.symbol_element(reference_to__on_direct_and_indirect(symbol_name_1)),
                               list_sdvs.str_element(plain_string1),
                               list_sdvs.string_element(string_sdvs.from_fragments([
                                   string_sdvs.str_fragment('before'),
-                                  string_sdvs.symbol_fragment(symbol_reference(symbol_name_2)),
+                                  string_sdvs.symbol_fragment(reference_to__on_direct_and_indirect(symbol_name_2)),
                                   string_sdvs.str_fragment('after'),
                               ]))
                               ],
                     validators=asrt.is_empty_sequence,
                     references=asrt.matches_sequence([
                         asrt_sym_ref.matches_reference_2(symbol_name_1,
-                                                         is_any_data_type_reference_restrictions()),
+                                                         is_reference_restrictions__convertible_to_string()),
                         asrt_sym_ref.matches_reference_2(symbol_name_2,
-                                                         is_any_data_type_reference_restrictions()),
+                                                         is_reference_restrictions__convertible_to_string()),
                     ]),
                 )),
         ]

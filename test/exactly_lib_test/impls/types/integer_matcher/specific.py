@@ -23,7 +23,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as asrt_sym_ref
+from exactly_lib_test.type_val_deps.test_resources.data import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 from exactly_lib_test.type_val_prims.matcher.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result

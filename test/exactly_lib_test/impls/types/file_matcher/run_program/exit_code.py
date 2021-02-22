@@ -8,8 +8,8 @@ from exactly_lib_test.impls.types.matcher.test_resources.run_program import test
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as program_args
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
-    is_reference_to_data_type_symbol
+from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
+    is_reference_to__convertible_to_string
 from exactly_lib_test.type_val_deps.types.test_resources.program import is_reference_to_program
 
 
@@ -37,7 +37,7 @@ class Test(unittest.TestCase):
                 source=asrt_source.is_at_end_of_line(1),
                 symbol_references=asrt.matches_sequence([
                     is_reference_to_program(program_symbol_name),
-                    is_reference_to_data_type_symbol(exit_code_symbol_name),
+                    is_reference_to__convertible_to_string(exit_code_symbol_name),
                 ]),
             ),
             integration_check.ARBITRARY_MODEL,

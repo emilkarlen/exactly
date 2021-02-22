@@ -31,7 +31,7 @@ from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt, value_assertion as asrt
-from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_rest
+from exactly_lib_test.type_val_deps.test_resources.data import data_restrictions_assertions as asrt_rest
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntaxes as str_abs_stx
@@ -182,7 +182,7 @@ class TestSymbolReferences(unittest.TestCase):
         contents_symbol = StringConstantSymbolContext(
             'contents_symbol_name',
             'contents symbol value',
-            default_restrictions=asrt_rest.is_any_data_type_reference_restrictions(),
+            default_restrictions=asrt_rest.is_reference_restrictions__convertible_to_string(),
         )
 
         expected_file_contents = symbol_value_2_expected_contents(contents_symbol.str_value)

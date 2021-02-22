@@ -11,8 +11,8 @@ from exactly_lib_test.test_case.test_resources import instr_settings_assertions 
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
-    is_string_made_up_of_just_strings_reference_restrictions
+from exactly_lib_test.type_val_deps.test_resources.data.data_restrictions_assertions import \
+    is_reference_restrictions__string_made_up_of_just_strings
 from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringLiteralAbsStx, \
     StringConcatAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
@@ -46,12 +46,12 @@ class TestSetValidValue(TestCaseBase):
         string_72_plus = StringSymbolContext.of_constant(
             'SYMBOL_72_PLUS',
             '72+',
-            default_restrictions=is_string_made_up_of_just_strings_reference_restrictions(),
+            default_restrictions=is_reference_restrictions__string_made_up_of_just_strings(),
         )
         string_5 = StringSymbolContext.of_constant(
             'SYMBOL_5',
             '5',
-            default_restrictions=is_string_made_up_of_just_strings_reference_restrictions(),
+            default_restrictions=is_reference_restrictions__string_made_up_of_just_strings(),
         )
         expected = 72 + 5
 

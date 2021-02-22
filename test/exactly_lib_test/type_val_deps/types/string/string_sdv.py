@@ -1,13 +1,14 @@
 import unittest
 
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type, OrReferenceRestrictions
+from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import OrReferenceRestrictions, \
+    is_type_convertible_to_string
 from exactly_lib.type_val_deps.types.string_ import strings_ddvs as csv, string_sdv as sut, string_sdv_impls as impl
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils as su
-from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import DataTypeSymbolReference
+from exactly_lib_test.type_val_deps.test_resources.data import references as data_references
+from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import DataTypeSymbolReference
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.string.test_resources.ddv_assertions import equals_string_fragment_ddv, \
@@ -55,12 +56,12 @@ class TestConstantStringFragmentResolver(unittest.TestCase):
 class TestSymbolStringFragmentResolver(unittest.TestCase):
     def test_should_be_string_constant(self):
         fragment = impl.SymbolStringFragmentSdv(
-            su.symbol_reference('the_symbol_name'))
+            data_references.reference_to__on_direct_and_indirect('the_symbol_name'))
         self.assertFalse(fragment.is_string_constant)
 
     def test_should_have_exactly_one_references(self):
         # ARRANGE #
-        symbol_reference = DataTypeSymbolReference('the_symbol_name', is_any_data_type())
+        symbol_reference = DataTypeSymbolReference('the_symbol_name', is_type_convertible_to_string())
         fragment = impl.SymbolStringFragmentSdv(symbol_reference.reference)
         # ACT #
         actual = list(fragment.references)
@@ -70,14 +71,14 @@ class TestSymbolStringFragmentResolver(unittest.TestCase):
 
     def test_string_constant_SHOULD_raise_exception(self):
         fragment = impl.SymbolStringFragmentSdv(
-            su.symbol_reference('the_symbol_name'))
+            data_references.reference_to__on_direct_and_indirect('the_symbol_name'))
         with self.assertRaises(ValueError):
             fragment.string_constant
 
     def test_resolve_of_string_symbol_SHOULD_give_string_constant(self):
         # ARRANGE #
         symbol = StringConstantSymbolContext('the_symbol_name', 'the symbol value')
-        symbol_reference = symbol.reference__any_data_type
+        symbol_reference = symbol.reference__convertible_to_string
         fragment = impl.SymbolStringFragmentSdv(symbol_reference)
         symbol_table = symbol.symbol_table
         # ACT #
@@ -91,7 +92,7 @@ class TestSymbolStringFragmentResolver(unittest.TestCase):
         # ARRANGE #
         symbol = ConstantSuffixPathDdvSymbolContext('the_symbol_name',
                                                     RelOptionType.REL_ACT, 'file-name')
-        fragment = impl.SymbolStringFragmentSdv(symbol.reference__any_data_type)
+        fragment = impl.SymbolStringFragmentSdv(symbol.reference__convertible_to_string)
         symbol_table = symbol.symbol_table
         # ACT #
         actual = fragment.resolve(symbol_table)
@@ -107,7 +108,7 @@ class TestSymbolStringFragmentResolver(unittest.TestCase):
         list_symbol = ListConstantSymbolContext('the_symbol_name',
                                                 [string_value_1, string_value_2]
                                                 )
-        symbol_reference = su.symbol_reference(list_symbol.name)
+        symbol_reference = data_references.reference_to__on_direct_and_indirect(list_symbol.name)
         fragment = impl.SymbolStringFragmentSdv(symbol_reference)
 
         symbol_table = list_symbol.symbol_table
@@ -156,7 +157,7 @@ class StringResolverTest(unittest.TestCase):
                 'single symbol fragment/symbol is a string',
                 sut.StringSdv((
                     impl.SymbolStringFragmentSdv(
-                        string_symbol.reference__any_data_type),)),
+                        string_symbol.reference__convertible_to_string),)),
                 string_symbol.symbol_table,
                 csv.StringDdv((csv.ConstantFragmentDdv(string_symbol.str_value),)),
             ),
@@ -164,14 +165,14 @@ class StringResolverTest(unittest.TestCase):
                 'single symbol fragment/symbol is a path',
                 sut.StringSdv((
                     impl.SymbolStringFragmentSdv(
-                        path_symbol.reference__any_data_type),)),
+                        path_symbol.reference__convertible_to_string),)),
                 path_symbol.symbol_table,
                 csv.StringDdv((csv.PathFragmentDdv(path_symbol.ddv),)),
             ),
             (
                 'single symbol fragment/symbol is a list',
                 sut.StringSdv((
-                    impl.SymbolStringFragmentSdv(list_symbol.reference__any_data_type),)
+                    impl.SymbolStringFragmentSdv(list_symbol.reference__convertible_to_string),)
                 ),
                 list_symbol.symbol_table,
                 csv.StringDdv((csv.ListFragmentDdv(list_symbol.ddv),)),
@@ -179,10 +180,10 @@ class StringResolverTest(unittest.TestCase):
             (
                 'multiple fragments of different types',
                 sut.StringSdv((
-                    impl.SymbolStringFragmentSdv(string_symbol.reference__any_data_type),
+                    impl.SymbolStringFragmentSdv(string_symbol.reference__convertible_to_string),
                     impl.ConstantStringFragmentSdv(string_constant_1),
-                    impl.SymbolStringFragmentSdv(path_symbol.reference__any_data_type),
-                    impl.SymbolStringFragmentSdv(list_symbol.reference__any_data_type),
+                    impl.SymbolStringFragmentSdv(path_symbol.reference__convertible_to_string),
+                    impl.SymbolStringFragmentSdv(list_symbol.reference__convertible_to_string),
                 )),
                 SymbolContext.symbol_table_of_contexts([
                     string_symbol,
@@ -204,7 +205,7 @@ class StringResolverTest(unittest.TestCase):
 
     def test_references(self):
         string_constant_1 = 'string constant 1'
-        reference_1 = DataTypeSymbolReference('symbol_1_name', is_any_data_type())
+        reference_1 = DataTypeSymbolReference('symbol_1_name', is_type_convertible_to_string())
         reference_2 = DataTypeSymbolReference('symbol_2_name', OrReferenceRestrictions([]))
         cases = [
             (
@@ -238,7 +239,8 @@ class StringResolverTest(unittest.TestCase):
     def test_fragments(self):
         # ARRANGE #
         fragment_1 = impl.ConstantStringFragmentSdv('fragment 1 value')
-        fragment_2 = impl.SymbolStringFragmentSdv(su.symbol_reference('symbol_name'))
+        fragment_2 = impl.SymbolStringFragmentSdv(
+            data_references.reference_to__on_direct_and_indirect('symbol_name'))
         sdv = sut.StringSdv((fragment_1, fragment_2))
         # ACT #
         actual = sdv.fragments

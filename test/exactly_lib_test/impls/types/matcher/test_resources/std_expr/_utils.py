@@ -27,9 +27,10 @@ from exactly_lib_test.symbol.test_resources.types import LOGIC_VALUE_TYPE_2_VALU
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
+from exactly_lib_test.type_val_deps.test_resources.any_.restrictions_assertions import \
+    is_reference_restrictions__value_type
+from exactly_lib_test.type_val_deps.test_resources.logic.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree, \
     rendering_assertions as asrt_trace_rendering
@@ -91,7 +92,7 @@ class AssertionsHelper(Generic[MODEL]):
         self.conf = configuration
 
     def is_sym_ref_to(self, symbol_name: str) -> Assertion[SymbolReference]:
-        restriction_expectation = is_value_type_restriction(
+        restriction_expectation = is_reference_restrictions__value_type(
             [LOGIC_VALUE_TYPE_2_VALUE_TYPE[self.conf.logic_type()]]
         )
 

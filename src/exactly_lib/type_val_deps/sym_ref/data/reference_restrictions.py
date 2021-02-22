@@ -239,7 +239,7 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
         return '\n'.join(lines)
 
 
-def is_any_data_type() -> DataTypeReferenceRestrictions:
+def is_type_convertible_to_string() -> DataTypeReferenceRestrictions:
     """
     :return: A restriction that is satisfied iff the symbol is a data value
     """

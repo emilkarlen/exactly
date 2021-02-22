@@ -231,7 +231,7 @@ class _TestEqualsString(_TestEqualsWSourceVariantsBase):
             Expectation(
                 ParseExpectation(
                     symbol_references=asrt.matches_singleton_sequence(
-                        string_symbol_with_expected.reference_assertion__any_data_type
+                        string_symbol_with_expected.reference_assertion__convertible_to_string
                     )
                 ),
                 execution=ExecutionExpectation(
@@ -339,7 +339,7 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithNegationArgumentB
                 ParseExpectation(
                     source=asrt_source.is_at_end_of_line(3),
                     symbol_references=asrt.matches_sequence([
-                        symbol.reference_assertion__any_data_type
+                        symbol.reference_assertion__convertible_to_string
                     ]),
                 ),
                 ExecutionExpectation(

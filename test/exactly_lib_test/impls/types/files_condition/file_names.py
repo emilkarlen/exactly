@@ -10,9 +10,9 @@ from exactly_lib_test.impls.types.files_condition.test_resources import primitiv
 from exactly_lib_test.impls.types.files_condition.test_resources.integration_check import CHECKER
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation, prim_asrt__constant
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.symbols_setup import SymbolsArrEx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import \
     is_reference_to_string_made_up_of_just_strings, \
     StringConstantSymbolContext

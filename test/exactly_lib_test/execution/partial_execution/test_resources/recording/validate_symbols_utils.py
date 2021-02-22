@@ -15,8 +15,8 @@ from exactly_lib_test.execution.test_resources import instruction_test_resources
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForInstructionFailure
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
-    value_restriction_that_is_unconditionally_unsatisfied
+from exactly_lib_test.type_val_deps.test_resources.data.value_restriction import \
+    ValueRestrictionWithConstantResult
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
 
@@ -65,7 +65,7 @@ class TestValidationErrorDueToReferenceToUndefinedSymbol(TestCaseBase):
         symbol__undefined = StringConstantSymbolContext('undefined symbol')
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(conf.phase,
-                 conf.instruction_that_returns([symbol__undefined.reference__any_data_type]))
+                 conf.instruction_that_returns([symbol__undefined.reference__convertible_to_string]))
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),
@@ -91,7 +91,7 @@ class TestValidationErrorDueToFailedReferenceRestrictions(TestCaseBase):
         error_message_for_failed_restriction = 'error message'
         reference_with_restriction_failure = defined_symbol.reference(
             ReferenceRestrictionsOnDirectAndIndirect(
-                direct=value_restriction_that_is_unconditionally_unsatisfied(error_message_for_failed_restriction)))
+                direct=ValueRestrictionWithConstantResult.of_err_msg_for_test(error_message_for_failed_restriction)))
 
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.SETUP,

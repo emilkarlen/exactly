@@ -7,7 +7,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources import source_location_assertions as asrt_src_loc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
-from exactly_lib_test.type_val_deps.data.test_resources.any_sdv_assertions import equals_data_type_sdv
+from exactly_lib_test.type_val_deps.test_resources.data.any_sdv_assertions import equals_data_type_sdv
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence
 
 

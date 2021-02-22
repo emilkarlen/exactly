@@ -1,8 +1,8 @@
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.abstract_syntax import env_var_ref_syntax, \
     end_of_1st_var_ref
-from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
-    is_string_made_up_of_just_strings_reference_restrictions, is_reference_restrictions__to_type_convertible_to_string
+from exactly_lib_test.type_val_deps.test_resources.data.data_restrictions_assertions import \
+    is_reference_restrictions__string_made_up_of_just_strings, is_reference_restrictions__convertible_to_string
 from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntaxes as str_abs_stx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
@@ -12,12 +12,12 @@ class NameWSymRefs:
     REF_1 = StringConstantSymbolContext(
         'NAME_SYM_1',
         RESOLVED_STR[:4],
-        default_restrictions=is_string_made_up_of_just_strings_reference_restrictions(),
+        default_restrictions=is_reference_restrictions__string_made_up_of_just_strings(),
     )
     REF_2 = StringConstantSymbolContext(
         'NAME_SYM_2',
         RESOLVED_STR[4:],
-        default_restrictions=is_string_made_up_of_just_strings_reference_restrictions(),
+        default_restrictions=is_reference_restrictions__string_made_up_of_just_strings(),
     )
     SYMBOL_CONTEXTS = (REF_1, REF_2)
 
@@ -42,14 +42,14 @@ class ValueWSymRefsAndVarRefs:
     SYM_REF_PART_1 = StringConstantSymbolContext(
         'VAL_SYM_1',
         VALUE_W_VAR_REFS[:4],
-        default_restrictions=is_reference_restrictions__to_type_convertible_to_string(),
+        default_restrictions=is_reference_restrictions__convertible_to_string(),
     )
     CONST_STR_PART_2 = VALUE_W_VAR_REFS[4:(POS_OF_END_OF_VAR_REF_1 + 5)]
 
     SYM_REF_PART_3 = StringConstantSymbolContext(
         'VAL_SYM_3',
         VALUE_W_VAR_REFS[(POS_OF_END_OF_VAR_REF_1 + 5):],
-        default_restrictions=is_reference_restrictions__to_type_convertible_to_string(),
+        default_restrictions=is_reference_restrictions__convertible_to_string(),
     )
     SYMBOL_CONTEXTS = (SYM_REF_PART_1, SYM_REF_PART_3)
 

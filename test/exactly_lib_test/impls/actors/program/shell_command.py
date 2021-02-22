@@ -97,7 +97,7 @@ class TestSymbolReferences(unittest.TestCase):
                 symbol_table=symbol.symbol_table
             ),
             Expectation(
-                symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__any_data_type),
+                symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__convertible_to_string),
                 post_sds=PostSdsExpectation.constant(
                     sub_process_result_from_execute=
                     pr.stdout(asrt.equals(expected_output_template.format(symbol=symbol.str_value)))

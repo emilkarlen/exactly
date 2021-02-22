@@ -6,8 +6,8 @@ from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionTy
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
-    is_any_data_type
+from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions
+from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction, \
     AnyDataTypeRestriction
 from exactly_lib.type_val_deps.types.path import path_part_sdvs
@@ -15,8 +15,7 @@ from exactly_lib.type_val_deps.types.path.path_sdv_impls import path_rel_symbol 
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as vr_tr, \
-    concrete_restriction_assertion as restrictions
+from exactly_lib_test.type_val_deps.test_resources.data import value_restriction, symbol_reference_assertions as vr_tr
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string.test_resources.string_sdvs import string_sdv_of_single_symbol_reference
@@ -39,7 +38,8 @@ class TestRelSymbol(unittest.TestCase):
         expected_mandatory_references = [
             vr_tr.matches_symbol_reference_with_restriction_on_direct_target(
                 symbol_name_of_rel_path,
-                restrictions.equals_path_relativity_restriction(expected_restriction))
+                value_restriction.equals_path_relativity_restriction(
+                    expected_restriction))
         ]
         symbol_ref_of_path = SymbolReference(symbol_name_of_rel_path,
                                              ReferenceRestrictionsOnDirectAndIndirect(expected_restriction))
@@ -52,7 +52,7 @@ class TestRelSymbol(unittest.TestCase):
                                                       restrictions_on_path_suffix_symbol)),
              [asrt_sym_usage.matches_reference_2(
                  symbol_name_of_path_suffix,
-                 vr_tr.matches_restrictions_on_direct_and_indirect())],
+                 vr_tr.is_reference_restrictions__on_direct_and_indirect())],
             ),
         ]
         for path_suffix_sdv, additional_expected_references in path_suffix_test_cases:
@@ -78,10 +78,13 @@ class TestRelSymbol(unittest.TestCase):
             (path_part_sdvs.from_constant_str('file.txt'),
              []
              ),
-            (path_part_sdvs.from_string(string_sdv_of_single_symbol_reference('path_suffix_symbol_name',
-                                                                              is_any_data_type())),
+            (path_part_sdvs.from_string(
+                string_sdv_of_single_symbol_reference(
+                    'path_suffix_symbol_name',
+                    reference_restrictions.is_type_convertible_to_string()),
+            ),
              [StringConstantSymbolContext('path_suffix_symbol_name', 'path-suffix').entry],
-             ),
+            ),
         ]
         for rel_option_type_of_referenced_symbol, expected_exists_pre_sds in relativity_test_cases:
             referenced_path = ConstantSuffixPathDdvSymbolContext('SYMBOL_NAME',
@@ -114,11 +117,14 @@ class TestRelSymbol(unittest.TestCase):
             (path_part_sdvs.from_constant_str(path_suffix_str),
              ()
              ),
-            (path_part_sdvs.from_string(string_sdv_of_single_symbol_reference('path_suffix_symbol',
-                                                                              is_any_data_type())),
+            (path_part_sdvs.from_string(
+                string_sdv_of_single_symbol_reference(
+                    'path_suffix_symbol',
+                    reference_restrictions.is_type_convertible_to_string())
+            ),
              (StringConstantSymbolContext('path_suffix_symbol',
                                           path_suffix_str).entry,)
-             ),
+            ),
         ]
         for rel_option, exists_pre_sds in relativity_test_cases:
             # ARRANGE #

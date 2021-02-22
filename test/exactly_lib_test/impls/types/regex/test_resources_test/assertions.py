@@ -17,7 +17,7 @@ from exactly_lib_test.impls.types.regex.test_resources.regex_ddvs import RegexSd
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils
+from exactly_lib_test.type_val_deps.test_resources.data import references as data_references
 from exactly_lib_test.type_val_deps.types.string.test_resources import string
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.file_matchers import file_matcher_constant_sdv
@@ -153,7 +153,7 @@ class TestMatchesRegexResolver(unittest.TestCase):
 
     def test_SHOULD_match_WHEN_references_match(self):
         # ARRANGE #
-        actual_reference = data_symbol_utils.symbol_reference('referenced element')
+        actual_reference = data_references.reference_to__on_direct_and_indirect('referenced element')
         actual_references = [actual_reference]
         actual_sdv = arbitrary_sdv_with_references(actual_references)
 
@@ -167,7 +167,7 @@ class TestMatchesRegexResolver(unittest.TestCase):
 
     def test_SHOULD_not_match_WHEN_references_do_not_match(self):
         # ARRANGE #
-        actual_reference = data_symbol_utils.symbol_reference('referenced element')
+        actual_reference = data_references.reference_to__on_direct_and_indirect('referenced element')
         actual_references = [actual_reference]
         actual_sdv = arbitrary_sdv_with_references(actual_references)
 

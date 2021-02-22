@@ -186,7 +186,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                         symbol=symbol1.str_value),
                 ],
                     symbol_references=[
-                        symbol1.reference__any_data_type,
+                        symbol1.reference__convertible_to_string,
                     ],
                     symbols=symbol1.symbol_table
                 ),
@@ -212,9 +212,9 @@ class TestSuccessfulScenarios(unittest.TestCase):
                         second_symbol=symbol3.str_value),
                 ],
                     symbol_references=[
-                        symbol1.reference__any_data_type,
-                        symbol2.reference__any_data_type,
-                        symbol3.reference__any_data_type,
+                        symbol1.reference__convertible_to_string,
+                        symbol2.reference__convertible_to_string,
+                        symbol3.reference__convertible_to_string,
                     ],
                     symbols=SymbolContext.symbol_table_of_contexts([
                         symbol1,

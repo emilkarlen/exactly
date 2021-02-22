@@ -14,9 +14,9 @@ from exactly_lib_test.tcfs.test_resources.fake_ds import fake_hds, fake_sds, fak
 from exactly_lib_test.test_case.test_resources import instruction_environment
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils
-from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
-    equals_data_type_symbol_references
+from exactly_lib_test.type_val_deps.test_resources.data import references as data_references
+from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
+    equals_symbol_references__convertible_to_string
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
 
@@ -68,7 +68,7 @@ class Symbol:
         self.value_int = value_int
         self.value_str = value_str
         self.ref_syntax = symbol_reference_syntax_for_name(name)
-        self.symbol_reference = data_symbol_utils.symbol_reference(name)
+        self.symbol_reference = data_references.reference_to__on_direct_and_indirect(name)
 
 
 class TestValidateAndResolve(unittest.TestCase):
@@ -156,7 +156,7 @@ class TestValidateAndResolve(unittest.TestCase):
                 self.assertEqual(case.expected.resolved_value,
                                  actual)
 
-                equals_data_type_symbol_references(case.expected.symbol_references) \
+                equals_symbol_references__convertible_to_string(case.expected.symbol_references) \
                     .apply_without_message(self,
                                            actual_symbol_references)
 
@@ -188,7 +188,7 @@ class TestSymbolReferences(unittest.TestCase):
     def test_references_of_string_sdv_SHOULD_be_reported(self):
         # ARRANGE #
 
-        reference_of_string_sdv = data_symbol_utils.symbol_reference('symbol name')
+        reference_of_string_sdv = data_references.reference_to__on_direct_and_indirect('symbol name')
 
         the_string_sdv = string_sdvs.symbol_reference(reference_of_string_sdv)
 
@@ -204,7 +204,7 @@ class TestSymbolReferences(unittest.TestCase):
 
         expected_references = [reference_of_string_sdv]
 
-        assertion = equals_data_type_symbol_references(expected_references)
+        assertion = equals_symbol_references__convertible_to_string(expected_references)
 
         assertion.apply_without_message(self, actual)
 

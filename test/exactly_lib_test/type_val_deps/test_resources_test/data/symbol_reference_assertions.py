@@ -4,7 +4,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions as r, value_restrictions as vr
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as sut
+from exactly_lib_test.type_val_deps.test_resources.data import symbol_reference_assertions as sut
 
 
 def suite() -> unittest.TestSuite:

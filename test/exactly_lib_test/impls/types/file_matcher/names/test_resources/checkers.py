@@ -7,7 +7,7 @@ from exactly_lib_test.impls.types.file_matcher.test_resources.argument_building 
 from exactly_lib_test.impls.types.file_matcher.test_resources.integration_check import ModelConstructor
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, Expectation, \
     ParseExpectation, ExecutionExpectation
-from exactly_lib_test.impls.types.regex.test_resources.assertions import is_regex_reference_restrictions
+from exactly_lib_test.impls.types.regex.test_resources.assertions import is_reference_restrictions__regex
 from exactly_lib_test.impls.types.test_resources import glob_pattern
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
@@ -23,7 +23,7 @@ def check_glob(put: unittest.TestCase,
     pattern_string_symbol = StringSymbolContext.of_constant(
         'PATTERN_SYMBOL',
         pattern,
-        default_restrictions=glob_pattern.is_glob_pattern_string_reference_restrictions()
+        default_restrictions=glob_pattern.is_reference_restrictions__glob_pattern_string()
     )
     arguments = conf.arguments(
         NameGlobPatternVariant(pattern_string_symbol.name__sym_ref_syntax)
@@ -62,7 +62,7 @@ def check_regex(put: unittest.TestCase,
     pattern_string_symbol = StringSymbolContext.of_constant(
         'PATTERN_SYMBOL',
         pattern,
-        default_restrictions=is_regex_reference_restrictions()
+        default_restrictions=is_reference_restrictions__regex()
     )
     arguments = conf.arguments(
         NameRegexVariant.of(pattern_string_symbol.name__sym_ref_syntax,

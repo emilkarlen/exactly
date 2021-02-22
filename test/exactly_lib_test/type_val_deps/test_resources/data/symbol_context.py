@@ -11,8 +11,8 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SDV_TYPE, Symb
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_definition
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_rest
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_data_type
+from exactly_lib_test.type_val_deps.test_resources.data import data_restrictions_assertions as asrt_rest
 
 
 class DataSymbolValueContext(Generic[SDV_TYPE], SymbolValueContext[SDV_TYPE], ABC):
@@ -28,17 +28,17 @@ class DataSymbolValueContext(Generic[SDV_TYPE], SymbolValueContext[SDV_TYPE], AB
         pass
 
     @staticmethod
-    def reference_assertion__any_data_type(symbol_name: str) -> Assertion[SymbolReference]:
+    def reference_assertion__convertible_to_string(symbol_name: str) -> Assertion[SymbolReference]:
         return asrt_sym_usage.matches_reference_2__ref(
             symbol_name,
-            asrt_rest.is_any_data_type_reference_restrictions()
+            asrt_rest.is_reference_restrictions__convertible_to_string()
         )
 
     @staticmethod
-    def usage_assertion__any_data_type(symbol_name: str) -> Assertion[SymbolUsage]:
+    def usage_assertion__convertible_to_string(symbol_name: str) -> Assertion[SymbolUsage]:
         return asrt_sym_usage.matches_reference_2(
             symbol_name,
-            asrt_rest.is_any_data_type_reference_restrictions()
+            asrt_rest.is_reference_restrictions__convertible_to_string()
         )
 
     @property
@@ -65,23 +65,19 @@ class DataTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):
         pass
 
     @property
-    def reference__any_data_type(self) -> SymbolReference:
+    def reference__convertible_to_string(self) -> SymbolReference:
         return SymbolReference(
             self.name,
-            reference_restrictions.is_any_data_type()
+            reference_restrictions.is_type_convertible_to_string()
         )
 
     @property
-    def reference_assertion__any_data_type(self) -> Assertion[SymbolReference]:
-        return DataSymbolValueContext.reference_assertion__any_data_type(self.name)
-
-    @property
     def reference_assertion__convertible_to_string(self) -> Assertion[SymbolReference]:
-        return DataSymbolValueContext.reference_assertion__any_data_type(self.name)
+        return DataSymbolValueContext.reference_assertion__convertible_to_string(self.name)
 
     @property
-    def usage_assertion__any_data_type(self) -> Assertion[SymbolUsage]:
-        return DataSymbolValueContext.usage_assertion__any_data_type(self.name)
+    def usage_assertion__convertible_to_string(self) -> Assertion[SymbolUsage]:
+        return DataSymbolValueContext.usage_assertion__convertible_to_string(self.name)
 
     @property
     def assert_matches_definition_of_sdv(self) -> Assertion[SymbolDefinition]:

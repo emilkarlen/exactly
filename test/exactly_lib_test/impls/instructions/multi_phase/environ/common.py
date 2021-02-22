@@ -271,8 +271,8 @@ class TestSet(unittest.TestCase):
             MultiSourceExpectation.setup_phase_aware(
                 main_side_effect_on_environment_variables=asrt.equals(expected_environ_after_main),
                 symbol_usages=asrt.matches_sequence([
-                    my_symbol.usage_assertion__any_data_type,
-                    your_symbol.usage_assertion__any_data_type,
+                    my_symbol.usage_assertion__convertible_to_string,
+                    your_symbol.usage_assertion__convertible_to_string,
                 ]),
             ),
         )

@@ -7,8 +7,8 @@ from exactly_lib_test.impls.types.string_matcher.test_resources import arguments
 from exactly_lib_test.impls.types.string_matcher.test_resources import integration_check
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
-    is_reference_to_data_type_symbol
+from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
+    is_reference_to__convertible_to_string
 from exactly_lib_test.type_val_deps.types.test_resources.program import is_reference_to_program
 
 
@@ -44,7 +44,7 @@ class TestPathOfModelFileShouldBeGivenAsLastArgument(unittest.TestCase):
             model_constructor.arbitrary(self),
             symbol_references=asrt.matches_sequence([
                 is_reference_to_program(program_symbol_name),
-                is_reference_to_data_type_symbol(command_line_arg_list_symbol_name),
+                is_reference_to__convertible_to_string(command_line_arg_list_symbol_name),
             ]),
             execution=[
                 test_cases.argument_list_exe_case(command_line_arguments,

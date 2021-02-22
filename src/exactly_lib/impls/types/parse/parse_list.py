@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
+from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions
 from exactly_lib.type_val_deps.types.list_ import list_sdvs as lrs
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.util.parse.token import Token
@@ -40,8 +40,10 @@ def element_of(token: Token) -> lrs.ElementSdv:
         else:
             return _symbol_reference_element(single_fragment.value)
     else:
-        string_sdv = parse_string.string_sdv_from_fragments(string_fragments,
-                                                            is_any_data_type())
+        string_sdv = parse_string.string_sdv_from_fragments(
+            string_fragments,
+            reference_restrictions.is_type_convertible_to_string(),
+        )
         return lrs.string_element(string_sdv)
 
 
@@ -50,5 +52,7 @@ def _symbol_reference_element(s: str) -> lrs.ElementSdv:
 
 
 def _symbol_reference(symbol_name: str) -> SymbolReference:
-    return SymbolReference(symbol_name,
-                           is_any_data_type())
+    return SymbolReference(
+        symbol_name,
+        reference_restrictions.is_type_convertible_to_string(),
+    )

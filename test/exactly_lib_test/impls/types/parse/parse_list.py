@@ -20,9 +20,9 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
-    is_any_data_type_reference_restrictions
-from exactly_lib_test.type_val_deps.data.test_resources.data_symbol_utils import symbol_reference
+from exactly_lib_test.type_val_deps.test_resources.data.data_restrictions_assertions import \
+    is_reference_restrictions__convertible_to_string
+from exactly_lib_test.type_val_deps.test_resources.data.references import reference_to__on_direct_and_indirect
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_assertions import equals_list_sdv
 
 
@@ -106,13 +106,13 @@ class TestSingleElementList(unittest.TestCase):
                  remaining_source(symbol_reference_syntax_for_name(string_symbol.name)),
                  expectation=
                  Expectation(elements=
-                             [list_sdvs.symbol_element(symbol_reference(string_symbol.name))],
+                             [list_sdvs.symbol_element(reference_to__on_direct_and_indirect(string_symbol.name))],
                              source=
                              assert_source(is_at_eof=asrt.is_true),
                              references=
                              asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
                                  string_symbol.name,
-                                 is_any_data_type_reference_restrictions())
+                                 is_reference_restrictions__convertible_to_string())
                              ])),
                  ),
             Case('complex element (str const and sym-refs), at end of line, on the last line',
@@ -126,14 +126,16 @@ class TestSingleElementList(unittest.TestCase):
                          list_sdvs.string_element(string_sdvs.from_fragments([
                              string_sdvs.str_fragment(single_token_value),
                              string_sdvs.symbol_fragment(
-                                 SymbolReference(string_symbol.name,
-                                                 reference_restrictions.is_any_data_type())
+                                 SymbolReference(
+                                     string_symbol.name,
+                                     reference_restrictions.is_type_convertible_to_string(),
+                                 )
                              ),
                          ]))],
                      references=
                      asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
                          string_symbol.name,
-                         is_any_data_type_reference_restrictions())
+                         is_reference_restrictions__convertible_to_string())
                      ]),
                      source=
                      asrt_source.is_at_end_of_line(1)),
@@ -251,13 +253,13 @@ class TestMultipleElementList(unittest.TestCase):
                      string_constant=single_token_value)),
                  expectation=
                  Expectation(elements=
-                             [list_sdvs.symbol_element(symbol_reference(symbol_name)),
+                             [list_sdvs.symbol_element(reference_to__on_direct_and_indirect(symbol_name)),
                               list_sdvs.str_element(single_token_value)
                               ],
                              references=
                              asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
                                  symbol_name,
-                                 is_any_data_type_reference_restrictions())
+                                 is_reference_restrictions__convertible_to_string())
                              ]),
                              source=
                              asrt_source.is_at_end_of_line(1)),
@@ -276,8 +278,10 @@ class TestMultipleElementList(unittest.TestCase):
                      elements=
                      [
                          list_sdvs.string_element(string_sdvs.from_fragments([
-                             string_sdvs.symbol_fragment(SymbolReference(symbol_name,
-                                                                         reference_restrictions.is_any_data_type())),
+                             string_sdvs.symbol_fragment(SymbolReference(
+                                 symbol_name,
+                                 reference_restrictions.is_type_convertible_to_string()),
+                             ),
                              string_sdvs.str_fragment(single_token_value),
                          ])),
                          list_sdvs.str_element(single_token_value_1),
@@ -285,7 +289,7 @@ class TestMultipleElementList(unittest.TestCase):
                      references=
                      asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
                          symbol_name,
-                         is_any_data_type_reference_restrictions())
+                         is_reference_restrictions__convertible_to_string())
                      ]),
                      source=
                      asrt_source.is_at_end_of_line(1)),

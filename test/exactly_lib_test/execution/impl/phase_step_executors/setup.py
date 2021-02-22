@@ -48,20 +48,20 @@ class TestSymbolReference(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
         symbol__undefined = symbol_of('undefined')
         test_cases = [
             ('WHEN referenced value not in symbol table THEN error',
-             Arrangement(symbol_usages=[symbol__undefined.reference__any_data_type],
+             Arrangement(symbol_usages=[symbol__undefined.reference__convertible_to_string],
                          environment=env_with_empty_symbol_table()),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION_ERROR),
                          environment=symbol_table_is_empty())
              ),
             ('WHEN referenced value is in symbol table THEN None',
-             Arrangement(symbol_usages=[symbol__defined.reference__any_data_type],
+             Arrangement(symbol_usages=[symbol__defined.reference__convertible_to_string],
                          environment=env_with_singleton_symbol_table(symbol__defined)),
              Expectation(return_value=is_success,
                          environment=symbol_table_contains_exactly_names({symbol__defined.name}))
              ),
             ('WHEN referenced valueS is in symbol table THEN None',
-             Arrangement(symbol_usages=[symbol__defined1.reference__any_data_type,
-                                        symbol__defined2.reference__any_data_type],
+             Arrangement(symbol_usages=[symbol__defined1.reference__convertible_to_string,
+                                        symbol__defined2.reference__convertible_to_string],
                          environment=env_with_symbol_table([symbol__defined1,
                                                             symbol__defined2])),
              Expectation(return_value=is_success,
@@ -69,8 +69,8 @@ class TestSymbolReference(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
                              {symbol__defined1.name, symbol__defined2.name}))
              ),
             ('WHEN at least one referenced value is not in symbol table THEN error',
-             Arrangement(symbol_usages=[symbol__defined.reference__any_data_type,
-                                        symbol__undefined.reference__any_data_type],
+             Arrangement(symbol_usages=[symbol__defined.reference__convertible_to_string,
+                                        symbol__undefined.reference__convertible_to_string],
                          environment=env_with_symbol_table([symbol__defined])),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION_ERROR),
                          environment=symbol_table_contains_exactly_names({symbol__defined.name}))
@@ -130,13 +130,13 @@ class TestCombinationOfDefinitionAndReference(TestCaseBaseWithShortDescriptionOf
         test_cases = [
             ('WHEN value to define is before reference to it (in list of value usages) THEN ok',
              Arrangement(symbol_usages=[string_symbol.definition,
-                                        string_symbol.reference__any_data_type],
+                                        string_symbol.reference__convertible_to_string],
                          environment=env_with_empty_symbol_table()),
              Expectation(return_value=is_success,
                          environment=symbol_table_contains_exactly_names({'define'}))
              ),
             ('WHEN value to define is after reference to it (in list of value usages) THEN error',
-             Arrangement(symbol_usages=[string_symbol.reference__any_data_type,
+             Arrangement(symbol_usages=[string_symbol.reference__convertible_to_string,
                                         string_symbol.definition],
                          environment=env_with_empty_symbol_table()),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION_ERROR),

@@ -171,7 +171,7 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
         symbol = StringConstantSymbolContext('symbol_name', 'the symbol value')
         expected_stdin_contents = content_line_of_here_doc_template.format(symbol=symbol.str_value)
         expected_symbol_references = asrt.matches_singleton_sequence(
-            symbol.reference_assertion__any_data_type
+            symbol.reference_assertion__convertible_to_string
         )
         syntax = InstructionAbsStx(
             StringSourceOfStringAbsStx(StringHereDocAbsStx(

@@ -19,7 +19,7 @@ from exactly_lib_test.impls.test_resources.validation.validation import Validati
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments, here_document
 from exactly_lib_test.impls.types.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.impls.types.regex.test_resources.assertions import matches_regex_sdv, \
-    is_reference_to_valid_regex_string_part
+    is_reference_to__regex_string_part
 from exactly_lib_test.section_document.element_parsers.test_resources.parsing \
     import remaining_source, remaining_source_lines
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
@@ -300,7 +300,7 @@ class TestValidRegex(unittest.TestCase):
 
         expectation = ExpectationExceptPattern(
             references=asrt.matches_sequence([
-                is_reference_to_valid_regex_string_part(star_string_symbol.name),
+                is_reference_to__regex_string_part(star_string_symbol.name),
             ]),
             validation=ValidationAssertions.all_passes(),
         )
@@ -357,7 +357,7 @@ class TestValidRegex(unittest.TestCase):
 
         expectation = ExpectationExceptPattern(
             references=asrt.matches_sequence([
-                is_reference_to_valid_regex_string_part(star_string_symbol.name),
+                is_reference_to__regex_string_part(star_string_symbol.name),
             ]),
             validation=ValidationAssertions.all_passes(),
         )
@@ -430,7 +430,7 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
 
         expectation = ExpectationExceptPattern(
             references=asrt.matches_sequence([
-                is_reference_to_valid_regex_string_part(self.STAR_STRING_SYMBOL.name),
+                is_reference_to__regex_string_part(self.STAR_STRING_SYMBOL.name),
             ]),
             validation=validation.ValidationAssertions.pre_sds_fails__w_any_msg(),
         )
@@ -470,8 +470,8 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
 
         expectation = ExpectationExceptPattern(
             references=asrt.matches_sequence([
-                is_reference_to_valid_regex_string_part(self.STAR_STRING_SYMBOL.name),
-                is_reference_to_valid_regex_string_part(self.STAR_STRING_SYMBOL.name),
+                is_reference_to__regex_string_part(self.STAR_STRING_SYMBOL.name),
+                is_reference_to__regex_string_part(self.STAR_STRING_SYMBOL.name),
             ]),
             validation=validation.ValidationAssertions.pre_sds_fails__w_any_msg(),
         )
@@ -495,8 +495,8 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
 
         expectation = Expectation(
             references=asrt.matches_sequence([
-                is_reference_to_valid_regex_string_part(self.STAR_STRING_SYMBOL.name),
-                is_reference_to_valid_regex_string_part(path_symbol_name),
+                is_reference_to__regex_string_part(self.STAR_STRING_SYMBOL.name),
+                is_reference_to__regex_string_part(path_symbol_name),
             ]),
             validation=ValidationAssertions.post_sds_fails__w_any_msg(),
             token_stream=assert_token_stream(is_null=asrt.is_true),

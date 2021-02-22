@@ -84,7 +84,7 @@ class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
         operand_sym_ref = StringIntConstantSymbolContext(
             'operand_symbol_name',
             len(checked_dir_contents.file_system_elements),
-            default_restrictions=symbol_reference.is_integer_expression_string(),
+            default_restrictions=symbol_reference.is_reference_restrictions__integer_expression(),
         )
 
         matcher_arguments = im_args.comparison(comparators.EQ,

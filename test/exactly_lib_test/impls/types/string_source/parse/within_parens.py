@@ -11,7 +11,7 @@ from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes
 from exactly_lib_test.test_resources.source.abstract_syntax_impls import OptionallyOnNewLine, WithinParensAbsStx, \
     CustomAbsStx
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
-from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_rest
+from exactly_lib_test.type_val_deps.test_resources.data import data_restrictions_assertions as asrt_rest
 from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntaxes as str_abs_stx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
@@ -29,7 +29,7 @@ class TestValidSyntax(unittest.TestCase):
         contents_symbol = StringConstantSymbolContext(
             'contents_symbol_name',
             'symbol value contents',
-            default_restrictions=asrt_rest.is_any_data_type_reference_restrictions(),
+            default_restrictions=asrt_rest.is_reference_restrictions__convertible_to_string(),
         )
 
         string_source_syntax = StringSourceOfStringAbsStx(

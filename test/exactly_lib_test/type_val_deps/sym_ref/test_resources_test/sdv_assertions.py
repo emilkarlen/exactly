@@ -21,8 +21,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources import test_of_test_resources_util
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils
 from exactly_lib_test.type_val_deps.sym_ref.test_resources import sdv_assertions as sut
+from exactly_lib_test.type_val_deps.test_resources.data import references as data_references
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.path.test_resources.path_sdvs import \
     PathSdvTestImplWithConstantPathAndSymbolReferences
@@ -59,7 +59,7 @@ class TestMatchesSdv(unittest.TestCase):
 
     def test_fail_due_to_unexpected_references(self):
         # ARRANGE #
-        reference = data_symbol_utils.symbol_reference('symbol_name')
+        reference = data_references.reference_to__on_direct_and_indirect('symbol_name')
         string_sdv_with_single_reference = _StringSdvTestImpl(explicit_references=[reference])
 
         assertion = sut.matches_sdv(asrt.anything_goes(),
@@ -93,7 +93,7 @@ class TestMatchesSdv(unittest.TestCase):
         # ARRANGE #
         path_symbol = PathDdvSymbolContext('symbol_name',
                                            path_ddvs.of_rel_option(RelOptionType.REL_ACT))
-        reference = data_symbol_utils.symbol_reference(path_symbol.name)
+        reference = data_references.reference_to__on_direct_and_indirect(path_symbol.name)
         path_sdv = PathSdvTestImplWithConstantPathAndSymbolReferences(path_symbol.ddv,
                                                                       [reference])
         assertion = sut.matches_sdv(asrt.is_instance(PathSdv),

@@ -113,7 +113,7 @@ class TestSymbolUsages(unittest.TestCase):
                 main_result=IS_SUCCESS,
                 symbol_usages=asrt.matches_sequence([
                     dst_file_symbol.reference_assertion__path_or_string,
-                    text_printed_by_program.reference_assertion__any_data_type,
+                    text_printed_by_program.reference_assertion__convertible_to_string,
                     to_upper_transformer.reference_assertion,
                 ]),
             )

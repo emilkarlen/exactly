@@ -39,8 +39,8 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir, sym_link
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
-    equals_data_type_symbol_references
+from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
+    equals_symbol_references__convertible_to_string
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext, \
@@ -226,7 +226,7 @@ class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
         expected_symbol_references = [
             operand_sym_ref,
         ]
-        assertion = equals_data_type_symbol_references(expected_symbol_references)
+        assertion = equals_symbol_references__convertible_to_string(expected_symbol_references)
 
         assertion.apply_without_message(self, actual_symbol_references)
 

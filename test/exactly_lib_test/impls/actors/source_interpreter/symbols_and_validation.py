@@ -67,7 +67,7 @@ class TestThatSymbolReferencesAreReportedAndUsed(TestCaseWInterpreterThatRunsPyt
             ),
             Expectation(
                 symbol_usages=asrt.matches_sequence([
-                    symbol.reference_assertion__any_data_type,
+                    symbol.reference_assertion__convertible_to_string,
                 ]),
                 post_sds=PostSdsExpectation.constant(
                     sub_process_result_from_execute=asrt_pr.stdout(asrt.Equals(expected_output,
@@ -95,7 +95,7 @@ class TestThatSourceCanReferenceSymbolsThatAreResolvedPostSds(TestCaseWInterpret
 
             ),
             Expectation(
-                symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__any_data_type),
+                symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__convertible_to_string),
                 post_sds=PostSdsExpectation.constant(
                     sub_process_result_from_execute=asrt_pr.stdout(str_asrt.contains(symbol.path_suffix))
                 ),

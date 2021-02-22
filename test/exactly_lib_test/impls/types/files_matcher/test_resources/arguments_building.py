@@ -14,12 +14,12 @@ from exactly_lib_test.impls.types.files_condition.test_resources.arguments_build
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import ExpectationTypeConfig
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
 from exactly_lib_test.test_resources import argument_renderer
 from exactly_lib_test.test_resources.argument_renderer import FromArgumentElementsBase
 from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
 from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.symbols_setup import SymbolsArrEx
 
 
 class FilesMatcherArg(MatcherArgument, ABC):

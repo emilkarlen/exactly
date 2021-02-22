@@ -7,7 +7,7 @@ from exactly_lib_test.impls.types.file_matcher.test_resources import parse_test_
 from exactly_lib_test.impls.types.file_matcher.test_resources.test_utils import Actual
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
-from exactly_lib_test.impls.types.regex.test_resources.assertions import is_reference_to_valid_regex_string_part
+from exactly_lib_test.impls.types.regex.test_resources.assertions import is_reference_to__regex_string_part
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
@@ -143,7 +143,7 @@ class TestWithSymbolReferences(unittest.TestCase):
             expectation=Expectation(
                 ParseExpectation(
                     symbol_references=asrt.matches_sequence([
-                        is_reference_to_valid_regex_string_part(any_char_glob_pattern_string_symbol.name),
+                        is_reference_to__regex_string_part(any_char_glob_pattern_string_symbol.name),
                     ]),
                 ),
                 ExecutionExpectation(

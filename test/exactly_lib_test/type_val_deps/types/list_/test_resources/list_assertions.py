@@ -9,13 +9,13 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion
-from exactly_lib_test.type_val_deps.data.test_resources.assertion_utils import \
-    symbol_table_with_values_matching_references
-from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
-    equals_data_type_symbol_references, \
-    equals_data_type_symbol_reference
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
+from exactly_lib_test.type_val_deps.test_resources.data import data_restrictions_assertions
+from exactly_lib_test.type_val_deps.test_resources.data.assertion_utils import \
+    symbol_table_with_values_matching_references
+from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
+    equals_symbol_references__convertible_to_string, \
+    equals_data_type_symbol_reference
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ddv_assertions import equals_list_ddv
 from exactly_lib_test.type_val_deps.types.string.test_resources.ddv_assertions import equals_string_ddv
 
@@ -30,7 +30,7 @@ def equals_list_sdv_element(expected: list_sdv.ElementSdv,
     component_assertions = [
         asrt.sub_component('references',
                            lambda x: list(x.references),
-                           equals_data_type_symbol_references(list(expected.references))),
+                           equals_symbol_references__convertible_to_string(list(expected.references))),
         asrt.sub_component('resolved value',
                            lambda x: x.resolve(symbols),
                            assertion_on_resolved_value),
@@ -48,7 +48,7 @@ def equals_list_sdv_element(expected: list_sdv.ElementSdv,
 
         asrt_sym_ref.matches_reference_2(
             reference.name,
-            concrete_restriction_assertion.equals_data_type_reference_restrictions(
+            data_restrictions_assertions.equals_reference_restrictions__convertible_to_string(
                 reference_restrictions)
         )
 
@@ -69,7 +69,7 @@ def equals_list_sdv_elements(elements: List[list_sdv.ElementSdv],
 
 
 def equals_list_sdv(expected: ListSdv,
-                    symbols: SymbolTable = None) -> Assertion[SymbolDependentValue]:
+                    symbols: Optional[SymbolTable] = None) -> Assertion[SymbolDependentValue]:
     if symbols is None:
         symbols = symbol_table_with_values_matching_references(expected.references)
 
@@ -79,7 +79,7 @@ def equals_list_sdv(expected: ListSdv,
         return x.elements
 
     return type_sdv_assertions.matches_sdv_of_list(
-        equals_data_type_symbol_references(expected.references),
+        equals_symbol_references__convertible_to_string(expected.references),
         equals_list_ddv(expected_resolved_value),
         asrt.sub_component('element SDVs',
                            get_element_sdvs,

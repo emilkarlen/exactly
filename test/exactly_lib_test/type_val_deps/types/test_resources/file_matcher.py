@@ -13,13 +13,14 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
+from exactly_lib_test.type_val_deps.test_resources.any_.restrictions_assertions import \
+    is_reference_restrictions__value_type
+from exactly_lib_test.type_val_deps.test_resources.logic.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.abstract_syntax import \
     FileMatcherSymbolReferenceAbsStx
 
-IS_FILE_REFERENCE_RESTRICTION = is_value_type_restriction((ValueType.FILE_MATCHER,))
+IS_FILE_REFERENCE_RESTRICTION = is_reference_restrictions__value_type((ValueType.FILE_MATCHER,))
 
 
 def is_reference_to_file_matcher__usage(symbol_name: str) -> Assertion[SymbolUsage]:

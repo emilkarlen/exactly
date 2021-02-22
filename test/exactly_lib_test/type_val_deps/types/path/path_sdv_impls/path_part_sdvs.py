@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
+from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions
 from exactly_lib.type_val_deps.types.path.path_part_ddv import PathPartDdv
 from exactly_lib.type_val_deps.types.path.path_sdv_impls import path_part_sdvs as sut
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
@@ -87,4 +87,6 @@ class TestPathPartResolverAsStringResolver(unittest.TestCase):
 
     @staticmethod
     def _symbol_reference(symbol_name: str) -> SymbolReference:
-        return SymbolReference(symbol_name, is_any_data_type())
+        return SymbolReference(symbol_name,
+                               reference_restrictions.is_type_convertible_to_string(),
+                               )

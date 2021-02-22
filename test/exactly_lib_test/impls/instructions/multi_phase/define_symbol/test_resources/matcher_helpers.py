@@ -18,8 +18,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
-from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherTypeSymbolContext
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
+from exactly_lib_test.type_val_deps.test_resources.logic.matcher_symbol_context import MatcherTypeSymbolContext
 
 
 class AssertApplicationOfMatcherInSymbolTable(AssertionBase[InstructionApplicationEnvironment], ABC):

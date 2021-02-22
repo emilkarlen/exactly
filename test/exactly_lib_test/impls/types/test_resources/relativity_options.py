@@ -34,10 +34,9 @@ from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRe
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
-    equals_path_relativity_restriction
-from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
+from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
     matches_symbol_reference_with_restriction_on_direct_target
+from exactly_lib_test.type_val_deps.test_resources.data.value_restriction import equals_path_relativity_restriction
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import RelativityAbsStx, \
     PathWConstNameAbsStx

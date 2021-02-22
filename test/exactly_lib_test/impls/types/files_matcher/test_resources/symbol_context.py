@@ -11,7 +11,7 @@ from exactly_lib_test.impls.types.files_matcher.test_resources.arguments_buildin
 from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
+from exactly_lib_test.type_val_deps.test_resources.logic.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
 from exactly_lib_test.type_val_deps.types.files_matcher.test_resources.abstract_syntax import \
     FilesMatcherSymbolReferenceAbsStx

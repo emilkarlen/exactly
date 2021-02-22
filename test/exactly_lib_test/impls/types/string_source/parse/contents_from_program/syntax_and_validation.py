@@ -82,7 +82,7 @@ class TestSymbolReferences(unittest.TestCase):
             ),
             MultiSourceExpectation.of_prim__const(
                 symbol_references=asrt.matches_sequence([
-                    text_printed_by_program.reference_assertion__any_data_type,
+                    text_printed_by_program.reference_assertion__convertible_to_string,
                     to_upper_transformer.reference_assertion,
                 ]),
                 primitive=asrt_string_source.pre_post_freeze__matches_str__const_2(

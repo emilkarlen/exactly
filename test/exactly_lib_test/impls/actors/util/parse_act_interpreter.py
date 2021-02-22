@@ -22,10 +22,10 @@ from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRe
 from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_rest
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.ddv_w_deps_assertions import \
     matches_dir_dependent_value
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.sdv_assertions import matches_sdv
+from exactly_lib_test.type_val_deps.test_resources.data import data_restrictions_assertions as asrt_rest
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
     IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
@@ -63,7 +63,7 @@ class TestWithoutExecution(unittest.TestCase):
         string_symbol = StringConstantSymbolContext(
             'STRING_SYMBOL',
             'the string value',
-            default_restrictions=asrt_rest.is_any_data_type_reference_restrictions(),
+            default_restrictions=asrt_rest.is_reference_restrictions__convertible_to_string(),
         )
         list_symbol = ListConstantSymbolContext(
             'LIST_SYMBOL',

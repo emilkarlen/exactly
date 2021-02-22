@@ -165,7 +165,7 @@ class TestSymbolUsages(unittest.TestCase):
 
         expectation = integration_check.Expectation(
             symbol_usages=asrt.matches_sequence(
-                [symbol.reference_assertion__any_data_type]
+                [symbol.reference_assertion__convertible_to_string]
             ),
             execute=eh_assertions.is_exit_code(0),
             post_sds=PostSdsExpectation.constant(

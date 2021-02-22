@@ -11,7 +11,7 @@ from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, Previo
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.result import sh
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
+from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     cleanup_phase_instruction_that
@@ -31,8 +31,8 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Fi
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     sds_2_tcds_assertion
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils
-from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
+from exactly_lib_test.type_val_deps.test_resources.data import references as data_references
+from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
     matches_data_type_symbol_reference
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.util.process_execution.test_resources import proc_exe_env_assertions as asrt_pes
@@ -147,7 +147,8 @@ class TestSymbols(TestCaseBase):
 
     def test_that_default_expectation_assumes_no_symbol_usages(self):
         with self.assertRaises(utils.TestError):
-            unexpected_symbol_usages = [data_symbol_utils.symbol_reference('symbol_name')]
+            unexpected_symbol_usages = [
+                data_references.reference_to__on_direct_and_indirect('symbol_name')]
             self._check(
                 utils.ParserThatGives(
                     cleanup_phase_instruction_that(
@@ -170,7 +171,7 @@ class TestSymbols(TestCaseBase):
                     symbol_usages=asrt.matches_singleton_sequence(
                         matches_data_type_symbol_reference(
                             'symbol_name',
-                            is_any_data_type()
+                            reference_restrictions.is_type_convertible_to_string()
                         )
                     )),
             )

@@ -27,8 +27,8 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
-    equals_data_type_symbol_references
+from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
+    equals_symbol_references__convertible_to_string
 from exactly_lib_test.type_val_deps.types.path.test_resources.sdv_assertions import matches_path_sdv
 
 
@@ -110,11 +110,12 @@ def check_exe_file(put: unittest.TestCase,
                    actual: PathSdv):
     path_sdv_assertion = matches_path_sdv(
         expectation.path_ddv,
-        expected_symbol_references=equals_data_type_symbol_references(expectation.expected_symbol_references),
+        expected_symbol_references=equals_symbol_references__convertible_to_string(
+            expectation.expected_symbol_references),
         symbol_table=expectation.symbol_for_value_checks)
     path_sdv_assertion.apply_with_message(put, actual,
                                           'path sdv')
-    path_symbols = equals_data_type_symbol_references(expectation.expected_symbol_references)
+    path_symbols = equals_symbol_references__convertible_to_string(expectation.expected_symbol_references)
     path_symbols.apply_with_message(put, actual.references,
                                     'path-sdv/references')
 

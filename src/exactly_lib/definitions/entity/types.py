@@ -1,9 +1,13 @@
+from types import MappingProxyType
+from typing import Mapping, Tuple
+
 from exactly_lib.definitions import formatting, misc_texts, doc_format, matcher_model
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
+from exactly_lib.symbol import value_type
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.util.str_ import english_text
 from exactly_lib.util.str_.name import NameWithGender, NameWithGenderWithFormatting, \
@@ -165,9 +169,15 @@ ALL_TYPES_INFO_TUPLE = (
     FILES_CONDITION_TYPE_INFO,
 )
 
-DATA_TYPES_WITH_STRING_CONVERSION = (STRING_TYPE_INFO,
-                                     PATH_TYPE_INFO,
-                                     LIST_TYPE_INFO)
+VALUE_TYPE_2_TYPES_INFO_DICT: Mapping[ValueType, TypeNameAndCrossReferenceId] = MappingProxyType({
+    ti.value_type: ti
+    for ti in ALL_TYPES_INFO_TUPLE
+})
+
+DATA_TYPES_WITH_STRING_CONVERSION: Tuple[TypeNameAndCrossReferenceId, ...] = tuple([
+    VALUE_TYPE_2_TYPES_INFO_DICT[vt]
+    for vt in value_type.VALUE_TYPES_CONVERTIBLE_TO_STRING
+])
 
 
 def types_w_string_conversion__or_list() -> str:

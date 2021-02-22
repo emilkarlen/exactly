@@ -12,8 +12,8 @@ from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions as sut
+from exactly_lib_test.type_val_deps.test_resources.data import references as data_references
 from exactly_lib_test.type_val_deps.types.test_resources import string_matcher
 from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
     StringMatcherSymbolContext
@@ -86,7 +86,7 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
 
     def test_SHOULD_match_WHEN_references_match(self):
         # ARRANGE #
-        actual_reference = data_symbol_utils.symbol_reference('referenced element')
+        actual_reference = data_references.reference_to__on_direct_and_indirect('referenced element')
         actual_references = [actual_reference]
         actual_sdv = arbitrary_sdv_with_references(actual_references)
 
@@ -99,7 +99,7 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
 
     def test_SHOULD_not_match_WHEN_references_do_not_match(self):
         # ARRANGE #
-        actual_reference = data_symbol_utils.symbol_reference('referenced element')
+        actual_reference = data_references.reference_to__on_direct_and_indirect('referenced element')
         actual_references = [actual_reference]
         actual_sdv = arbitrary_sdv_with_references(actual_references)
 

@@ -22,10 +22,9 @@ from exactly_lib_test.impls.test_resources.validation.sdv_validators import SdvV
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
-    equals_string_restriction
-from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
+from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
     matches_symbol_reference_with_restriction_on_direct_target
+from exactly_lib_test.type_val_deps.test_resources.data.value_restriction import equals_string_restriction
 
 
 class Configuration(ConfigurationBase):

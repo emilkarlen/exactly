@@ -15,8 +15,8 @@ from exactly_lib.type_val_deps.types.path import path_part_sdvs
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.util import line_source
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.concrete_restrictions import \
-    unconditionally_unsatisfied_reference_restrictions, unconditionally_satisfied_reference_restrictions
+from exactly_lib_test.type_val_deps.test_resources.any_.reference_restrictions import \
+    reference_restrictions__unconditionally_unsatisfied, reference_restrictions__unconditionally_satisfied
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathSymbolContext
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 
@@ -33,7 +33,7 @@ class TestSymbolReference(unittest.TestCase):
     def test_WHEN_referenced_symbol_not_in_symbol_table_THEN_validation_error(self):
         # ARRANGE #
         symbol_table = empty_symbol_table()
-        symbol_usage = SymbolReference('undefined', unconditionally_satisfied_reference_restrictions())
+        symbol_usage = SymbolReference('undefined', reference_restrictions__unconditionally_satisfied())
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
@@ -45,7 +45,7 @@ class TestSymbolReference(unittest.TestCase):
         # ARRANGE #
         symbol_table = StringSymbolContext.of_constant('val_name', 'symbol string').symbol_table
         symbol_usage = SymbolReference('val_name',
-                                       unconditionally_unsatisfied_reference_restrictions())
+                                       reference_restrictions__unconditionally_unsatisfied())
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
@@ -107,7 +107,7 @@ class TestSymbolDefinition(unittest.TestCase):
         symbol = PathSymbolContext.of_sdv(
             'UNDEFINED',
             path_sdvs.rel_symbol(SymbolReference('REFERENCED',
-                                                 unconditionally_unsatisfied_reference_restrictions()),
+                                                 reference_restrictions__unconditionally_unsatisfied()),
                                  path_part_sdvs.from_constant_str('file-name')))
         # ACT #
         actual = sut.validate_symbol_usage(symbol.definition, symbol_table)
@@ -148,7 +148,7 @@ class TestValidationOfList(unittest.TestCase):
         # ARRANGE #
         symbol_table = empty_symbol_table()
         valid_definition = StringSymbolContext.of_constant('symbol', 'value').definition
-        valid__reference = SymbolReference('symbol', unconditionally_satisfied_reference_restrictions())
+        valid__reference = SymbolReference('symbol', reference_restrictions__unconditionally_satisfied())
         symbol_usages = [
             valid_definition,
             valid__reference,
@@ -161,7 +161,7 @@ class TestValidationOfList(unittest.TestCase):
         # ARRANGE #
         symbol_table = empty_symbol_table()
         valid_definition = StringSymbolContext.of_constant('name-of-definition', 'value').definition
-        invalid__reference = SymbolReference('undefined', unconditionally_satisfied_reference_restrictions())
+        invalid__reference = SymbolReference('undefined', reference_restrictions__unconditionally_satisfied())
         symbol_usages = [
             valid_definition,
             invalid__reference,

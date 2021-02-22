@@ -18,9 +18,10 @@ from exactly_lib_test.tcfs.test_resources import path_arguments
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh, pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
-    is_any_data_type_reference_restrictions
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.type_val_deps.test_resources.any_.restrictions_assertions import \
+    is_reference_restrictions__value_type
+from exactly_lib_test.type_val_deps.test_resources.data.data_restrictions_assertions import \
+    is_reference_restrictions__convertible_to_string
 
 
 def suite_for(conf: configuration.ProgramOutputInstructionConfiguration) -> unittest.TestSuite:
@@ -36,16 +37,18 @@ class TestSymbolReferences(configuration.TestCaseBase):
         # ARRANGE #
 
         symbol_in_program_source = NameAndValue('SYMBOL_IN_PROGRAM_SOURCE',
-                                                is_any_data_type_reference_restrictions())
+                                                is_reference_restrictions__convertible_to_string())
 
         symbol_in_matcher = NameAndValue('SYMBOL_IN_MATCHER',
-                                         is_any_data_type_reference_restrictions())
+                                         is_reference_restrictions__convertible_to_string())
 
         symbol_in_transformer_of_program = NameAndValue('SYMBOL_IN_TRANSFORMER_OF_PROGRAM',
-                                                        is_value_type_restriction([ValueType.STRING_TRANSFORMER]))
+                                                        is_reference_restrictions__value_type(
+                                                            [ValueType.STRING_TRANSFORMER]))
 
         symbol_in_transformer_of_instruction = NameAndValue('SYMBOL_IN_TRANSFORMER_OF_INSTRUCTION',
-                                                            is_value_type_restriction([ValueType.STRING_TRANSFORMER]))
+                                                            is_reference_restrictions__value_type(
+                                                                [ValueType.STRING_TRANSFORMER]))
 
         program_with_ref_to_symbols = pgm_args.program(
             pgm_args.interpret_py_source_line(

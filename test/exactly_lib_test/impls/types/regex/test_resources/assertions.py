@@ -14,10 +14,10 @@ from exactly_lib_test.impls.test_resources.validation.validation import Validati
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_ref_rest
-from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.ddv_w_deps_assertions import \
     matches_multi_dir_dependent_value
+from exactly_lib_test.type_val_deps.test_resources.data import data_restrictions_assertions as asrt_ref_rest, \
+    symbol_reference_assertions as asrt_sym_ref
 
 
 def matches_regex_sdv(
@@ -81,9 +81,9 @@ def matches_regex_sdv(
 RE_PATTERN_TYPE = type(re.compile(''))
 
 
-def is_reference_to_valid_regex_string_part(symbol_name: str) -> Assertion[SymbolReference]:
-    return asrt_sym_ref.is_reference_restrictions__to_type_convertible_to_string(symbol_name)
+def is_reference_to__regex_string_part(symbol_name: str) -> Assertion[SymbolReference]:
+    return asrt_sym_ref.is_reference_to__convertible_to_string(symbol_name)
 
 
-def is_regex_reference_restrictions() -> Assertion[ReferenceRestrictions]:
-    return asrt_ref_rest.is_reference_restrictions__to_type_convertible_to_string()
+def is_reference_restrictions__regex() -> Assertion[ReferenceRestrictions]:
+    return asrt_ref_rest.is_reference_restrictions__convertible_to_string()

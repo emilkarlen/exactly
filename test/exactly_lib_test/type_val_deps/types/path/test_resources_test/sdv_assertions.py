@@ -12,8 +12,8 @@ from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
-    equals_data_type_symbol_references
+from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
+    equals_symbol_references__convertible_to_string
 from exactly_lib_test.type_val_deps.types.path.test_resources import sdv_assertions as sut
 from exactly_lib_test.type_val_deps.types.path.test_resources.path_sdvs import \
     PathSdvTestImplWithConstantPathAndSymbolReferences
@@ -63,7 +63,7 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
                         assertion.apply_without_message(self, path_sdv)
                     with self.subTest(msg=sut.matches_path_sdv.__name__ + ' :: ' + test_case_descr):
                         assertion = sut.matches_path_sdv(path,
-                                                         equals_data_type_symbol_references(
+                                                         equals_symbol_references__convertible_to_string(
                                                              path_sdv.references),
                                                          symbols)
                         assertion.apply_without_message(self, path_sdv)
@@ -82,7 +82,8 @@ class TestNotEqualsWithoutSymbolReferencesCommonToBothAssertionMethods(unittest.
                     assertion.apply_without_message(self, path_sdv)
                 with self.subTest(msg=sut.matches_path_sdv.__name__ + ' :: ' + test_case_descr):
                     assertion = sut.matches_path_sdv(path,
-                                                     equals_data_type_symbol_references(path_sdv.references),
+                                                     equals_symbol_references__convertible_to_string(
+                                                         path_sdv.references),
                                                      symbols)
                     assertion.apply_without_message(self, path_sdv)
 

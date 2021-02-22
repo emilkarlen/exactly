@@ -43,6 +43,8 @@ class ValueType(Enum):
     FILES_CONDITION = 10
 
 
+VALUE_TYPES_CONVERTIBLE_TO_STRING = (ValueType.STRING, ValueType.PATH, ValueType.LIST)
+
 VALUE_TYPE_2_TYPE_CATEGORY = {
     ValueType.STRING: TypeCategory.DATA,
     ValueType.PATH: TypeCategory.DATA,

@@ -7,7 +7,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
-def is_type_category_restriction(expected: TypeCategory) -> Assertion[ReferenceRestrictions]:
+def is_reference_restrictions__type_category(expected: TypeCategory) -> Assertion[ReferenceRestrictions]:
     """
     Assertion on a :class:`ReferenceRestrictions`,
     that it is a :class:`TypeCategoryRestriction`,
@@ -19,7 +19,7 @@ def is_type_category_restriction(expected: TypeCategory) -> Assertion[ReferenceR
                                                     asrt.is_(expected)))
 
 
-def is_value_type_restriction(expected: Sequence[ValueType]) -> Assertion[ReferenceRestrictions]:
+def is_reference_restrictions__value_type(expected: Sequence[ValueType]) -> Assertion[ReferenceRestrictions]:
     """
     Assertion on a :class:`ReferenceRestrictions`,
     that it is a :class:`TypeCategoryRestriction`,
@@ -34,8 +34,8 @@ def is_value_type_restriction(expected: Sequence[ValueType]) -> Assertion[Refere
                                  )
 
 
-def is_value_type_restriction__single(expected: ValueType) -> Assertion[ReferenceRestrictions]:
-    return is_value_type_restriction((expected,))
+def is_reference_restrictions__value_type__single(expected: ValueType) -> Assertion[ReferenceRestrictions]:
+    return is_reference_restrictions__value_type((expected,))
 
 
 def _get_value_types__as_list(x: ValueTypeRestriction) -> List[ValueType]:

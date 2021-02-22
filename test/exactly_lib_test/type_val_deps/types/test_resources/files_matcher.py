@@ -11,7 +11,8 @@ from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.type_val_deps.test_resources.any_.restrictions_assertions import \
+    is_reference_restrictions__value_type
 
 
 class FilesMatcherTestImpl(FilesMatcherImplBase):
@@ -78,7 +79,7 @@ def value_with_result(result: bool,
     )
 
 
-IS_FILES_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction((ValueType.FILES_MATCHER,))
+IS_FILES_MATCHER_REFERENCE_RESTRICTION = is_reference_restrictions__value_type((ValueType.FILES_MATCHER,))
 
 
 def is_reference_to_files_matcher__usage(name_of_matcher: str) -> Assertion[SymbolUsage]:

@@ -37,7 +37,7 @@ from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_rest
+from exactly_lib_test.type_val_deps.test_resources.data import data_restrictions_assertions as asrt_rest
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
@@ -140,7 +140,7 @@ class TestSymbolReferences(unittest.TestCase):
         program_symbol = StringConstantSymbolContext(
             'program_name_symbol',
             'the-program',
-            default_restrictions=asrt_rest.is_string_made_up_of_just_strings_reference_restrictions(),
+            default_restrictions=asrt_rest.is_reference_restrictions__string_made_up_of_just_strings(),
         )
         argument_list_symbol = ListConstantSymbolContext(
             'arguments_symbol',

@@ -137,7 +137,7 @@ class TestSuccessfulParse(unittest.TestCase):
                                            ArgumentOfStringAbsStx.of_str('argument')],
                           expected_resolved_values=lambda tcds: [argument_string_symbol.str_value, 'argument'],
                           expected_symbol_references=[
-                              argument_string_symbol.reference_assertion__any_data_type
+                              argument_string_symbol.reference_assertion__convertible_to_string
                           ]),
             ArgumentsCase('existing file argument',
                           source_elements=[

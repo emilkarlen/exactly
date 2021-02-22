@@ -139,7 +139,7 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseWInterpreterThatRunsP
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
                 symbol_for_source_file.reference_assertion__path_or_string(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN),
-                argument_symbol.reference_assertion__any_data_type,
+                argument_symbol.reference_assertion__convertible_to_string,
             ]),
             execute=eh_assertions.is_exit_code(0),
             post_sds=PostSdsExpectation.constant(

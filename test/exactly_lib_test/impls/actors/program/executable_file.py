@@ -180,7 +180,7 @@ class TestSymbolUsages(unittest.TestCase):
 
         expectation = Expectation(
             execute=eh_assertions.is_exit_code(0),
-            symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__any_data_type),
+            symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__convertible_to_string),
             post_sds=PostSdsExpectation.constant(
                 sub_process_result_from_execute=pr.stdout(str_asrt.contains(file_name_of_referenced_file))
             ),
@@ -260,7 +260,7 @@ class TestSymbolUsages(unittest.TestCase):
             execute=eh_assertions.is_exit_code(0),
             symbol_usages=asrt.matches_sequence([
                 symbol_for_executable.reference_assertion__path_or_string(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN),
-                argument_symbol.reference_assertion__any_data_type,
+                argument_symbol.reference_assertion__convertible_to_string,
             ]),
             post_sds=PostSdsExpectation.constant(
                 sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
@@ -351,7 +351,7 @@ class TestSymbolUsages(unittest.TestCase):
 
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence(
-                [symbol.reference_assertion__any_data_type]
+                [symbol.reference_assertion__convertible_to_string]
             ),
             execute=eh_assertions.is_exit_code(0),
             post_sds=PostSdsExpectation.constant(

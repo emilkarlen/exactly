@@ -16,20 +16,21 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_rest
-from exactly_lib_test.type_val_deps.data.test_resources.symbol_context import DataSymbolValueContext, \
+from exactly_lib_test.type_val_deps.test_resources.data import value_restriction, \
+    data_restrictions_assertions as asrt_rest
+from exactly_lib_test.type_val_deps.test_resources.data.symbol_context import DataSymbolValueContext, \
     DataTypeSymbolContext
-from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
+from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
     symbol_usage_equals_data_type_symbol_reference
 from exactly_lib_test.type_val_deps.types.string.test_resources import sdv_assertions as asrt_value
 from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import NonHereDocStringAbsStx, \
     StringReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string_sdvs import string_sdv_of_single_symbol_reference
 
-IS_STRING_REFERENCE_RESTRICTION = asrt_rest.equals_data_type_reference_restrictions(
+IS_STRING_REFERENCE_RESTRICTION = asrt_rest.equals_reference_restrictions__convertible_to_string(
     string_made_up_by_just_strings())
 
-IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION = asrt_rest.equals_data_type_reference_restrictions(
+IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION = asrt_rest.equals_reference_restrictions__convertible_to_string(
     string_made_up_by_just_strings())
 
 
@@ -48,7 +49,8 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
     def __init__(self,
                  sdv: StringSdv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                 default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
+                 default_restrictions: Assertion[
+                     ReferenceRestrictions] = value_restriction.is_value_restriction__string,
                  ):
         super().__init__(sdv, definition_source)
         self._default_restrictions = default_restrictions
@@ -56,7 +58,7 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
     @staticmethod
     def of_sdv(sdv: StringSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-               default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
+               default_restrictions: Assertion[ReferenceRestrictions] = value_restriction.is_value_restriction__string,
                ) -> 'StringSymbolValueContext':
         """
         Use this to create from an SDV, since constructor will
@@ -67,16 +69,17 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
     @staticmethod
     def of_constant(primitive: str,
                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                    default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
+                    default_restrictions: Assertion[
+                        ReferenceRestrictions] = value_restriction.is_value_restriction__string,
                     ) -> 'StringSymbolValueContext':
         return StringSymbolValueContext(string_sdvs.str_constant(primitive), definition_source, default_restrictions)
 
     @staticmethod
     def of_reference(
             referenced_symbol_name: str,
-            restrictions: ReferenceRestrictions = reference_restrictions.is_any_data_type(),
+            restrictions: ReferenceRestrictions = reference_restrictions.is_type_convertible_to_string(),
             definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-            default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
+            default_restrictions: Assertion[ReferenceRestrictions] = value_restriction.is_value_restriction__string,
     ) -> 'StringSymbolValueContext':
         return StringSymbolValueContext.of_sdv(string_sdv_of_single_symbol_reference(referenced_symbol_name,
                                                                                      restrictions),
@@ -117,7 +120,7 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
                                             ) -> Assertion[SymbolReference]:
         return asrt_sym_ref.matches_reference_2(
             symbol_name,
-            asrt_rest.equals_data_type_reference_restrictions(
+            asrt_rest.equals_reference_restrictions__convertible_to_string(
                 parse_path.path_or_string_reference_restrictions(
                     accepted_relativities)
             )
@@ -149,7 +152,7 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
     def of_sdv(name: str,
                sdv: StringSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-               default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
+               default_restrictions: Assertion[ReferenceRestrictions] = value_restriction.is_value_restriction__string,
                ) -> 'StringSymbolContext':
         return StringSymbolContext(
             name,
@@ -160,7 +163,8 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
     def of_constant(name: str,
                     primitive: str,
                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                    default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
+                    default_restrictions: Assertion[
+                        ReferenceRestrictions] = value_restriction.is_value_restriction__string,
                     ) -> 'StringSymbolContext':
         return StringSymbolContext(
             name,
@@ -171,9 +175,9 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
     def of_reference(
             name: str,
             referenced_symbol_name: str,
-            restrictions: ReferenceRestrictions = reference_restrictions.is_any_data_type(),
+            restrictions: ReferenceRestrictions = reference_restrictions.is_type_convertible_to_string(),
             definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-            default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
+            default_restrictions: Assertion[ReferenceRestrictions] = value_restriction.is_value_restriction__string,
     ) -> 'StringSymbolContext':
         return StringSymbolContext(name,
                                    StringSymbolValueContext.of_reference(referenced_symbol_name,
@@ -214,14 +218,16 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
     def reference_assertion__path_component(self) -> Assertion[SymbolReference]:
         return asrt_sym_usage.matches_reference__ref(
             asrt.equals(self.name),
-            asrt_rest.equals_data_type_reference_restrictions(parse_path.PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
+            asrt_rest.equals_reference_restrictions__convertible_to_string(
+                parse_path.PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
         )
 
     @property
     def usage_assertion__path_component(self) -> Assertion[SymbolUsage]:
         return asrt_sym_usage.matches_reference(
             asrt.equals(self.name),
-            asrt_rest.equals_data_type_reference_restrictions(parse_path.PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
+            asrt_rest.equals_reference_restrictions__convertible_to_string(
+                parse_path.PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
         )
 
     def reference_assertion__path_or_string(self, accepted_relativities: PathRelativityVariants
@@ -238,7 +244,8 @@ class StringConstantSymbolContext(StringSymbolContext):
                  name: str,
                  constant: str = 'string value',
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                 default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
+                 default_restrictions:
+                 Assertion[ReferenceRestrictions] = value_restriction.is_value_restriction__string,
                  ):
         super().__init__(name,
                          StringSymbolValueContext.of_constant(constant, definition_source, default_restrictions))
@@ -254,7 +261,8 @@ class StringIntConstantSymbolContext(StringConstantSymbolContext):
                  name: str,
                  constant: int,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                 default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
+                 default_restrictions:
+                 Assertion[ReferenceRestrictions] = value_restriction.is_value_restriction__string,
                  ):
         super().__init__(name, str(constant), definition_source, default_restrictions)
         self._int_constant = constant

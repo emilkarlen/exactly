@@ -16,9 +16,10 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
+from exactly_lib_test.type_val_deps.test_resources.any_.restrictions_assertions import \
+    is_reference_restrictions__value_type
+from exactly_lib_test.type_val_deps.test_resources.logic.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.abstract_syntax import \
     StringMatcherSymbolReferenceAbsStx
 
@@ -36,7 +37,7 @@ def string_matcher_sdv_constant_test_impl(resolved_value: StringMatcher,
     )
 
 
-IS_STRING_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction((ValueType.STRING_MATCHER,))
+IS_STRING_MATCHER_REFERENCE_RESTRICTION = is_reference_restrictions__value_type((ValueType.STRING_MATCHER,))
 
 
 def is_reference_to_string_matcher__usage(name_of_matcher: str) -> Assertion[SymbolUsage]:

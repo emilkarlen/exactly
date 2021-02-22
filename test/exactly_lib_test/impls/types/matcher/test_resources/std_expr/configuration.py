@@ -9,7 +9,7 @@ from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib_test.impls.types.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
+from exactly_lib_test.type_val_deps.test_resources.logic.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
 
 MODEL = TypeVar('MODEL')

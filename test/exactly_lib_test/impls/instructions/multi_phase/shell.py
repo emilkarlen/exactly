@@ -71,8 +71,8 @@ class TestSymbolReferences(unittest.TestCase):
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([
-                python_interpreter_symbol.usage_assertion__any_data_type,
-                file_to_interpret_symbol.usage_assertion__any_data_type,
+                python_interpreter_symbol.usage_assertion__convertible_to_string,
+                file_to_interpret_symbol.usage_assertion__convertible_to_string,
             ]),
             main_result=result_assertions.equals(expected_exit_status, ''),
         )

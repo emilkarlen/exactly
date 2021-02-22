@@ -4,8 +4,8 @@ from exactly_lib.type_val_deps.types.list_ import list_sdvs
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.type_val_deps.types.string_.string_sdvs import str_constant
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
-from exactly_lib_test.type_val_deps.data.test_resources import any_sdv_assertions as sut
-from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils as su
+from exactly_lib_test.type_val_deps.test_resources.data import any_sdv_assertions as sut
+from exactly_lib_test.type_val_deps.test_resources.data import references as data_references
 from exactly_lib_test.type_val_deps.types.data.data_type_sdv_visitor import UnknownDataTypeSdvClass
 from exactly_lib_test.type_val_deps.types.path.test_resources.simple_path import path_test_impl
 
@@ -64,6 +64,8 @@ class TestEqualsResolver(unittest.TestCase):
     def test_not_equals__list(self):
         # ARRANGE #
         expected = list_sdvs.from_str_constants(['value'])
-        actual = list_sdvs.from_elements([list_sdvs.symbol_element(su.symbol_reference('symbol_name'))])
+        actual = list_sdvs.from_elements(
+            [list_sdvs.symbol_element(
+                data_references.reference_to__on_direct_and_indirect('symbol_name'))])
         # ACT & ASSERT #
         assert_that_assertion_fails(sut.equals_data_type_sdv(expected), actual)
