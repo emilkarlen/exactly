@@ -1,2 +1,9 @@
+[cases]
+
+ref-to-undef-symbol.case
+
 [suites]
 
+illegal-type
+duplicate-def
+path
