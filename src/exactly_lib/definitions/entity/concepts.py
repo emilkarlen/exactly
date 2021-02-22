@@ -133,7 +133,7 @@ PREPROCESSOR_CONCEPT_INFO = name_and_ref_target(
 
 SHELL_SYNTAX_CONCEPT_INFO = name_and_ref_target(
     NameWithGender('a', 'shell syntax', "shell syntaxes"),
-    'Quoting of strings in command lines.'
+    'Quoting of {plain_string:s} in command lines.'.format(plain_string=misc_texts.PLAIN_STRING)
 )
 
 SUITE_REPORTER_CONCEPT_INFO = name_and_ref_target_for_entity_type(

@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.definitions import matcher_model
 from exactly_lib.impls.types.expression import grammar
 from exactly_lib.impls.types.string_matcher.impl import emptiness
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -20,9 +21,12 @@ class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
-        return TextParser().fnap(_DESCRIPTION_OF_EMPTY)
+        tp = TextParser({
+            'model': matcher_model.TEXT_MODEL,
+        })
+        return tp.fnap(_DESCRIPTION_OF_EMPTY)
 
 
 _DESCRIPTION_OF_EMPTY = """\
-Matches iff the string is empty.
+Matches iff the {model} is empty.
 """

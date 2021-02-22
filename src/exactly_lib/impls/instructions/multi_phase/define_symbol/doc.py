@@ -24,7 +24,6 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                                   IsAHelperIfInAssertPhase):
     def __init__(self, name: str, is_in_assert_phase: bool):
         self.name = syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument
-        self.string_value = syntax_elements.STRING_SYNTAX_ELEMENT.argument
         super().__init__(name,
                          {
                              'NAME': self.name.name,
@@ -58,21 +57,18 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                 _PATH_ARGUMENT.name,
                 type_parser.REL_OPTION_ARGUMENT_CONFIGURATION.options.default_option,
                 def_instruction_rel_cd_description(_PATH_ARGUMENT.name)),
-
-            SyntaxElementDescription(self.string_value.name,
-                                     self._tp.fnap(syntax_descriptions.STRING_SYNTAX_ELEMENT_DESCRIPTION)),
-
-            SyntaxElementDescription(self.name.name,
-                                     self._tp.fnap(syntax_descriptions.SYMBOL_NAME_SYNTAX_DESCRIPTION)),
         ])
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
-        name_and_cross_refs = [concepts.SYMBOL_CONCEPT_INFO,
-                               concepts.TYPE_CONCEPT_INFO,
-                               concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
-                               syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
-                               syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
-                               ]
+        name_and_cross_refs = (
+                [concepts.SYMBOL_CONCEPT_INFO,
+                 concepts.TYPE_CONCEPT_INFO,
+                 concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
+                 syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
+                 syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
+                 ] +
+                list(syntax_elements.ALL_ELEMENTS_CORRESPONDING_TO_TYPES)
+        )
         return name_and_cross_ref.cross_reference_id_list(name_and_cross_refs)
 
     @staticmethod

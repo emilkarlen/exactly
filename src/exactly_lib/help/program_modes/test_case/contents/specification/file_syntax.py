@@ -81,6 +81,7 @@ def _text_parser() -> TextParser:
         'file_inclusion_directive_in_text': formatting.keyword(directives.INCLUDING_DIRECTIVE_INFO.singular_name),
         'file_inclusion_directive': directives.INCLUDING_DIRECTIVE_INFO.singular_name,
         'shell_command': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND),
+        'plain_string': misc_texts.PLAIN_STRING,
         'instruction__shell_cmd_line': instruction_names.SHELL_INSTRUCTION_NAME,
         'instruction__stdout': instruction_names.CONTENTS_OF_STDOUT_INSTRUCTION_NAME,
         'instruction__stderr': instruction_names.CONTENTS_OF_STDERR_INSTRUCTION_NAME,
@@ -192,7 +193,7 @@ The purpose of {instruction_description:a} is to describe the meaning of the {in
 text that is easier to understand than source code.
 
 
-{instruction_description:a/u} is a string within {description_delimiter_char_name:s} ({description_delimiter}).
+{instruction_description:a/u} is a {plain_string} within {description_delimiter_char_name:s} ({description_delimiter}).
 
 
 For example, a free text may be easier to understand than {shell_command:a}:

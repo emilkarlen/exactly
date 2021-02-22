@@ -101,6 +101,7 @@ _TEXT_PARSER = TextParser({
     'preserve_new_lines_option': formatting.argument_option(names.PRESERVE_NEW_LINES_OPTION_NAME),
     '_REG_EX_': _REGEX_ARGUMENT.name,
     '_STRING_': _REPLACEMENT_ARGUMENT.name,
+    'plain_string': misc_texts.PLAIN_STRING,
     'LINES_SELECTOR_MATCHER': names.LINES_SELECTION_OPTION.argument,
     'line_matcher_model': matcher_model.LINE_MATCHER_MODEL,
     'Note': headers.NOTE_LINE_HEADER,
@@ -109,7 +110,7 @@ _TEXT_PARSER = TextParser({
 })
 
 _DESCRIPTION = """\
-Replaces every string matching {_REG_EX_} (on a single line) with {_STRING_}.
+Replaces every {plain_string} matching {_REG_EX_} (on a single line) with {_STRING_}.
 
 
 Backslash escapes in {_STRING_} are processed.
@@ -119,7 +120,7 @@ That is, \\n is converted to a single newline character, \\r is converted to a c
 Unknown escapes such as \\& are left alone.
 
 
-Back-references, such as \\6, are replaced with the substring matched by group 6 in {_REG_EX_}.
+Back-references, such as \\6, are replaced with the sub{plain_string} matched by group 6 in {_REG_EX_}.
 
 
 Every line ends with {NL},

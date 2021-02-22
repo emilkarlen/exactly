@@ -18,11 +18,12 @@ class _Documentation(SyntaxElementDocumentation):
     def __init__(self):
         super().__init__(TypeCategory.DATA,
                          syntax_elements.STRING_SYNTAX_ELEMENT)
-
+        the_string_type = 'the ' + types.STRING_TYPE_INFO.singular_name
         self._tp = TextParser({
             'string_type': formatting.keyword(types.STRING_TYPE_INFO.name.singular),
             'list_type': formatting.keyword(types.LIST_TYPE_INFO.name.singular),
             'path_type': formatting.keyword(types.PATH_TYPE_INFO.name.singular),
+            'A_ref_to_symbol_w_string_conversion': types.a_ref_to_a_symbol_w_string_conversion__sentence(),
             'symbol': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
             'CHR': 'CHARACTER',
             'whitespace': misc_texts.WHITESPACE,
@@ -31,8 +32,8 @@ class _Documentation(SyntaxElementDocumentation):
 
             'soft_quotes': formatting.concept(syntax_descriptions.SOFT_QUOTE_NAME.plural),
             'hard_quotes': formatting.concept(syntax_descriptions.HARD_QUOTE_NAME.plural),
-            'Sym_refs_are_substituted': syntax_descriptions.symbols_are_substituted_in('the string'),
-            'Sym_refs_are_not_substituted': syntax_descriptions.symbols_are_not_substituted_in('the string'),
+            'Sym_refs_are_substituted': syntax_descriptions.symbols_are_substituted_in(the_string_type),
+            'Sym_refs_are_not_substituted': syntax_descriptions.symbols_are_not_substituted_in(the_string_type),
             'REL_CD_OPTION': path.REL_CWD_OPTION,
         })
 
@@ -110,10 +111,10 @@ Characters surrounded by {hard_quotes} ({HARD_Q}).
 """
 
 _SYMBOL_REFERENCE_DESCRIPTION = """\
-A reference to a {symbol} defined as either {string_type}, {list_type} or {path_type}.
+{A_ref_to_symbol_w_string_conversion}
 
 
-An empty {list_type} value is rendered as an empty string.
+An empty {list_type} value is rendered as an empty {string_type}.
 
 
 A non-empty {list_type} value is rendered by separating the elements with a single space.

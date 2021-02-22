@@ -110,8 +110,9 @@ INTEGER_SYNTAX_ELEMENT = name_and_ref_target(
 
 PROGRAM_ARGUMENT_SYNTAX_ELEMENT = name_and_ref_target(
     'PROGRAM-ARGUMENT',
-    'An individual string, or a list of strings, '
-    'with additional features for text-until-end-of-line and references to existing files',
+    ('An individual {string_type}, or a list of {string_type:s}, '
+     'with additional features for text-until-end-of-line and references to existing files'
+     ).format(string_type=types.STRING_TYPE_INFO.name),
 )
 
 ACT_INTERPRETER_SYNTAX_ELEMENT = name_and_ref_target(
@@ -124,5 +125,20 @@ ACT_INTERPRETER_SYNTAX_ELEMENT = name_and_ref_target(
 STRING_SOURCE_SYNTAX_ELEMENT = name_and_ref_target(
     'STRING-SOURCE',
     'A {}, from various sources'.format(
-        types.STRING_TYPE_INFO.singular_name)
+        types.STRING_TYPE_INFO.singular_name
+    )
+)
+
+ALL_ELEMENTS_CORRESPONDING_TO_TYPES = (
+    STRING_SYNTAX_ELEMENT,
+    LIST_SYNTAX_ELEMENT,
+    PATH_SYNTAX_ELEMENT,
+    FILES_CONDITION_SYNTAX_ELEMENT,
+    INTEGER_MATCHER_SYNTAX_ELEMENT,
+    LINE_MATCHER_SYNTAX_ELEMENT,
+    FILE_MATCHER_SYNTAX_ELEMENT,
+    FILES_MATCHER_SYNTAX_ELEMENT,
+    STRING_MATCHER_SYNTAX_ELEMENT,
+    STRING_TRANSFORMER_SYNTAX_ELEMENT,
+    PROGRAM_SYNTAX_ELEMENT,
 )

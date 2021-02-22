@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.definitions import matcher_model
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.types.expression import grammar
@@ -41,7 +42,7 @@ class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
         tp = TextParser({
             'REGEX': syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
             'full_regex_match': option_syntax.option_syntax(matcher_options.FULL_MATCH_ARGUMENT_OPTION),
-
+            'model': matcher_model.TEXT_MODEL,
         })
         return tp.fnap(_DESCRIPTION)
 
@@ -51,9 +52,9 @@ class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
 
 
 _DESCRIPTION = """\
-Matches iff {REGEX} matches any part of the string.
+Matches iff {REGEX} matches any part of the {model}.
 
 
 If {full_regex_match} is given,
-then {REGEX} must match the full string.
+then {REGEX} must match the full {model}.
 """

@@ -22,7 +22,7 @@ class SyntaxDescription(documentation.SyntaxDescriptionBase):
         from exactly_lib.impls.types.matcher import help_texts
         from exactly_lib.util.textformat.textformat_parser import TextParser
         tp = TextParser({
-            'MODEL': matcher_model.STRING_MATCHER_MODEL,
+            'MODEL': matcher_model.TEXT_MODEL,
             'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
             'stdin': misc_texts.STDIN,
         })

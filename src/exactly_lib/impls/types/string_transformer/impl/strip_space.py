@@ -1,9 +1,8 @@
 from typing import Iterable, Sequence, Callable
 
 from exactly_lib.common.help import headers
-from exactly_lib.definitions import doc_format
+from exactly_lib.definitions import doc_format, matcher_model
 from exactly_lib.definitions import misc_texts, formatting
-from exactly_lib.definitions.entity import types
 from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.impls.types.expression import grammar
 from exactly_lib.impls.types.string_transformer import names
@@ -89,7 +88,7 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
     def description_rest(self) -> Sequence[ParagraphItem]:
         tp = TextParser({
             'NL': misc_texts.NEW_LINE_STRING_CONSTANT,
-            'string': types.STRING_TYPE_INFO.singular_name,
+            'model': matcher_model.TEXT_MODEL,
             'white_space': misc_texts.WHITESPACE,
             'Note': headers.NOTE_LINE_HEADER,
             'LINES_ARE_SEPARATED_BY_NEW_LINE': misc_texts.LINES_ARE_SEPARATED_BY_NEW_LINE,
@@ -221,15 +220,15 @@ def _strip_trailing_new_lines(lines: Iterable[str]) -> Iterable[str]:
 
 
 _DESCRIPTION__MAIN = """\
-Removes all {white_space} at the beginning and end of the {string} (by default).
+Removes all {white_space} at the beginning and end of the {model} (by default).
 """
 
 _DESCRIPTION__TRAILING_SPACE = """\
-Removes all {white_space} at the end of the {string}.
+Removes all {white_space} at the end of the {model}.
 """
 
 _DESCRIPTION__TRAILING_NEW_LINES = """\
-Removes every {NL} at the end of the {string}.
+Removes every {NL} at the end of the {model}.
 
 
 {Note}

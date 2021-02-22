@@ -7,8 +7,6 @@ _SYMBOLS_ARE_NOT_SUBSTITUTED_IN = 'Any {} appearing in {} is NOT substituted.'
 
 SYMBOL_NAME_SYNTAX_DESCRIPTION = 'A combination of alphanumeric characters and underscores.'
 
-STRING_SYNTAX_ELEMENT_DESCRIPTION = 'A single word, or a single quoted text.'
-
 SOFT_QUOTE_NAME = a_name_with_plural_s('soft quote')
 HARD_QUOTE_NAME = a_name_with_plural_s('hard quote')
 

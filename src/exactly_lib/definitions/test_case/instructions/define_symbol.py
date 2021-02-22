@@ -97,8 +97,7 @@ DATA_TYPE_INFO_DICT = {
 
     DataValueType.LIST:
         TypeInfo(types.LIST_TYPE_INFO,
-                 [a.Single(a.Multiplicity.ZERO_OR_MORE,
-                           a.Named(type_system.LIST_ELEMENT))]),
+                 [syntax_elements.LIST_SYNTAX_ELEMENT.single_mandatory]),
 }
 
 

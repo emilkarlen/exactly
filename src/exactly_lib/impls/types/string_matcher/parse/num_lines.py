@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.definitions import matcher_model
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls import texts
@@ -30,6 +31,8 @@ class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     def description_rest(self) -> Sequence[ParagraphItem]:
         tp = TextParser({
             'INTEGER_MATCHER': syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.singular_name,
+            'model': matcher_model.TEXT_MODEL,
+            'line_model': matcher_model.LINE_MATCHER_MODEL,
         })
         return (
                 tp.fnap(_DESCRIPTION) +
@@ -44,5 +47,5 @@ class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
 
 
 _DESCRIPTION = """\
-Matches iff the number of lines of the string matches {INTEGER_MATCHER}.
+Matches iff the number of {line_model:s} of the {model} matches {INTEGER_MATCHER}.
 """

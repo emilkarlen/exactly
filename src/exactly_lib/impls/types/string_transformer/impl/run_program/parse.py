@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.definitions import misc_texts
+from exactly_lib.definitions import misc_texts, matcher_model
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.impls import texts
@@ -37,6 +37,7 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
             'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
             'stdin': misc_texts.STDIN,
             'stdout': misc_texts.STDOUT,
+            'model': matcher_model.TEXT_MODEL,
         })
         return tp.fnap(_DESCRIPTION_REST) + texts.run_outcome__with_ignored_exit_code_option()
 
@@ -53,5 +54,5 @@ _DESCRIPTION_REST = """\
 Runs {program:a}, with input and output via {stdin} and {stdout}.
 
 
-If {PROGRAM} defines {stdin}, then the string to transform is appended to that {stdin}.
+If {PROGRAM} defines {stdin}, then the {model} to transform is appended to that {stdin}.
 """

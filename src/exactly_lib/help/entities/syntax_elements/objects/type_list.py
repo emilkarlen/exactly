@@ -9,7 +9,6 @@ from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.str_ import english_text
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -20,12 +19,8 @@ class _Documentation(SyntaxElementDocumentation):
                          syntax_elements.LIST_SYNTAX_ELEMENT)
 
         self._tp = TextParser({
-            'string_type': types.STRING_TYPE_INFO.name,
             'list_type': types.LIST_TYPE_INFO.name,
-            'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
-            'to_string_types': english_text.or_sequence([
-                dt.singular_name for dt in types.DATA_TYPES_WITH_STRING_CONVERSION
-            ]),
+            'A_ref_to_symbol_w_string_conversion': types.a_ref_to_a_symbol_w_string_conversion__sentence(),
         })
 
     def invokation_variants(self) -> List[InvokationVariant]:
@@ -72,7 +67,7 @@ class _Documentation(SyntaxElementDocumentation):
 DOCUMENTATION = _Documentation()
 
 _SYMBOL_REFERENCE_DESCRIPTION = """\
-A reference to a {symbol} defined as either {to_string_types}.
+{A_ref_to_symbol_w_string_conversion}
 
 
 If it is a {list_type}, it is concatenated with the surrounding elements -

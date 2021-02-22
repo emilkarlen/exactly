@@ -1,4 +1,4 @@
-from exactly_lib.definitions import misc_texts
+from exactly_lib.definitions import misc_texts, matcher_model
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
 from exactly_lib.definitions.entity import types, syntax_elements, concepts
@@ -20,6 +20,7 @@ _TP = TextParser({
     'First_line_number': line_matcher.FIRST_LINE_NUMBER_DESCRIPTION,
     'Line_separator_description': line_matcher.LINE_SEPARATOR_DESCRIPTION,
     'STRING_SOURCE': syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.singular_name,
+    'model': matcher_model.TEXT_MODEL,
 })
 
 _LINE_MATCHER_DESCRIPTION = """\
@@ -40,11 +41,11 @@ The line separator is not included in the text contents.
 """
 
 _STRING_TRANSFORMER_DESCRIPTION = """\
-The string to transform is given by a {STRING_SOURCE}.
+The {model} to transform is given by a {STRING_SOURCE}.
 """
 
 _STRING_MATCHER_DESCRIPTION = """\
-The string to match is given by a {STRING_SOURCE}.
+The {model} to match is given by a {STRING_SOURCE}.
 """
 
 INTEGER_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(

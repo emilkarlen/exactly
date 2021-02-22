@@ -19,7 +19,7 @@ and for the {run} instruction, e.g.
 """
 
 _STRING_MAIN_DESCRIPTION_REST = """\
-Used for arbitrary string values, and relative file names.
+Used for arbitrary {string_type} values, and relative file names.
  
  
 When used as a relative file name, {POSIX_SYNTAX} should be used.
@@ -29,6 +29,7 @@ _TEXT_PARSER = TextParser({
     'run': InstructionName(instruction_names.RUN_INSTRUCTION_NAME),
     'POSIX_SYNTAX': POSIX_SYNTAX,
     'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
+    'string_type': types.STRING_TYPE_INFO.name,
 })
 
 STRING_DOCUMENTATION = TypeDocumentation(TypeCategory.DATA,

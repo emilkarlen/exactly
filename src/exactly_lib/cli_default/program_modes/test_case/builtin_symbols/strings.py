@@ -23,10 +23,11 @@ def all_strings() -> Tuple[BuiltinSymbol, ...]:
             ValueType.STRING,
             string_sdvs.str_constant(os.linesep),
             CustomSymbolDocumentation(
-                "The string that separates text lines on the {current_os} ({NL}, {WIN_LINE_SEP}, e.g.).".format(
+                "The {plain_string} that separates text lines on the {current_os} ({NL}, {WIN_LINE_SEP}, e.g.).".format(
                     NL=misc_texts.NEW_LINE_STRING_CONSTANT,
                     WIN_LINE_SEP=formatting.string_constant('\\r\\n'),
                     current_os=misc_texts.CURRENT_OS,
+                    plain_string=misc_texts.PLAIN_STRING,
                 ),
                 SectionContents.empty(),
             ),

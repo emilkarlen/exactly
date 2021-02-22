@@ -1,10 +1,11 @@
-from exactly_lib.definitions import formatting, misc_texts, doc_format
+from exactly_lib.definitions import formatting, misc_texts, doc_format, matcher_model
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.symbol.value_type import ValueType
+from exactly_lib.util.str_ import english_text
 from exactly_lib.util.str_.name import NameWithGender, NameWithGenderWithFormatting, \
     a_name_with_plural_s, an_name_with_plural_s
 from exactly_lib.util.textformat.structure.core import StringText
@@ -77,7 +78,7 @@ STRING_TYPE_INFO = name_and_ref_target(
 LIST_TYPE_INFO = name_and_ref_target(
     ValueType.LIST,
     a_name_with_plural_s('list'),
-    'A sequence of zero or more strings',
+    'A sequence of zero or more {} elements'.format(STRING_TYPE_INFO.singular_name),
 )
 
 PATH_TYPE_INFO = name_and_ref_target(
@@ -90,37 +91,50 @@ PATH_TYPE_INFO = name_and_ref_target(
 INTEGER_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.INTEGER_MATCHER,
     an_name_with_plural_s('integer-matcher'),
-    'Matches an integer'
+    'Matches {model:a}'.format(
+        model=matcher_model.INTEGER_MATCHER_MODEL
+    )
 )
 
 LINE_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.LINE_MATCHER,
     a_name_with_plural_s('line-matcher'),
-    'Matches individual text lines of a string'
+    'Matches individual {model:s} of {text_model:a}'.format(
+        model=matcher_model.LINE_MATCHER_MODEL,
+        text_model=matcher_model.TEXT_MODEL,
+    )
 )
 
 FILE_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.FILE_MATCHER,
     a_name_with_plural_s('file-matcher'),
-    'Matches properties of an existing file - type, name and contents'
+    'Matches properties of an existing {model} - type, name and contents'.format(
+        model=matcher_model.FILE_MATCHER_MODEL,
+    ),
 )
 
 FILES_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.FILES_MATCHER,
     a_name_with_plural_s('files-matcher'),
-    'Matches a set of files (e.g. the contents of a directory)'
+    'Matches {model:a} (e.g. the contents of a directory)'.format(
+        model=matcher_model.FILES_MATCHER_MODEL,
+    ),
 )
 
 STRING_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.STRING_MATCHER,
     a_name_with_plural_s('string-matcher'),
-    'Matches a string (a sequence of characters)',
+    'Matches {model:a} (a sequence of characters)'.format(
+        model=matcher_model.TEXT_MODEL,
+    ),
 )
 
 STRING_TRANSFORMER_TYPE_INFO = name_and_ref_target(
     ValueType.STRING_TRANSFORMER,
     a_name_with_plural_s('string-transformer'),
-    'Transforms a string (a sequence of characters)',
+    'Transforms {model:a} (a sequence of characters)'.format(
+        model=matcher_model.TEXT_MODEL,
+    ),
 )
 
 PROGRAM_TYPE_INFO = name_and_ref_target(
@@ -154,3 +168,21 @@ ALL_TYPES_INFO_TUPLE = (
 DATA_TYPES_WITH_STRING_CONVERSION = (STRING_TYPE_INFO,
                                      PATH_TYPE_INFO,
                                      LIST_TYPE_INFO)
+
+
+def types_w_string_conversion__or_list() -> str:
+    return english_text.or_sequence([
+        formatting.keyword(dt.singular_name) for
+        dt in DATA_TYPES_WITH_STRING_CONVERSION
+    ])
+
+
+def a_ref_to_a_symbol_w_string_conversion__sentence() -> str:
+    return _A_REF_TO_A_SYMBOL_W_STRING_CONVERSION__SENTENCE.format(
+        formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
+        types_w_string_conversion__or_list()
+    )
+
+
+_A_REF_TO_A_SYMBOL_W_STRING_CONVERSION__SENTENCE = """\
+A reference to a {} defined as either {}."""

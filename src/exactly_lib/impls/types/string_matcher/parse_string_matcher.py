@@ -52,7 +52,7 @@ class _OnTransformedDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyn
         tp = TextParser({
             'MATCHER': syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.singular_name,
             'TRANSFORMER': syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
-            'MODEL': matcher_model.STRING_MATCHER_MODEL,
+            'MODEL': matcher_model.TEXT_MODEL,
         })
         ret_val = tp.fnap(_DESCRIPTION__ON_TRANSFORMED)
         ret_val += texts.type_expression_has_syntax_of_primitive([
@@ -134,7 +134,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
         type_system_type_name=types.STRING_MATCHER_TYPE_INFO.identifier,
         syntax_element_name=syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.argument,
     ),
-    model=matcher_model.STRING_MATCHER_MODEL,
+    model=matcher_model.TEXT_MODEL,
     value_type=ValueType.STRING_MATCHER,
     simple_expressions=_simple_expressions(),
     model_freezer=_model_freezer,

@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, matcher_model
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.types.expression import grammar
@@ -41,6 +41,7 @@ class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     def description_rest(self) -> Sequence[ParagraphItem]:
         tp = TextParser({
             'STRING_SOURCE': formatting.syntax_element_(syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT),
+            'model': matcher_model.TEXT_MODEL,
         })
         return tp.fnap(_DESCRIPTION)
 
@@ -52,5 +53,5 @@ class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
 
 
 _DESCRIPTION = """\
-Matches iff the string is equal to {STRING_SOURCE}.
+Matches iff the {model} is equal to {STRING_SOURCE}.
 """

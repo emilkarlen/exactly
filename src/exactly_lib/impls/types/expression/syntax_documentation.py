@@ -5,7 +5,7 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
     cli_argument_syntax_element_description, invokation_variant_from_args
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.entity import syntax_elements, concepts
+from exactly_lib.definitions.entity import syntax_elements, concepts, types
 from exactly_lib.definitions.entity.syntax_elements import SyntaxElementInfo
 from exactly_lib.util import collection, name_and_value
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -31,6 +31,7 @@ class Syntax:
         self._tp = TextParser({
             'symbol_concept': formatting.concept_name_with_formatting(concepts.SYMBOL_CONCEPT_INFO.name),
             'concept_name': self.grammar.concept.name,
+            'string_type': types.STRING_TYPE_INFO.name,
             'BIN_OP_PRECEDENCE': _BIN_OP_PRECEDENCE,
             'whitespace': misc_texts.WHITESPACE,
         })
@@ -238,7 +239,7 @@ that must have been defined as {concept_name:a}.
 """
 
 _SYMBOL_NAME_ADDITIONAL_DESCRIPTION = """\
-An unquoted string that is not a reserved word
+An unquoted {string_type} that is not a reserved word
 is interpreted as the name of {symbol_concept:a}.
 """
 

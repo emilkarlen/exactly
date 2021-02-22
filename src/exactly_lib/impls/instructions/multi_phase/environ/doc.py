@@ -145,6 +145,7 @@ def _format_dict(is_in_setup_phase: bool) -> Dict[str, str]:
         'setup_phase': phase_names.SETUP,
         'string_se': syntax_elements.STRING_SYNTAX_ELEMENT.singular_name,
         'string_source_se': syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.singular_name,
+        'plain_string': misc_texts.PLAIN_STRING,
         'in_the_specified_phase': in_the_specified_phase,
     }
 
@@ -155,7 +156,7 @@ Sets the {env_var} {NAME} to {VALUE}.
 
 Elements of the form "${{var_name}}" in {VALUE},
 will be replaced with the value of the {env_var} "var_name",
-or the empty string, if there is no {env_var} with that name{in_the_specified_phase}.
+or the empty {plain_string}, if there is no {env_var} with that name{in_the_specified_phase}.
 """
 
 _DESCRIPTION_OF_UNSET = """\

@@ -2,6 +2,7 @@ import pathlib
 from typing import Iterable, Sequence, Tuple, Iterator
 
 from exactly_lib import program_info
+from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.doc_format import directory_variable_name_text
 from exactly_lib.definitions.entity import all_entity_types
@@ -41,6 +42,7 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
         tp = TextParser({
             'checked_file': 'checked file',
             'program_name': program_info.PROGRAM_NAME,
+            'plain_string': misc_texts.PLAIN_STRING,
             'TCDS': concepts.TCDS_CONCEPT_INFO.acronym,
             'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
             'builtin_symbol': all_entity_types.BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.name,
@@ -138,7 +140,7 @@ def _first_is(key_of_first_element: str, all_vars: dict) -> iter:
 
 
 _PROLOGUE = """\
-Replaces every occurrence of a string that equals
+Replaces every occurrence of a {plain_string} that equals
 the absolute path of a {TCDS} directory
 (on a single line)
 with the name of the corresponding {builtin_symbol}.

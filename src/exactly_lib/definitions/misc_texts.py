@@ -45,6 +45,8 @@ IS_A_SHELL_CMD = ' '.join(('is a', SHELL_COMMAND.singular,
                            '(with optional arguments), using Unix shell syntax.'))
 IS_A_SYSTEM_CMD = ' '.join(('is a command line',
                             '(with optional arguments), using Unix shell syntax.'))
+PLAIN_STRING = name.a_name(name.name_with_plural_s('string'))
+# ^ The concept of a string - independent of the string type or the matcher/transformer model.
 
 EXIT_IDENTIFIER_TITLE = EXIT_IDENTIFIER.singular.capitalize()
 

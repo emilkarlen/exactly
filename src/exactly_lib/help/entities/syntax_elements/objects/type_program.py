@@ -216,6 +216,7 @@ EXECUTABLE_ARG = a.Named('EXECUTABLE')
 
 _TEXT_PARSER = TextParser({
     'program_type': types.PROGRAM_TYPE_INFO.name,
+    'string_type': types.STRING_TYPE_INFO.name,
     'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
     'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
     'hds': concepts.HDS_CONCEPT_INFO.name,
@@ -253,7 +254,7 @@ _SHELL_COMMAND_INVOKATION_VARIANT_DESCRIPTION = """\
 
 {SHELL_COMMAND_LINE} is the remaining part of the current line.
 
-It is passed as a single string to the operating system's shell.
+It is passed as a single {string_type} to the operating system's shell.
 """
 
 PGM_WITH_ARG_LIST_DESCRIPTION = """\

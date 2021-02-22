@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib import program_info
-from exactly_lib.definitions import formatting, logic
+from exactly_lib.definitions import formatting, logic, misc_texts
 from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions import type_system
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -95,6 +95,7 @@ class _SymbolConcept(ConceptDocumentation):
             'def': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
 
             'string_type': TYPE_INFO_DICT[ValueType.STRING].identifier,
+            'plain_string': misc_texts.PLAIN_STRING,
             'list_type': TYPE_INFO_DICT[ValueType.LIST].identifier,
             'max_type_width': max(map(lambda value_type: len(TYPE_INFO_DICT[value_type].identifier),
                                       [ValueType.LIST,
@@ -112,7 +113,9 @@ class _SymbolConcept(ConceptDocumentation):
             'rel_option': REL_symbol_OPTION,
             'ref_syntax_of_dir_name_symbol': symbol_reference_syntax_for_name('DIR_NAME_SYMBOL'),
             'ref_syntax_of_base_name_symbol': symbol_reference_syntax_for_name('BASE_NAME_SYMBOL'),
-            'ref_syntax_of_2nd_element_symbol': symbol_reference_syntax_for_name('STRING_SYMBOL'),
+            'ref_syntax_of_2nd_element_symbol': symbol_reference_syntax_for_name(
+                syntax_elements.STRING_SYNTAX_ELEMENT.singular_name + '_SYMBOL'
+            ),
 
             'special_syntax_with_invalid_symbol_name': symbol_reference_syntax_for_name('NOT/A_VALID_SYMBOL_NAME'),
             'special_syntax_with_valid_symbol_name_but_invalid_delimiter':
@@ -211,10 +214,10 @@ with the syntax of other programming languages and shell script, e.g.
 This is important since {program_name} has limited capabilities for escaping and quoting.
 
 
-Also, strings that resemble the special syntax will not be considered as errors,
-since it is assumed that these strings might have the syntax needed for a different purpose.
+Also, {plain_string:s} that resemble the special syntax will not be considered as errors,
+since it is assumed that these {plain_string:s} might have the syntax needed for a different purpose.
 
-For example, the following strings does not constitute {symbol} references,
+For example, the following {plain_string:s} does not constitute {symbol} references,
 and {program_name} will not complain:
 
 
