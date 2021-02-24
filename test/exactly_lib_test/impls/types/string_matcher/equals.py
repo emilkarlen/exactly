@@ -8,7 +8,7 @@ from exactly_lib.impls.types.string_matcher.parse.equality import \
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
@@ -37,7 +37,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Fi
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.test_utils import ArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext, \
     StringSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer
@@ -231,7 +231,7 @@ class _TestEqualsString(_TestEqualsWSourceVariantsBase):
             Expectation(
                 ParseExpectation(
                     symbol_references=asrt.matches_singleton_sequence(
-                        string_symbol_with_expected.reference_assertion__convertible_to_string
+                        string_symbol_with_expected.reference_assertion__w_str_rendering
                     )
                 ),
                 execution=ExecutionExpectation(
@@ -339,7 +339,7 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithNegationArgumentB
                 ParseExpectation(
                     source=asrt_source.is_at_end_of_line(3),
                     symbol_references=asrt.matches_sequence([
-                        symbol.reference_assertion__convertible_to_string
+                        symbol.reference_assertion__w_str_rendering
                     ]),
                 ),
                 ExecutionExpectation(

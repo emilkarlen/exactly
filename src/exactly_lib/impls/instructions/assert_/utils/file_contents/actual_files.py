@@ -7,9 +7,9 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_with_validation import ObjectWithSymbolReferencesAndSdvValidation
-from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.render.renderer import Renderer

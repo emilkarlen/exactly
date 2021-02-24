@@ -1,7 +1,7 @@
 from typing import Callable
 
 from exactly_lib.impls.types.integer_matcher import parse_integer_matcher
-from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_environment import FullResolvingEnvironment
 from exactly_lib_test.impls.types.logic.test_resources import integration_check
 from exactly_lib_test.impls.types.matcher.test_resources.matcher_checker import \
     MatcherPropertiesConfiguration

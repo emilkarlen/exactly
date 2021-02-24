@@ -5,7 +5,7 @@ from typing import Sequence, Optional, List
 from exactly_lib.impls.file_properties import FileType
 from exactly_lib.impls.types.condition import comparators
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.test_resources.validation import validation
@@ -32,9 +32,9 @@ from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, File
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.data.data_restrictions_assertions import \
-    equals_reference_restrictions__convertible_to_string
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringIntConstantSymbolContext
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.data_restrictions_assertions import \
+    equals_reference_restrictions__w_str_rendering
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringIntConstantSymbolContext
 
 
 class SymbolReferencesShouldBeReported(SingleCaseGenerator):
@@ -86,13 +86,13 @@ class SymbolReferencesShouldBeReported(SingleCaseGenerator):
         return [
             asrt_sym_ref.matches_reference_2(
                 self.min_depth.name,
-                equals_reference_restrictions__convertible_to_string(
-                    reference_restrictions.string_made_up_by_just_strings())
+                equals_reference_restrictions__w_str_rendering(
+                    reference_restrictions.is_string__all_indirect_refs_are_strings())
             ),
             asrt_sym_ref.matches_reference_2(
                 self.max_depth.name,
-                equals_reference_restrictions__convertible_to_string(
-                    reference_restrictions.string_made_up_by_just_strings())
+                equals_reference_restrictions__w_str_rendering(
+                    reference_restrictions.is_string__all_indirect_refs_are_strings())
             ),
             self._helper.files_matcher_sym_assertion(),
         ]

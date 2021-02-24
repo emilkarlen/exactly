@@ -3,6 +3,7 @@ import functools
 from exactly_lib.definitions import type_system
 from exactly_lib.definitions.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.type_system import TypeCategory
 from exactly_lib.help.contents_structure.entity import HtmlDocHierarchyGeneratorGetter, CliListConstructorGetter
 from exactly_lib.help.entities.types import all_types
 from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
@@ -12,7 +13,6 @@ from exactly_lib.help.render.doc_utils import synopsis_section
 from exactly_lib.help.render.entity_docs import \
     single_line_description_as_summary_paragraphs
 from exactly_lib.help.render.see_also import see_also_sections
-from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     ArticleContentsConstructor

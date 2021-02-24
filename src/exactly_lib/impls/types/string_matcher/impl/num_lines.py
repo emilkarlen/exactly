@@ -4,7 +4,7 @@ from exactly_lib.impls.types.matcher import property_matcher
 from exactly_lib.impls.types.matcher.impls import property_matcher_describers, property_getters
 from exactly_lib.impls.types.matcher.property_getter import PropertyGetter, PropertyGetterSdv
 from exactly_lib.impls.types.string_matcher import matcher_options
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
+from exactly_lib.type_val_deps.types.matcher import MatcherSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.string_source.string_source import StringSource

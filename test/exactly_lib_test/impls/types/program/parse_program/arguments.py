@@ -26,8 +26,8 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.data.data_restrictions_assertions import \
-    is_reference_restrictions__convertible_to_string
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.data_restrictions_assertions import \
+    is_reference_restrictions__w_str_rendering
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import PgmAndArgsWArgumentsAbsStx, \
@@ -35,8 +35,8 @@ from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
     ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringLiteralAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command, \
     program_assertions as asrt_pgm_val
@@ -72,12 +72,12 @@ class TestDriverTypesWArgListExceptSymbolReference(unittest.TestCase):
         string_symbol_1 = StringConstantSymbolContext(
             'STRING_SYMBOL_1',
             'value of string symbol 1',
-            default_restrictions=is_reference_restrictions__convertible_to_string(),
+            default_restrictions=is_reference_restrictions__w_str_rendering(),
         )
         string_symbol_2 = StringConstantSymbolContext(
             'STRING_SYMBOL_2',
             'value of string symbol 2',
-            default_restrictions=is_reference_restrictions__convertible_to_string(),
+            default_restrictions=is_reference_restrictions__w_str_rendering(),
         )
         arguments_cases = [
             ArgumentsCase(
@@ -250,8 +250,8 @@ class TestShellArgumentsAndSymbolReferences(unittest.TestCase):
 
         expectation = MultiSourceExpectation(
             symbol_references=asrt.matches_sequence([
-                string_argument_symbol.reference_assertion__convertible_to_string,
-                list_argument_symbol.reference_assertion__convertible_to_string,
+                string_argument_symbol.reference_assertion__w_str_rendering,
+                list_argument_symbol.reference_assertion__w_str_rendering,
             ]),
             primitive=expected_program,
         )
@@ -322,9 +322,9 @@ class TestShellArgumentsAndSymbolReferences(unittest.TestCase):
         expectation = MultiSourceExpectation(
             symbol_references=asrt.matches_sequence([
                 referenced_program_symbol.reference_assertion,
-                string_argument_symbol.reference_assertion__convertible_to_string,
-                list_argument_symbol.reference_assertion__convertible_to_string,
-                list_argument_symbol.reference_assertion__convertible_to_string,
+                string_argument_symbol.reference_assertion__w_str_rendering,
+                list_argument_symbol.reference_assertion__w_str_rendering,
+                list_argument_symbol.reference_assertion__w_str_rendering,
             ]),
             primitive=expected_program,
         )

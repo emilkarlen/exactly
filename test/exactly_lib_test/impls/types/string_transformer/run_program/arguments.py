@@ -17,8 +17,8 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
-    is_reference_to__convertible_to_string
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
+    is_reference_to__w_str_rendering
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
@@ -113,7 +113,7 @@ class TestProgramArgumentsShouldBeGivenToProcess(unittest.TestCase):
                         source=asrt_source.is_at_end_of_line(1),
                         symbol_references=asrt.matches_sequence([
                             program_symbol.reference_assertion,
-                            is_reference_to__convertible_to_string(command_line_arg_list_symbol_name),
+                            is_reference_to__w_str_rendering(command_line_arg_list_symbol_name),
                         ]),
                     ),
                     model_constructor.arbitrary(self),

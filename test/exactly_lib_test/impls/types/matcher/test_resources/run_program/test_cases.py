@@ -16,7 +16,7 @@ from exactly_lib_test.test_resources.files.file_structure import File, DirConten
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListSymbolContext
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringIntConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringIntConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 
 

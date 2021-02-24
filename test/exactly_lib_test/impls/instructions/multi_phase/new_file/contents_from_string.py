@@ -31,12 +31,12 @@ from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt, value_assertion as asrt
-from exactly_lib_test.type_val_deps.test_resources.data import data_restrictions_assertions as asrt_rest
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_rest
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntaxes as str_abs_stx
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -182,7 +182,7 @@ class TestSymbolReferences(unittest.TestCase):
         contents_symbol = StringConstantSymbolContext(
             'contents_symbol_name',
             'contents symbol value',
-            default_restrictions=asrt_rest.is_reference_restrictions__convertible_to_string(),
+            default_restrictions=asrt_rest.is_reference_restrictions__w_str_rendering(),
         )
 
         expected_file_contents = symbol_value_2_expected_contents(contents_symbol.str_value)

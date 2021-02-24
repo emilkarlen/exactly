@@ -19,7 +19,8 @@ from exactly_lib.impls.types.string_matcher.parse import matches as parse_sm_mat
 from exactly_lib.section_document.element_parsers import token_stream_parsing as parsing
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
 from exactly_lib.symbol.value_type import ValueType
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
+    is_string__all_indirect_refs_are_strings
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.type_val_prims.matcher import line_matcher as line_matcher_type
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -94,7 +95,7 @@ _MATCHER_ARGUMENT = a.Named('MATCHER')
 
 _RANGE_LIMIT_SEPARATOR = ':'
 
-_RANGE_EXPR_REFERENCE_RESTRICTIONS = string_made_up_by_just_strings(
+_RANGE_EXPR_REFERENCE_RESTRICTIONS = is_string__all_indirect_refs_are_strings(
     text_docs.single_pre_formatted_line_object(
         str_constructor.FormatMap(
             'A {RANGE} must be made up of just {string_type} values.',

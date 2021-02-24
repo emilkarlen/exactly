@@ -17,7 +17,7 @@ from exactly_lib.test_case.result import svh
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators, ddv_validation
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
+from exactly_lib.type_val_deps.types.matcher import MatcherSdv
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import SequenceRenderer

@@ -18,7 +18,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.recording2 im
     test_case_that_records_property_of_env_for_each_step_of_partial_execution
 from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolContext
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_keys_equals
 
 

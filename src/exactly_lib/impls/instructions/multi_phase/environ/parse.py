@@ -15,7 +15,7 @@ from exactly_lib.section_document.element_parsers.misc_utils import \
     std_error_message_text_for_token_syntax_error_from_exception
 from exactly_lib.section_document.element_parsers.token_stream import TokenSyntaxError
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions
 from exactly_lib.util.parse import token_matchers
 from exactly_lib.util.str_.formatter import StringFormatter
 
@@ -27,7 +27,7 @@ class EmbryoParser(embryo.InstructionEmbryoParserFromTokensWoFileSystemLocationI
         self._phase_is_after_act = phase_is_after_act
         self._name_parser = parse_string.StringFromTokensParser(
             parse_string.Configuration(defs.VAR_NAME_ELEMENT,
-                                       reference_restrictions.string_made_up_by_just_strings())
+                                       reference_restrictions.is_string__all_indirect_refs_are_strings())
         )
         self._value_parser = parse_str_src.default_parser_for(phase_is_after_act=self._phase_is_after_act)
         self._unset_keyword_matcher = token_matchers.is_unquoted_and_equals(defs.UNSET_IDENTIFIER)

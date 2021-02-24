@@ -2,7 +2,7 @@ import unittest
 from abc import ABC, abstractmethod
 
 from exactly_lib.impls.instructions.multi_phase.define_symbol import parser as sut
-from exactly_lib.symbol.value_type import LogicValueType
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import src3
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import \
@@ -12,14 +12,13 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.symbol.test_resources.types import LOGIC_VALUE_TYPE_2_VALUE_TYPE
 from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
-from exactly_lib_test.type_val_deps.test_resources.logic.matcher_symbol_context import MatcherTypeSymbolContext
+from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container
+from exactly_lib_test.type_val_deps.types.test_resources.matcher_symbol_context import MatcherTypeSymbolContext
 
 
 class AssertApplicationOfMatcherInSymbolTable(AssertionBase[InstructionApplicationEnvironment], ABC):
@@ -45,7 +44,7 @@ class AssertApplicationOfMatcherInSymbolTable(AssertionBase[InstructionApplicati
 def check_matcher_should_be_parsed_as_full_expression(put: unittest.TestCase,
                                                       symbol_1: MatcherTypeSymbolContext,
                                                       symbol_2: MatcherTypeSymbolContext,
-                                                      logic_value_type: LogicValueType,
+                                                      value_type: ValueType,
                                                       ):
     # ARRANGE #
     symbols = [symbol_1, symbol_2]
@@ -55,7 +54,7 @@ def check_matcher_should_be_parsed_as_full_expression(put: unittest.TestCase,
     defined_name = 'the_defined_name'
 
     source = remaining_source(
-        src3(LOGIC_VALUE_TYPE_2_VALUE_TYPE[logic_value_type],
+        src3(value_type,
              defined_name,
              value_argument.as_str,
              ),
@@ -65,8 +64,8 @@ def check_matcher_should_be_parsed_as_full_expression(put: unittest.TestCase,
 
     expected_symbol_references = SymbolContext.references_assertion_of_contexts(symbols)
 
-    expected_container = matches_container_of_logic_type(
-        logic_value_type,
+    expected_container = matches_container(
+        asrt.equals(value_type),
         type_sdv_assertions.matches_sdv_of_file_matcher(
             references=expected_symbol_references,
             primitive_value=asrt.anything_goes(),

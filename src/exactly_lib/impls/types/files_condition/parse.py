@@ -9,7 +9,8 @@ from exactly_lib.impls.types.files_condition import files_conditions
 from exactly_lib.impls.types.files_condition import syntax
 from exactly_lib.section_document.element_parsers.error_messages import MessageFactory
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
+    is_string__all_indirect_refs_are_strings
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_deps.types.files_condition.sdv import FilesConditionSdv
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
@@ -73,7 +74,7 @@ def _token_is_matcher_separator(token: Token) -> bool:
     return token.is_plain and token.string == syntax.FILE_MATCHER_SEPARATOR
 
 
-_FILE_NAME_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
+_FILE_NAME_STRING_REFERENCES_RESTRICTION = is_string__all_indirect_refs_are_strings(
     text_docs.single_pre_formatted_line_object(
         str_constructor.FormatMap(
             'A file name must be defined in terms of {string_type}.',

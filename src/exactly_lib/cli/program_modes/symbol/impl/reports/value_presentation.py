@@ -7,10 +7,10 @@ from exactly_lib.definitions import type_system
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.symbol.sdv_structure import SymbolDefinition, SymbolDependentValue
-from exactly_lib.type_val_deps.dep_variants.data.data_type_sdv import DataTypeSdv
-from exactly_lib.type_val_deps.dep_variants.data.sdv_visitor import DataTypeSdvPseudoVisitor
 from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
+from exactly_lib.type_val_deps.dep_variants.sdv.w_str_rend.sdv_type import DataTypeSdv
+from exactly_lib.type_val_deps.dep_variants.sdv.w_str_rend.sdv_visitor import WStrRenderingTypeSdvPseudoVisitor
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
@@ -46,13 +46,13 @@ class PresentationBlockConstructor:
         if isinstance(sdv, FullDepsSdv):
             return _of_full_deps(sdv.resolve(self._symbol_table))
         elif isinstance(sdv, DataTypeSdv):
-            constructor = _DataTypeBlockConstructor(self._symbol_table)
+            constructor = _WStrRenderingTypeBlockConstructor(self._symbol_table)
             return constructor.visit(sdv)
         else:
             raise TypeError('Unknown {} type: {}'.format(str(SymbolDependentValue), str(sdv)))
 
 
-class _DataTypeBlockConstructor(DataTypeSdvPseudoVisitor[ResolvedValuePresentationBlock]):
+class _WStrRenderingTypeBlockConstructor(WStrRenderingTypeSdvPseudoVisitor[ResolvedValuePresentationBlock]):
     def __init__(self, symbols: SymbolTable):
         self.symbols = symbols
 

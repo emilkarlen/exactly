@@ -6,8 +6,9 @@ from exactly_lib.impls.types.program.sdvs.command_program_sdv import ProgramSdvF
 from exactly_lib.impls.types.string_ import parse_string
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.value_type import DataValueType
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.symbol.value_type import WithStrRenderingType
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
+    is_string__all_indirect_refs_are_strings
 from exactly_lib.type_val_deps.types.program.sdv.accumulated_components import AccumulatedComponents
 from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
@@ -56,11 +57,11 @@ class _ParseAsCommand(ParserFromTokenParserBase[CommandSdv]):
                           arguments)
 
 
-_PROGRAM_NAME_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
+_PROGRAM_NAME_STRING_REFERENCES_RESTRICTION = is_string__all_indirect_refs_are_strings(
     text_docs.single_pre_formatted_line_object(
         str_constructor.FormatMap(
             'A program name must be defined in terms of {string_type}.',
-            {'string_type': define_symbol.DATA_TYPE_INFO_DICT[DataValueType.STRING].identifier},
+            {'string_type': define_symbol.TYPE_W_STR_RENDERING_INFO_DICT[WithStrRenderingType.STRING].identifier},
         )
     )
 )

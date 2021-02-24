@@ -14,7 +14,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.test_resources.any_.restrictions_assertions import \
     is_reference_restrictions__value_type
-from exactly_lib_test.type_val_deps.test_resources.logic.symbol_context import LogicSymbolValueContext, \
+from exactly_lib_test.type_val_deps.test_resources.full_deps.symbol_context import LogicSymbolValueContext, \
     LogicTypeSymbolContext
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
 

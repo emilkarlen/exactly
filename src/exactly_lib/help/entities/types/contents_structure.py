@@ -1,19 +1,19 @@
 from typing import List, Iterable, Sequence
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.definitions import type_system
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.definitions.entity.syntax_elements import SyntaxElementInfo
 from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
+from exactly_lib.definitions.type_system import TypeCategory
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
-from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.util.str_.name import Name
 from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 class TypeDocumentation(EntityDocumentation):
     def __init__(self,
-                 type_category: TypeCategory,
                  name_and_cross_ref_target: TypeNameAndCrossReferenceId,
                  corresponding_syntax_element: SyntaxElementInfo,
                  main_description_rest: SectionContents,
@@ -22,7 +22,6 @@ class TypeDocumentation(EntityDocumentation):
         super().__init__(name_and_cross_ref_target)
         self._name_and_cross_ref_target = name_and_cross_ref_target
         self._type_identifier = name_and_cross_ref_target.identifier
-        self._type_category = type_category
         self._corresponding_syntax_element = corresponding_syntax_element
         self._main_description_rest = main_description_rest
         self._custom_see_also_targets = list(custom_see_also_targets)
@@ -34,7 +33,7 @@ class TypeDocumentation(EntityDocumentation):
 
     @property
     def type_category(self) -> TypeCategory:
-        return self._type_category
+        return type_system.VALUE_TYPE_2_TYPE_CATEGORY[self._name_and_cross_ref_target.value_type]
 
     def type_identifier(self) -> str:
         return self._type_identifier
@@ -60,14 +59,12 @@ class TypeDocumentation(EntityDocumentation):
 
 class TypeWithExpressionGrammarDocumentation(TypeDocumentation):
     def __init__(self,
-                 type_category_for_help: TypeCategory,
                  name_and_cross_ref_target: TypeNameAndCrossReferenceId,
                  corresponding_syntax_element: SyntaxElementInfo,
                  description: SectionContents = SectionContents.empty(),
                  custom_see_also: Sequence[SeeAlsoTarget] = (),
                  ):
-        super().__init__(type_category_for_help,
-                         name_and_cross_ref_target,
+        super().__init__(name_and_cross_ref_target,
                          corresponding_syntax_element,
                          description,
                          custom_see_also_targets=custom_see_also)

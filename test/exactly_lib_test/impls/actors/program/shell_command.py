@@ -23,7 +23,7 @@ from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -97,7 +97,7 @@ class TestSymbolReferences(unittest.TestCase):
                 symbol_table=symbol.symbol_table
             ),
             Expectation(
-                symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__convertible_to_string),
+                symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__w_str_rendering),
                 post_sds=PostSdsExpectation.constant(
                     sub_process_result_from_execute=
                     pr.stdout(asrt.equals(expected_output_template.format(symbol=symbol.str_value)))

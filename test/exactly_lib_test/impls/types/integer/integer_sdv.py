@@ -14,10 +14,10 @@ from exactly_lib_test.tcfs.test_resources.fake_ds import fake_hds, fake_sds, fak
 from exactly_lib_test.test_case.test_resources import instruction_environment
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.type_val_deps.test_resources.data import references as data_references
-from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
-    equals_symbol_references__convertible_to_string
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import references as data_references
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
+    equals_symbol_references__w_str_rendering
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -156,7 +156,7 @@ class TestValidateAndResolve(unittest.TestCase):
                 self.assertEqual(case.expected.resolved_value,
                                  actual)
 
-                equals_symbol_references__convertible_to_string(case.expected.symbol_references) \
+                equals_symbol_references__w_str_rendering(case.expected.symbol_references) \
                     .apply_without_message(self,
                                            actual_symbol_references)
 
@@ -204,7 +204,7 @@ class TestSymbolReferences(unittest.TestCase):
 
         expected_references = [reference_of_string_sdv]
 
-        assertion = equals_symbol_references__convertible_to_string(expected_references)
+        assertion = equals_symbol_references__w_str_rendering(expected_references)
 
         assertion.apply_without_message(self, actual)
 

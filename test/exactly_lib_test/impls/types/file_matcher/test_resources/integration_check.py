@@ -3,7 +3,7 @@ from typing import Callable
 
 from exactly_lib.impls.types.file_matcher import parse_file_matcher
 from exactly_lib.tcfs.path_relativity import RelSdsOptionType, RelOptionType
-from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel

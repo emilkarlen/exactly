@@ -1,48 +1,14 @@
 import unittest
 
-from exactly_lib.symbol.value_type import TypeCategory, ValueType
-from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions
-from exactly_lib.type_val_deps.sym_ref.restrictions import TypeCategoryRestriction, ValueTypeRestriction
+from exactly_lib.symbol.value_type import ValueType
+from exactly_lib.type_val_deps.sym_ref.restrictions import ValueTypeRestriction
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.type_val_deps.test_resources.any_ import restrictions_assertions as sut
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestIsElementTypeRestriction),
-        unittest.makeSuite(TestIsValueTypeRestriction),
-    ])
-
-
-class TestIsElementTypeRestriction(unittest.TestCase):
-    def test_succeed(self):
-        # ARRANGE #
-        expected_type = TypeCategory.LOGIC
-
-        assertion_to_check = sut.is_reference_restrictions__type_category(expected_type)
-
-        restriction = TypeCategoryRestriction(expected_type)
-        # ACT & ASSERT #
-        assertion_to_check.apply_without_message(self, restriction)
-
-    def test_fail_WHEN_type_category_is_unexpected(self):
-        # ARRANGE #
-        expected_type = TypeCategory.LOGIC
-        actual_type = TypeCategory.DATA
-
-        assertion_to_check = sut.is_reference_restrictions__type_category(expected_type)
-
-        restriction = TypeCategoryRestriction(actual_type)
-        # ACT & ASSERT #
-        assert_that_assertion_fails(assertion_to_check, restriction)
-
-    def test_fail_WHEN_restriction_is_of_other_type(self):
-        # ARRANGE #
-        assertion_to_check = sut.is_reference_restrictions__type_category(TypeCategory.DATA)
-
-        restriction = reference_restrictions.is_type_convertible_to_string()
-        # ACT & ASSERT #
-        assert_that_assertion_fails(assertion_to_check, restriction)
+    return unittest.makeSuite(TestIsValueTypeRestriction)
 
 
 class TestIsValueTypeRestriction(unittest.TestCase):
@@ -70,7 +36,7 @@ class TestIsValueTypeRestriction(unittest.TestCase):
         # ARRANGE #
         assertion_to_check = sut.is_reference_restrictions__value_type__single(ValueType.PATH)
 
-        restriction = reference_restrictions.string_made_up_by_just_strings()
+        restriction = reference_restrictions.is_string__all_indirect_refs_are_strings()
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion_to_check, restriction)
 
@@ -78,6 +44,6 @@ class TestIsValueTypeRestriction(unittest.TestCase):
         # ARRANGE #
         assertion_to_check = sut.is_reference_restrictions__value_type([ValueType.PATH, ValueType.PROGRAM])
 
-        restriction = reference_restrictions.string_made_up_by_just_strings()
+        restriction = reference_restrictions.is_string__all_indirect_refs_are_strings()
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion_to_check, restriction)

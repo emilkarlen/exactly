@@ -2,20 +2,15 @@ from typing import Optional
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue
-from exactly_lib.symbol.value_type import ValueType, TypeCategory, LogicValueType, LOGIC_TYPE_2_VALUE_TYPE, \
-    DataValueType, DATA_TYPE_2_VALUE_TYPE
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.util.line_source import LineSequence
-from exactly_lib_test.section_document.test_resources import source_location_assertions as asrt_source_loc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.test_resources import line_source_assertions as asrt_line_source
 
 
 def matches_container(value_type: Assertion[ValueType],
-                      type_category: Assertion[TypeCategory],
                       sdv: Assertion[SymbolDependentValue],
-                      data_value_type__if_is_data_type: Optional[Assertion[DataValueType]] = None,
-                      logic_value_type__if_is_logic_type: Optional[Assertion[LogicValueType]] = None,
                       definition_source: Assertion[LineSequence] = asrt_line_source.is_line_sequence(),
                       source_location: Assertion[Optional[SourceLocationInfo]] = asrt.anything_goes(),
                       ) -> Assertion[SymbolContainer]:
@@ -23,24 +18,7 @@ def matches_container(value_type: Assertion[ValueType],
         asrt.sub_component('value_type',
                            SymbolContainer.value_type.fget,
                            value_type),
-        asrt.sub_component('type_category',
-                           SymbolContainer.type_category.fget,
-                           type_category),
     ]
-    if data_value_type__if_is_data_type is not None:
-        components.append(
-            asrt.sub_component('data_value_type__if_is_data_type',
-                               SymbolContainer.data_value_type__if_is_data_type.fget,
-                               data_value_type__if_is_data_type)
-
-        )
-    if logic_value_type__if_is_logic_type is not None:
-        components.append(
-            asrt.sub_component('logic_value_type__if_is_logic_type',
-                               SymbolContainer.logic_value_type__if_is_logic_type.fget,
-                               logic_value_type__if_is_logic_type)
-
-        )
     components += [
         asrt.sub_component('definition_source',
                            SymbolContainer.definition_source.fget,
@@ -55,35 +33,3 @@ def matches_container(value_type: Assertion[ValueType],
     return asrt.is_instance_with(
         SymbolContainer,
         asrt.and_(components))
-
-
-def matches_container_of_logic_type(
-        logic_value_type: LogicValueType,
-        sdv: Assertion[SymbolDependentValue],
-        definition_source: Assertion[LineSequence] = asrt_line_source.is_line_sequence(),
-) -> Assertion[SymbolContainer]:
-    return matches_container(
-        value_type=asrt.is_(LOGIC_TYPE_2_VALUE_TYPE[logic_value_type]),
-        type_category=asrt.is_(TypeCategory.LOGIC),
-        logic_value_type__if_is_logic_type=asrt.is_(logic_value_type),
-        sdv=sdv,
-        definition_source=definition_source,
-        source_location=asrt.is_none_or_instance_with(SourceLocationInfo,
-                                                      asrt_source_loc.is_valid_source_location_info())
-    )
-
-
-def matches_container_of_data_type(
-        data_value_type: DataValueType,
-        sdv: Assertion[SymbolDependentValue],
-        definition_source: Assertion[LineSequence] = asrt_line_source.is_line_sequence(),
-) -> Assertion[SymbolContainer]:
-    return matches_container(
-        value_type=asrt.is_(DATA_TYPE_2_VALUE_TYPE[data_value_type]),
-        type_category=asrt.is_(TypeCategory.DATA),
-        data_value_type__if_is_data_type=asrt.is_(data_value_type),
-        sdv=sdv,
-        definition_source=definition_source,
-        source_location=asrt.is_none_or_instance_with(SourceLocationInfo,
-                                                      asrt_source_loc.is_valid_source_location_info())
-    )

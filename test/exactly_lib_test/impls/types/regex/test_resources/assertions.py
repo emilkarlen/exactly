@@ -16,7 +16,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.ddv_w_deps_assertions import \
     matches_multi_dir_dependent_value
-from exactly_lib_test.type_val_deps.test_resources.data import data_restrictions_assertions as asrt_ref_rest, \
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_ref_rest, \
     symbol_reference_assertions as asrt_sym_ref
 
 
@@ -82,8 +82,8 @@ RE_PATTERN_TYPE = type(re.compile(''))
 
 
 def is_reference_to__regex_string_part(symbol_name: str) -> Assertion[SymbolReference]:
-    return asrt_sym_ref.is_reference_to__convertible_to_string(symbol_name)
+    return asrt_sym_ref.is_reference_to__w_str_rendering(symbol_name)
 
 
 def is_reference_restrictions__regex() -> Assertion[ReferenceRestrictions]:
-    return asrt_ref_rest.is_reference_restrictions__convertible_to_string()
+    return asrt_ref_rest.is_reference_restrictions__w_str_rendering()

@@ -8,10 +8,10 @@ from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, MessageBuilder
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
-from exactly_lib_test.type_val_deps.test_resources.data.assertion_utils import \
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.assertion_utils import \
     symbol_table_with_values_matching_references
-from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
-    equals_symbol_references__convertible_to_string
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
+    equals_symbol_references__w_str_rendering
 from exactly_lib_test.type_val_deps.types.path.test_resources.path_assertions import equals_path
 
 
@@ -19,7 +19,7 @@ def equals_path_sdv(expected: PathSdv) -> Assertion[SymbolDependentValue]:
     symbols = symbol_table_with_values_matching_references(expected.references)
     expected_path = expected.resolve(symbols)
     return type_sdv_assertions.matches_sdv_of_path(
-        equals_symbol_references__convertible_to_string(expected.references),
+        equals_symbol_references__w_str_rendering(expected.references),
         equals_path(expected_path),
         symbols=symbols)
 

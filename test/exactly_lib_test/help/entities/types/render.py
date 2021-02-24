@@ -6,7 +6,7 @@ from exactly_lib.help.entities.types import all_types
 from exactly_lib.help.entities.types import render as sut
 from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
 from exactly_lib.help.entities.types.entity_configuration import TYPE_ENTITY_CONFIGURATION
-from exactly_lib.symbol.value_type import TypeCategory, ValueType
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.util.str_.name import a_name_with_plural_s
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import structures as docs
@@ -36,8 +36,7 @@ class TestList(unittest.TestCase):
 class TestIndividualType(unittest.TestCase):
     def test_with_empty_main_description(self):
         # ARRANGE #
-        doc = TypeDocumentation(TypeCategory.DATA,
-                                A_TYPE_NAME_AND_CROSS_REFERENCE_ID,
+        doc = TypeDocumentation(A_TYPE_NAME_AND_CROSS_REFERENCE_ID,
                                 A_SYNTAX_ELEMENT_INFO,
                                 empty_section_contents())
         renderer = sut.IndividualTypeConstructor(doc)
@@ -48,8 +47,7 @@ class TestIndividualType(unittest.TestCase):
 
     def test_with_non_empty_main_description(self):
         # ARRANGE #
-        doc = TypeDocumentation(TypeCategory.DATA,
-                                A_TYPE_NAME_AND_CROSS_REFERENCE_ID,
+        doc = TypeDocumentation(A_TYPE_NAME_AND_CROSS_REFERENCE_ID,
                                 A_SYNTAX_ELEMENT_INFO,
                                 docs.section_contents(docs.paras('initial paragraphs of main description')))
         renderer = sut.IndividualTypeConstructor(doc)

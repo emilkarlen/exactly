@@ -43,7 +43,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext, \
     PathSymbolContext
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 from exactly_lib_test.util.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
@@ -139,7 +139,7 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseWInterpreterThatRunsP
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
                 symbol_for_source_file.reference_assertion__path_or_string(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN),
-                argument_symbol.reference_assertion__convertible_to_string,
+                argument_symbol.reference_assertion__w_str_rendering,
             ]),
             execute=eh_assertions.is_exit_code(0),
             post_sds=PostSdsExpectation.constant(

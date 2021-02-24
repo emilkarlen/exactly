@@ -12,8 +12,8 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.string.test_resources import here_doc_assertion_utils as hd
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources import here_doc_assertion_utils as hd
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -186,7 +186,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                         symbol=symbol1.str_value),
                 ],
                     symbol_references=[
-                        symbol1.reference__convertible_to_string,
+                        symbol1.reference__w_str_rendering,
                     ],
                     symbols=symbol1.symbol_table
                 ),
@@ -212,9 +212,9 @@ class TestSuccessfulScenarios(unittest.TestCase):
                         second_symbol=symbol3.str_value),
                 ],
                     symbol_references=[
-                        symbol1.reference__convertible_to_string,
-                        symbol2.reference__convertible_to_string,
-                        symbol3.reference__convertible_to_string,
+                        symbol1.reference__w_str_rendering,
+                        symbol2.reference__w_str_rendering,
+                        symbol3.reference__w_str_rendering,
                     ],
                     symbols=SymbolContext.symbol_table_of_contexts([
                         symbol1,

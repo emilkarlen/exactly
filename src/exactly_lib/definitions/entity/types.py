@@ -174,7 +174,7 @@ VALUE_TYPE_2_TYPES_INFO_DICT: Mapping[ValueType, TypeNameAndCrossReferenceId] = 
     for ti in ALL_TYPES_INFO_TUPLE
 })
 
-DATA_TYPES_WITH_STRING_CONVERSION: Tuple[TypeNameAndCrossReferenceId, ...] = tuple([
+TYPES_WITH_STRING_CONVERSION: Tuple[TypeNameAndCrossReferenceId, ...] = tuple([
     VALUE_TYPE_2_TYPES_INFO_DICT[vt]
     for vt in value_type.VALUE_TYPES_CONVERTIBLE_TO_STRING
 ])
@@ -183,7 +183,7 @@ DATA_TYPES_WITH_STRING_CONVERSION: Tuple[TypeNameAndCrossReferenceId, ...] = tup
 def types_w_string_conversion__or_list() -> str:
     return english_text.or_sequence([
         formatting.keyword(dt.singular_name) for
-        dt in DATA_TYPES_WITH_STRING_CONVERSION
+        dt in TYPES_WITH_STRING_CONVERSION
     ])
 
 

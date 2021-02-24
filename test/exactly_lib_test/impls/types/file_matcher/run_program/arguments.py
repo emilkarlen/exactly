@@ -9,8 +9,8 @@ from exactly_lib_test.impls.types.file_matcher.test_resources.argument_building 
 from exactly_lib_test.impls.types.matcher.test_resources.run_program import test_cases
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as program_args
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
-    is_reference_to__convertible_to_string
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
+    is_reference_to__w_str_rendering
 from exactly_lib_test.type_val_deps.types.test_resources.program import is_reference_to_program
 
 
@@ -110,7 +110,7 @@ def _check(
         input_=integration_check.constant_relative_file_name(model_file_path),
         symbol_references=asrt.matches_sequence([
             is_reference_to_program(program_symbol_name),
-            is_reference_to__convertible_to_string(command_line_arg_list_symbol_name),
+            is_reference_to__w_str_rendering(command_line_arg_list_symbol_name),
         ]),
         execution=[
             test_cases.argument_list_exe_case(

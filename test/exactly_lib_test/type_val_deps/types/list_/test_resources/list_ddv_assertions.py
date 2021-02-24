@@ -8,7 +8,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.dir_dependent_value import \
     MultiDirDependentAssertion
-from exactly_lib_test.type_val_deps.types.string.test_resources import ddv_assertions as asrt_sv
+from exactly_lib_test.type_val_deps.types.string_.test_resources import ddv_assertions as asrt_sv
 
 
 def equals_list_ddv(expected: ListDdv) -> Assertion:

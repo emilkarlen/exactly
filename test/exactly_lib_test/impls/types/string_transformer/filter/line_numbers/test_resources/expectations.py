@@ -12,13 +12,13 @@ from exactly_lib_test.impls.types.string_transformer.test_resources.integration_
 from exactly_lib_test.test_resources.test_utils import InpExp
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import \
-    IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
+from exactly_lib_test.type_val_deps.types.string_.test_resources.reference_assertions import \
+    IS_REFERENCE__STRING__W_ALL_INDIRECT_REFS_ARE_STRINGS
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import \
     string_transformer_assertions as asrt_string_transformer
 
-IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS = IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
+IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS = IS_REFERENCE__STRING__W_ALL_INDIRECT_REFS_ARE_STRINGS
 
 InputAndExpected = InpExp[List[str], List[str]]
 

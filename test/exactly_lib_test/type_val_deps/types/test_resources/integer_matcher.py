@@ -15,10 +15,10 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.test_resources.any_.restrictions_assertions import \
     is_reference_restrictions__value_type
-from exactly_lib_test.type_val_deps.test_resources.logic.matcher_symbol_context import MatcherSymbolValueContext, \
-    MatcherTypeSymbolContext
 from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.abstract_syntax import \
     IntegerMatcherSymbolReferenceAbsStx
+from exactly_lib_test.type_val_deps.types.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
+    MatcherTypeSymbolContext
 
 IS_INTEGER_MATCHER_REFERENCE_RESTRICTION = is_reference_restrictions__value_type((ValueType.INTEGER_MATCHER,))
 

@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
-from exactly_lib.type_val_deps.dep_variants.data.data_type_sdv import DataTypeSdv
+from exactly_lib.type_val_deps.dep_variants.sdv.w_str_rend.sdv_type import DataTypeSdv
 from exactly_lib.type_val_deps.types.string_ import string_ddv as sv
 from exactly_lib.util.symbol_table import SymbolTable
 

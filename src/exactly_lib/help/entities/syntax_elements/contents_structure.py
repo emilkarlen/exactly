@@ -4,10 +4,10 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
+from exactly_lib.definitions.type_system import TypeCategory
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
 from exactly_lib.impls.types.expression.grammar import Grammar
 from exactly_lib.impls.types.expression.syntax_documentation import Syntax
-from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.util.textformat.structure import document, core
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.document import SectionContents, SectionItem

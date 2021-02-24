@@ -4,7 +4,7 @@ from typing import Callable
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.type_val_deps.test_resources.data.symbol_structure_assertions import equals_symbol_table
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_structure_assertions import equals_symbol_table
 
 
 def get_symbol_table_from_instruction_environment_that_is_first_arg(environment: InstructionEnvironmentForPostSdsStep,

@@ -6,7 +6,6 @@ from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.types.contents_structure import TypeDocumentation, TypeWithExpressionGrammarDocumentation
-from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -32,20 +31,17 @@ _TEXT_PARSER = TextParser({
     'string_type': types.STRING_TYPE_INFO.name,
 })
 
-STRING_DOCUMENTATION = TypeDocumentation(TypeCategory.DATA,
-                                         types.STRING_TYPE_INFO,
+STRING_DOCUMENTATION = TypeDocumentation(types.STRING_TYPE_INFO,
                                          syntax_elements.STRING_SYNTAX_ELEMENT,
                                          _TEXT_PARSER.section_contents(_STRING_MAIN_DESCRIPTION_REST)
                                          )
 
-LIST_DOCUMENTATION = TypeDocumentation(TypeCategory.DATA,
-                                       types.LIST_TYPE_INFO,
+LIST_DOCUMENTATION = TypeDocumentation(types.LIST_TYPE_INFO,
                                        syntax_elements.LIST_SYNTAX_ELEMENT,
                                        _TEXT_PARSER.section_contents(_LIST_MAIN_DESCRIPTION_REST)
                                        )
 
-PATH_DOCUMENTATION = TypeDocumentation(TypeCategory.DATA,
-                                       types.PATH_TYPE_INFO,
+PATH_DOCUMENTATION = TypeDocumentation(types.PATH_TYPE_INFO,
                                        syntax_elements.PATH_SYNTAX_ELEMENT,
                                        SectionContents([],
                                                        [
@@ -56,6 +52,5 @@ PATH_DOCUMENTATION = TypeDocumentation(TypeCategory.DATA,
                                        ]
                                        )
 FILES_CONDITION_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
-    TypeCategory.DATA,
     types.FILES_CONDITION_TYPE_INFO,
     syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT)

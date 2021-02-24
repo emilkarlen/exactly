@@ -37,8 +37,6 @@ class _SymbolConcept(ConceptDocumentation):
             'symbol': SYMBOL_CONCEPT_INFO.name,
             'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
             'symbol_name_syntax_element': syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name,
-            'data': type_system.DATA_TYPE_CATEGORY_NAME,
-            'logic': type_system.LOGIC_TYPE_CATEGORY_NAME,
             'define_symbol': formatting.InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
             'symbol_name_syntax': syntax_descriptions.SYMBOL_NAME_SYNTAX_DESCRIPTION,
             'def': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,

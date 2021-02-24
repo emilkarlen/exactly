@@ -6,7 +6,7 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
+from exactly_lib.type_val_deps.types.matcher import MatcherSdv
 from exactly_lib.type_val_deps.types.program.ddv.program import ProgramDdv
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer

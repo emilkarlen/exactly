@@ -25,10 +25,10 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.ddv_w_deps_assertions import \
     matches_dir_dependent_value
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.sdv_assertions import matches_sdv
-from exactly_lib_test.type_val_deps.test_resources.data import data_restrictions_assertions as asrt_rest
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_rest
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
-    IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
+from exactly_lib_test.type_val_deps.types.string_.test_resources import reference_assertions
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes
 
@@ -63,7 +63,7 @@ class TestWithoutExecution(unittest.TestCase):
         string_symbol = StringConstantSymbolContext(
             'STRING_SYMBOL',
             'the string value',
-            default_restrictions=asrt_rest.is_reference_restrictions__convertible_to_string(),
+            default_restrictions=asrt_rest.is_reference_restrictions__w_str_rendering(),
         )
         list_symbol = ListConstantSymbolContext(
             'LIST_SYMBOL',
@@ -187,7 +187,7 @@ def _single_line_command_cases() -> List[Case]:
     system_program_symbol = StringConstantSymbolContext(
         'SYSTEM_PROGRAM_SYMBOL',
         system_program,
-        default_restrictions=IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION,
+        default_restrictions=reference_assertions.IS_REFERENCE__STRING__W_ALL_INDIRECT_REFS_ARE_STRINGS,
     )
 
     return [

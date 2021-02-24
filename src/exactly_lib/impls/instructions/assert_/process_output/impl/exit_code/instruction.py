@@ -11,8 +11,8 @@ from exactly_lib.impls.types.matcher.property_getter import PropertyGetter
 from exactly_lib.impls.types.matcher.property_matcher import PropertyMatcherSdv
 from exactly_lib.impls.types.program import top_lvl_error_msg_rendering
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.type_val_deps.types.integer_matcher import IntegerMatcherSdv
+from exactly_lib.type_val_deps.types.matcher import MatcherSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.render import combinators as rend_comb

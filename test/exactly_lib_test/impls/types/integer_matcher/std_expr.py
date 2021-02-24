@@ -3,9 +3,9 @@ from typing import Callable
 
 from exactly_lib.impls.types.expression.parser import GrammarParsers
 from exactly_lib.impls.types.integer_matcher import parse_integer_matcher
-from exactly_lib.symbol.value_type import LogicValueType
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
-from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.symbol.value_type import ValueType
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.types.matcher import MatcherSdv
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib_test.impls.types.integer_matcher.test_resources import integration_check
@@ -46,8 +46,8 @@ class IntegerMatcherConfiguration(MatcherConfiguration[int]):
                                      ) -> IntegerMatcherSymbolContext:
         return IntegerMatcherSymbolContext.of_sdv(name, sdv)
 
-    def logic_type(self) -> LogicValueType:
-        return LogicValueType.INTEGER_MATCHER
+    def value_type(self) -> ValueType:
+        return ValueType.INTEGER_MATCHER
 
     def parsers_for_expr_on_any_line(self) -> GrammarParsers[MatcherSdv[int]]:
         return parse_integer_matcher.parsers()

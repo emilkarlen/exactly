@@ -15,7 +15,7 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext, \
     StringSymbolContext
 
 
@@ -48,20 +48,20 @@ class TestSymbolReference(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
         symbol__undefined = symbol_of('undefined')
         test_cases = [
             ('WHEN referenced value not in symbol table THEN error',
-             Arrangement(symbol_usages=[symbol__undefined.reference__convertible_to_string],
+             Arrangement(symbol_usages=[symbol__undefined.reference__w_str_rendering],
                          environment=env_with_empty_symbol_table()),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION_ERROR),
                          environment=symbol_table_is_empty())
              ),
             ('WHEN referenced value is in symbol table THEN None',
-             Arrangement(symbol_usages=[symbol__defined.reference__convertible_to_string],
+             Arrangement(symbol_usages=[symbol__defined.reference__w_str_rendering],
                          environment=env_with_singleton_symbol_table(symbol__defined)),
              Expectation(return_value=is_success,
                          environment=symbol_table_contains_exactly_names({symbol__defined.name}))
              ),
             ('WHEN referenced valueS is in symbol table THEN None',
-             Arrangement(symbol_usages=[symbol__defined1.reference__convertible_to_string,
-                                        symbol__defined2.reference__convertible_to_string],
+             Arrangement(symbol_usages=[symbol__defined1.reference__w_str_rendering,
+                                        symbol__defined2.reference__w_str_rendering],
                          environment=env_with_symbol_table([symbol__defined1,
                                                             symbol__defined2])),
              Expectation(return_value=is_success,
@@ -69,8 +69,8 @@ class TestSymbolReference(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
                              {symbol__defined1.name, symbol__defined2.name}))
              ),
             ('WHEN at least one referenced value is not in symbol table THEN error',
-             Arrangement(symbol_usages=[symbol__defined.reference__convertible_to_string,
-                                        symbol__undefined.reference__convertible_to_string],
+             Arrangement(symbol_usages=[symbol__defined.reference__w_str_rendering,
+                                        symbol__undefined.reference__w_str_rendering],
                          environment=env_with_symbol_table([symbol__defined])),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION_ERROR),
                          environment=symbol_table_contains_exactly_names({symbol__defined.name}))
@@ -130,13 +130,13 @@ class TestCombinationOfDefinitionAndReference(TestCaseBaseWithShortDescriptionOf
         test_cases = [
             ('WHEN value to define is before reference to it (in list of value usages) THEN ok',
              Arrangement(symbol_usages=[string_symbol.definition,
-                                        string_symbol.reference__convertible_to_string],
+                                        string_symbol.reference__w_str_rendering],
                          environment=env_with_empty_symbol_table()),
              Expectation(return_value=is_success,
                          environment=symbol_table_contains_exactly_names({'define'}))
              ),
             ('WHEN value to define is after reference to it (in list of value usages) THEN error',
-             Arrangement(symbol_usages=[string_symbol.reference__convertible_to_string,
+             Arrangement(symbol_usages=[string_symbol.reference__w_str_rendering,
                                         string_symbol.definition],
                          environment=env_with_empty_symbol_table()),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION_ERROR),

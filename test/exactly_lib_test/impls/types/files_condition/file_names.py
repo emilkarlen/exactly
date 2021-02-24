@@ -13,8 +13,9 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arra
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import \
-    is_reference_to_string_made_up_of_just_strings, \
+from exactly_lib_test.type_val_deps.types.string_.test_resources.reference_assertions import \
+    is_sym_ref_to_string__w_all_indirect_refs_are_strings
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import \
     StringConstantSymbolContext
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 
@@ -79,7 +80,7 @@ class TestInvalidFileNamesShouldCauseValidationError(unittest.TestCase):
                     [
                         StringConstantSymbolContext(ABS_POSIX_PATH_SYMBOL_NAME, ABS_POSIX_PATH)
                     ],
-                    [is_reference_to_string_made_up_of_just_strings(ABS_POSIX_PATH_SYMBOL_NAME)]
+                    [is_sym_ref_to_string__w_all_indirect_refs_are_strings(ABS_POSIX_PATH_SYMBOL_NAME)]
                 ),
             ),
         ]
@@ -130,7 +131,7 @@ class TestFileNamesShouldUsePosixSyntax(unittest.TestCase):
                 ]),
                 SymbolsArrEx(
                     [multi_part_file_name_symbol],
-                    [is_reference_to_string_made_up_of_just_strings(multi_part_file_name_symbol.name)]
+                    [is_sym_ref_to_string__w_all_indirect_refs_are_strings(multi_part_file_name_symbol.name)]
                 ),
             ),
         ]
@@ -237,8 +238,8 @@ class TestEachUniqueFileNameShouldHaveAnEntryInFilesMapping(unittest.TestCase):
                         StringConstantSymbolContext('sym_ref2', 'fn'),
                     ],
                     [
-                        is_reference_to_string_made_up_of_just_strings('sym_ref1'),
-                        is_reference_to_string_made_up_of_just_strings('sym_ref2'),
+                        is_sym_ref_to_string__w_all_indirect_refs_are_strings('sym_ref1'),
+                        is_sym_ref_to_string__w_all_indirect_refs_are_strings('sym_ref2'),
                     ]
                 ),
                 {

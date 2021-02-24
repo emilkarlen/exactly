@@ -29,7 +29,7 @@ from exactly_lib_test.type_val_deps.types.program.test_resources import abstract
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx, \
     ProgramAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfExistingPathAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
     StringTransformerSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
@@ -82,7 +82,7 @@ class TestSymbolReferences(unittest.TestCase):
             ),
             MultiSourceExpectation.of_prim__const(
                 symbol_references=asrt.matches_sequence([
-                    text_printed_by_program.reference_assertion__convertible_to_string,
+                    text_printed_by_program.reference_assertion__w_str_rendering,
                     to_upper_transformer.reference_assertion,
                 ]),
                 primitive=asrt_string_source.pre_post_freeze__matches_str__const_2(

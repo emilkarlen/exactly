@@ -9,8 +9,9 @@ from exactly_lib.section_document.source_location import FileLocationInfo, Sourc
 from exactly_lib.symbol import sdv_structure as rs
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.type_val_deps.sym_ref.data.data_value_restriction import ValueRestriction
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.data_value_restriction import ValueRestriction
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.types.path import path_part_sdvs
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.util import line_source
@@ -18,7 +19,7 @@ from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.type_val_deps.test_resources.any_.reference_restrictions import \
     reference_restrictions__unconditionally_unsatisfied, reference_restrictions__unconditionally_satisfied
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathSymbolContext
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolContext
 
 
 def suite() -> unittest.TestSuite:

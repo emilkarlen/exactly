@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.impls.instructions.multi_phase.define_symbol import parser as sut
-from exactly_lib.symbol.value_type import LogicValueType
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.abstract_syntax import \
     DefineSymbolWMandatoryValue
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
@@ -17,7 +16,7 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
+from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import \
     FullProgramAbsStx, CustomPgmAndArgsAbsStx
@@ -56,8 +55,8 @@ class TestSuccessfulDefinitionOfProgramWoArguments(unittest.TestCase):
             program_abs_stx,
         )
 
-        expected_symbol_container = matches_container_of_logic_type(
-            LogicValueType.PROGRAM,
+        expected_symbol_container = matches_container(
+            asrt.equals(ValueType.PROGRAM),
             sdv=type_sdv_assertions.matches_sdv_of_program_constant(
                 references=asrt.matches_sequence([
                     referred_symbol.reference_assertion

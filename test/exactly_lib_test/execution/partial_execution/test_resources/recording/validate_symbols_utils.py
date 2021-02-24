@@ -3,7 +3,8 @@ import unittest
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.test_case.phases.common import TestCaseInstruction
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
@@ -15,9 +16,9 @@ from exactly_lib_test.execution.test_resources import instruction_test_resources
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForInstructionFailure
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.type_val_deps.test_resources.data.value_restriction import \
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.value_restrictions import \
     ValueRestrictionWithConstantResult
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 
 class Configuration:
@@ -65,7 +66,7 @@ class TestValidationErrorDueToReferenceToUndefinedSymbol(TestCaseBase):
         symbol__undefined = StringConstantSymbolContext('undefined symbol')
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(conf.phase,
-                 conf.instruction_that_returns([symbol__undefined.reference__convertible_to_string]))
+                 conf.instruction_that_returns([symbol__undefined.reference__w_str_rendering]))
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),

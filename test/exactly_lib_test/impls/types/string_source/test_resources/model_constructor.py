@@ -3,7 +3,7 @@ from typing import Callable, List, Sequence, Iterator
 
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.app_env import ApplicationEnvironment
-from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib.util.symbol_table import SymbolTable

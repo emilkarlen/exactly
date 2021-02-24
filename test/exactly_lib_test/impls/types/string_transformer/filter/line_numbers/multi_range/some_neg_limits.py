@@ -28,7 +28,7 @@ from exactly_lib_test.impls.types.string_transformer.test_resources import argum
 from exactly_lib_test.impls.types.string_transformer.test_resources import integration_check
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.test_utils import ArrEx
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringIntConstantSymbolContext, \
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringIntConstantSymbolContext, \
     StringConstantSymbolContext
 
 

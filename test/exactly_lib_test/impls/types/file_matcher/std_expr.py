@@ -4,9 +4,9 @@ from typing import Callable
 
 from exactly_lib.impls.types.expression.parser import GrammarParsers
 from exactly_lib.impls.types.file_matcher import parse_file_matcher
-from exactly_lib.symbol.value_type import LogicValueType
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
-from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.symbol.value_type import ValueType
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.types.matcher import MatcherSdv
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
@@ -49,8 +49,8 @@ class FileMatcherConfiguration(MatcherConfiguration[FileMatcherModel]):
                                      ) -> FileMatcherSymbolContext:
         return FileMatcherSymbolContext.of_sdv(name, sdv)
 
-    def logic_type(self) -> LogicValueType:
-        return LogicValueType.FILE_MATCHER
+    def value_type(self) -> ValueType:
+        return ValueType.FILE_MATCHER
 
     def parsers_for_expr_on_any_line(self) -> GrammarParsers[MatcherSdv[FileMatcherModel]]:
         return parse_file_matcher.parsers()

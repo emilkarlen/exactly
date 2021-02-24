@@ -4,7 +4,7 @@ from typing import TypeVar, Sequence, Generic, Callable
 from exactly_lib.impls.types.matcher.impls import combinator_matchers
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
+from exactly_lib.type_val_deps.types.matcher import MatcherSdv
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 

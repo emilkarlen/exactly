@@ -11,7 +11,7 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference, SymbolDependentValue
 from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
-from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import PathAndRelativityRestriction
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.cli_syntax.elements import argument
@@ -244,7 +244,7 @@ class Checker:
             put: unittest.TestCase,
             actual: PathSdv,
             symbols: SymbolTable):
-        restriction = PathRelativityRestriction(PathRelativityVariants(RelOptionType, True))
+        restriction = PathAndRelativityRestriction(PathRelativityVariants(RelOptionType, True))
         container = PathSymbolValueContext.of_sdv(actual).container
         result = restriction.is_satisfied_by(symbols, 'hypothetical_symbol', container)
         put.assertIsNone(result,

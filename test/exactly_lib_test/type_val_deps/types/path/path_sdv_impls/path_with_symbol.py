@@ -6,19 +6,22 @@ from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionTy
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction, \
-    AnyDataTypeRestriction
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import PathAndRelativityRestriction, \
+    ArbitraryValueWStrRenderingRestriction
 from exactly_lib.type_val_deps.types.path import path_part_sdvs
 from exactly_lib.type_val_deps.types.path.path_sdv_impls import path_rel_symbol as sut
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.test_resources.data import value_restriction, symbol_reference_assertions as vr_tr
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import value_restriction_assertions as asrt_val_rest, \
+    symbol_reference_assertions as vr_tr
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.type_val_deps.types.string.test_resources.string_sdvs import string_sdv_of_single_symbol_reference
+from exactly_lib_test.type_val_deps.types.string_.test_resources.string_sdvs import \
+    string_sdv_of_single_symbol_reference
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -28,18 +31,18 @@ def suite() -> unittest.TestSuite:
 class TestRelSymbol(unittest.TestCase):
     def test_symbol_references(self):
         # ARRANGE #
-        expected_restriction = PathRelativityRestriction(
+        expected_restriction = PathAndRelativityRestriction(
             PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HDS_CASE}, True))
         symbol_name_of_rel_path = 'symbol_name_of_rel_path'
         symbol_name_of_path_suffix = 'symbol_name_of_path_suffix'
         restrictions_on_path_suffix_symbol = ReferenceRestrictionsOnDirectAndIndirect(
-            AnyDataTypeRestriction()
+            ArbitraryValueWStrRenderingRestriction.of_any()
         )
         expected_mandatory_references = [
             vr_tr.matches_symbol_reference_with_restriction_on_direct_target(
                 symbol_name_of_rel_path,
-                value_restriction.equals_path_relativity_restriction(
-                    expected_restriction))
+                asrt_val_rest.equals__path_w_relativity(expected_restriction)
+            )
         ]
         symbol_ref_of_path = SymbolReference(symbol_name_of_rel_path,
                                              ReferenceRestrictionsOnDirectAndIndirect(expected_restriction))
@@ -81,7 +84,7 @@ class TestRelSymbol(unittest.TestCase):
             (path_part_sdvs.from_string(
                 string_sdv_of_single_symbol_reference(
                     'path_suffix_symbol_name',
-                    reference_restrictions.is_type_convertible_to_string()),
+                    reference_restrictions.is_any_type_w_str_rendering()),
             ),
              [StringConstantSymbolContext('path_suffix_symbol_name', 'path-suffix').entry],
             ),
@@ -120,7 +123,7 @@ class TestRelSymbol(unittest.TestCase):
             (path_part_sdvs.from_string(
                 string_sdv_of_single_symbol_reference(
                     'path_suffix_symbol',
-                    reference_restrictions.is_type_convertible_to_string())
+                    reference_restrictions.is_any_type_w_str_rendering())
             ),
              (StringConstantSymbolContext('path_suffix_symbol',
                                           path_suffix_str).entry,)
@@ -168,7 +171,7 @@ def _symbol_reference_of_path_with_accepted(value_name: str,
                                             accepted: RelOptionType) -> SymbolReference:
     return SymbolReference(value_name,
                            ReferenceRestrictionsOnDirectAndIndirect(
-                               PathRelativityRestriction(_path_relativity_variants_with(accepted))))
+                               PathAndRelativityRestriction(_path_relativity_variants_with(accepted))))
 
 
 def _path_relativity_variants_with(accepted: RelOptionType) -> PathRelativityVariants:

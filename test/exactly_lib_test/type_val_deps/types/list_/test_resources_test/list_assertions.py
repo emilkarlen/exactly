@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import OrReferenceRestrictions
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import OrReferenceRestrictions
 from exactly_lib.type_val_deps.types.list_ import list_sdv as lr, list_sdvs
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.type_val_deps.types.string_.strings_ddvs import string_ddv_of_single_string
@@ -9,9 +9,9 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.data.references import reference_to__on_direct_and_indirect
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.references import reference_to__on_direct_and_indirect
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_assertions as sut
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -131,7 +131,7 @@ class TestEqualsResolver(unittest.TestCase):
                  expected=
                  list_sdvs.from_str_constants([string_symbol.str_value]),
                  actual=
-                 list_sdvs.from_elements([list_sdvs.symbol_element(string_symbol.reference__convertible_to_string)]),
+                 list_sdvs.from_elements([list_sdvs.symbol_element(string_symbol.reference__w_str_rendering)]),
                  symbols=
                  string_symbol.symbol_table,
                  ),
@@ -166,10 +166,10 @@ class TestMatchesResolver(unittest.TestCase):
                         expected=
                         lr.ListDdv([string_ddv_of_single_string(string_symbol.str_value)]),
                         expected_references=
-                        asrt.matches_sequence([string_symbol.reference_assertion__convertible_to_string]),
+                        asrt.matches_sequence([string_symbol.reference_assertion__w_str_rendering]),
                         actual=
                         list_sdvs.from_elements([list_sdvs.string_element(
-                            string_sdvs.symbol_reference(string_symbol.reference__convertible_to_string)
+                            string_sdvs.symbol_reference(string_symbol.reference__w_str_rendering)
                         )]),
                         symbols=
                         string_symbol.symbol_table,
@@ -203,7 +203,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected=
                         lr.ListDdv([string_ddv_of_single_string(string_symbol.str_value)]),
                         expected_references=
-                        asrt.matches_sequence([string_symbol.reference_assertion__convertible_to_string]),
+                        asrt.matches_sequence([string_symbol.reference_assertion__w_str_rendering]),
                         actual=
                         list_sdvs.from_elements([list_sdvs.string_element(
                             string_sdvs.symbol_reference(

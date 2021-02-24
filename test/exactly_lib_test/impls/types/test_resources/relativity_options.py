@@ -11,7 +11,7 @@ from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVarian
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP, REL_NON_HDS_OPTIONS_MAP
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import PathAndRelativityRestriction
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.path.path_ddvs import empty_path_part
 from exactly_lib.type_val_deps.types.path.path_part_ddv import PathPartDdv
@@ -34,9 +34,9 @@ from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRe
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import value_restriction_assertions as asrt_val_rest
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
     matches_symbol_reference_with_restriction_on_direct_target
-from exactly_lib_test.type_val_deps.test_resources.data.value_restriction import equals_path_relativity_restriction
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import RelativityAbsStx, \
     PathWConstNameAbsStx
@@ -466,9 +466,9 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
         return [
             matches_symbol_reference_with_restriction_on_direct_target(
                 self.symbol_name,
-                equals_path_relativity_restriction(
-                    PathRelativityRestriction(self.expected_accepted_relativities)))
-
+                asrt_val_rest.equals__path_w_relativity(
+                    PathAndRelativityRestriction(self.expected_accepted_relativities))
+            )
         ]
 
     def contexts_for_arrangement(self) -> List[SymbolContext]:

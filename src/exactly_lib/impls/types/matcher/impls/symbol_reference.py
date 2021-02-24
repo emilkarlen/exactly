@@ -3,9 +3,9 @@ from typing import Sequence
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv, MODEL
 from exactly_lib.type_val_deps.sym_ref import symbol_lookup
 from exactly_lib.type_val_deps.sym_ref.restrictions import ValueTypeRestriction
+from exactly_lib.type_val_deps.types.matcher import MatcherSdv, MODEL
 from exactly_lib.util.symbol_table import SymbolTable
 
 

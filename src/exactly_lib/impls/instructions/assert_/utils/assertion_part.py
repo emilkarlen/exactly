@@ -15,9 +15,9 @@ from exactly_lib.test_case.phases.instruction_settings import InstructionSetting
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case.result.pfh import PassOrFailOrHardErrorEnum
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_with_validation import ObjectWithSymbolReferencesAndSdvValidation
-from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock

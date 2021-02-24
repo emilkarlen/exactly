@@ -3,13 +3,13 @@ from typing import Optional
 
 from exactly_lib.common.err_msg.err_msg_w_fix_tip import ErrorMessageWithFixTip
 from exactly_lib.symbol.err_msg import restriction_failures as sut
-from exactly_lib.symbol.value_type import TypeCategory, ValueType
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import FailureOfDirectReference, \
+from exactly_lib.symbol.value_type import ValueType
+from exactly_lib.type_val_deps.sym_ref.restrictions import InvalidValueTypeFailure
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import FailureOfDirectReference, \
     FailureOfIndirectReference
-from exactly_lib.type_val_deps.sym_ref.restrictions import InvalidTypeCategoryFailure, InvalidValueTypeFailure
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -25,15 +25,6 @@ class TestErrorMessage(unittest.TestCase):
         string_sym_def_2
     ]
     )
-
-    def test_invalid_type_category(self):
-        # ACT #
-        actual = sut.ErrorMessage(self.string_sym_def_1.name,
-                                  self.symbol_table,
-                                  InvalidTypeCategoryFailure(TypeCategory.LOGIC,
-                                                             TypeCategory.DATA))
-        # ASSERT #
-        asrt_text_doc.assert_is_valid_text_renderer(self, actual)
 
     def test_invalid_type(self):
         # ACT #

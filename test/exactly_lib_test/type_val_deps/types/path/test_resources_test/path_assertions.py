@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import PathAndRelativityRestriction
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
@@ -84,5 +84,5 @@ _EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_HDS_CASE
 _NOT_EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_ACT
 
 
-def _relativity_restriction(rel_option_types: set, absolute_is_valid: bool) -> PathRelativityRestriction:
-    return PathRelativityRestriction(PathRelativityVariants(rel_option_types, absolute_is_valid))
+def _relativity_restriction(rel_option_types: set, absolute_is_valid: bool) -> PathAndRelativityRestriction:
+    return PathAndRelativityRestriction(PathRelativityVariants(rel_option_types, absolute_is_valid))

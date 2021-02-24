@@ -13,8 +13,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import StringRestriction
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.util.parse.token import QuoteType
@@ -40,6 +40,7 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import value_restrictions
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import PathStringAbsStx, \
     RelOptPathAbsStx, \
@@ -49,8 +50,8 @@ from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax
     ProgramOfExecutableFileCommandLineAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringLiteralAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -214,8 +215,8 @@ class TestParseWithSymbols(unittest.TestCase):
         reference_of_path_string_symbol_as_path_component = SymbolReference(
             string_symbol.name,
             ReferenceRestrictionsOnDirectAndIndirect(
-                direct=StringRestriction(),
-                indirect=StringRestriction()),
+                direct=value_restrictions.is_string(),
+                indirect=value_restrictions.is_string()),
         )
         symbols = SymbolContext.symbol_table_of_contexts([
             file_symbol,

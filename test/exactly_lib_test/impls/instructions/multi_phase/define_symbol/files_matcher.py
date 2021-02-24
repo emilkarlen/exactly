@@ -6,7 +6,6 @@ from exactly_lib.impls.types.condition import comparators
 from exactly_lib.impls.types.files_matcher import models
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.value_type import LogicValueType
 from exactly_lib.tcfs.path_relativity import RelSdsOptionType
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_deps.sym_ref import symbol_lookup
@@ -37,7 +36,7 @@ from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
+from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
@@ -73,8 +72,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
                 # EXPECTATION #
 
-                expected_container = matches_container_of_logic_type(
-                    LogicValueType.FILES_MATCHER,
+                expected_container = matches_container(
+                    asrt.equals(ValueType.FILES_MATCHER),
                     type_sdv_assertions.matches_sdv_of_files_matcher()
                 )
 
@@ -110,8 +109,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
         # EXPECTATION #
 
-        expected_container = matches_container_of_logic_type(
-            LogicValueType.FILES_MATCHER,
+        expected_container = matches_container(
+            asrt.equals(ValueType.FILES_MATCHER),
             type_sdv_assertions.matches_sdv_of_files_matcher(
                 references=asrt.matches_sequence([
                     referenced_symbol.reference_assertion
@@ -139,7 +138,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
             self,
             FilesMatcherSymbolContext.of_arbitrary_value('symbol_1'),
             FilesMatcherSymbolContext.of_arbitrary_value('symbol_2'),
-            LogicValueType.FILES_MATCHER,
+            ValueType.FILES_MATCHER,
         )
 
     def test_successful_parse_and_application_of_non_trivial_matcher(self):
@@ -147,8 +146,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
         defined_name = 'defined_name'
 
-        expected_container = matches_container_of_logic_type(
-            LogicValueType.FILES_MATCHER,
+        expected_container = matches_container(
+            asrt.equals(ValueType.FILES_MATCHER),
             type_sdv_assertions.matches_sdv_of_files_matcher()
         )
 

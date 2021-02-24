@@ -35,8 +35,8 @@ from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
     ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx, NonSymLinkFileType
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringSymbolAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringSymbolAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command, \
     program_assertions as asrt_pgm_val
 
@@ -137,7 +137,7 @@ class TestSuccessfulParse(unittest.TestCase):
                                            ArgumentOfStringAbsStx.of_str('argument')],
                           expected_resolved_values=lambda tcds: [argument_string_symbol.str_value, 'argument'],
                           expected_symbol_references=[
-                              argument_string_symbol.reference_assertion__convertible_to_string
+                              argument_string_symbol.reference_assertion__w_str_rendering
                           ]),
             ArgumentsCase('existing file argument',
                           source_elements=[
@@ -163,7 +163,7 @@ class TestSuccessfulParse(unittest.TestCase):
                             ),
                             expected_resolved_value=program_name_string_symbol.str_value,
                             expected_symbol_references=[
-                                program_name_string_symbol.reference_assertion__string_made_up_of_just_strings
+                                program_name_string_symbol.reference_assertion__string__w_all_indirect_refs_are_strings
                             ]
                             ),
         ]

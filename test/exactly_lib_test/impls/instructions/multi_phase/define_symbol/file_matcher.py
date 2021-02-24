@@ -6,7 +6,6 @@ from exactly_lib.impls.instructions.multi_phase.define_symbol import parser as s
 from exactly_lib.impls.types.file_matcher import parse_file_matcher, file_matcher_models
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.value_type import LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources import matcher_helpers
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
@@ -22,7 +21,7 @@ from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.resolving_helper import resolving_helper__fake
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
+from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container
 from exactly_lib_test.type_val_deps.types.path.test_resources import described_path
 from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext
 from exactly_lib_test.type_val_prims.matcher.test_resources import matcher_assertions as asrt_matcher
@@ -83,8 +82,8 @@ class Test(unittest.TestCase):
                              selector_argument=case.input_value),
                     )
 
-                    expected_container = matches_container_of_logic_type(
-                        LogicValueType.FILE_MATCHER,
+                    expected_container = matches_container(
+                        asrt.equals(ValueType.FILE_MATCHER),
                         type_sdv_assertions.matches_sdv_of_file_matcher(
                             references=asrt.is_empty_sequence,
                             primitive_value=case.expected_value
@@ -109,7 +108,7 @@ class Test(unittest.TestCase):
             self,
             FileMatcherSymbolContext.of_arbitrary_value('symbol_1'),
             FileMatcherSymbolContext.of_arbitrary_value('symbol_2'),
-            LogicValueType.FILE_MATCHER,
+            ValueType.FILE_MATCHER,
         )
 
     def test_failing_parse(self):

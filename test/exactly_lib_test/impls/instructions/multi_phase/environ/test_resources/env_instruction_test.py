@@ -15,7 +15,7 @@ from exactly_lib_test.test_case.test_resources import instr_settings_assertions 
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringLiteralAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx
 
 
 def suite_for_non_setup_phase(conf: ConfigurationBase) -> unittest.TestSuite:

@@ -7,7 +7,7 @@ from exactly_lib.impls.types.matcher.impls import quantifier_matchers
 from exactly_lib.impls.types.matcher.impls.quantifier_matchers import MODEL, ELEMENT
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
+from exactly_lib.type_val_deps.types.matcher import MatcherSdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import Quantifier
 from exactly_lib.util.name_and_value import NameAndValue

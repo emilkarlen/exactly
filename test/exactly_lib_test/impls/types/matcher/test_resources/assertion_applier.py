@@ -11,7 +11,7 @@ from exactly_lib.type_val_deps.dep_variants.adv.advs import MatcherAdvFromFuncti
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
+from exactly_lib.type_val_deps.types.matcher import MatcherSdv
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.types.matcher.test_resources import matcher_w_init_action

@@ -1,6 +1,7 @@
+from types import MappingProxyType
 from typing import List, Sequence
 
-from exactly_lib.definitions import type_system, instruction_arguments
+from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import cl_syntax, path_syntax
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
@@ -8,7 +9,7 @@ from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
-from exactly_lib.symbol.value_type import DataValueType, ValueType
+from exactly_lib.symbol.value_type import WithStrRenderingType, ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.table import TableCell
@@ -83,22 +84,22 @@ _SYMBOL_NAME = a.Single(a.Multiplicity.MANDATORY,
 _EQUALS = a.Single(a.Multiplicity.MANDATORY,
                    a.Constant(ASSIGNMENT_ARGUMENT))
 
-DATA_TYPE_INFO_DICT = {
-    DataValueType.STRING:
+TYPE_W_STR_RENDERING_INFO_DICT = MappingProxyType({
+    WithStrRenderingType.STRING:
         TypeInfo(types.STRING_TYPE_INFO,
                  _standard_type_value_args(types.STRING_TYPE_INFO,
                                            a.Multiplicity.MANDATORY)),
 
-    DataValueType.PATH:
+    WithStrRenderingType.PATH:
         TypeInfo(types.PATH_TYPE_INFO,
                  path_syntax.mandatory_path_with_optional_relativity(
                      a.Named(types.PATH_TYPE_INFO.syntax_element_name),
                      PATH_SUFFIX_IS_REQUIRED)),
 
-    DataValueType.LIST:
+    WithStrRenderingType.LIST:
         TypeInfo(types.LIST_TYPE_INFO,
                  [syntax_elements.LIST_SYNTAX_ELEMENT.single_mandatory]),
-}
+})
 
 
 def _logic_type_info(type_info: TypeNameAndCrossReferenceId) -> TypeInfo:
@@ -107,11 +108,11 @@ def _logic_type_info(type_info: TypeNameAndCrossReferenceId) -> TypeInfo:
 
 ANY_TYPE_INFO_DICT = {
     ValueType.STRING:
-        DATA_TYPE_INFO_DICT[DataValueType.STRING],
+        TYPE_W_STR_RENDERING_INFO_DICT[WithStrRenderingType.STRING],
     ValueType.PATH:
-        DATA_TYPE_INFO_DICT[DataValueType.PATH],
+        TYPE_W_STR_RENDERING_INFO_DICT[WithStrRenderingType.PATH],
     ValueType.LIST:
-        DATA_TYPE_INFO_DICT[DataValueType.LIST],
+        TYPE_W_STR_RENDERING_INFO_DICT[WithStrRenderingType.LIST],
 
     ValueType.INTEGER_MATCHER:
         _logic_type_info(types.INTEGER_MATCHER_TYPE_INFO),

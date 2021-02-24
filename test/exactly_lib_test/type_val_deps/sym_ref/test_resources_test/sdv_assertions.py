@@ -4,8 +4,8 @@ from typing import Sequence, Callable, TypeVar
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_val_deps.dep_variants.data.data_type_sdv import DataTypeSdv
 from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependentValue
+from exactly_lib.type_val_deps.dep_variants.sdv.w_str_rend.sdv_type import DataTypeSdv
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
@@ -22,11 +22,11 @@ from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources import test_of_test_resources_util
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.sym_ref.test_resources import sdv_assertions as sut
-from exactly_lib_test.type_val_deps.test_resources.data import references as data_references
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import references as data_references
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.path.test_resources.path_sdvs import \
     PathSdvTestImplWithConstantPathAndSymbolReferences
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext, \
     StringSymbolValueContext
 from exactly_lib_test.type_val_deps.types.test_resources.line_matcher import LineMatcherSymbolValueContext
 

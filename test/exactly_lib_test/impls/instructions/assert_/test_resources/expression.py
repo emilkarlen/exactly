@@ -16,8 +16,8 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPo
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.abstract_syntax import IntegerMatcherAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringSymbolAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringSymbolAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 
 class InstructionArgumentsVariantConstructor:
@@ -121,7 +121,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                             Expectation(
                                 validation_pre_sds=svh_asrt.is_validation_error(),
                                 symbol_usages=asrt.matches_sequence([
-                                    symbol.reference_assertion__string_made_up_of_just_strings
+                                    symbol.reference_assertion__string__w_all_indirect_refs_are_strings
                                 ]),
                             ),
                         )
@@ -188,7 +188,7 @@ class TestFailingValidationPreSdsAbsStxBase(unittest.TestCase):
                         ),
                         MultiSourceExpectation(
                             symbol_usages=asrt.matches_sequence([
-                                symbol.reference_assertion__string_made_up_of_just_strings
+                                symbol.reference_assertion__string__w_all_indirect_refs_are_strings
                             ]),
                             execution=ExecutionExpectation(
                                 validation_pre_sds=svh_asrt.is_validation_error(),

@@ -9,7 +9,7 @@ from exactly_lib.impls.types.string_transformer.impl import tcds_paths_replaceme
 from exactly_lib.tcfs import tcds_symbols
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_environment import FullResolvingEnvironment
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments

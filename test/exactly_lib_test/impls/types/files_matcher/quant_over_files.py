@@ -7,8 +7,9 @@ from exactly_lib.impls.types.files_matcher import parse_files_matcher as sut
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.tcfs.path_relativity import RelOptionType, RelSdsOptionType
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
+    is_string__all_indirect_refs_are_strings
+from exactly_lib.type_val_deps.types.matcher import MatcherSdv
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib_test.impls.types.file_matcher.test_resources import argument_building as fm_args, validation_cases
@@ -39,8 +40,8 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir, sym_link
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
-    equals_symbol_references__convertible_to_string
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
+    equals_symbol_references__w_str_rendering
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext, \
@@ -196,7 +197,7 @@ class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
         # ARRANGE #
 
         operand_sym_ref = SymbolReference('operand_symbol_name',
-                                          string_made_up_by_just_strings())
+                                          is_string__all_indirect_refs_are_strings())
 
         condition_str = '{operator} {symbol_reference}'.format(
             operator=comparators.EQ.name,
@@ -226,7 +227,7 @@ class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
         expected_symbol_references = [
             operand_sym_ref,
         ]
-        assertion = equals_symbol_references__convertible_to_string(expected_symbol_references)
+        assertion = equals_symbol_references__w_str_rendering(expected_symbol_references)
 
         assertion.apply_without_message(self, actual_symbol_references)
 

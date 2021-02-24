@@ -4,7 +4,7 @@ from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.type_val_deps.dep_variants.sdv.resolving_helper import LogicTypeResolvingHelper
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_helper import LogicTypeResolvingHelper
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings

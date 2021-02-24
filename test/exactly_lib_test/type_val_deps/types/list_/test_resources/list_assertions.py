@@ -1,7 +1,7 @@
 from typing import Iterable, List, Sequence, Optional
 
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolReference
-from exactly_lib.type_val_deps.sym_ref.restrictions import DataTypeReferenceRestrictions
+from exactly_lib.type_val_deps.sym_ref.restrictions import WithStrRenderingTypeRestrictions
 from exactly_lib.type_val_deps.types.list_ import list_sdv, list_sdvs
 from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
@@ -10,14 +10,14 @@ from exactly_lib_test.symbol.test_resources import symbol_reference_assertions a
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
-from exactly_lib_test.type_val_deps.test_resources.data import data_restrictions_assertions
-from exactly_lib_test.type_val_deps.test_resources.data.assertion_utils import \
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.assertion_utils import \
     symbol_table_with_values_matching_references
-from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
-    equals_symbol_references__convertible_to_string, \
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
+    equals_symbol_references__w_str_rendering, \
     equals_data_type_symbol_reference
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ddv_assertions import equals_list_ddv
-from exactly_lib_test.type_val_deps.types.string.test_resources.ddv_assertions import equals_string_ddv
+from exactly_lib_test.type_val_deps.types.string_.test_resources.ddv_assertions import equals_string_ddv
 
 
 def equals_list_sdv_element(expected: list_sdv.ElementSdv,
@@ -30,7 +30,7 @@ def equals_list_sdv_element(expected: list_sdv.ElementSdv,
     component_assertions = [
         asrt.sub_component('references',
                            lambda x: list(x.references),
-                           equals_symbol_references__convertible_to_string(list(expected.references))),
+                           equals_symbol_references__w_str_rendering(list(expected.references))),
         asrt.sub_component('resolved value',
                            lambda x: x.resolve(symbols),
                            assertion_on_resolved_value),
@@ -40,15 +40,15 @@ def equals_list_sdv_element(expected: list_sdv.ElementSdv,
     reference = expected.symbol_reference_if_is_symbol_reference
     if reference is not None:
         reference_restrictions = reference.restrictions
-        if not isinstance(reference_restrictions, DataTypeReferenceRestrictions):
+        if not isinstance(reference_restrictions, WithStrRenderingTypeRestrictions):
             raise ValueError('A list element must reference a data type value')
-        assert isinstance(reference_restrictions, DataTypeReferenceRestrictions)  # Type info for IDE
+        assert isinstance(reference_restrictions, WithStrRenderingTypeRestrictions)  # Type info for IDE
 
         symbol_reference_assertion = equals_data_type_symbol_reference(reference)
 
         asrt_sym_ref.matches_reference_2(
             reference.name,
-            data_restrictions_assertions.equals_reference_restrictions__convertible_to_string(
+            data_restrictions_assertions.equals_reference_restrictions__w_str_rendering(
                 reference_restrictions)
         )
 
@@ -79,7 +79,7 @@ def equals_list_sdv(expected: ListSdv,
         return x.elements
 
     return type_sdv_assertions.matches_sdv_of_list(
-        equals_symbol_references__convertible_to_string(expected.references),
+        equals_symbol_references__w_str_rendering(expected.references),
         equals_list_ddv(expected_resolved_value),
         asrt.sub_component('element SDVs',
                            get_element_sdvs,

@@ -11,7 +11,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Mes
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
     CommonSdvPropertiesChecker, PRIMITIVE, OUTPUT, CommonExecutionPropertiesChecker
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.logic_structure_assertions import has_valid_description
-from exactly_lib_test.type_val_deps.types.test_resources import full_sdv_assertions as asrt_logic
+from exactly_lib_test.type_val_deps.test_resources.full_deps import full_sdv_assertions as asrt_logic
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree, \
     rendering_assertions as asrt_trace_rendering
 

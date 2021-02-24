@@ -9,7 +9,7 @@ from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransfo
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.logic.symbol_context import LogicSymbolValueContext, \
+from exactly_lib_test.type_val_deps.test_resources.full_deps.symbol_context import LogicSymbolValueContext, \
     LogicTypeSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
     StringTransformerSymbolReferenceAbsStx

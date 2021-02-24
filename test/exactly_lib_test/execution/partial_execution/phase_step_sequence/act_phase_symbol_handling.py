@@ -3,7 +3,6 @@ import unittest
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
-from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import StringRestriction
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList, \
@@ -18,9 +17,10 @@ from exactly_lib_test.execution.test_resources.failure_info_check import Expecte
 from exactly_lib_test.test_case.actor.test_resources.test_actions import \
     execute_action_that_returns_exit_code
 from exactly_lib_test.test_resources.actions import do_return, do_raise
-from exactly_lib_test.type_val_deps.test_resources.data import references as data_references
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import references as data_references
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import value_restrictions
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import arbitrary_path_symbol_context
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -34,8 +34,9 @@ class TestSuccessfulScenarios(TestCaseBase):
     def test_symbol_that_does_meet_restriction_in_validate_symbols(self):
         test_case = _single_successful_instruction_in_each_phase()
         symbol_name = 'symbol_name'
-        reference_to_string_symbol = data_references.reference_to__on_direct_and_indirect(symbol_name,
-                                                                                          StringRestriction())
+        reference_to_string_symbol = data_references.reference_to__on_direct_and_indirect(
+            symbol_name,
+            value_restrictions.is_string())
         definition_of_string_symbol = StringConstantSymbolContext(symbol_name).definition
         symbol_usages = [
             definition_of_string_symbol,
@@ -122,8 +123,9 @@ class TestFailingScenarios(TestCaseBase):
     def test_symbol_that_does_not_meet_restriction_in_validate_symbols(self):
         test_case = _single_successful_instruction_in_each_phase()
         symbol_name = 'symbol_name'
-        reference_to_string_symbol = data_references.reference_to__on_direct_and_indirect(symbol_name,
-                                                                                          StringRestriction())
+        reference_to_string_symbol = data_references.reference_to__on_direct_and_indirect(
+            symbol_name,
+            value_restrictions.is_string())
         definition_of_path_symbol = arbitrary_path_symbol_context(symbol_name).definition
         symbol_usages = [
             definition_of_path_symbol,

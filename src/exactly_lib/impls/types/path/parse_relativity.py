@@ -13,8 +13,9 @@ from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions
 from exactly_lib.tcfs import relative_path_options as rel_opts
 from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import PathAndRelativityRestriction
 from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.parse.token import Token
 
@@ -22,7 +23,7 @@ from exactly_lib.util.parse.token import Token
 def reference_restrictions_for_path_symbol(accepted_relativity_variants: PathRelativityVariants
                                            ) -> ReferenceRestrictions:
     return ReferenceRestrictionsOnDirectAndIndirect(
-        PathRelativityRestriction(accepted_relativity_variants))
+        PathAndRelativityRestriction(accepted_relativity_variants))
 
 
 def parse_explicit_relativity_info(options: RelOptionsConfiguration,

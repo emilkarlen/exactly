@@ -20,7 +20,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as str_asrt
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext, \
     PathSymbolContext
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -67,7 +67,7 @@ class TestThatSymbolReferencesAreReportedAndUsed(TestCaseWInterpreterThatRunsPyt
             ),
             Expectation(
                 symbol_usages=asrt.matches_sequence([
-                    symbol.reference_assertion__convertible_to_string,
+                    symbol.reference_assertion__w_str_rendering,
                 ]),
                 post_sds=PostSdsExpectation.constant(
                     sub_process_result_from_execute=asrt_pr.stdout(asrt.Equals(expected_output,
@@ -95,7 +95,7 @@ class TestThatSourceCanReferenceSymbolsThatAreResolvedPostSds(TestCaseWInterpret
 
             ),
             Expectation(
-                symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__convertible_to_string),
+                symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__w_str_rendering),
                 post_sds=PostSdsExpectation.constant(
                     sub_process_result_from_execute=asrt_pr.stdout(str_asrt.contains(symbol.path_suffix))
                 ),

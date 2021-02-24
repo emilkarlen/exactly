@@ -11,7 +11,7 @@ from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib_test.impls.types.test_resources import command_sdvs as test_command_sdvs
-from exactly_lib_test.type_val_deps.types.string.test_resources import string_sdvs
+from exactly_lib_test.type_val_deps.types.string_.test_resources import string_sdvs
 
 
 def arbitrary() -> ProgramSdv:

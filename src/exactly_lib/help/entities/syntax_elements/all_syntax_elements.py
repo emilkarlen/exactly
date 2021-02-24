@@ -1,4 +1,5 @@
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.type_system import TypeCategory
 from exactly_lib.help.entities.syntax_elements.contents_structure import for_type_with_grammar
 from exactly_lib.help.entities.syntax_elements.objects import here_document, regex, glob_pattern, \
     type_string, type_list, type_path, type_program, symbol_name, symbol_reference, \
@@ -10,7 +11,6 @@ from exactly_lib.impls.types.integer_matcher import parse_integer_matcher
 from exactly_lib.impls.types.line_matcher import parse_line_matcher
 from exactly_lib.impls.types.string_matcher import parse_string_matcher
 from exactly_lib.impls.types.string_transformer import parse_string_transformer
-from exactly_lib.symbol.value_type import TypeCategory
 
 ALL_SYNTAX_ELEMENT_DOCS = (
 

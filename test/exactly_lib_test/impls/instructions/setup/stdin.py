@@ -22,8 +22,8 @@ from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSynta
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringHereDocAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringHereDocAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 
@@ -171,7 +171,7 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
         symbol = StringConstantSymbolContext('symbol_name', 'the symbol value')
         expected_stdin_contents = content_line_of_here_doc_template.format(symbol=symbol.str_value)
         expected_symbol_references = asrt.matches_singleton_sequence(
-            symbol.reference_assertion__convertible_to_string
+            symbol.reference_assertion__w_str_rendering
         )
         syntax = InstructionAbsStx(
             StringSourceOfStringAbsStx(StringHereDocAbsStx(

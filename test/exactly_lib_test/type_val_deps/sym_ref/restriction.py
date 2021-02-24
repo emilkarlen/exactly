@@ -1,69 +1,19 @@
 import unittest
 
-from exactly_lib.symbol.value_type import TypeCategory, ValueType
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.type_val_deps.sym_ref import restrictions as sut
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.impls.types.files_matcher.test_resources import symbol_context as files_matcher_symbol_context
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
 from exactly_lib_test.type_val_deps.types.path.test_resources import path
-from exactly_lib_test.type_val_deps.types.string.test_resources import string
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolValueContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources import symbol_context as string
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import symbol_context as st_symbol_context
 from exactly_lib_test.type_val_deps.types.test_resources import file_matcher, files_condition, integer_matcher, \
     line_matcher, program, string_matcher
-from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolValueContext
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestElementTypeRestriction),
-        unittest.makeSuite(TestValueTypeRestriction),
-    ])
-
-
-class TestElementTypeRestriction(unittest.TestCase):
-    element_type_2_sdv_of_type = {
-        TypeCategory.DATA:
-            StringSymbolValueContext.of_arbitrary_value(),
-
-        TypeCategory.LOGIC:
-            FileMatcherSymbolValueContext.of_arbitrary_value(),
-    }
-
-    def test_satisfied_restriction(self):
-        # ARRANGE #
-        symbols = empty_symbol_table()
-        for expected_element_type in TypeCategory:
-            container_of_sdv = self.element_type_2_sdv_of_type[expected_element_type].container
-            with self.subTest(element_type=str(expected_element_type)):
-                restriction_to_check = sut.TypeCategoryRestriction(expected_element_type)
-                # ACT
-                error_message = restriction_to_check.is_satisfied_by(symbols,
-                                                                     'symbol name',
-                                                                     container_of_sdv)
-                # ASSERT #
-                self.assertIsNone(error_message)
-
-    def test_dissatisfied_restriction(self):
-        # ARRANGE #
-        cases = {
-            TypeCategory.DATA: TypeCategory.LOGIC,
-
-            TypeCategory.LOGIC: TypeCategory.DATA,
-        }
-
-        symbols = empty_symbol_table()
-        for expected_element_type, unexpected_element_type in cases.items():
-            container_of_unexpected = self.element_type_2_sdv_of_type[unexpected_element_type].container
-            with self.subTest(expected_element_type=str(expected_element_type),
-                              unexpected_element_type=str(unexpected_element_type)):
-                restriction_to_check = sut.TypeCategoryRestriction(expected_element_type)
-                # ACT
-                error_message = restriction_to_check.is_satisfied_by(symbols,
-                                                                     'symbol name',
-                                                                     container_of_unexpected)
-                # ASSERT #
-                self.assertIsNotNone(error_message)
+    return unittest.makeSuite(TestValueTypeRestriction)
 
 
 class TestValueTypeRestriction(unittest.TestCase):

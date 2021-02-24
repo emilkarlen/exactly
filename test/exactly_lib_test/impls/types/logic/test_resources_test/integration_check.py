@@ -8,7 +8,7 @@ from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.symbol.value_type import ValueType, LogicValueType
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.tcfs import sds as sds
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelOptionType
@@ -18,8 +18,8 @@ from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import ConstantDdvValidator, DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
-from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.types.matcher import MatcherSdv
 from exactly_lib.type_val_prims.description.trace_building import TraceBuilder
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MODEL, \
@@ -60,10 +60,10 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.sdv_checker import \
     WithNodeDescriptionExecutionPropertiesChecker
-from exactly_lib_test.type_val_deps.test_resources.data import references as data_references, \
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import references as data_references, \
     symbol_reference_assertions as sym_asrt
-from exactly_lib_test.type_val_deps.test_resources.data import symbol_structure_assertions as asrt_sym
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import symbol_structure_assertions as asrt_sym
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
@@ -77,9 +77,6 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestPopulateDirectoriesAndCwd),
     ])
 
-
-EXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.LINE_MATCHER
-UNEXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.FILE_MATCHER
 
 CONFIGURATION = MatcherPropertiesConfiguration()
 
@@ -231,7 +228,7 @@ class TestSymbolReferences(TestCaseBase):
             ),
             Expectation(
                 ParseExpectation(
-                    symbol_references=sym_asrt.equals_symbol_references__convertible_to_string(
+                    symbol_references=sym_asrt.equals_symbol_references__w_str_rendering(
                         symbol_usages_of_expectation)
                 ),
             )

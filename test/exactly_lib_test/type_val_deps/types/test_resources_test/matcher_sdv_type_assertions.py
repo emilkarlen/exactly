@@ -13,7 +13,7 @@ from exactly_lib_test.test_resources.test_of_test_resources_util import assert_t
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions as sut
-from exactly_lib_test.type_val_deps.test_resources.data import references as data_references
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import references as data_references
 from exactly_lib_test.type_val_deps.types.test_resources import string_matcher
 from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
     StringMatcherSymbolContext

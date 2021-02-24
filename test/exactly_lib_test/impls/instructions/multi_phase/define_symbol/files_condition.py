@@ -4,7 +4,6 @@ from pathlib import PurePosixPath
 from exactly_lib.impls.instructions.multi_phase.define_symbol import parser as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.value_type import LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
     INSTRUCTION_CHECKER
@@ -17,7 +16,7 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
+from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container
 from exactly_lib_test.type_val_deps.types.test_resources.files_condition import FilesConditionSymbolContext
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
@@ -55,8 +54,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
                 # EXPECTATION #
 
-                expected_container = matches_container_of_logic_type(
-                    LogicValueType.FILES_CONDITION,
+                expected_container = matches_container(
+                    asrt.equals(ValueType.FILES_CONDITION),
                     type_sdv_assertions.matches_sdv_of_files_condition_constant(
                         primitive_value=asrt_primitive.files_matches({
                             PurePosixPath(file_name): asrt.is_none
@@ -94,8 +93,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
         # EXPECTATION #
 
-        expected_container = matches_container_of_logic_type(
-            LogicValueType.FILES_CONDITION,
+        expected_container = matches_container(
+            asrt.equals(ValueType.FILES_CONDITION),
             type_sdv_assertions.matches_sdv_of_files_condition_constant(
                 references=asrt.matches_sequence([
                     referenced_symbol.reference_assertion

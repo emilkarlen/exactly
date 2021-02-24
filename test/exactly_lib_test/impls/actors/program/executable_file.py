@@ -23,7 +23,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as str_asrt
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.util.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 
@@ -180,7 +180,7 @@ class TestSymbolUsages(unittest.TestCase):
 
         expectation = Expectation(
             execute=eh_assertions.is_exit_code(0),
-            symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__convertible_to_string),
+            symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__w_str_rendering),
             post_sds=PostSdsExpectation.constant(
                 sub_process_result_from_execute=pr.stdout(str_asrt.contains(file_name_of_referenced_file))
             ),
@@ -260,7 +260,7 @@ class TestSymbolUsages(unittest.TestCase):
             execute=eh_assertions.is_exit_code(0),
             symbol_usages=asrt.matches_sequence([
                 symbol_for_executable.reference_assertion__path_or_string(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN),
-                argument_symbol.reference_assertion__convertible_to_string,
+                argument_symbol.reference_assertion__w_str_rendering,
             ]),
             post_sds=PostSdsExpectation.constant(
                 sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
@@ -312,7 +312,7 @@ class TestSymbolUsages(unittest.TestCase):
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
                 dir_symbol.reference_assertion__path_or_string,
-                executable_file_name_symbol.reference_assertion__string_made_up_of_just_strings,
+                executable_file_name_symbol.reference_assertion__string__w_all_indirect_refs_are_strings,
             ]),
             execute=eh_assertions.is_exit_code(0),
             post_sds=PostSdsExpectation.constant(
@@ -351,7 +351,7 @@ class TestSymbolUsages(unittest.TestCase):
 
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence(
-                [symbol.reference_assertion__convertible_to_string]
+                [symbol.reference_assertion__w_str_rendering]
             ),
             execute=eh_assertions.is_exit_code(0),
             post_sds=PostSdsExpectation.constant(

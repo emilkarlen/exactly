@@ -13,7 +13,8 @@ from exactly_lib.impls.types.string_ import parse_string
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     token_parser_with_additional_error_message_format_map, ParserFromTokens
 from exactly_lib.symbol.value_type import ValueType
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
+    is_string__all_indirect_refs_are_strings
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
@@ -74,7 +75,7 @@ def _string_sdv_of(value_token: Token) -> StringSdv:
     )
 
 
-_REFERENCE_RESTRICTIONS = string_made_up_by_just_strings(
+_REFERENCE_RESTRICTIONS = is_string__all_indirect_refs_are_strings(
     text_docs.single_pre_formatted_line_object(
         str_constructor.FormatMap(
             'The {INTEGER} argument must be made up of just {string_type} values.',

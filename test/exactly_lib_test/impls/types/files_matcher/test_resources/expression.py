@@ -14,7 +14,7 @@ from exactly_lib_test.impls.types.parse.test_resources.arguments_building import
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__for_expression_parser
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 
 class InstructionArgumentsVariantConstructor:
@@ -105,7 +105,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                             Expectation(
                                 ParseExpectation(
                                     symbol_references=asrt.matches_sequence([
-                                        symbol.reference_assertion__string_made_up_of_just_strings
+                                        symbol.reference_assertion__string__w_all_indirect_refs_are_strings
                                     ]),
                                 ),
                                 ExecutionExpectation(

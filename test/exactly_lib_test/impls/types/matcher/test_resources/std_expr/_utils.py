@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Generic, List, Sequence, Tuple, TypeVar, Optional, Callable
 
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
+from exactly_lib.type_val_deps.types.matcher import MatcherSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
@@ -23,13 +23,12 @@ from exactly_lib_test.impls.types.matcher.test_resources.std_expr.configuration 
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.symbol.test_resources.types import LOGIC_VALUE_TYPE_2_VALUE_TYPE
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.test_resources.any_.restrictions_assertions import \
-    is_reference_restrictions__value_type
-from exactly_lib_test.type_val_deps.test_resources.logic.matcher_symbol_context import MatcherSymbolValueContext, \
+    is_reference_restrictions__value_type__single
+from exactly_lib_test.type_val_deps.types.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree, \
@@ -92,8 +91,8 @@ class AssertionsHelper(Generic[MODEL]):
         self.conf = configuration
 
     def is_sym_ref_to(self, symbol_name: str) -> Assertion[SymbolReference]:
-        restriction_expectation = is_reference_restrictions__value_type(
-            [LOGIC_VALUE_TYPE_2_VALUE_TYPE[self.conf.logic_type()]]
+        restriction_expectation = is_reference_restrictions__value_type__single(
+            self.conf.value_type()
         )
 
         return asrt_sym_usage.matches_reference__ref(asrt.equals(symbol_name),

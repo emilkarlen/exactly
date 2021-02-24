@@ -3,8 +3,8 @@ from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_val_deps.dep_variants.data.data_type_sdv import DataTypeSdv
-from exactly_lib.type_val_deps.dep_variants.data.sdv_visitor import DataTypeSdvPseudoVisitor
+from exactly_lib.type_val_deps.dep_variants.sdv.w_str_rend.sdv_type import DataTypeSdv
+from exactly_lib.type_val_deps.dep_variants.sdv.w_str_rend.sdv_visitor import WStrRenderingTypeSdvPseudoVisitor
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
@@ -28,9 +28,9 @@ class SdvThatIsIdenticalToReferencedPathOrWithStringValueAsSuffix(PathSdv):
         self.default_relativity = default_relativity
 
     def resolve(self, symbols: SymbolTable) -> PathDdv:
-        symbol_value_2_path = _DataValueSymbol2PathResolverVisitor(self._suffix_sdv,
-                                                                   self.default_relativity,
-                                                                   symbols)
+        symbol_value_2_path = _WStrRenderingValueSymbol2PathResolverVisitor(self._suffix_sdv,
+                                                                            self.default_relativity,
+                                                                            symbols)
         container = symbols.lookup(self._path_or_string_symbol.name)
         assert isinstance(container, SymbolContainer), 'Implementation consistency/SymbolContainer'
         sdv = container.sdv
@@ -42,7 +42,7 @@ class SdvThatIsIdenticalToReferencedPathOrWithStringValueAsSuffix(PathSdv):
         return [self._path_or_string_symbol] + list(self._suffix_sdv.references)
 
 
-class _DataValueSymbol2PathResolverVisitor(DataTypeSdvPseudoVisitor[PathDdv]):
+class _WStrRenderingValueSymbol2PathResolverVisitor(WStrRenderingTypeSdvPseudoVisitor[PathDdv]):
     def __init__(self,
                  suffix_sdv: PathPartSdv,
                  default_relativity: RelOptionType,

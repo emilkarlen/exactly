@@ -2,18 +2,20 @@ import unittest
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.type_val_deps.sym_ref.data.data_value_restriction import ValueRestriction
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import AnyDataTypeRestriction, \
-    PathRelativityRestriction
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.data_value_restriction import ValueRestriction
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import \
+    ArbitraryValueWStrRenderingRestriction, \
+    PathAndRelativityRestriction
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
-    equals_symbol_references__convertible_to_string
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
+    equals_symbol_references__w_str_rendering
 from exactly_lib_test.type_val_deps.types.path.test_resources import sdv_assertions as sut
 from exactly_lib_test.type_val_deps.types.path.test_resources.path_sdvs import \
     PathSdvTestImplWithConstantPathAndSymbolReferences
@@ -44,7 +46,7 @@ _RELATIVITY_VARIANTS = [
 _SYMBOL_REFERENCES = [
     [],
     [SymbolReference('symbol_name',
-                     ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))]
+                     ReferenceRestrictionsOnDirectAndIndirect(ArbitraryValueWStrRenderingRestriction.of_any()))]
 ]
 
 
@@ -63,7 +65,7 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
                         assertion.apply_without_message(self, path_sdv)
                     with self.subTest(msg=sut.matches_path_sdv.__name__ + ' :: ' + test_case_descr):
                         assertion = sut.matches_path_sdv(path,
-                                                         equals_symbol_references__convertible_to_string(
+                                                         equals_symbol_references__w_str_rendering(
                                                              path_sdv.references),
                                                          symbols)
                         assertion.apply_without_message(self, path_sdv)
@@ -82,7 +84,7 @@ class TestNotEqualsWithoutSymbolReferencesCommonToBothAssertionMethods(unittest.
                     assertion.apply_without_message(self, path_sdv)
                 with self.subTest(msg=sut.matches_path_sdv.__name__ + ' :: ' + test_case_descr):
                     assertion = sut.matches_path_sdv(path,
-                                                     equals_symbol_references__convertible_to_string(
+                                                     equals_symbol_references__w_str_rendering(
                                                          path_sdv.references),
                                                      symbols)
                     assertion.apply_without_message(self, path_sdv)
@@ -127,11 +129,11 @@ class Test1NotEquals(unittest.TestCase):
         expected = sdv_from_constants(path,
                                       [SymbolReference('expected_symbol_name',
                                                        ReferenceRestrictionsOnDirectAndIndirect(
-                                                           AnyDataTypeRestriction()))])
+                                                           ArbitraryValueWStrRenderingRestriction.of_any()))])
         actual = sdv_from_constants(path,
                                     [SymbolReference('actual_symbol_name',
                                                      ReferenceRestrictionsOnDirectAndIndirect(
-                                                         AnyDataTypeRestriction()))])
+                                                         ArbitraryValueWStrRenderingRestriction.of_any()))])
         assertion = sut.equals_path_sdv(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -142,7 +144,7 @@ class Test1NotEquals(unittest.TestCase):
         expected = sdv_from_constants(path,
                                       [SymbolReference('reffed-name',
                                                        ReferenceRestrictionsOnDirectAndIndirect(
-                                                           AnyDataTypeRestriction()))])
+                                                           ArbitraryValueWStrRenderingRestriction.of_any()))])
         actual = sdv_from_constants(path, [])
         # ACT & ASSERT #
         assertion = sut.equals_path_sdv(expected)
@@ -155,7 +157,7 @@ class Test1NotEquals(unittest.TestCase):
         actual = sdv_from_constants(path,
                                     [SymbolReference('reffed-name',
                                                      ReferenceRestrictionsOnDirectAndIndirect(
-                                                         AnyDataTypeRestriction()))])
+                                                         ArbitraryValueWStrRenderingRestriction.of_any()))])
         assertion = sut.equals_path_sdv(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -172,7 +174,7 @@ class Test1NotEquals(unittest.TestCase):
         actual = sdv_from_constants(path,
                                     [SymbolReference('reffed-name',
                                                      ReferenceRestrictionsOnDirectAndIndirect(
-                                                         AnyDataTypeRestriction()))])
+                                                         ArbitraryValueWStrRenderingRestriction.of_any()))])
         assertion = sut.equals_path_sdv(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -209,7 +211,8 @@ class Test2NotEquals(unittest.TestCase):
         actual = PathSdvTestImplWithConstantPathAndSymbolReferences(
             path,
             [SymbolReference('symbol_name',
-                             ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))])
+                             ReferenceRestrictionsOnDirectAndIndirect(
+                                 ArbitraryValueWStrRenderingRestriction.of_any()))])
         assertion = sut.matches_path_sdv(path,
                                          asrt.matches_sequence([]),
                                          empty_symbol_table())
@@ -225,8 +228,8 @@ def path_with_fixed_suffix(suffix_name: str) -> PathDdv:
     return PathDdvTestImpl(RelOptionType.REL_TMP, path_ddvs.constant_path_part(suffix_name))
 
 
-def _relativity_restriction(rel_option_types: set, absolute_is_valid: bool) -> PathRelativityRestriction:
-    return PathRelativityRestriction(PathRelativityVariants(rel_option_types, absolute_is_valid))
+def _relativity_restriction(rel_option_types: set, absolute_is_valid: bool) -> PathAndRelativityRestriction:
+    return PathAndRelativityRestriction(PathRelativityVariants(rel_option_types, absolute_is_valid))
 
 
 def sdv_from_constants(path: PathDdv, references: list) -> PathSdv:

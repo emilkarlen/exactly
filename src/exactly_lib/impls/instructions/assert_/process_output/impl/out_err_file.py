@@ -17,9 +17,9 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
-from exactly_lib.type_val_deps.dep_variants.sdv.resolving_helper import resolving_helper__of_full_env
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_helper import resolving_helper__of_full_env
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
-from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.util.process_execution import process_output_files

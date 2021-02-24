@@ -6,7 +6,6 @@ from exactly_lib.impls.types.line_matcher import parse_line_matcher
 from exactly_lib.impls.types.matcher.impls import sdv_components, constant
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.value_type import LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources import matcher_helpers
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
@@ -20,7 +19,7 @@ from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYM
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.resolving_helper import resolving_helper
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
+from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container
 from exactly_lib_test.type_val_deps.types.test_resources.line_matcher import LineMatcherSymbolContext, \
     is_reference_to_line_matcher
 from exactly_lib_test.type_val_prims.matcher.test_resources import matcher_assertions as asrt_matcher
@@ -84,8 +83,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
                 expected_matcher = resolving_helper(symbol_table).resolve_matcher(expected_matcher_sdv)
 
-                expected_container = matches_container_of_logic_type(
-                    LogicValueType.LINE_MATCHER,
+                expected_container = matches_container(
+                    asrt.equals(ValueType.LINE_MATCHER),
                     sdv=type_sdv_assertions.matches_sdv_of_line_matcher(
                         references=asrt.matches_sequence([
                             is_reference_to_line_matcher(symbol.name),
@@ -116,7 +115,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
             self,
             LineMatcherSymbolContext.of_arbitrary_value('symbol_1'),
             LineMatcherSymbolContext.of_arbitrary_value('symbol_2'),
-            LogicValueType.LINE_MATCHER,
+            ValueType.LINE_MATCHER,
         )
 
 

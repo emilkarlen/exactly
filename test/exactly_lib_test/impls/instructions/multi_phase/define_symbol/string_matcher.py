@@ -6,7 +6,6 @@ from exactly_lib.impls.types.condition import comparators
 from exactly_lib.impls.types.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.value_type import LogicValueType
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_deps.sym_ref import symbol_lookup
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
@@ -35,7 +34,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.type_sdv_assertions import \
     matches_sdv_of_string_matcher
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
+from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container
 from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
     StringMatcherSymbolContext
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
@@ -73,8 +72,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
                 # EXPECTATION #
 
-                expected_container = matches_container_of_logic_type(
-                    LogicValueType.STRING_MATCHER,
+                expected_container = matches_container(
+                    asrt.equals(ValueType.STRING_MATCHER),
                     matches_sdv_of_string_matcher()
                 )
 
@@ -110,8 +109,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
         # EXPECTATION #
 
-        expected_container = matches_container_of_logic_type(
-            LogicValueType.STRING_MATCHER,
+        expected_container = matches_container(
+            asrt.equals(ValueType.STRING_MATCHER),
             matches_sdv_of_string_matcher(
                 references=asrt.matches_sequence([
                     referenced_symbol.reference_assertion
@@ -139,14 +138,14 @@ class TestSuccessfulScenarios(unittest.TestCase):
             self,
             StringMatcherSymbolContext.of_arbitrary_value('symbol_1'),
             StringMatcherSymbolContext.of_arbitrary_value('symbol_2'),
-            LogicValueType.STRING_MATCHER,
+            ValueType.STRING_MATCHER,
         )
 
     def test_successful_parse_and_application_of_non_trivial_matcher(self):
         defined_name = 'defined_name'
 
-        expected_container = matches_container_of_logic_type(
-            LogicValueType.STRING_MATCHER,
+        expected_container = matches_container(
+            asrt.equals(ValueType.STRING_MATCHER),
             matches_sdv_of_string_matcher()
         )
 

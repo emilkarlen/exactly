@@ -4,7 +4,7 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity.all_entity_types import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
 from exactly_lib.definitions.entity.builtins import name_and_ref_target
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
-from exactly_lib.symbol.value_type import ValueType, TypeCategory, VALUE_TYPE_2_TYPE_CATEGORY
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.util.textformat.structure.document import SectionContents
 
 
@@ -22,10 +22,6 @@ class BuiltinSymbolDocumentation(EntityDocumentation):
         self._value_type = value_type
         self._description = description
         self._see_also = see_also
-
-    @property
-    def type_category(self) -> TypeCategory:
-        return VALUE_TYPE_2_TYPE_CATEGORY[self.value_type]
 
     @property
     def value_type(self) -> ValueType:

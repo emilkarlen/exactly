@@ -36,7 +36,7 @@ from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import List
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
     ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources import program as asrt_pgm
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import program_assertions as asrt_pgm_val, \
@@ -207,8 +207,8 @@ class SymbolReferencesTestExecutor(TestExecutorBase, ABC):
                 references_expectation=
                 asrt.matches_sequence([
                     asrt_pgm.is_reference_to_program(program_symbol.name),
-                    string_argument_symbol.reference_assertion__convertible_to_string,
-                    list_argument_symbol.reference_assertion__convertible_to_string,
+                    string_argument_symbol.reference_assertion__w_str_rendering,
+                    list_argument_symbol.reference_assertion__w_str_rendering,
                 ]),
                 expected_additional_arguments=([string_argument_symbol.str_value] +
                                                list_argument_symbol.constant_list),

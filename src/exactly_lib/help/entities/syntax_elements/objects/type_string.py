@@ -7,8 +7,8 @@ from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
 from exactly_lib.definitions.test_case.instructions import define_symbol
+from exactly_lib.definitions.type_system import TypeCategory
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
-from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.parse import token
 from exactly_lib.util.textformat.textformat_parser import TextParser

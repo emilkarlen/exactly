@@ -3,8 +3,8 @@ from typing import Sequence, Optional
 from exactly_lib.util.parse.token import QuoteType
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.list_.test_resources.abstract_syntax import ListAbsStx, ListElementAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntaxes as str_abs_stx
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import NonHereDocStringAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import NonHereDocStringAbsStx
 
 
 class ListElementStringAbsStx(ListElementAbsStx):

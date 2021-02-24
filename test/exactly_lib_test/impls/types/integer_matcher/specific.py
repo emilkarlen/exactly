@@ -23,8 +23,8 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.data import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import symbol_reference_assertions as asrt_sym_ref
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolContext
 from exactly_lib_test.type_val_prims.matcher.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree, \
@@ -206,7 +206,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                              model_of(69 + 72 + 1),
                                          ]),
                  references=asrt.matches_singleton_sequence(
-                     asrt_sym_ref.is_reference_to_string_made_up_of_just_strings(symbol_69.name)
+                     asrt_sym_ref.is_reference_to_string__w_all_indirect_refs_are_strings(symbol_69.name)
                  ),
                  symbols=symbol_69.symbol_table
                  ),
@@ -270,7 +270,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                            source_assertion=
                            assert_source(is_at_eol=asrt.is_true),
                            references=asrt.matches_singleton_sequence(
-                               symbol_not_an_int.reference_assertion__string_made_up_of_just_strings),
+                               symbol_not_an_int.reference_assertion__string__w_all_indirect_refs_are_strings),
                            symbols=symbol_not_an_int.symbol_table
                            ),
         ]

@@ -18,7 +18,7 @@ from exactly_lib_test.test_case.test_resources.act_phase_instruction import inst
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.util.test_resources import py_program
 
 
@@ -109,7 +109,7 @@ class TestSymbolReferencesAndSourceVariants(unittest.TestCase):
                         ),
                         Expectation(
                             symbol_usages=asrt.matches_singleton_sequence(
-                                program_symbol.reference_assertion__string_made_up_of_just_strings
+                                program_symbol.reference_assertion__string__w_all_indirect_refs_are_strings
                             ),
                             execute=asrt_eh.is_exit_code(exit_code_from_program)
                         ),

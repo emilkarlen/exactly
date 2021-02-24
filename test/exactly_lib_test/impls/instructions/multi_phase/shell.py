@@ -20,7 +20,7 @@ from exactly_lib_test.tcfs.test_resources.tcds_populators import \
     TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -71,8 +71,8 @@ class TestSymbolReferences(unittest.TestCase):
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([
-                python_interpreter_symbol.usage_assertion__convertible_to_string,
-                file_to_interpret_symbol.usage_assertion__convertible_to_string,
+                python_interpreter_symbol.usage_assertion__w_str_rendering,
+                file_to_interpret_symbol.usage_assertion__w_str_rendering,
             ]),
             main_result=result_assertions.equals(expected_exit_status, ''),
         )

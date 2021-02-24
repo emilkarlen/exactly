@@ -8,8 +8,9 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.source_location import FileLocationInfo, FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import PathAndRelativityRestriction
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.path import path_part_sdvs
 from exactly_lib.util.cli_syntax import option_syntax
@@ -132,7 +133,7 @@ class TestAssignmentRelativeSymbolDefinition(unittest.TestCase):
         for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
             expected_path_sdv = path_sdvs.rel_symbol(
                 SymbolReference('REFERENCED_SYMBOL',
-                                ReferenceRestrictionsOnDirectAndIndirect(PathRelativityRestriction(
+                                ReferenceRestrictionsOnDirectAndIndirect(PathAndRelativityRestriction(
                                     type_parser.REL_OPTIONS_CONFIGURATION.accepted_relativity_variants))),
                 path_part_sdvs.from_constant_str('component'))
             expected_symbol_value = PathSymbolValueContext.of_sdv(expected_path_sdv)

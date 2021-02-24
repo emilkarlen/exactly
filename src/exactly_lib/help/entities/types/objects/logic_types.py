@@ -6,7 +6,6 @@ from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.types.contents_structure import TypeWithExpressionGrammarDocumentation, \
     TypeDocumentation
-from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.type_val_prims.matcher import line_matcher
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -49,37 +48,31 @@ The {model} to match is given by a {STRING_SOURCE}.
 """
 
 INTEGER_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
-    TypeCategory.LOGIC,
     types.INTEGER_MATCHER_TYPE_INFO,
     syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT)
 
 LINE_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
-    TypeCategory.LOGIC,
     types.LINE_MATCHER_TYPE_INFO,
     syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
     _TP.section_contents(_LINE_MATCHER_DESCRIPTION))
 
 FILE_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
-    TypeCategory.LOGIC,
     types.FILE_MATCHER_TYPE_INFO,
     syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT)
 
 STRING_TRANSFORMER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
-    TypeCategory.LOGIC,
     types.STRING_TRANSFORMER_TYPE_INFO,
     syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
     _TP.section_contents(_STRING_TRANSFORMER_DESCRIPTION),
     (syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.cross_reference_target,))
 
 STRING_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
-    TypeCategory.LOGIC,
     types.STRING_MATCHER_TYPE_INFO,
     syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
     _TP.section_contents(_STRING_MATCHER_DESCRIPTION),
     (syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.cross_reference_target,))
 
 FILES_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
-    TypeCategory.LOGIC,
     types.FILES_MATCHER_TYPE_INFO,
     syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT)
 
@@ -92,7 +85,6 @@ is described in "{test_case_spec_title}" / "{os_proc_env_section_header}".
 """
 
 PROGRAM_DOCUMENTATION = TypeDocumentation(
-    TypeCategory.LOGIC,
     types.PROGRAM_TYPE_INFO,
     syntax_elements.PROGRAM_SYNTAX_ELEMENT,
     _TP.section_contents(_PROGRAM_DESCRIPTION_REST),

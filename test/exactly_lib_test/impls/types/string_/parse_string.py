@@ -10,8 +10,10 @@ from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestricti
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, \
     symbol_reference_syntax_for_name, \
     constant, symbol, Fragment
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import AnyDataTypeRestriction
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import \
+    ArbitraryValueWStrRenderingRestriction
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringFragmentSdv, \
     StringSdv
@@ -24,7 +26,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.string.test_resources.sdv_assertions import equals_string_sdv
+from exactly_lib_test.type_val_deps.types.string_.test_resources.sdv_assertions import equals_string_sdv
 
 
 def suite() -> unittest.TestSuite:
@@ -274,8 +276,10 @@ def fragment_sdv_from_fragment(fragment: Fragment) -> StringFragmentSdv:
         return string_sdvs.str_fragment(fragment.value)
     else:
         sr = SymbolReference(fragment.value,
-                             ReferenceRestrictionsOnDirectAndIndirect(direct=AnyDataTypeRestriction(),
-                                                                      indirect=None))
+                             ReferenceRestrictionsOnDirectAndIndirect(
+                                 direct=ArbitraryValueWStrRenderingRestriction.of_any(),
+                                 indirect=None)
+                             )
         return string_sdvs.symbol_fragment(sr)
 
 
@@ -289,4 +293,5 @@ def single_symbol_reference(symbol_name: str,
 
 
 def no_restrictions() -> ReferenceRestrictions:
-    return ReferenceRestrictionsOnDirectAndIndirect(direct=AnyDataTypeRestriction())
+    return ReferenceRestrictionsOnDirectAndIndirect(direct=ArbitraryValueWStrRenderingRestriction.of_any(),
+                                                    indirect=None)

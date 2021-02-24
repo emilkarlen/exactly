@@ -3,8 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence, Optional, List
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
-from exactly_lib.symbol import value_type
-from exactly_lib.symbol.value_type import ValueType, TypeCategory, DataValueType, LogicValueType
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable, Entry
@@ -63,24 +62,6 @@ class SymbolContainer(SymbolTableValue):
                 else
                 self._source_location.source_location_path.location.source
                 )
-
-    @property
-    def type_category(self) -> TypeCategory:
-        return value_type.VALUE_TYPE_2_TYPE_CATEGORY[self._value_type]
-
-    @property
-    def data_value_type__if_is_data_type(self) -> DataValueType:
-        """
-        Raises an exception if the value type is not one of the data types.
-        """
-        return value_type.VALUE_TYPE_2_DATA_TYPE[self._value_type]
-
-    @property
-    def logic_value_type__if_is_logic_type(self) -> LogicValueType:
-        """
-        Raises an exception if the value type is not one of the data types.
-        """
-        return value_type.VALUE_TYPE_2_LOGIC_TYPE[self._value_type]
 
     @property
     def value_type(self) -> ValueType:

@@ -1,6 +1,6 @@
 from typing import Callable, List, Sequence
 
-from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine, FIRST_LINE_NUMBER
 from exactly_lib_test.impls.types.line_matcher.test_resources import assertions
 from exactly_lib_test.impls.types.matcher.test_resources import integration_check as matcher_integration_check

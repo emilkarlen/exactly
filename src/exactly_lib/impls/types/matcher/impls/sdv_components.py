@@ -2,7 +2,7 @@ from typing import Sequence, Callable, Generic
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv, MODEL
+from exactly_lib.type_val_deps.types.matcher import MatcherSdv, MODEL
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.util.symbol_table import SymbolTable
 from . import ddv_components

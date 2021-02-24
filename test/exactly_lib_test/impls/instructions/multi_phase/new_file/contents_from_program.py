@@ -43,7 +43,7 @@ from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax
     ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import \
     ProgramAbsStx, TransformableProgramAbsStxBuilder, ProgramOfShellCommandLineAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
     StringTransformerSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
@@ -113,7 +113,7 @@ class TestSymbolUsages(unittest.TestCase):
                 main_result=IS_SUCCESS,
                 symbol_usages=asrt.matches_sequence([
                     dst_file_symbol.reference_assertion__path_or_string,
-                    text_printed_by_program.reference_assertion__convertible_to_string,
+                    text_printed_by_program.reference_assertion__w_str_rendering,
                     to_upper_transformer.reference_assertion,
                 ]),
             )

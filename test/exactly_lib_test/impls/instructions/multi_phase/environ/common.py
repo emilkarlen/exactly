@@ -18,9 +18,9 @@ from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.custom_abstract_syntax import SequenceAbsStx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringLiteralAbsStx, \
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx, \
     MISSING_END_QUOTE__SOFT, MISSING_END_QUOTE_STR__HARD
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext, \
     StringSymbolContext
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
@@ -271,8 +271,8 @@ class TestSet(unittest.TestCase):
             MultiSourceExpectation.setup_phase_aware(
                 main_side_effect_on_environment_variables=asrt.equals(expected_environ_after_main),
                 symbol_usages=asrt.matches_sequence([
-                    my_symbol.usage_assertion__convertible_to_string,
-                    your_symbol.usage_assertion__convertible_to_string,
+                    my_symbol.usage_assertion__w_str_rendering,
+                    your_symbol.usage_assertion__w_str_rendering,
                 ]),
             ),
         )
@@ -385,7 +385,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
             expectation=
             MultiSourceExpectation.setup_phase_aware(
                 symbol_usages=asrt.matches_singleton_sequence(
-                    string_symbol_w_env_var_ref.reference_assertion__convertible_to_string
+                    string_symbol_w_env_var_ref.reference_assertion__w_str_rendering
                 ),
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),
             )

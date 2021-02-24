@@ -13,8 +13,8 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.test_case.result import pfh, sh
-from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import StringRestriction
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
@@ -22,9 +22,10 @@ from exactly_lib_test.impls.test_resources.validation.sdv_validators import SdvV
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.test_resources.data.symbol_reference_assertions import \
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import value_restriction_assertions as asrt_val_rest
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import value_restrictions
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
     matches_symbol_reference_with_restriction_on_direct_target
-from exactly_lib_test.type_val_deps.test_resources.data.value_restriction import equals_string_restriction
 
 
 class Configuration(ConfigurationBase):
@@ -108,13 +109,14 @@ class TestSymbolUsagesOfHardCodedInstruction(TestCaseBase):
     def runTest(self):
         # ARRANGE #
         symbol_name = 'SYMBOL_NAME'
-        string_restriction = StringRestriction()
+        string_restriction = value_restrictions.is_string()
         symbol_reference = SymbolReference(symbol_name,
                                            ReferenceRestrictionsOnDirectAndIndirect(string_restriction))
         expected_symbol_usages = asrt.matches_sequence([
             matches_symbol_reference_with_restriction_on_direct_target(
                 symbol_name,
-                equals_string_restriction(string_restriction))
+                asrt_val_rest.is__string()
+            )
         ])
         parts = instruction_parts.InstructionParts(SdvValidatorThat(),
                                                    MainStepExecutorThat(),
@@ -134,13 +136,14 @@ class TestSymbolUsagesOfInstructionFromParser(TestCaseBase):
     def runTest(self):
         # ARRANGE #
         symbol_name = 'SYMBOL_NAME'
-        string_restriction = StringRestriction()
+        string_restriction = value_restrictions.is_string()
         symbol_reference = SymbolReference(symbol_name,
                                            ReferenceRestrictionsOnDirectAndIndirect(string_restriction))
         expected_symbol_usages = asrt.matches_sequence([
             matches_symbol_reference_with_restriction_on_direct_target(
                 symbol_name,
-                equals_string_restriction(string_restriction))
+                asrt_val_rest.is__string()
+            )
         ])
         parts = instruction_parts.InstructionParts(SdvValidatorThat(),
                                                    MainStepExecutorThat(),

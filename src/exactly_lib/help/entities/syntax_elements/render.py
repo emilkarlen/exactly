@@ -3,6 +3,7 @@ from typing import List, Iterable
 
 from exactly_lib.common.help import headers
 from exactly_lib.definitions.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
+from exactly_lib.definitions.type_system import TypeCategory
 from exactly_lib.help.contents_structure.entity import CliListConstructorGetter, HtmlDocHierarchyGeneratorGetter
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help.entities.types.render import LOGIC_TYPES_HEADER, DATA_TYPES_HEADER
@@ -11,7 +12,6 @@ from exactly_lib.help.render import partitioned_entity_set as pes
 from exactly_lib.help.render.entity_docs import \
     single_line_description_as_summary_paragraphs
 from exactly_lib.help.render.see_also import see_also_sections
-from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.util.textformat import utils as text_utils
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \

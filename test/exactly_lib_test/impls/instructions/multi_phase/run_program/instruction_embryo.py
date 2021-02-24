@@ -34,7 +34,7 @@ from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_1st_value_on_command_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext, \
     StringIntConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 
@@ -133,8 +133,8 @@ class TestValidationAndSymbolUsagesOfExecute(unittest.TestCase):
                 python_interpreter_symbol.usage_assertion__path_or_string(
                     syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF.options.accepted_relativity_variants
                 ),
-                execute_program_option_symbol.usage_assertion__convertible_to_string,
-                exit_code_symbol.usage_assertion__convertible_to_string,
+                execute_program_option_symbol.usage_assertion__w_str_rendering,
+                exit_code_symbol.usage_assertion__w_str_rendering,
             ]),
             main_result=result_assertions.equals(exit_code_symbol.int_value, ''),
         )
@@ -273,7 +273,7 @@ class TestValidationAndSymbolUsagesOfInterpret(unittest.TestCase):
                 file_to_interpret_symbol.usage_assertion__path_or_string(
                     path_relativities.ALL_REL_OPTIONS_ARG_CONFIG.options.accepted_relativity_variants
                 ),
-                exit_code_symbol.usage_assertion__convertible_to_string,
+                exit_code_symbol.usage_assertion__w_str_rendering,
             ]),
             main_result=result_assertions.equals(exit_code_symbol.int_value,
                                                  ''),
@@ -416,8 +416,8 @@ class TestValidationAndSymbolUsagesOfSource(unittest.TestCase):
                 python_interpreter_symbol.usage_assertion__path_or_string(
                     syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF.options.accepted_relativity_variants
                 ),
-                execute_program_option_symbol.usage_assertion__convertible_to_string,
-                exit_code_symbol.usage_assertion__convertible_to_string,
+                execute_program_option_symbol.usage_assertion__w_str_rendering,
+                exit_code_symbol.usage_assertion__w_str_rendering,
             ]),
             main_result=result_assertions.equals(exit_code_symbol.int_value, ''),
         )

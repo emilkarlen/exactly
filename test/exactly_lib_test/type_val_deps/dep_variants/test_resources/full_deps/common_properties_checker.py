@@ -3,8 +3,8 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic
 
 from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
-from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 
 PRIMITIVE = TypeVar('PRIMITIVE')

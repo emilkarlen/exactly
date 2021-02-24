@@ -8,8 +8,8 @@ from exactly_lib_test.symbol.test_resources import token_sequences as symbol_tok
 from exactly_lib_test.test_resources.source import abstract_syntax_impls
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.abstract_syntax import IntegerMatcherAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringAbsStx
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntaxes import StringLiteralAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx
 
 
 class CustomIntegerMatcherAbsStx(IntegerMatcherAbsStx):

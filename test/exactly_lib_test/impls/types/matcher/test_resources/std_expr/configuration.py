@@ -2,14 +2,14 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Callable
 
 from exactly_lib.impls.types.expression.parser import GrammarParsers
-from exactly_lib.symbol.value_type import LogicValueType
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
-from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.symbol.value_type import ValueType
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.types.matcher import MatcherSdv
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib_test.impls.types.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.logic.matcher_symbol_context import MatcherSymbolValueContext, \
+from exactly_lib_test.type_val_deps.types.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
 
 MODEL = TypeVar('MODEL')
@@ -41,7 +41,7 @@ class MatcherConfiguration(Generic[MODEL], ABC):
         pass
 
     @abstractmethod
-    def logic_type(self) -> LogicValueType:
+    def value_type(self) -> ValueType:
         pass
 
     @abstractmethod

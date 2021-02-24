@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.definitions.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
+from exactly_lib.definitions.type_system import TypeCategory
 from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
-from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib_test.common.help.test_resources import syntax_contents_structure_assertions as asrt_syntax_struct
 from exactly_lib_test.definitions.test_resources import cross_reference_id_va as asrt_cross_ref
 from exactly_lib_test.definitions.test_resources.entity_cross_ref_va import equals_entity_cross_ref

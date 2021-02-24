@@ -7,7 +7,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions
+from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions
 from exactly_lib.type_val_deps.types.list_ import list_sdv as lr, list_sdvs
 from exactly_lib.type_val_deps.types.list_.list_sdv import ElementSdv
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
@@ -20,9 +20,9 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.data.data_restrictions_assertions import \
-    is_reference_restrictions__convertible_to_string
-from exactly_lib_test.type_val_deps.test_resources.data.references import reference_to__on_direct_and_indirect
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.data_restrictions_assertions import \
+    is_reference_restrictions__w_str_rendering
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend.references import reference_to__on_direct_and_indirect
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_assertions import equals_list_sdv
 
 
@@ -112,7 +112,7 @@ class TestSingleElementList(unittest.TestCase):
                              references=
                              asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
                                  string_symbol.name,
-                                 is_reference_restrictions__convertible_to_string())
+                                 is_reference_restrictions__w_str_rendering())
                              ])),
                  ),
             Case('complex element (str const and sym-refs), at end of line, on the last line',
@@ -128,14 +128,14 @@ class TestSingleElementList(unittest.TestCase):
                              string_sdvs.symbol_fragment(
                                  SymbolReference(
                                      string_symbol.name,
-                                     reference_restrictions.is_type_convertible_to_string(),
+                                     reference_restrictions.is_any_type_w_str_rendering(),
                                  )
                              ),
                          ]))],
                      references=
                      asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
                          string_symbol.name,
-                         is_reference_restrictions__convertible_to_string())
+                         is_reference_restrictions__w_str_rendering())
                      ]),
                      source=
                      asrt_source.is_at_end_of_line(1)),
@@ -259,7 +259,7 @@ class TestMultipleElementList(unittest.TestCase):
                              references=
                              asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
                                  symbol_name,
-                                 is_reference_restrictions__convertible_to_string())
+                                 is_reference_restrictions__w_str_rendering())
                              ]),
                              source=
                              asrt_source.is_at_end_of_line(1)),
@@ -280,7 +280,7 @@ class TestMultipleElementList(unittest.TestCase):
                          list_sdvs.string_element(string_sdvs.from_fragments([
                              string_sdvs.symbol_fragment(SymbolReference(
                                  symbol_name,
-                                 reference_restrictions.is_type_convertible_to_string()),
+                                 reference_restrictions.is_any_type_w_str_rendering()),
                              ),
                              string_sdvs.str_fragment(single_token_value),
                          ])),
@@ -289,7 +289,7 @@ class TestMultipleElementList(unittest.TestCase):
                      references=
                      asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
                          symbol_name,
-                         is_reference_restrictions__convertible_to_string())
+                         is_reference_restrictions__w_str_rendering())
                      ]),
                      source=
                      asrt_source.is_at_end_of_line(1)),
