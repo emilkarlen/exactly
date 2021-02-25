@@ -20,8 +20,8 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPo
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.test_resources.any_.restrictions_assertions import \
     is_reference_restrictions__value_type
-from exactly_lib_test.type_val_deps.test_resources.w_str_rend.data_restrictions_assertions import \
-    is_reference_restrictions__w_str_rendering
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions
+from exactly_lib_test.type_val_deps.types.string_source.test_resources import references as ss_references
 
 
 def suite_for(conf: configuration.ProgramOutputInstructionConfiguration) -> unittest.TestSuite:
@@ -37,10 +37,10 @@ class TestSymbolReferences(configuration.TestCaseBase):
         # ARRANGE #
 
         symbol_in_program_source = NameAndValue('SYMBOL_IN_PROGRAM_SOURCE',
-                                                is_reference_restrictions__w_str_rendering())
+                                                data_restrictions_assertions.is__w_str_rendering())
 
         symbol_in_matcher = NameAndValue('SYMBOL_IN_MATCHER',
-                                         is_reference_restrictions__w_str_rendering())
+                                         ss_references.IS_STRING_SOURCE_OR_STRING_REFERENCE_RESTRICTION)
 
         symbol_in_transformer_of_program = NameAndValue('SYMBOL_IN_TRANSFORMER_OF_PROGRAM',
                                                         is_reference_restrictions__value_type(

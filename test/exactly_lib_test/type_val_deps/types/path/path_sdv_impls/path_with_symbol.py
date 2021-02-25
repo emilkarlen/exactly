@@ -16,8 +16,10 @@ from exactly_lib.type_val_deps.types.path.path_sdv_impls import path_rel_symbol 
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import \
+    data_restrictions_assertions as asrt_w_str_rend_rest
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import value_restriction_assertions as asrt_val_rest, \
-    symbol_reference_assertions as vr_tr
+    symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources.string_sdvs import \
     string_sdv_of_single_symbol_reference
@@ -39,7 +41,7 @@ class TestRelSymbol(unittest.TestCase):
             ArbitraryValueWStrRenderingRestriction.of_any()
         )
         expected_mandatory_references = [
-            vr_tr.matches_symbol_reference_with_restriction_on_direct_target(
+            asrt_sym_ref.matches_symbol_reference_with_restriction_on_direct_target(
                 symbol_name_of_rel_path,
                 asrt_val_rest.equals__path_w_relativity(expected_restriction)
             )
@@ -55,7 +57,7 @@ class TestRelSymbol(unittest.TestCase):
                                                       restrictions_on_path_suffix_symbol)),
              [asrt_sym_usage.matches_reference_2(
                  symbol_name_of_path_suffix,
-                 vr_tr.is_reference_restrictions__on_direct_and_indirect())],
+                 asrt_w_str_rend_rest.matches__on_direct_and_indirect())],
             ),
         ]
         for path_suffix_sdv, additional_expected_references in path_suffix_test_cases:

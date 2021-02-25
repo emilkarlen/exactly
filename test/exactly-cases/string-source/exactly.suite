@@ -1,7 +1,7 @@
-[cases]
-
 *.case
 
 [suites]
 
 run
+def-ref
+parens

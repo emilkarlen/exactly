@@ -181,7 +181,7 @@ class TestEqualsOrReferenceRestrictions(unittest.TestCase):
             ),
         ]
         for description, actual, expected in cases:
-            assertion = sut.equals_reference_restrictions__or(expected)
+            assertion = sut.equals__or(expected)
             with self.subTest(msg=description):
                 assertion.apply_without_message(self, actual)
 
@@ -232,7 +232,7 @@ class TestEqualsOrReferenceRestrictions(unittest.TestCase):
 
     @staticmethod
     def _assert_fails(expected: r.OrReferenceRestrictions, actual: ReferenceRestrictions):
-        assertion = sut.equals_reference_restrictions__or(expected)
+        assertion = sut.equals__or(expected)
         assert_that_assertion_fails(assertion, actual)
 
 
@@ -240,7 +240,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
     def test_pass(self):
         cases = [
             (
-                sut.equals_reference_restrictions__w_str_rendering(
+                sut.equals__w_str_rendering(
                     r.ReferenceRestrictionsOnDirectAndIndirect(
                         vr.ArbitraryValueWStrRenderingRestriction.of_any())
                 ),
@@ -248,7 +248,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
                     vr.ArbitraryValueWStrRenderingRestriction.of_any()),
             ),
             (
-                sut.equals_reference_restrictions__w_str_rendering(
+                sut.equals__w_str_rendering(
                     r.ReferenceRestrictionsOnDirectAndIndirect(
                         vr.ArbitraryValueWStrRenderingRestriction.of_single(WithStrRenderingType.LIST))
                 ),
@@ -256,7 +256,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
                     vr.ArbitraryValueWStrRenderingRestriction.of_single(WithStrRenderingType.LIST)),
             ),
             (
-                sut.equals_reference_restrictions__w_str_rendering(r.ReferenceRestrictionsOnDirectAndIndirect(
+                sut.equals__w_str_rendering(r.ReferenceRestrictionsOnDirectAndIndirect(
                     vr.ArbitraryValueWStrRenderingRestriction.of_single(WithStrRenderingType.STRING),
                     vr.ArbitraryValueWStrRenderingRestriction.of_any())),
                 r.ReferenceRestrictionsOnDirectAndIndirect(
@@ -264,7 +264,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
                     vr.ArbitraryValueWStrRenderingRestriction.of_any()),
             ),
             (
-                sut.equals_reference_restrictions__w_str_rendering(
+                sut.equals__w_str_rendering(
                     r.OrReferenceRestrictions([])),
                 r.OrReferenceRestrictions([]),
             ),
@@ -329,19 +329,19 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
         self._fail(expected, actual)
 
     def _fail(self, expected: r.WithStrRenderingTypeRestrictions, actual: ReferenceRestrictions):
-        assertion = sut.equals_reference_restrictions__w_str_rendering(expected)
+        assertion = sut.equals__w_str_rendering(expected)
         assert_that_assertion_fails(assertion, actual)
 
 
 class TestIsStringMadeUpOfJustStringsReferenceRestrictions(unittest.TestCase):
     def test_pass(self):
         actual = reference_restrictions.is_string__all_indirect_refs_are_strings()
-        assertion = sut.is_reference_restrictions__string__w_all_indirect_refs_are_strings()
+        assertion = sut.is__string__w_all_indirect_refs_are_strings()
         assertion.apply_without_message(self, actual)
 
     def test_fail(self):
         # ARRANGE #
-        assertion = sut.is_reference_restrictions__string__w_all_indirect_refs_are_strings()
+        assertion = sut.is__string__w_all_indirect_refs_are_strings()
 
         cases = [
             NameAndValue(

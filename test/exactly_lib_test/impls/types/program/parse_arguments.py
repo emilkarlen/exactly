@@ -32,8 +32,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, sy
 from exactly_lib_test.test_resources.source.layout import LayoutSpec
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.w_str_rend.data_restrictions_assertions import \
-    is_reference_restrictions__w_str_rendering
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_data_rest
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.references import reference_to__on_direct_and_indirect
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
@@ -238,7 +237,7 @@ class TestSingleElement(unittest.TestCase):
                         validators=asrt.is_empty_sequence,
                         references=asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
                             symbol_name,
-                            is_reference_restrictions__w_str_rendering())
+                            asrt_data_rest.is__w_str_rendering())
                         ]),
                     )),
         ]
@@ -634,9 +633,9 @@ class TestMultipleElements(unittest.TestCase):
                     validators=asrt.is_empty_sequence,
                     references=asrt.matches_sequence([
                         asrt_sym_ref.matches_reference_2(symbol_name_1,
-                                                         is_reference_restrictions__w_str_rendering()),
+                                                         asrt_data_rest.is__w_str_rendering()),
                         asrt_sym_ref.matches_reference_2(symbol_name_2,
-                                                         is_reference_restrictions__w_str_rendering()),
+                                                         asrt_data_rest.is__w_str_rendering()),
                     ]),
                 )),
         ]

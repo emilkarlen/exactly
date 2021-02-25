@@ -6,7 +6,6 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
 from exactly_lib.definitions.test_case.instructions import define_symbol
-from exactly_lib.definitions.type_system import TypeCategory
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -15,8 +14,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 class _Documentation(SyntaxElementDocumentation):
     def __init__(self):
-        super().__init__(TypeCategory.DATA,
-                         syntax_elements.LIST_SYNTAX_ELEMENT)
+        super().__init__(syntax_elements.LIST_SYNTAX_ELEMENT)
 
         self._tp = TextParser({
             'list_type': types.LIST_TYPE_INFO.name,

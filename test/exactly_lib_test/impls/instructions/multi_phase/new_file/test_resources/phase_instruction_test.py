@@ -29,8 +29,8 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.test_resources.w_str_rend.data_restrictions_assertions import \
-    equals_reference_restrictions__w_str_rendering
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import \
+    data_restrictions_assertions as asrt_w_str_rend_rest
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import path_or_string_reference_restrictions
@@ -100,7 +100,7 @@ class TestSymbolUsages(TestCaseWithConfiguration):
 
                     asrt_sym_ref.matches_reference_2(
                         dst_file_symbol.name,
-                        equals_reference_restrictions__w_str_rendering(
+                        asrt_w_str_rend_rest.equals__w_str_rendering(
                             path_or_string_reference_restrictions(
                                 parse.REL_OPT_ARG_CONF.options.accepted_relativity_variants)
                         )
@@ -108,7 +108,7 @@ class TestSymbolUsages(TestCaseWithConfiguration):
 
                     asrt_sym_ref.matches_reference_2(
                         src_file_symbol.name,
-                        equals_reference_restrictions__w_str_rendering(
+                        asrt_w_str_rend_rest.equals__w_str_rendering(
                             path_or_string_reference_restrictions(
                                 defs.src_rel_opt_arg_conf_for_phase(
                                     self.conf.phase_is_after_act()).accepted_relativity_variants))

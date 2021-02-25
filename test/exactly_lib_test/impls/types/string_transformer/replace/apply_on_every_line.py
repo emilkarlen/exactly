@@ -402,7 +402,7 @@ class ReferencedSymbolsShouldBeReportedAndUsed(unittest.TestCase):
         symbol_in_replacement = StringConstantSymbolContext(
             'symbol_in_replacement',
             'the replacement',
-            default_restrictions=asrt_ref_rest.is_reference_restrictions__w_str_rendering(),
+            default_restrictions=asrt_ref_rest.is__w_str_rendering(),
         )
 
         input_lines = [

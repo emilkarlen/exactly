@@ -39,6 +39,8 @@ from exactly_lib_test.test_resources.test_utils import ArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext, \
     StringSymbolContext
+from exactly_lib_test.type_val_deps.types.string_source.test_resources import references
+from exactly_lib_test.type_val_deps.types.string_source.test_resources.symbol_context import StringSourceSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
@@ -70,6 +72,7 @@ def suite() -> unittest.TestSuite:
         suite_for__rel_opts__negations(_RELATIVITY_OPTION_CONFIGURATIONS_FOR_EXPECTED_FILE,
                                        test_cases_for_rel_opts),
         suite_with_negation,
+        _TestEqualsStringSource(),
         _TestEqualsString(),
         _TestEqualsFile(),
         _TestWhenMultipleInvocationsForModelWExtDepsThenPathForExpectedMustBeCreatedOnlyOnce(),
@@ -204,6 +207,43 @@ class _TestEqualsWSourceVariantsBase(unittest.TestCase, ABC):
         pass
 
 
+class _TestEqualsStringSource(_TestEqualsWSourceVariantsBase):
+    def _check(self,
+               expected_contents: str,
+               actual_contents: str,
+               may_depend_on_external_resources: bool,
+               expected_result: bool,
+               ):
+        string_source_symbol_with_expected = StringSourceSymbolContext.of_primitive_constant(
+            'EXPECTED_CONTENTS_SYMBOL',
+            expected_contents,
+        )
+        integration_check.CHECKER__PARSE_SIMPLE.check(
+            self,
+            args2.Equals.eq_string(
+                string_source_symbol_with_expected.name__sym_ref_syntax
+            ).as_remaining_source,
+            model_constructor.of_str(
+                self,
+                actual_contents,
+                may_depend_on_external_resources=may_depend_on_external_resources,
+            ),
+            arrangement_w_tcds(
+                symbols=string_source_symbol_with_expected.symbol_table
+            ),
+            Expectation(
+                ParseExpectation(
+                    symbol_references=string_source_symbol_with_expected.references_assertion,
+                ),
+                execution=ExecutionExpectation(
+                    main_result=asrt_matching_result.matches_value(
+                        expected_result
+                    )
+                ),
+            ),
+        )
+
+
 class _TestEqualsString(_TestEqualsWSourceVariantsBase):
     def _check(self,
                expected_contents: str,
@@ -230,8 +270,9 @@ class _TestEqualsString(_TestEqualsWSourceVariantsBase):
             ),
             Expectation(
                 ParseExpectation(
-                    symbol_references=asrt.matches_singleton_sequence(
-                        string_symbol_with_expected.reference_assertion__w_str_rendering
+                    symbol_references=
+                    asrt.matches_singleton_sequence(
+                        references.is_reference_to__string_source_or_string(string_symbol_with_expected.name)
                     )
                 ),
                 execution=ExecutionExpectation(

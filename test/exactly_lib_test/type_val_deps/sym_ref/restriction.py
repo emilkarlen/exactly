@@ -7,6 +7,7 @@ from exactly_lib_test.impls.types.files_matcher.test_resources import symbol_con
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
 from exactly_lib_test.type_val_deps.types.path.test_resources import path
 from exactly_lib_test.type_val_deps.types.string_.test_resources import symbol_context as string
+from exactly_lib_test.type_val_deps.types.string_source.test_resources import symbol_context as string_source
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import symbol_context as st_symbol_context
 from exactly_lib_test.type_val_deps.types.test_resources import file_matcher, files_condition, integer_matcher, \
     line_matcher, program, string_matcher
@@ -41,6 +42,9 @@ class TestValueTypeRestriction(unittest.TestCase):
 
         ValueType.FILES_MATCHER:
             files_matcher_symbol_context.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+
+        ValueType.STRING_SOURCE:
+            string_source.ARBITRARY_SYMBOL_VALUE_CONTEXT,
 
         ValueType.STRING_MATCHER:
             string_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT,
@@ -91,7 +95,8 @@ class TestValueTypeRestriction(unittest.TestCase):
             ValueType.PATH: ValueType.INTEGER_MATCHER,
             ValueType.INTEGER_MATCHER: ValueType.FILE_MATCHER,
             ValueType.FILE_MATCHER: ValueType.FILES_MATCHER,
-            ValueType.FILES_MATCHER: ValueType.STRING_MATCHER,
+            ValueType.FILES_MATCHER: ValueType.STRING_SOURCE,
+            ValueType.STRING_SOURCE: ValueType.STRING_MATCHER,
             ValueType.STRING_MATCHER: ValueType.STRING_TRANSFORMER,
             ValueType.STRING_TRANSFORMER: ValueType.PROGRAM,
             ValueType.PROGRAM: ValueType.FILES_CONDITION,

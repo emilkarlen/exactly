@@ -8,8 +8,7 @@ from exactly_lib.common.err_msg.err_msg_w_fix_tip import ErrorMessageWithFixTip
 from exactly_lib.common.report_rendering import block_text_docs
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.definitions import type_system
-from exactly_lib.definitions.entity import all_entity_types
+from exactly_lib.definitions.entity import all_entity_types, types
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference, \
     SymbolDependentValue
@@ -115,7 +114,7 @@ def _indent_lines(indent: str, lines: Sequence[str]) -> List[str]:
 
 
 def _type_name_of(value_type: ValueType) -> str:
-    return type_system.TYPE_INFO_DICT[value_type].identifier
+    return types.VALUE_TYPE_2_TYPES_INFO_DICT[value_type].identifier
 
 
 def _duplicate_symbol_definition(already_defined_symbol: Optional[SourceLocationInfo],

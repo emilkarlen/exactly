@@ -1,0 +1,62 @@
+[setup]
+
+
+file transformed-string.txt =
+    'contents of string constant'
+    -transformed-by char-case -to-upper
+
+
+file transformed-here-doc.txt =
+    <<EOF
+contents of
+the here doc
+EOF
+    -transformed-by char-case -to-upper
+
+
+file input.txt = 'contents of input file'
+
+file transformed-file.txt =
+    -contents-of -rel-act input.txt
+    -transformed-by char-case -to-upper
+
+
+file transformed-program-output.txt =
+    -stdout-from
+      -python -c :> print('output from program', end='')
+      -transformed-by char-case -to-upper
+
+
+def string-source SS = 'contents of string source symbol'
+
+file transformed-ss.txt =
+    @[SS]@
+    -transformed-by char-case -to-upper
+
+
+[assert]
+
+
+contents transformed-string.txt :
+
+    equals 'CONTENTS OF STRING CONSTANT'
+
+contents transformed-here-doc.txt :
+
+    equals <<EOF
+CONTENTS OF
+THE HERE DOC
+EOF
+
+
+contents transformed-file.txt :
+
+    equals 'CONTENTS OF INPUT FILE'
+
+contents transformed-ss.txt :
+
+    equals 'CONTENTS OF STRING SOURCE SYMBOL'
+
+contents transformed-program-output.txt :
+
+    equals 'OUTPUT FROM PROGRAM'

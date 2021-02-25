@@ -13,6 +13,7 @@ from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.dir_dependent_value import \
     matches_multi_dir_dependent_value
 from exactly_lib_test.type_val_deps.dep_variants.test_resources_test.dir_dependent_value import AMultiDirDependentValue
+from exactly_lib_test.type_val_deps.types.string_.test_resources import list_formatting
 
 
 def suite() -> unittest.TestSuite:
@@ -190,8 +191,8 @@ class TestListFragment(unittest.TestCase):
                                                          string_ddv_of_single_string(string_2)])),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
-                    get_value_when_no_dir_dependencies=do_return(string_1 + ' ' + string_2),
-                    get_value_of_any_dependency=do_return(string_1 + ' ' + string_2)),
+                    get_value_when_no_dir_dependencies=do_return(list_formatting.format_elements([string_1, string_2])),
+                    get_value_of_any_dependency=do_return(list_formatting.format_elements([string_1, string_2]))),
             ),
             (
                 'dependency on ' + str(DirectoryStructurePartition.HDS),
@@ -226,7 +227,7 @@ class TestListFragment(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(case.name):
-                expected = ' '.join(case.value)
+                expected = list_formatting.format_elements(case.value)
                 elements = [
                     string_ddv_of_single_string(s)
                     for s in case.value

@@ -1,4 +1,3 @@
-from abc import ABC
 from typing import Sequence, Optional
 
 from exactly_lib.definitions.primitives import string_transformer
@@ -6,19 +5,17 @@ from exactly_lib.impls.types.string_source import defs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
-from exactly_lib_test.test_resources.source import token_sequences
+from exactly_lib_test.test_resources.source import token_sequences, abstract_syntax_impls
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
-from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
-from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import NonHereDocStringAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringHereDocAbsStx
+from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx, \
+    TransformableStringSourceAbsStx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
     StringTransformerAbsStx
-
-
-class TransformableStringSourceAbsStx(StringSourceAbsStx, ABC):
-    pass
 
 
 class TransformedStringSourceAbsStx(StringSourceAbsStx):
@@ -61,8 +58,8 @@ class CustomStringSourceAbsStx(StringSourceAbsStx):
         return self._tokens
 
 
-class StringSourceOfStringAbsStx(StringSourceAbsStx):
-    def __init__(self, string: StringAbsStx):
+class StringSourceOfStringAbsStx(TransformableStringSourceAbsStx):
+    def __init__(self, string: NonHereDocStringAbsStx):
         self.string = string
 
     @staticmethod
@@ -73,6 +70,20 @@ class StringSourceOfStringAbsStx(StringSourceAbsStx):
 
     def tokenization(self) -> TokenSequence:
         return self.string.tokenization()
+
+
+class StringSourceOfHereDocAbsStx(TransformableStringSourceAbsStx):
+    def __init__(self, here_doc: StringHereDocAbsStx):
+        self.here_doc = here_doc
+
+    @staticmethod
+    def of_str(s: str, quoting: Optional[QuoteType] = None) -> StringSourceAbsStx:
+        return StringSourceOfStringAbsStx(
+            str_abs_stx.StringLiteralAbsStx(s, quoting)
+        )
+
+    def tokenization(self) -> TokenSequence:
+        return self.here_doc.tokenization()
 
 
 class StringSourceOfFileAbsStx(TransformableStringSourceAbsStx):
@@ -110,6 +121,22 @@ class StringSourceOfProgramAbsStx(StringSourceAbsStx):
             defs.PROGRAM_OUTPUT_OPTIONS[self.output_file],
             program_w_optional_ignore_exit_code,
         )
+
+
+class StringSourceWithinParensAbsStx(StringSourceAbsStx):
+    """NOTE This class allows arbitrary levels of parens, which is not valid syntax.
+    Only single level of parens is allowed.
+    """
+
+    def __init__(self,
+                 string_source: StringSourceAbsStx,
+                 end_paren_on_separate_line: bool = False,
+                 ):
+        self._syntax = abstract_syntax_impls.WithinParensAbsStx(string_source,
+                                                                end_paren_on_separate_line)
+
+    def tokenization(self) -> TokenSequence:
+        return self._syntax.tokenization()
 
 
 class TransformableAbsStxBuilder:

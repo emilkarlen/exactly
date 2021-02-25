@@ -18,13 +18,12 @@ from exactly_lib.impls import texts
 from exactly_lib.impls.file_properties import FileType
 from exactly_lib.impls.types.path import relative_path_options_documentation as rel_path_doc
 from exactly_lib.impls.types.string_source import defs
+from exactly_lib.impls.types.string_source.sdvs_.symbol_reference import SymbolReferenceStringStringSourceSdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
-
-TEXT_UNTIL_END_OF_LINE_ARGUMENT = a.Named('TEXT-UNTIL-END-OF-LINE')
 
 
 def documentation() -> SyntaxElementDocumentation:
@@ -33,7 +32,7 @@ def documentation() -> SyntaxElementDocumentation:
 
 class Documentation(SyntaxElementDocumentation):
     def __init__(self):
-        super().__init__(None, syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT)
+        super().__init__(syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT)
         self._tp = TextParser({
             'HERE_DOCUMENT': syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name,
             'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
@@ -56,6 +55,9 @@ class Documentation(SyntaxElementDocumentation):
             'SRC_PATH_ARGUMENT': defs.SOURCE_FILE_ARGUMENT_NAME.name,
             'rel_result_option': formatting.argument_option(path.REL_RESULT_OPTION_NAME),
             'phase': phase_names.PHASE_NAME_DICTIONARY,
+            'A_ref_to_symbol__valid_ref_types': types.a_ref_to_a_symbol__of_either_types(
+                SymbolReferenceStringStringSourceSdv.ACCEPTED_REFERENCED_TYPES
+            ),
             'Note': headers.NOTE_LINE_HEADER,
         })
 
@@ -86,8 +88,13 @@ class Documentation(SyntaxElementDocumentation):
                                 defs.SOURCE_FILE_ARGUMENT_NAME)
 
         return [
-            invokation_variant_from_args([string_arg]),
-            invokation_variant_from_args([here_doc_arg]),
+            invokation_variant_from_args(
+                [syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.single_mandatory,
+                 optional_transformation_option],
+                self._tp.fnap(_REFERENCE_DESCRIPTION),
+            ),
+            invokation_variant_from_args([string_arg, optional_transformation_option]),
+            invokation_variant_from_args([here_doc_arg, optional_transformation_option]),
             invokation_variant_from_args([file_option,
                                           src_file_arg,
                                           optional_transformation_option,
@@ -113,12 +120,14 @@ class Documentation(SyntaxElementDocumentation):
         ]
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
-        name_and_cross_refs = [syntax_elements.PATH_SYNTAX_ELEMENT,
-                               syntax_elements.STRING_SYNTAX_ELEMENT,
-                               syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
-                               syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
-                               syntax_elements.PROGRAM_SYNTAX_ELEMENT,
-                               ]
+        name_and_cross_refs = [
+            syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT,
+            syntax_elements.PATH_SYNTAX_ELEMENT,
+            syntax_elements.STRING_SYNTAX_ELEMENT,
+            syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
+            syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
+            syntax_elements.PROGRAM_SYNTAX_ELEMENT,
+        ]
         return name_and_cross_ref.cross_reference_id_list(name_and_cross_refs)
 
     def _transformation_sed(self) -> SyntaxElementDescription:
@@ -134,6 +143,10 @@ class Documentation(SyntaxElementDocumentation):
             ]),
         )
 
+
+_REFERENCE_DESCRIPTION = """\
+{A_ref_to_symbol__valid_ref_types}
+"""
 
 _TRANSFORMATION_DESCRIPTION = """\
 Transforms the original contents.

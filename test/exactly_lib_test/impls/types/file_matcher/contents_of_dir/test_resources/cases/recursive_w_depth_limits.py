@@ -32,8 +32,7 @@ from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, File
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.w_str_rend.data_restrictions_assertions import \
-    equals_reference_restrictions__w_str_rendering
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_data_rest
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringIntConstantSymbolContext
 
 
@@ -86,12 +85,12 @@ class SymbolReferencesShouldBeReported(SingleCaseGenerator):
         return [
             asrt_sym_ref.matches_reference_2(
                 self.min_depth.name,
-                equals_reference_restrictions__w_str_rendering(
+                asrt_data_rest.equals__w_str_rendering(
                     reference_restrictions.is_string__all_indirect_refs_are_strings())
             ),
             asrt_sym_ref.matches_reference_2(
                 self.max_depth.name,
-                equals_reference_restrictions__w_str_rendering(
+                asrt_data_rest.equals__w_str_rendering(
                     reference_restrictions.is_string__all_indirect_refs_are_strings())
             ),
             self._helper.files_matcher_sym_assertion(),

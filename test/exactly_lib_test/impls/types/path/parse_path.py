@@ -39,7 +39,8 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.tcfs.test_resources import format_rel_option
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import \
+    data_restrictions_assertions as asrt_w_str_rend_rest
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
     is_reference_to_string__w_all_indirect_refs_are_strings
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
@@ -681,7 +682,7 @@ class TestRelativityOfSourceFileLocation(TestParsesBase):
                  asrt.matches_sequence([
                      asrt_sym_ref.matches_reference_2(
                          symbol.name,
-                         data_restrictions_assertions.equals_reference_restrictions__w_str_rendering(
+                         asrt_w_str_rend_rest.equals__w_str_rendering(
                              path_or_string_reference_restrictions(
                                  accepted_relativities.options.accepted_relativity_variants)
                          )
@@ -850,7 +851,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  asrt.matches_sequence([
                      asrt_sym_ref.matches_reference_2(
                          symbol.name,
-                         data_restrictions_assertions.equals_reference_restrictions__w_str_rendering(
+                         asrt_w_str_rend_rest.equals__w_str_rendering(
                              path_or_string_reference_restrictions(accepted_relativities))
                      ),
                  ]),
@@ -878,7 +879,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  asrt.matches_sequence([
                      asrt_sym_ref.matches_reference_2(
                          symbol.name,
-                         data_restrictions_assertions.equals_reference_restrictions__w_str_rendering(
+                         asrt_w_str_rend_rest.equals__w_str_rendering(
                              path_or_string_reference_restrictions(accepted_relativities))
                      ),
                  ]),
@@ -906,7 +907,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  asrt.matches_sequence([
                      asrt_sym_ref.matches_reference_2(
                          symbol.name,
-                         data_restrictions_assertions.equals_reference_restrictions__w_str_rendering(
+                         asrt_w_str_rend_rest.equals__w_str_rendering(
                              path_or_string_reference_restrictions(accepted_relativities))
                      ),
                  ]),
@@ -938,7 +939,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  asrt.matches_sequence([
                      asrt_sym_ref.matches_reference_2(
                          symbol_1.name,
-                         data_restrictions_assertions.equals_reference_restrictions__w_str_rendering(
+                         asrt_w_str_rend_rest.equals__w_str_rendering(
                              path_or_string_reference_restrictions(accepted_relativities))
                      ),
                      is_reference_to_string__w_all_indirect_refs_are_strings(symbol_2.name),
@@ -975,7 +976,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  asrt.matches_sequence([
                      asrt_sym_ref.matches_reference_2(
                          symbol.name,
-                         data_restrictions_assertions.equals_reference_restrictions__w_str_rendering(
+                         asrt_w_str_rend_rest.equals__w_str_rendering(
                              path_or_string_reference_restrictions(accepted_relativities))
                      ),
                      is_reference_to_string__w_all_indirect_refs_are_strings(symbol_1.name),
@@ -1009,7 +1010,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  asrt.matches_sequence([
                      asrt_sym_ref.matches_reference_2(
                          symbol.name,
-                         data_restrictions_assertions.equals_reference_restrictions__w_str_rendering(
+                         asrt_w_str_rend_rest.equals__w_str_rendering(
                              path_or_string_reference_restrictions(accepted_relativities))
                      ),
                  ]),
@@ -1040,7 +1041,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  asrt.matches_sequence([
                      asrt_sym_ref.matches_reference_2(
                          symbol_1.name,
-                         data_restrictions_assertions.equals_reference_restrictions__w_str_rendering(
+                         asrt_w_str_rend_rest.equals__w_str_rendering(
                              path_or_string_reference_restrictions(accepted_relativities))
                      ),
                      is_reference_to_string__w_all_indirect_refs_are_strings(symbol_2.name),

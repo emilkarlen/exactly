@@ -11,8 +11,7 @@ from exactly_lib.util.textformat.structure.document import SectionItem, SectionC
 
 class OptionallyWithinParens(SyntaxElementDocumentation):
     def __init__(self, primitive: SyntaxElementDocumentation):
-        super().__init__(primitive.type_category,
-                         primitive.name_and_cross_ref_target)
+        super().__init__(primitive.syntax_element)
         self._primitive = primitive
         self._primitive_name = self.singular_name() + '\''
 

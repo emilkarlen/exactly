@@ -20,8 +20,8 @@ from exactly_lib_test.test_resources.source.custom_abstract_syntax import Sequen
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx, \
     MISSING_END_QUOTE__SOFT, MISSING_END_QUOTE_STR__HARD
-from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext, \
-    StringSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_source.test_resources.symbol_context import StringSourceSymbolContext
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 
@@ -356,7 +356,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
         existing_env_var = NameAndValue('MY_VAR', 'MY_VAL')
         defined_env_var = NameAndValue('name', existing_env_var.value)
 
-        string_symbol_w_env_var_ref = StringSymbolContext.of_constant(
+        source_string_symbol_w_env_var_ref = StringSourceSymbolContext.of_primitive_constant(
             'SYMBOL_W_ENV_VAR_REF',
             env_var_ref_syntax(existing_env_var.name)
         )
@@ -374,19 +374,17 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
         CHECKER.check__abs_stx__std_layouts_and_source_variants(
             self,
             SetVariableArgumentsAbsStx(StringLiteralAbsStx(defined_env_var.name),
-                                       StringSourceOfStringAbsStx(string_symbol_w_env_var_ref.abstract_syntax),
+                                       source_string_symbol_w_env_var_ref.abstract_syntax,
                                        phase_spec=None),
             arrangement=
             Arrangement.setup_phase_aware(
-                symbols=string_symbol_w_env_var_ref.symbol_table,
+                symbols=source_string_symbol_w_env_var_ref.symbol_table,
                 process_execution_settings=
                 ProcessExecutionSettings.with_environ(environ__before),
             ),
             expectation=
             MultiSourceExpectation.setup_phase_aware(
-                symbol_usages=asrt.matches_singleton_sequence(
-                    string_symbol_w_env_var_ref.reference_assertion__w_str_rendering
-                ),
+                symbol_usages=source_string_symbol_w_env_var_ref.references_assertion,
                 main_side_effect_on_environment_variables=asrt.equals(environ__after),
             )
         )

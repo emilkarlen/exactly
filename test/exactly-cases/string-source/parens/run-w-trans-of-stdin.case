@@ -1,0 +1,26 @@
+[setup]
+
+def string STDIN_STRING = <<EOF
+the stdin
+the stdin (skip)
+EOF
+
+def program STDIN_READER =
+    -python -c :> import sys; sys.stdout.write(sys.stdin.read()); print('after stdin')
+
+file from-program.txt =
+    -stdout-from
+      @ STDIN_READER
+        -stdin (
+          @[STDIN_STRING]@
+            -transformed-by char-case -to-upper
+          )
+        -transformed-by
+          filter ! contents ~ 'SKIP'
+
+[assert]
+
+contents from-program.txt : equals <<EOF
+THE STDIN
+after stdin
+EOF

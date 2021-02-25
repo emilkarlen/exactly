@@ -5,10 +5,10 @@ from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import cl_syntax, path_syntax
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
-from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
+from exactly_lib.definitions.type_system import TypeNameAndCrossReferenceId
 from exactly_lib.symbol.value_type import WithStrRenderingType, ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
@@ -125,6 +125,9 @@ ANY_TYPE_INFO_DICT = {
 
     ValueType.FILES_MATCHER:
         _logic_type_info(types.FILES_MATCHER_TYPE_INFO),
+
+    ValueType.STRING_SOURCE:
+        _logic_type_info(types.STRING_SOURCE_TYPE_INFO),
 
     ValueType.STRING_MATCHER:
         _logic_type_info(types.STRING_MATCHER_TYPE_INFO),

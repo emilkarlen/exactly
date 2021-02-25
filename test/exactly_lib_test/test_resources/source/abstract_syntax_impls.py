@@ -1,6 +1,7 @@
 from typing import Sequence, Optional, Callable
 
 from exactly_lib.definitions import logic
+from exactly_lib.test_case import reserved_words
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib_test.test_resources.source import token_sequences, layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
@@ -90,7 +91,7 @@ class WithinParensAbsStx(AbstractSyntax):
 
     def tokenization(self) -> TokenSequence:
         return TokenSequence.concat([
-            TokenSequence.singleton('('),
+            TokenSequence.singleton(reserved_words.PAREN_BEGIN),
             TokenSequence.optional_new_line(),
             self._element.tokenization(),
             self._end_paren()
@@ -98,10 +99,10 @@ class WithinParensAbsStx(AbstractSyntax):
 
     def _end_paren(self) -> TokenSequence:
         return (
-            TokenSequence.sequence([layout.NEW_LINE, ')'])
+            TokenSequence.sequence([layout.NEW_LINE, reserved_words.PAREN_END])
             if self._end_paren_on_separate_lines
             else
-            TokenSequence.singleton(')')
+            TokenSequence.singleton(reserved_words.PAREN_END)
         )
 
 

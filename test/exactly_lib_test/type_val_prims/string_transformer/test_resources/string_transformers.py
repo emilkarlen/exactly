@@ -203,6 +203,18 @@ def add_line(line_wo_ending_new_line: str) -> StringTransformer:
     )
 
 
+def add(s: str) -> StringTransformer:
+    def transform(lines: Iterator[str]) -> Iterator[str]:
+        contents_before = ''.join(lines)
+        contents_after = contents_before + s
+        return iter(contents_after.splitlines(keepends=True))
+
+    return StringTransformerFromLinesTransformation(
+        'add',
+        transform
+    )
+
+
 def model_access_raises_hard_error(hard_err_msg: str = 'hard error message') -> StringTransformer:
     return ConstantStringTransformerTestImpl(
         string_sources.string_source_that_raises_hard_error_exception(hard_err_msg)

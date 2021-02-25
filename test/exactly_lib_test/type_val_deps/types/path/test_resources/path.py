@@ -160,14 +160,14 @@ class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
     def reference_assertion__path_or_string(self, symbol_name: str) -> Assertion[SymbolReference]:
         return asrt_sym_ref.matches_reference_2(
             symbol_name,
-            asrt_data_ref_restriction.equals_reference_restrictions__w_str_rendering(
+            asrt_data_ref_restriction.equals__w_str_rendering(
                 self.reference_restriction__path_or_string)
         )
 
     def reference_assertion__path(self, symbol_name: str) -> Assertion[SymbolReference]:
         return asrt_sym_ref.matches_reference_2(
             symbol_name,
-            asrt_data_ref_restriction.equals_reference_restrictions__w_str_rendering(
+            asrt_data_ref_restriction.equals__w_str_rendering(
                 self.reference_restriction__path)
         )
 

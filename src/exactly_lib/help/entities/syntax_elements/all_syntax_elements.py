@@ -3,7 +3,7 @@ from exactly_lib.definitions.type_system import TypeCategory
 from exactly_lib.help.entities.syntax_elements.contents_structure import for_type_with_grammar
 from exactly_lib.help.entities.syntax_elements.objects import here_document, regex, glob_pattern, \
     type_string, type_list, type_path, type_program, symbol_name, symbol_reference, \
-    integer, shell_command_line, act_interpreter, program_argument, string_source
+    integer, shell_command_line, act_interpreter, program_argument, type_string_source
 from exactly_lib.impls.types.file_matcher import parse_file_matcher
 from exactly_lib.impls.types.files_condition import parse as parse_files_condition
 from exactly_lib.impls.types.files_matcher import parse_files_matcher
@@ -57,7 +57,7 @@ ALL_SYNTAX_ELEMENT_DOCS = (
 
     type_program.DOCUMENTATION,
 
-    string_source.documentation(),
+    type_string_source.documentation(),
     act_interpreter.documentation(),
     program_argument.documentation(),
 )

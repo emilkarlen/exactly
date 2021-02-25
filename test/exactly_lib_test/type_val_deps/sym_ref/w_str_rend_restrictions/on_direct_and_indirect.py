@@ -17,9 +17,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.type_val_deps.sym_ref.w_str_rend_restrictions.test_resources import TestDataSymbolContext, \
     TestLogicSymbolContext, \
     reference_to, unconditional_satisfaction, unconditional_dissatisfaction, dissatisfaction_if_value_type_is
-from exactly_lib_test.type_val_deps.test_resources.w_str_rend.data_restrictions_assertions import \
-    is_failure__of_direct_reference, \
-    is_failure__of_indirect_reference
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_data_rest
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.value_restrictions import \
     ValueRestrictionWithConstantResult, \
     ValueRestrictionThatRaisesErrorIfApplied
@@ -42,7 +40,7 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
 
     def test_unsatisfied_restriction(self):
         error_message = 'error message'
-        expected_result = is_failure__of_direct_reference(
+        expected_result = asrt_data_rest.is_failure__of_direct_reference(
             message=asrt_text_doc.is_string_for_test_that_equals(error_message)
         )
         restriction_on_direct = ValueRestrictionWithConstantResult.of_err_msg_for_test(error_message)
@@ -188,7 +186,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.name,
                                                              level_0_symbol.symbol_table_container)
         # ASSERT #
-        result_assertion = is_failure__of_indirect_reference(
+        result_assertion = asrt_data_rest.is_failure__of_indirect_reference(
             failing_symbol=asrt.equals(level_1a_symbol.name),
             path_to_failing_symbol=asrt.equals([]),
             error_message=asrt_text_doc.is_string_for_test_that_equals(result_that_indicates_error),
@@ -250,7 +248,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
                 actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.name,
                                                                      level_0_symbol.symbol_table_container)
                 # ASSERT #
-                expected_result = is_failure__of_indirect_reference(
+                expected_result = asrt_data_rest.is_failure__of_indirect_reference(
                     failing_symbol=asrt.equals(dissatisfied_level_2_symbol.name),
                     path_to_failing_symbol=asrt.equals(
                         [level_1a_symbol.name]),
@@ -306,7 +304,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.name,
                                                              level_0_symbol.symbol_table_container)
         # ASSERT #
-        expected_result = is_failure__of_indirect_reference(
+        expected_result = asrt_data_rest.is_failure__of_indirect_reference(
             failing_symbol=asrt.equals(level_3_symbol.name),
             path_to_failing_symbol=asrt.equals([level_1b_symbol.name,
                                                 level_2_symbol.name]),

@@ -19,7 +19,8 @@ _TP = TextParser({
     'First_line_number': line_matcher.FIRST_LINE_NUMBER_DESCRIPTION,
     'Line_separator_description': line_matcher.LINE_SEPARATOR_DESCRIPTION,
     'STRING_SOURCE': syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.singular_name,
-    'model': matcher_model.TEXT_MODEL,
+    'text_model': matcher_model.TEXT_MODEL,
+    'string_source_type': types.STRING_SOURCE_TYPE_INFO.name,
 })
 
 _LINE_MATCHER_DESCRIPTION = """\
@@ -40,11 +41,11 @@ The line separator is not included in the text contents.
 """
 
 _STRING_TRANSFORMER_DESCRIPTION = """\
-The {model} to transform is given by a {STRING_SOURCE}.
+The {text_model} to transform is given by a {STRING_SOURCE}.
 """
 
 _STRING_MATCHER_DESCRIPTION = """\
-The {model} to match is given by a {STRING_SOURCE}.
+The {text_model} to match is given by a {STRING_SOURCE}.
 """
 
 INTEGER_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
@@ -94,3 +95,22 @@ PROGRAM_DOCUMENTATION = TypeDocumentation(
         phase_infos.SETUP.instruction_cross_reference_target(instruction_names.ENV_VAR_INSTRUCTION_NAME),
         phase_infos.SETUP.instruction_cross_reference_target(instruction_names.TIMEOUT_INSTRUCTION_NAME),
     ])
+
+_STRING_SOURCE_DESCRIPTION_REST = """\
+Produces {text_model:a}, when referenced.
+
+
+The produced {text_model} may differ when {string_source_type:a/q}
+is referenced from different locations.
+
+One such example is {string_source_type:a/q} that is
+the output from {program_type:a/q}
+that produces different output on different
+executions.
+"""
+
+STRING_SOURCE_DOCUMENTATION = TypeDocumentation(
+    types.STRING_SOURCE_TYPE_INFO,
+    syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT,
+    _TP.section_contents(_STRING_SOURCE_DESCRIPTION_REST),
+)

@@ -7,7 +7,6 @@ from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
 from exactly_lib.definitions.test_case.instructions import define_symbol
-from exactly_lib.definitions.type_system import TypeCategory
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.parse import token
@@ -16,8 +15,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 class _Documentation(SyntaxElementDocumentation):
     def __init__(self):
-        super().__init__(TypeCategory.DATA,
-                         syntax_elements.STRING_SYNTAX_ELEMENT)
+        super().__init__(syntax_elements.STRING_SYNTAX_ELEMENT)
         the_string_type = 'the ' + types.STRING_TYPE_INFO.singular_name
         self._tp = TextParser({
             'string_type': formatting.keyword(types.STRING_TYPE_INFO.name.singular),

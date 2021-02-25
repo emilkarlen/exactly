@@ -1,8 +1,8 @@
 from typing import List
 
 from exactly_lib.definitions.entity import types, syntax_elements
-from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.definitions.test_case.instructions import define_symbol as syntax
+from exactly_lib.definitions.type_system import TypeNameAndCrossReferenceId
 from exactly_lib.util.cli_syntax.elements import argument as a
 from . import type_parser
 
@@ -52,10 +52,12 @@ TYPE_SETUPS_LIST = [
                                   type_parser.FileMatcherParser()),
     TypeSetup.new_with_std_syntax(types.FILES_MATCHER_TYPE_INFO,
                                   type_parser.FilesMatcherParser()),
-    TypeSetup.new_with_std_syntax(types.STRING_MATCHER_TYPE_INFO,
-                                  type_parser.StringMatcherParser()),
     TypeSetup.new_with_std_syntax(types.FILES_CONDITION_TYPE_INFO,
                                   type_parser.FilesConditionParser()),
+    TypeSetup.new_with_std_syntax(types.STRING_SOURCE_TYPE_INFO,
+                                  type_parser.StringSourceParser()),
+    TypeSetup.new_with_std_syntax(types.STRING_MATCHER_TYPE_INFO,
+                                  type_parser.StringMatcherParser()),
     TypeSetup.new_with_std_syntax(types.STRING_TRANSFORMER_TYPE_INFO,
                                   type_parser.StringTransformerParser()),
     TypeSetup.new_with_std_syntax(types.PROGRAM_TYPE_INFO,

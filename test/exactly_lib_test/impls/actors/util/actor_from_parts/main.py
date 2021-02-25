@@ -69,7 +69,7 @@ class TestConstructor(unittest.TestCase):
                             symbol_usages=asrt.matches_sequence([
                                 asrt_sym_ref.matches_reference_2(
                                     symbol_reference.name,
-                                    data_restrictions_assertions.equals_reference_restrictions__w_str_rendering(
+                                    data_restrictions_assertions.equals__w_str_rendering(
                                         symbol_reference.value)
                                 )
                             ])

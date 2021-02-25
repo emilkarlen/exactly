@@ -48,7 +48,7 @@ def equals_list_sdv_element(expected: list_sdv.ElementSdv,
 
         asrt_sym_ref.matches_reference_2(
             reference.name,
-            data_restrictions_assertions.equals_reference_restrictions__w_str_rendering(
+            data_restrictions_assertions.equals__w_str_rendering(
                 reference_restrictions)
         )
 

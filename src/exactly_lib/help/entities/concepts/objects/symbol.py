@@ -3,15 +3,13 @@ from typing import List
 from exactly_lib import program_info
 from exactly_lib.definitions import formatting, logic, misc_texts
 from exactly_lib.definitions import syntax_descriptions
-from exactly_lib.definitions import type_system
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.doc_format import syntax_text
-from exactly_lib.definitions.entity import syntax_elements, concepts
+from exactly_lib.definitions.entity import syntax_elements, concepts, types
 from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
-from exactly_lib.definitions.type_system import TYPE_INFO_DICT
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.value_type import ValueType
@@ -41,13 +39,13 @@ class _SymbolConcept(ConceptDocumentation):
             'symbol_name_syntax': syntax_descriptions.SYMBOL_NAME_SYNTAX_DESCRIPTION,
             'def': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
 
-            'string_type_in_text': formatting.keyword(type_system.TYPE_INFO_DICT[ValueType.STRING].identifier),
+            'string_type_in_text': formatting.keyword(types.VALUE_TYPE_2_TYPES_INFO_DICT[ValueType.STRING].identifier),
 
-            'string_type': TYPE_INFO_DICT[ValueType.STRING].identifier,
-            'list_type': TYPE_INFO_DICT[ValueType.LIST].identifier,
-            'file_trans_type': TYPE_INFO_DICT[ValueType.STRING_TRANSFORMER].identifier,
+            'string_type': types.VALUE_TYPE_2_TYPES_INFO_DICT[ValueType.STRING].identifier,
+            'list_type': types.VALUE_TYPE_2_TYPES_INFO_DICT[ValueType.LIST].identifier,
+            'file_trans_type': types.VALUE_TYPE_2_TYPES_INFO_DICT[ValueType.STRING_TRANSFORMER].identifier,
             'max_type_width': max(map(lambda type_info: len(type_info.identifier),
-                                      TYPE_INFO_DICT.values())),
+                                      types.VALUE_TYPE_2_TYPES_INFO_DICT.values())),
             'LIST_SYMBOL': list_symbol_name,
             'FILE_TRANS_SYMBOL': file_trans_symbol_name,
             'max_symbol_name_width': max(map(len, symbol_names)),
@@ -92,10 +90,10 @@ class _SymbolConcept(ConceptDocumentation):
 
             'def': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
 
-            'string_type': TYPE_INFO_DICT[ValueType.STRING].identifier,
+            'string_type': types.VALUE_TYPE_2_TYPES_INFO_DICT[ValueType.STRING].identifier,
             'plain_string': misc_texts.PLAIN_STRING,
-            'list_type': TYPE_INFO_DICT[ValueType.LIST].identifier,
-            'max_type_width': max(map(lambda value_type: len(TYPE_INFO_DICT[value_type].identifier),
+            'list_type': types.VALUE_TYPE_2_TYPES_INFO_DICT[ValueType.LIST].identifier,
+            'max_type_width': max(map(lambda value_type: len(types.VALUE_TYPE_2_TYPES_INFO_DICT[value_type].identifier),
                                       [ValueType.LIST,
                                        ValueType.STRING])),
 
@@ -144,7 +142,7 @@ A {symbol} name ({symbol_name_syntax_element}) is: {symbol_name_syntax}
 """
 
 _DEFINITION = """\
-A {symbol} is defined by the {define_symbol} instruction:
+A {symbol} is defined by the {define_symbol} {instruction}:
 
 
 ```
@@ -172,7 +170,7 @@ _REFERENCE_1 = """\
 A {symbol} must be defined before it is referenced.
 
 
-Once defined, a {symbol} is available to all instructions
+Once defined, a {symbol} is available to all {instruction:s}
 following the definition - both in the phase where it is defined
 and in following phases.
 

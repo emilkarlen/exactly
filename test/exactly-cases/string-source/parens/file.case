@@ -1,0 +1,7 @@
+[setup]
+
+file from-string.txt = ( 'constant string' )
+
+[assert]
+
+contents from-string.txt : equals 'constant string'

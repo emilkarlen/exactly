@@ -63,7 +63,7 @@ class TestWithoutExecution(unittest.TestCase):
         string_symbol = StringConstantSymbolContext(
             'STRING_SYMBOL',
             'the string value',
-            default_restrictions=asrt_rest.is_reference_restrictions__w_str_rendering(),
+            default_restrictions=asrt_rest.is__w_str_rendering(),
         )
         list_symbol = ListConstantSymbolContext(
             'LIST_SYMBOL',

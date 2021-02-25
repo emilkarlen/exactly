@@ -33,8 +33,7 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
     def __init__(self,
                  sdv: StringSdv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                 default_restrictions: Assertion[
-                     ReferenceRestrictions] = asrt_val_rest.is__string(),
+                 default_restrictions: Assertion[ReferenceRestrictions] = asrt_val_rest.is__string(),
                  ):
         super().__init__(sdv, definition_source)
         self._default_restrictions = default_restrictions
@@ -53,8 +52,7 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
     @staticmethod
     def of_constant(primitive: str,
                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                    default_restrictions: Assertion[
-                        ReferenceRestrictions] = asrt_val_rest.is__string(),
+                    default_restrictions: Assertion[ReferenceRestrictions] = asrt_val_rest.is__string(),
                     ) -> 'StringSymbolValueContext':
         return StringSymbolValueContext(string_sdvs.str_constant(primitive), definition_source, default_restrictions)
 
@@ -100,7 +98,7 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
                                             ) -> Assertion[SymbolReference]:
         return asrt_sym_ref.matches_reference_2(
             symbol_name,
-            asrt_rest.equals_reference_restrictions__w_str_rendering(
+            asrt_rest.equals__w_str_rendering(
                 parse_path.path_or_string_reference_restrictions(
                     accepted_relativities)
             )
@@ -132,7 +130,8 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
     def of_sdv(name: str,
                sdv: StringSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-               default_restrictions: Assertion[ReferenceRestrictions] = asrt_val_rest.is__string(),
+               default_restrictions: Assertion[
+                   ReferenceRestrictions] = asrt_rest.is__w_str_rendering(),
                ) -> 'StringSymbolContext':
         return StringSymbolContext(
             name,
@@ -198,7 +197,7 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
     def reference_assertion__path_component(self) -> Assertion[SymbolReference]:
         return asrt_sym_usage.matches_reference__ref(
             asrt.equals(self.name),
-            asrt_rest.equals_reference_restrictions__w_str_rendering(
+            asrt_rest.equals__w_str_rendering(
                 parse_path.PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
         )
 
@@ -206,7 +205,7 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
     def usage_assertion__path_component(self) -> Assertion[SymbolUsage]:
         return asrt_sym_usage.matches_reference(
             asrt.equals(self.name),
-            asrt_rest.equals_reference_restrictions__w_str_rendering(
+            asrt_rest.equals__w_str_rendering(
                 parse_path.PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
         )
 

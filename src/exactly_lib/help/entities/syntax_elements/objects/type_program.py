@@ -13,7 +13,6 @@ from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import string_transformer, program
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
-from exactly_lib.definitions.type_system import TypeCategory
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help.entities.utils import programs
 from exactly_lib.help.entities.utils.se_within_parens import OptionallyWithinParens
@@ -30,8 +29,7 @@ _STDIN_ARGUMENT = a.Named('STDIN')
 
 class _Documentation(SyntaxElementDocumentation):
     def __init__(self):
-        super().__init__(TypeCategory.LOGIC,
-                         syntax_elements.PROGRAM_SYNTAX_ELEMENT)
+        super().__init__(syntax_elements.PROGRAM_SYNTAX_ELEMENT)
         self._pgm_and_args = _PgmAndArgs()
 
     def main_description_rest_paragraphs(self) -> List[ParagraphItem]:

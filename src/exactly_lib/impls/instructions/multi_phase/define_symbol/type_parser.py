@@ -12,6 +12,7 @@ from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionsConfig
 from exactly_lib.impls.types.program.parse import parse_program
 from exactly_lib.impls.types.string_ import parse_string_or_here_doc
 from exactly_lib.impls.types.string_matcher import parse_string_matcher
+from exactly_lib.impls.types.string_source import parse as _parse_string_source
 from exactly_lib.impls.types.string_transformer import parse_string_transformer
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
@@ -76,14 +77,6 @@ class LineMatcherParser(TypeValueParser):
         return parse_line_matcher.parsers(False).full.parse_from_token_parser(token_parser)
 
 
-class StringMatcherParser(TypeValueParser):
-    def parse(self,
-              fs_location_info: FileSystemLocationInfo,
-              token_parser: TokenParser,
-              ) -> SymbolDependentValue:
-        return parse_string_matcher.parsers().full.parse_from_token_parser(token_parser)
-
-
 class FileMatcherParser(TypeValueParser):
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
@@ -106,6 +99,26 @@ class FilesConditionParser(TypeValueParser):
               token_parser: TokenParser,
               ) -> SymbolDependentValue:
         return parse_files_condition.parsers().full.parse_from_token_parser(token_parser)
+
+
+class StringSourceParser(TypeValueParser):
+    _PARSER = _parse_string_source.default_parser_for(
+        phase_is_after_act=False,
+    )
+
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              token_parser: TokenParser,
+              ) -> SymbolDependentValue:
+        return self._PARSER.parse_from_token_parser(token_parser)
+
+
+class StringMatcherParser(TypeValueParser):
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              token_parser: TokenParser,
+              ) -> SymbolDependentValue:
+        return parse_string_matcher.parsers().full.parse_from_token_parser(token_parser)
 
 
 class StringTransformerParser(TypeValueParser):

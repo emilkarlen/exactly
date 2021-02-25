@@ -11,8 +11,7 @@ from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.sym_ref.w_str_rend_restrictions.test_resources import TestDataSymbolContext, \
     reference_to
-from exactly_lib_test.type_val_deps.test_resources.w_str_rend.data_restrictions_assertions import \
-    is_failure__of_direct_reference, is_failure__of_indirect_reference
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_data_rest
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.value_restrictions import \
     ValueRestrictionWithConstantResult, \
     ValueRestrictionThatRaisesErrorIfApplied
@@ -101,11 +100,11 @@ class TestOrReferenceRestrictions(unittest.TestCase):
             symbol_table = SymbolContext.symbol_table_of_contexts(symbol_table_entries)
             cases = [
                 NEA('no restriction parts / default error message generator',
-                    is_failure__of_direct_reference(),
+                    asrt_data_rest.is_failure__of_direct_reference(),
                     sut.OrReferenceRestrictions([]),
                     ),
                 NEA('no restriction parts / custom error message generator',
-                    is_failure__of_direct_reference(
+                    asrt_data_rest.is_failure__of_direct_reference(
                         message=asrt_text_doc.is_string_for_test_that_equals(
                             mk_err_msg(referencing_symbol.name,
                                        W_STR_RENDERING_TYPE_2_VALUE_TYPE[value_type_of_referencing_symbol])
@@ -114,7 +113,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                     sut.OrReferenceRestrictions([], value_type_error_message_function),
                     ),
                 NEA('single direct: unsatisfied selector',
-                    is_failure__of_direct_reference(),
+                    asrt_data_rest.is_failure__of_direct_reference(),
                     sut.OrReferenceRestrictions([
                         sut.OrRestrictionPart(value_type_other_than_referencing_symbol,
                                               sut.ReferenceRestrictionsOnDirectAndIndirect(
@@ -122,7 +121,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                     ]),
                     ),
                 NEA('single direct: satisfied selector, unsatisfied part-restriction',
-                    is_failure__of_direct_reference(),
+                    asrt_data_rest.is_failure__of_direct_reference(),
                     sut.OrReferenceRestrictions([
                         sut.OrRestrictionPart(value_type_of_referencing_symbol,
                                               sut.ReferenceRestrictionsOnDirectAndIndirect(
@@ -131,7 +130,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                     ]),
                     ),
                 NEA('multiple direct: unconditionally unsatisfied selectors',
-                    is_failure__of_direct_reference(),
+                    asrt_data_rest.is_failure__of_direct_reference(),
                     sut.OrReferenceRestrictions([
                         sut.OrRestrictionPart(
                             value_type_other_than_referencing_symbol,
@@ -144,7 +143,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                     ]),
                     ),
                 NEA('multiple direct: unconditionally satisfied selectors, unconditionally satisfied restrictions',
-                    is_failure__of_direct_reference(),
+                    asrt_data_rest.is_failure__of_direct_reference(),
                     sut.OrReferenceRestrictions([
                         sut.OrRestrictionPart(
                             value_type_of_referencing_symbol,
@@ -157,7 +156,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                     ]),
                     ),
                 NEA('first: selector=satisfied, direct=satisfied, indirect=unsatisfied. second:satisfied ',
-                    is_failure__of_indirect_reference(
+                    asrt_data_rest.is_failure__of_indirect_reference(
                         failing_symbol=asrt.equals(referenced_symbol_case.value.name),
                         path_to_failing_symbol=asrt.equals([])),
                     sut.OrReferenceRestrictions([

@@ -26,8 +26,7 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.w_str_rend.data_restrictions_assertions import \
-    is_reference_restrictions__w_str_rendering
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_data_rest
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import PgmAndArgsWArgumentsAbsStx, \
@@ -72,12 +71,12 @@ class TestDriverTypesWArgListExceptSymbolReference(unittest.TestCase):
         string_symbol_1 = StringConstantSymbolContext(
             'STRING_SYMBOL_1',
             'value of string symbol 1',
-            default_restrictions=is_reference_restrictions__w_str_rendering(),
+            default_restrictions=asrt_data_rest.is__w_str_rendering(),
         )
         string_symbol_2 = StringConstantSymbolContext(
             'STRING_SYMBOL_2',
             'value of string symbol 2',
-            default_restrictions=is_reference_restrictions__w_str_rendering(),
+            default_restrictions=asrt_data_rest.is__w_str_rendering(),
         )
         arguments_cases = [
             ArgumentsCase(

@@ -1,0 +1,28 @@
+[setup]
+
+def string-transformer ST = char-case -to-upper
+
+def string STRING_SYMBOL = 'the value of the string symbol'
+def path   PATH_SYMBOL   = @[EXACTLY_TMP]@
+def list   LIST_SYMBOL   = 1st 2nd 3rd
+
+def string-source CONSTANT   = 'a constant string'
+def string-source CONSTANT_T = 'a constant string' -transformed-by @[ST]@
+
+def string-source STRING_REF   = @[STRING_SYMBOL]@
+def string-source STRING_REF_T = @[STRING_SYMBOL]@ -transformed-by @[ST]@
+
+def string-source LIST_AS_STRING   = "@[LIST_SYMBOL]@"
+def string-source LIST_AS_STRING_T = "@[LIST_SYMBOL]@" -transformed-by @[ST]@
+
+def string-source PATH_AS_STRING   = "@[PATH_SYMBOL]@"
+def string-source PATH_AS_STRING_T = "@[PATH_SYMBOL]@" -transformed-by @[ST]@
+
+def string-source FILE_CONTENTS   = -contents-of a-file.txt
+def string-source FILE_CONTENTS_T = -contents-of a-file.txt
+                                     -transformed-by @[ST]@
+
+def string-source PROGRAM_OUTPUT =
+
+    -stdout-from
+      -python -c :> print('Corona vaccine - produce in large quantities!')

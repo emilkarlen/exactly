@@ -207,7 +207,7 @@ class OrReferenceRestrictions(WithStrRenderingTypeRestrictions):
                         symbol_table: SymbolTable,
                         symbol_name: str,
                         container: SymbolContainer) -> Optional[Failure]:
-        if container.value_type not in value_type.VALUE_TYPES_CONVERTIBLE_TO_STRING:
+        if container.value_type not in value_type.VALUE_TYPES_W_STR_RENDERING:
             return self._no_satisfied_restriction(symbol_name, container)
         type_w_str_rendering = value_type.VALUE_TYPE_2_W_STR_RENDERING_TYPE[container.value_type]
         for part in self._parts:

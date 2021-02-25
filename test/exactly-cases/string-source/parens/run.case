@@ -1,7 +1,5 @@
 [setup]
 
-file from-string.txt = ( 'constant string' )
-
 file stdin.txt = <<EOF
 the stdin
 EOF
@@ -17,8 +15,6 @@ file from-program.txt =
 # associate with the PROGRAM, not the STRING-SOURCE.
 
 [assert]
-
-contents from-string.txt : equals 'constant string'
 
 contents from-program.txt : equals <<EOF
 THE STDIN

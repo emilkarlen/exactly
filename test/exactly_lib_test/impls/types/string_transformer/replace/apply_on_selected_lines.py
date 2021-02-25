@@ -163,7 +163,7 @@ class TestApplication(unittest.TestCase):
         replacement_symbol = StringConstantSymbolContext(
             'REPLACEMENT_SYMBOL',
             replacement_str,
-            default_restrictions=asrt_ref_rest.is_reference_restrictions__w_str_rendering(),
+            default_restrictions=asrt_ref_rest.is__w_str_rendering(),
         )
 
         all_symbol = [lines_selector, pattern_symbol, replacement_symbol]

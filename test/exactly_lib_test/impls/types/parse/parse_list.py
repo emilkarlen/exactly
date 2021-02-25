@@ -20,8 +20,7 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.w_str_rend.data_restrictions_assertions import \
-    is_reference_restrictions__w_str_rendering
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_data_rest
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.references import reference_to__on_direct_and_indirect
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_assertions import equals_list_sdv
 
@@ -112,7 +111,7 @@ class TestSingleElementList(unittest.TestCase):
                              references=
                              asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
                                  string_symbol.name,
-                                 is_reference_restrictions__w_str_rendering())
+                                 asrt_data_rest.is__w_str_rendering())
                              ])),
                  ),
             Case('complex element (str const and sym-refs), at end of line, on the last line',
@@ -135,7 +134,7 @@ class TestSingleElementList(unittest.TestCase):
                      references=
                      asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
                          string_symbol.name,
-                         is_reference_restrictions__w_str_rendering())
+                         asrt_data_rest.is__w_str_rendering())
                      ]),
                      source=
                      asrt_source.is_at_end_of_line(1)),
@@ -259,7 +258,7 @@ class TestMultipleElementList(unittest.TestCase):
                              references=
                              asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
                                  symbol_name,
-                                 is_reference_restrictions__w_str_rendering())
+                                 asrt_data_rest.is__w_str_rendering())
                              ]),
                              source=
                              asrt_source.is_at_end_of_line(1)),
@@ -289,7 +288,7 @@ class TestMultipleElementList(unittest.TestCase):
                      references=
                      asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
                          symbol_name,
-                         is_reference_restrictions__w_str_rendering())
+                         asrt_data_rest.is__w_str_rendering())
                      ]),
                      source=
                      asrt_source.is_at_end_of_line(1)),

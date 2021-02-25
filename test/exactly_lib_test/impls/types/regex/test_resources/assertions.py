@@ -86,4 +86,4 @@ def is_reference_to__regex_string_part(symbol_name: str) -> Assertion[SymbolRefe
 
 
 def is_reference_restrictions__regex() -> Assertion[ReferenceRestrictions]:
-    return asrt_ref_rest.is_reference_restrictions__w_str_rendering()
+    return asrt_ref_rest.is__w_str_rendering()

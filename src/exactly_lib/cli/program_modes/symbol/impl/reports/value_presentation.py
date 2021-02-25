@@ -5,7 +5,7 @@ from exactly_lib.cli.program_modes.symbol.impl.report import ReportBlock
 from exactly_lib.common.report_rendering.description_tree import rendering__node_wo_data
 from exactly_lib.definitions import type_system
 from exactly_lib.definitions.entity import types
-from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
+from exactly_lib.definitions.type_system import TypeNameAndCrossReferenceId
 from exactly_lib.symbol.sdv_structure import SymbolDefinition, SymbolDependentValue
 from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv

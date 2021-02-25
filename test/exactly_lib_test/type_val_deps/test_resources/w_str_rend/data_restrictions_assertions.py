@@ -52,7 +52,7 @@ def is_failure__of_indirect_reference(
         ]))
 
 
-def is_reference_restrictions__on_direct_and_indirect(
+def matches__on_direct_and_indirect(
         assertion_on_direct: Assertion[ValueRestriction] = asrt.anything_goes(),
         assertion_on_indirect: Assertion[ValueRestriction] = asrt.anything_goes(),
 ) -> Assertion[ReferenceRestrictions]:
@@ -69,23 +69,23 @@ def is_reference_restrictions__on_direct_and_indirect(
     )
 
 
-def equals_reference_restrictions__w_str_rendering(expected: WithStrRenderingTypeRestrictions
-                                                   ) -> Assertion[ReferenceRestrictions]:
+def equals__w_str_rendering(expected: WithStrRenderingTypeRestrictions
+                            ) -> Assertion[ReferenceRestrictions]:
     return _EQUALS_REFERENCE_RESTRICTIONS_VISITOR.visit(expected)
 
 
-def is_reference_restrictions__w_str_rendering() -> Assertion[ReferenceRestrictions]:
-    return equals_reference_restrictions__w_str_rendering(reference_restrictions.is_any_type_w_str_rendering())
+def is__w_str_rendering() -> Assertion[ReferenceRestrictions]:
+    return equals__w_str_rendering(reference_restrictions.is_any_type_w_str_rendering())
 
 
-def is_reference_restrictions__string__w_all_indirect_refs_are_strings() -> Assertion[ReferenceRestrictions]:
-    return is_reference_restrictions__on_direct_and_indirect(
+def is__string__w_all_indirect_refs_are_strings() -> Assertion[ReferenceRestrictions]:
+    return matches__on_direct_and_indirect(
         assertion_on_direct=asrt_val_rest.is__string(),
         assertion_on_indirect=asrt_val_rest.is__string()
     )
 
 
-def equals_reference_restrictions__or(expected: OrReferenceRestrictions) -> Assertion:
+def equals__or(expected: OrReferenceRestrictions) -> Assertion:
     expected_sub_restrictions = [
         asrt.is_instance_with(OrRestrictionPart,
                               asrt.and_([
@@ -94,7 +94,7 @@ def equals_reference_restrictions__or(expected: OrReferenceRestrictions) -> Asse
                                                      asrt.equals(part.selector)),
                                   asrt.sub_component('restriction',
                                                      OrRestrictionPart.restriction.fget,
-                                                     _equals_reference_restriction_on_direct_and_indirect(
+                                                     _equals_on_direct_and_indirect(
                                                          part.restriction)),
                               ])
                               )
@@ -105,14 +105,14 @@ def equals_reference_restrictions__or(expected: OrReferenceRestrictions) -> Asse
                                                     asrt.matches_sequence(expected_sub_restrictions)))
 
 
-REFERENCES_ARE_UNRESTRICTED = is_reference_restrictions__on_direct_and_indirect(
+REFERENCES_ARE_UNRESTRICTED = matches__on_direct_and_indirect(
     assertion_on_direct=asrt.is_instance(ArbitraryValueWStrRenderingRestriction),
     assertion_on_indirect=asrt.ValueIsNone())
 
 
-def _equals_reference_restriction_on_direct_and_indirect(expected: ReferenceRestrictionsOnDirectAndIndirect
-                                                         ) -> Assertion[ReferenceRestrictions]:
-    return is_reference_restrictions__on_direct_and_indirect(
+def _equals_on_direct_and_indirect(expected: ReferenceRestrictionsOnDirectAndIndirect
+                                   ) -> Assertion[ReferenceRestrictions]:
+    return matches__on_direct_and_indirect(
         assertion_on_direct=asrt_val_rest.equals(expected.direct),
         assertion_on_indirect=(
             asrt.is_none
@@ -125,10 +125,10 @@ def _equals_reference_restriction_on_direct_and_indirect(expected: ReferenceRest
 
 class _EqualsDataTypeReferenceRestrictionsVisitor(TypeWithStrRenderingReferenceRestrictionsVisitor):
     def visit_direct_and_indirect(self, x: ReferenceRestrictionsOnDirectAndIndirect) -> Assertion:
-        return _equals_reference_restriction_on_direct_and_indirect(x)
+        return _equals_on_direct_and_indirect(x)
 
     def visit_or(self, x: OrReferenceRestrictions) -> Assertion:
-        return equals_reference_restrictions__or(x)
+        return equals__or(x)
 
 
 _EQUALS_REFERENCE_RESTRICTIONS_VISITOR = _EqualsDataTypeReferenceRestrictionsVisitor()

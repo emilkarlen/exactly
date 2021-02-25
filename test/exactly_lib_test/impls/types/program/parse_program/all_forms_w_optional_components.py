@@ -36,8 +36,10 @@ class TestPgmAndArgs(unittest.TestCase):
         # ARRANGE #
         arguments = ['arg']
         str_src_contents = 'the_str_src_contents'
-        stdin_syntax = str_src_abs_stx.StringSourceOfStringAbsStx(
-            str_abs_stx.StringLiteralAbsStx(str_src_contents)
+        stdin_syntax = str_src_abs_stx.StringSourceWithinParensAbsStx(
+            str_src_abs_stx.StringSourceOfStringAbsStx(
+                str_abs_stx.StringLiteralAbsStx(str_src_contents)
+            )
         )
         transformer_symbol = StringTransformerPrimitiveSymbolContext(
             'TRANSFORMER',
@@ -72,29 +74,33 @@ class TestPgmAndArgs(unittest.TestCase):
                     ),
                 )
 
-            with self.subTest(command=pgm_and_args_case.name):
-                # ACT & ASSERT #
-                CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
-                    self,
-                    equivalent_source_variants__for_expr_parse__s__nsc,
-                    program_w_stdin,
-                    arrangement_w_tcds(
-                        symbols=SymbolContext.symbol_table_of_contexts(symbols),
-                        tcds_contents=pgm_and_args_case.tcds,
-                    ),
-                    MultiSourceExpectation(
-                        symbol_references=SymbolContext.references_assertion_of_contexts(symbols),
-                        primitive=expected_program,
-                    )
-                )
+            # ACT & ASSERT #
+            CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
+                self,
+                equivalent_source_variants__for_expr_parse__s__nsc,
+                program_w_stdin,
+                arrangement_w_tcds(
+                    symbols=SymbolContext.symbol_table_of_contexts(symbols),
+                    tcds_contents=pgm_and_args_case.tcds,
+                ),
+                MultiSourceExpectation(
+                    symbol_references=SymbolContext.references_assertion_of_contexts(symbols),
+                    primitive=expected_program,
+                ),
+                sub_test_identifiers={
+                    'command': pgm_and_args_case.name
+                }
+            )
 
 
 class TestShellCommandLine(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
         str_src_contents = 'the_str_src_contents'
-        stdin_syntax = str_src_abs_stx.StringSourceOfStringAbsStx(
-            str_abs_stx.StringLiteralAbsStx(str_src_contents)
+        stdin_syntax = str_src_abs_stx.StringSourceWithinParensAbsStx(
+            str_src_abs_stx.StringSourceOfStringAbsStx(
+                str_abs_stx.StringLiteralAbsStx(str_src_contents)
+            )
         )
         transformer_symbol = StringTransformerPrimitiveSymbolContext(
             'TRANSFORMER',
@@ -128,6 +134,7 @@ class TestShellCommandLine(unittest.TestCase):
             )
 
         # ACT & ASSERT #
+        s = program_w_stdin.as_str__default()
         CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(
             self,
             equivalent_source_variants__for_expr_parse__s__nsc,

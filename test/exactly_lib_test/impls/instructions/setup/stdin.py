@@ -11,7 +11,7 @@ from exactly_lib_test.impls.instructions.setup.test_resources.instruction_check 
 from exactly_lib_test.impls.test_resources import abstract_syntaxes
 from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfFileAbsStx, \
-    StringSourceOfStringAbsStx, CustomStringSourceAbsStx
+    CustomStringSourceAbsStx, StringSourceOfHereDocAbsStx
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
@@ -25,6 +25,8 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringHereDocAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
+from exactly_lib_test.type_val_deps.types.string_source.test_resources.symbol_context import \
+    StringSourceSymbolContextOfPrimitiveConstant
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 
 
@@ -33,6 +35,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestInvalidSyntax),
         unittest.makeSuite(TestSuccessfulScenariosWithSetStdinToFile),
         unittest.makeSuite(TestSuccessfulScenariosWithSetStdinToHereDoc),
+        TestSuccessfulScenariosWithSetStdinToStringSourceReference(),
         unittest.makeSuite(TestFailingInstructionExecution),
         TestActExeInputWStdinAsFileShouldBeInvalidWhenFileDoNotExist(),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
@@ -59,6 +62,30 @@ class TestCaseBaseForParser(TestCaseBase):
              arrangement: Arrangement,
              expectation: Expectation):
         self._check(sut.Parser(), source, arrangement, expectation)
+
+
+class TestSuccessfulScenariosWithSetStdinToStringSourceReference(TestCaseBaseForParser):
+    def runTest(self):
+        string_source_symbol = StringSourceSymbolContextOfPrimitiveConstant(
+            'STRING_SOURCE_SYMBOL',
+            'the contents of the source'
+        )
+        syntax = InstructionAbsStx(
+            string_source_symbol.abstract_syntax
+        )
+        CHECKER.check_multi_source__abs_stx(
+            self,
+            syntax,
+            Arrangement(
+                symbols=string_source_symbol.symbol_table,
+            ),
+            MultiSourceExpectation(
+                symbols_after_parse=string_source_symbol.usages_assertion,
+                settings_builder=_stdin_is_present_and_valid(
+                    string_source_symbol.contents_str,
+                    may_depend_on_external_resources=False),
+            ),
+        )
 
 
 class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
@@ -151,7 +178,7 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
     def test_doc_without_symbol_references(self):
         content_line_of_here_doc = 'content line of here doc\n'
         syntax = InstructionAbsStx(
-            StringSourceOfStringAbsStx(StringHereDocAbsStx(content_line_of_here_doc))
+            StringSourceOfHereDocAbsStx(StringHereDocAbsStx(content_line_of_here_doc))
         )
         CHECKER.check_multi_source__abs_stx(
             self,
@@ -174,7 +201,7 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
             symbol.reference_assertion__w_str_rendering
         )
         syntax = InstructionAbsStx(
-            StringSourceOfStringAbsStx(StringHereDocAbsStx(
+            StringSourceOfHereDocAbsStx(StringHereDocAbsStx(
                 content_line_of_here_doc_template.format(symbol=symbol.name__sym_ref_syntax)
             ))
         )

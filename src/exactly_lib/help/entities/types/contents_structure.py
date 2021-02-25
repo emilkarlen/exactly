@@ -1,12 +1,10 @@
 from typing import List, Iterable, Sequence
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.definitions import type_system
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.definitions.entity.syntax_elements import SyntaxElementInfo
-from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
-from exactly_lib.definitions.type_system import TypeCategory
+from exactly_lib.definitions.type_system import TypeCategory, TypeNameAndCrossReferenceId
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
 from exactly_lib.util.str_.name import Name
 from exactly_lib.util.textformat.structure.document import SectionContents
@@ -33,7 +31,7 @@ class TypeDocumentation(EntityDocumentation):
 
     @property
     def type_category(self) -> TypeCategory:
-        return type_system.VALUE_TYPE_2_TYPE_CATEGORY[self._name_and_cross_ref_target.value_type]
+        return self._name_and_cross_ref_target.type_category
 
     def type_identifier(self) -> str:
         return self._type_identifier

@@ -7,7 +7,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_rest
 
 IS_REFERENCE__STRING__W_ALL_INDIRECT_REFS_ARE_STRINGS = (
-    asrt_rest.equals_reference_restrictions__w_str_rendering(
+    asrt_rest.equals__w_str_rendering(
         is_string__all_indirect_refs_are_strings())
 )
 

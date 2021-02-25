@@ -140,7 +140,7 @@ class TestSymbolReferences(unittest.TestCase):
         program_symbol = StringConstantSymbolContext(
             'program_name_symbol',
             'the-program',
-            default_restrictions=asrt_rest.is_reference_restrictions__string__w_all_indirect_refs_are_strings(),
+            default_restrictions=asrt_rest.is__string__w_all_indirect_refs_are_strings(),
         )
         argument_list_symbol = ListConstantSymbolContext(
             'arguments_symbol',

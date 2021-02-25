@@ -1,0 +1,34 @@
+[setup]
+
+def string STRING_SYMBOL = 'the value of the string symbol'
+def path   PATH_SYMBOL   = @[EXACTLY_TMP]@
+def list   LIST_SYMBOL   = 1st 2nd 3rd
+
+def string LIST_AS_STRING = @[LIST_SYMBOL]@
+def string PATH_AS_STRING = @[PATH_SYMBOL]@
+
+def string-source STRING_SS   = @[STRING_SYMBOL]@
+def string-source SS_SS       = @[STRING_SS]@
+def string-source PATH_SS     = "@[PATH_SYMBOL]@"
+def string-source LIST_SS     = "@[LIST_SYMBOL]@"
+def string-source HERE_DOC_SS = <<EOF
+contents of
+the string source
+EOF
+
+file from-string.txt = @[STRING_SS]@
+file from-ss.txt     = @[SS_SS]@
+file from-path.txt   = @[PATH_SS]@
+file from-list.txt   = @[LIST_SS]@
+file from-hd.txt     = @[HERE_DOC_SS]@
+
+[assert]
+
+contents from-string.txt : equals @[STRING_SYMBOL]@
+contents from-ss.txt     : equals @[STRING_SYMBOL]@
+contents from-path.txt   : equals @[PATH_AS_STRING]@
+contents from-list.txt   : equals @[LIST_AS_STRING]@
+contents from-hd.txt     : equals <<EOF
+contents of
+the string source
+EOF

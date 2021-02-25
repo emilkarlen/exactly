@@ -4,6 +4,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
+from exactly_lib.definitions.entity.syntax_elements import SyntaxElementInfo
 from exactly_lib.definitions.type_system import TypeCategory
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
 from exactly_lib.impls.types.expression.grammar import Grammar
@@ -14,16 +15,17 @@ from exactly_lib.util.textformat.structure.document import SectionContents, Sect
 
 
 class SyntaxElementDocumentation(EntityDocumentation):
-    def __init__(self,
-                 type_category: Optional[TypeCategory],
-                 name_and_cross_ref_target: SingularNameAndCrossReferenceId,
-                 ):
-        super().__init__(name_and_cross_ref_target)
-        self._type_category = type_category
+    def __init__(self, syntax_element: SyntaxElementInfo):
+        super().__init__(syntax_element)
+        self._syntax_element = syntax_element
+
+    @property
+    def syntax_element(self) -> SyntaxElementInfo:
+        return self._syntax_element
 
     @property
     def type_category(self) -> Optional[TypeCategory]:
-        return self._type_category
+        return self._syntax_element.type_category
 
     def main_description_rest(self) -> SectionContents:
         return SectionContents(self.main_description_rest_paragraphs(),
@@ -62,7 +64,14 @@ class SyntaxElementDocumentationWithConstantValues(SyntaxElementDocumentation):
                  syntax_element_descriptions: List[SyntaxElementDescription],
                  see_also_targets: List[SeeAlsoTarget],
                  ):
-        super().__init__(type_category, name_and_cross_ref_target)
+        super().__init__(
+            SyntaxElementInfo(
+                name_and_cross_ref_target.singular_name,
+                type_category,
+                name_and_cross_ref_target.single_line_description_str,
+                name_and_cross_ref_target.cross_reference_target,
+            )
+        )
         self._main_description_rest = main_description_rest
         self._main_description_rest_sub_sections = main_description_rest_sub_sections
         self._notes = notes

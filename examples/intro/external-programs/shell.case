@@ -9,17 +9,17 @@
 
 [setup]
 
-env EXACTLY_HOME_DIR = @[EXACTLY_HOME]@
+env EXACTLY_HOME_DIR = "@[EXACTLY_HOME]@"
 
 file empty-file.txt
 
-$ cp ${EXACTLY_HOME_DIR}/shell.case .
+$ cp ${EXACTLY_HOME_DIR}/pre-existing.txt .
 
 
 [act]
 
 
-$ ls *.txt
+$ ls
 
 
 [assert]
@@ -27,6 +27,7 @@ $ ls *.txt
 
 stdout equals <<-
 empty-file.txt
+pre-existing.txt
 -
 
 #
@@ -37,4 +38,4 @@ $ [ -f empty-file.txt ]
 
 $ [ 0 = `wc -l < empty-file.txt` ]
 
-$ [ -f shell.case ]
+$ [ -f pre-existing.txt ]

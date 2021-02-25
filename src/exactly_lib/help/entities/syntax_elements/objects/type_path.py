@@ -16,7 +16,6 @@ from exactly_lib.definitions.path import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE
-from exactly_lib.definitions.type_system import TypeCategory
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help.entities.utils.se_within_parens import OptionallyWithinParens
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -34,8 +33,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 class _Documentation(SyntaxElementDocumentation):
     def __init__(self):
-        super().__init__(TypeCategory.DATA,
-                         syntax_elements.PATH_SYNTAX_ELEMENT)
+        super().__init__(syntax_elements.PATH_SYNTAX_ELEMENT)
 
         self._string_name = a.Named(syntax_elements.STRING_SYNTAX_ELEMENT.singular_name)
         self._relativity_name = instruction_arguments.RELATIVITY_ARGUMENT

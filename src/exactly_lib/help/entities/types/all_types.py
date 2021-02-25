@@ -16,6 +16,7 @@ def all_types() -> List[TypeDocumentation]:
         logic_types.LINE_MATCHER_DOCUMENTATION,
         logic_types.FILE_MATCHER_DOCUMENTATION,
         logic_types.FILES_MATCHER_DOCUMENTATION,
+        logic_types.STRING_SOURCE_DOCUMENTATION,
         logic_types.STRING_MATCHER_DOCUMENTATION,
         logic_types.STRING_TRANSFORMER_DOCUMENTATION,
         logic_types.PROGRAM_DOCUMENTATION,

@@ -26,14 +26,14 @@ class DataSymbolValueContext(Generic[SDV_TYPE], SymbolValueContext[SDV_TYPE], AB
     def reference_assertion__w_str_rendering(symbol_name: str) -> Assertion[SymbolReference]:
         return asrt_sym_usage.matches_reference_2__ref(
             symbol_name,
-            asrt_rest.is_reference_restrictions__w_str_rendering()
+            asrt_rest.is__w_str_rendering()
         )
 
     @staticmethod
     def usage_assertion__w_str_rendering(symbol_name: str) -> Assertion[SymbolUsage]:
         return asrt_sym_usage.matches_reference_2(
             symbol_name,
-            asrt_rest.is_reference_restrictions__w_str_rendering()
+            asrt_rest.is__w_str_rendering()
         )
 
     @property
