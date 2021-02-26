@@ -11,12 +11,12 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.test_resources.full_deps.symbol_context import LogicSymbolValueContext, \
+    LogicTypeSymbolContext
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import \
     StringSourceSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.references import \
     IS_STRING_SOURCE_OR_STRING_REFERENCE_RESTRICTION
-from exactly_lib_test.type_val_deps.types.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
-    MatcherTypeSymbolContext
 
 
 def is_reference_to_string_source__usage(name_of_matcher: str) -> Assertion[SymbolUsage]:
@@ -32,7 +32,7 @@ def is_reference_to_string_source(name_of_matcher: str) -> Assertion[SymbolRefer
     )
 
 
-class StringSourceSymbolValueContext(MatcherSymbolValueContext[StringSource]):
+class StringSourceSymbolValueContext(LogicSymbolValueContext[StringSource]):
     def __init__(self,
                  sdv: StringSourceSdv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
@@ -59,6 +59,10 @@ class StringSourceSymbolValueContext(MatcherSymbolValueContext[StringSource]):
     def of_arbitrary_value() -> 'StringSourceSymbolValueContext':
         return ARBITRARY_SYMBOL_VALUE_CONTEXT
 
+    @property
+    def value_type(self) -> ValueType:
+        return ValueType.STRING_SOURCE
+
     def reference_assertion(self, symbol_name: str) -> Assertion[SymbolReference]:
         return is_reference_to_string_source(symbol_name)
 
@@ -67,12 +71,13 @@ class StringSourceSymbolValueContext(MatcherSymbolValueContext[StringSource]):
         return ValueType.STRING_SOURCE
 
 
-class StringSourceSymbolContext(MatcherTypeSymbolContext[StringSource]):
+class StringSourceSymbolContext(LogicTypeSymbolContext[StringSource]):
     def __init__(self,
                  name: str,
                  value: StringSourceSymbolValueContext,
                  ):
-        super().__init__(name, value)
+        super().__init__(name)
+        self._value = value
 
     @staticmethod
     def of_sdv(name: str,
@@ -100,8 +105,17 @@ class StringSourceSymbolContext(MatcherTypeSymbolContext[StringSource]):
         return StringSourceSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
 
     @property
+    def value(self) -> LogicSymbolValueContext[StringSourceSdv]:
+        return self._value
+
+    @property
     def abstract_syntax(self) -> StringSourceSymbolReferenceAbsStx:
         return StringSourceSymbolReferenceAbsStx(self.name)
+
+    @property
+    def reference_sdv(self) -> StringSourceSdv:
+        raise ValueType('unsupported - would like to remove this method from base class')
+        # since implies too many dependencies
 
 
 class StringSourceSymbolContextOfPrimitiveConstant(StringSourceSymbolContext):
