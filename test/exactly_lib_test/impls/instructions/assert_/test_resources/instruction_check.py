@@ -54,64 +54,68 @@ class SourceArrangement:
         return SourceArrangement(arguments, ARBITRARY_FS_LOCATION_INFO)
 
 
-class Expectation:
-    def __init__(
-            self,
-            validation_post_sds: Assertion[svh.SuccessOrValidationErrorOrHardError] =
-            svh_assertions.is_success(),
+class ExecutionExpectation(tuple):
+    def __new__(cls,
+                validation_post_sds: Assertion[svh.SuccessOrValidationErrorOrHardError] =
+                svh_assertions.is_success(),
 
-            validation_pre_sds: Assertion[svh.SuccessOrValidationErrorOrHardError] =
-            svh_assertions.is_success(),
+                validation_pre_sds: Assertion[svh.SuccessOrValidationErrorOrHardError] =
+                svh_assertions.is_success(),
 
-            main_result: Assertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
-            symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
-            main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
-            main_side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
-            source: Assertion[ParseSource] = asrt.anything_goes(),
-            main_raises_hard_error: bool = False,
-            proc_exe_settings: Assertion[ProcessExecutionSettings]
-            = asrt.is_instance(ProcessExecutionSettings),
-            instruction_settings: Assertion[InstructionSettings]
-            = asrt.is_instance(InstructionSettings)
-    ):
-        self.validation_post_sds = validation_post_sds
-        self.validation_pre_sds = validation_pre_sds
-        self.main_result = main_result
-        self.main_raises_hard_error = main_raises_hard_error
-        self.main_side_effects_on_sds = main_side_effects_on_sds
-        self.main_side_effects_on_tcds = main_side_effects_on_tcds
-        self.source = source
-        self.symbol_usages = symbol_usages
-        self.proc_exe_settings = proc_exe_settings
-        self.instruction_settings = instruction_settings
+                main_result: Assertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
+                main_raises_hard_error: bool = False,
+                main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+                main_side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+                proc_exe_settings: Assertion[ProcessExecutionSettings]
+                = asrt.is_instance(ProcessExecutionSettings),
+                instruction_settings: Assertion[InstructionSettings]
+                = asrt.is_instance(InstructionSettings)
+                ):
+        return tuple.__new__(cls, (
+            validation_post_sds,
+            validation_pre_sds,
 
+            main_result,
+            main_raises_hard_error,
 
-class ExecutionExpectation:
-    def __init__(
-            self,
-            validation_post_sds: Assertion[svh.SuccessOrValidationErrorOrHardError] =
-            svh_assertions.is_success(),
+            main_side_effects_on_sds,
+            main_side_effects_on_tcds,
 
-            validation_pre_sds: Assertion[svh.SuccessOrValidationErrorOrHardError] =
-            svh_assertions.is_success(),
+            proc_exe_settings,
+            instruction_settings
+        ))
 
-            main_result: Assertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
-            main_raises_hard_error: bool = False,
-            main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
-            main_side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
-            proc_exe_settings: Assertion[ProcessExecutionSettings]
-            = asrt.is_instance(ProcessExecutionSettings),
-            instruction_settings: Assertion[InstructionSettings]
-            = asrt.is_instance(InstructionSettings)
-    ):
-        self.validation_post_sds = validation_post_sds
-        self.validation_pre_sds = validation_pre_sds
-        self.main_result = main_result
-        self.main_raises_hard_error = main_raises_hard_error
-        self.main_side_effects_on_sds = main_side_effects_on_sds
-        self.main_side_effects_on_tcds = main_side_effects_on_tcds
-        self.proc_exe_settings = proc_exe_settings
-        self.instruction_settings = instruction_settings
+    @property
+    def validation_post_sds(self) -> Assertion[svh.SuccessOrValidationErrorOrHardError]:
+        return self[0]
+
+    @property
+    def validation_pre_sds(self) -> Assertion[svh.SuccessOrValidationErrorOrHardError]:
+        return self[1]
+
+    @property
+    def main_result(self) -> Assertion[pfh.PassOrFailOrHardError]:
+        return self[2]
+
+    @property
+    def main_raises_hard_error(self) -> bool:
+        return self[3]
+
+    @property
+    def main_side_effects_on_sds(self) -> Assertion[SandboxDs]:
+        return self[4]
+
+    @property
+    def main_side_effects_on_tcds(self) -> Assertion[TestCaseDs]:
+        return self[5]
+
+    @property
+    def proc_exe_settings(self) -> Assertion[ProcessExecutionSettings]:
+        return self[6]
+
+    @property
+    def instruction_settings(self) -> Assertion[InstructionSettings]:
+        return self[7]
 
     @staticmethod
     def of_validation(expectation_: ValidationExpectationSvh) -> 'ExecutionExpectation':
@@ -150,21 +154,58 @@ class ExecutionExpectation:
             )
 
 
-class Expectation2:
-    def __init__(self,
-                 parse: ParseExpectation = ParseExpectation(),
-                 execution: ExecutionExpectation = ExecutionExpectation(),
-                 ):
-        self.parse = parse
-        self.execution = execution
-
-
 class MultiSourceExpectation:
     def __init__(self,
                  symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                  execution: ExecutionExpectation = ExecutionExpectation(),
                  ):
         self.symbol_usages = symbol_usages
+        self.execution = execution
+
+
+class Expectation(MultiSourceExpectation):
+    def __init__(
+            self,
+            validation_post_sds: Assertion[svh.SuccessOrValidationErrorOrHardError] =
+            svh_assertions.is_success(),
+
+            validation_pre_sds: Assertion[svh.SuccessOrValidationErrorOrHardError] =
+            svh_assertions.is_success(),
+
+            main_result: Assertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
+            symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+            main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+            main_side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+            source: Assertion[ParseSource] = asrt.anything_goes(),
+            main_raises_hard_error: bool = False,
+            proc_exe_settings: Assertion[ProcessExecutionSettings]
+            = asrt.is_instance(ProcessExecutionSettings),
+            instruction_settings: Assertion[InstructionSettings]
+            = asrt.is_instance(InstructionSettings)
+    ):
+        super().__init__(
+            symbol_usages,
+            ExecutionExpectation(
+                validation_post_sds,
+                validation_pre_sds,
+                main_result,
+                main_raises_hard_error,
+                main_side_effects_on_sds,
+                main_side_effects_on_tcds,
+                proc_exe_settings,
+                instruction_settings,
+            )
+        )
+        self.source = source
+        self.symbol_usages = symbol_usages
+
+
+class Expectation2:
+    def __init__(self,
+                 parse: ParseExpectation = ParseExpectation(),
+                 execution: ExecutionExpectation = ExecutionExpectation(),
+                 ):
+        self.parse = parse
         self.execution = execution
 
 
@@ -378,16 +419,7 @@ class Executor:
         ex = self.expectation
         exe_checker = ExecutionChecker(self.put,
                                        self.arrangement.as_arrangement_2(),
-                                       ExecutionExpectation(
-                                           ex.validation_post_sds,
-                                           ex.validation_pre_sds,
-                                           ex.main_result,
-                                           ex.main_raises_hard_error,
-                                           ex.main_side_effects_on_sds,
-                                           ex.main_side_effects_on_tcds,
-                                           ex.proc_exe_settings,
-                                           ex.instruction_settings,
-                                       ))
+                                       ex.execution)
         exe_checker.check(instruction)
         return
 
@@ -397,11 +429,15 @@ class AssertInstructionChecker(InstructionChecker[ArrangementPostAct2, Execution
               put: unittest.TestCase,
               instruction: Instruction,
               arrangement: ArrangementPostAct,
-              expectation: ExecutionExpectation):
+              expectation: MultiSourceExpectation):
         put.assertIsInstance(instruction, AssertPhaseInstruction, 'instruction type')
         assert isinstance(instruction, AssertPhaseInstruction)  # Type info for IDE
+        expectation.symbol_usages.apply_with_message(put,
+                                                     instruction.symbol_usages(),
+                                                     'symbol-usages after parse')
 
-        ExecutionChecker(put, arrangement.as_arrangement_2(), expectation).check(instruction)
+        execution_checker = ExecutionChecker(put, arrangement.as_arrangement_2(), expectation.execution)
+        execution_checker.check(instruction)
 
 
 class ExecutionChecker:

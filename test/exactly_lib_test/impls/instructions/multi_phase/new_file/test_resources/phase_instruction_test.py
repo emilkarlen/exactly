@@ -17,6 +17,7 @@ from exactly_lib_test.impls.types.test_resources import relativity_options as re
 from exactly_lib_test.impls.types.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any, conf_rel_hds, \
     conf_rel_non_hds
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly
@@ -172,14 +173,20 @@ class TestContentsFromExistingFile_Successfully(TestCaseWithConfiguration):
 
         expected_non_hds_contents = dst_rel_opt_conf.assert_root_dir_contains_exactly(fs.DirContents([expected_file]))
 
-        # ACT & ASSERT #
-
+        instruction_checker = self.conf.instruction_checker
+        parser = self.conf.parser()
         for source_case in equivalent_source_variants__with_source_check__consume_last_line__abs_stx(
                 instruction_syntax):
             with self.subTest(source_case.name):
-                self.conf.run_test(
+                source = source_case.value.source
+                # ACT #
+                instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+                # ASSERT #
+                source_case.value.expectation.apply_with_message(self, source, 'source-after-parse')
+                # ACT & ASSERT #
+                instruction_checker.check(
                     self,
-                    source_case.value.source,
+                    instruction,
                     self.conf.arrangement(
                         pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                         tcds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
@@ -187,7 +194,6 @@ class TestContentsFromExistingFile_Successfully(TestCaseWithConfiguration):
                         symbols=symbols,
                     ),
                     self.conf.expect_success(
-                        source=source_case.value.expectation,
                         symbol_usages=asrt.matches_sequence([
                             to_upper_transformer.reference_assertion,
                         ]),
@@ -228,18 +234,25 @@ class TestContentsFromOutputOfProgram_Successfully(TestCaseWithConfiguration):
             program_syntax,
         )
 
+        instruction_checker = self.conf.instruction_checker
+        parser = self.conf.parser()
         for source_case in equivalent_source_variants__with_source_check__consume_last_line__abs_stx(
                 instruction_syntax):
             with self.subTest(source_case.name):
-                self.conf.run_test(
+                source = source_case.value.source
+                # ACT #
+                instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+                # ASSERT #
+                source_case.value.expectation.apply_with_message(self, source, 'source-after-parse')
+                # ACT & ASSERT #
+                instruction_checker.check(
                     self,
-                    source_case.value.source,
+                    instruction,
                     self.conf.arrangement(
                         pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                         symbols=symbols
                     ),
                     self.conf.expect_success(
-                        source=source_case.value.expectation,
                         symbol_usages=asrt.matches_sequence([
                             to_upper_transformer.reference_assertion,
                         ]),
@@ -291,12 +304,20 @@ class TestContentsFromOutputOfProgram_SuccessfullyWithIgnoredNonZeroExitCode(Tes
             program_string_source_syntax,
         )
 
+        instruction_checker = self.conf.instruction_checker
+        parser = self.conf.parser()
         for source_case in equivalent_source_variants__with_source_check__consume_last_line__abs_stx(
                 instruction_syntax):
             with self.subTest(source_case.name):
-                self.conf.run_test(
+                source = source_case.value.source
+                # ACT #
+                instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+                # ASSERT #
+                source_case.value.expectation.apply_with_message(self, source, 'source-after-parse')
+                # ACT & ASSERT #
+                instruction_checker.check(
                     self,
-                    source_case.value.source,
+                    instruction,
                     self.conf.arrangement(
                         pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                         symbols=symbols,
@@ -305,7 +326,6 @@ class TestContentsFromOutputOfProgram_SuccessfullyWithIgnoredNonZeroExitCode(Tes
                         )
                     ),
                     self.conf.expect_success(
-                        source=source_case.value.expectation,
                         symbol_usages=asrt.matches_sequence([
                             to_upper_transformer.reference_assertion,
                         ]),

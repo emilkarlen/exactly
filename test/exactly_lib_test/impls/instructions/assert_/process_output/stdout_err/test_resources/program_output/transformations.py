@@ -37,7 +37,7 @@ class TestWithoutTransformation(configuration.TestCaseBase):
             result_when_positive,
             program_that_outputs_nothing,
             matcher_arguments.equals_matcher(ab.quoted_string(output)),
-            Expectation())
+            lambda main_result: Expectation(main_result=main_result))
 
 
 class TestWithTransformationFromProgram(configuration.TestCaseBase):
@@ -54,7 +54,8 @@ class TestWithTransformationFromProgram(configuration.TestCaseBase):
             result_when_positive,
             program_that_outputs_something,
             matcher_arguments.equals_matcher(ab.quoted_string('second')),
-            Expectation(
+            lambda main_result: Expectation(
+                main_result=main_result,
                 symbol_usages=asrt.matches_sequence([
                     is_reference_to_string_transformer__usage(transformers_setup.DELETE_INITIAL_WORD_TRANSFORMER.name),
                 ])
@@ -80,7 +81,8 @@ class TestWithTransformationFromProgramAndInstruction(configuration.TestCaseBase
             result_when_positive,
             program_that_outputs_something,
             matcher_arguments.equals_matcher(ab.quoted_string('second second')),
-            Expectation(
+            lambda main_result: Expectation(
+                main_result=main_result,
                 symbol_usages=asrt.matches_sequence([
                     is_reference_to_string_transformer__usage(transformer_of_program.name),
                     is_reference_to_string_transformer__usage(transformer_of_instruction.name),

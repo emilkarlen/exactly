@@ -1,6 +1,7 @@
-from typing import List
+from typing import List, Callable
 
 from exactly_lib.impls.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionParser
+from exactly_lib.test_case.result.pfh import PassOrFailOrHardError
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.impls.instructions.assert_.process_output.stdout_err.test_resources.program_output import \
     arguments_building as args
@@ -15,6 +16,7 @@ from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
 class ProgramOutputInstructionConfiguration:
@@ -49,19 +51,16 @@ class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
             expectation_of_positive: ExpectationTypeConfigForPfh,
             program: ArgumentElements,
             contents_matcher: List[WithToString],
-            expectation_without_main_result_assertion: Expectation,
+            mk_expectation: Callable[[Assertion[PassOrFailOrHardError]], Expectation],
             arrangement: ArrangementPostAct = ArrangementPostAct(),
             transformation: WithToString = None):
-        expectation = expectation_without_main_result_assertion
 
         for case in expectation_of_positive.cases():
             matcher_for_case = matcher_arguments.matcher_for_expectation_type(case.expectation_type, contents_matcher)
             arguments = args.from_program(program, matcher_for_case, transformation)
 
-            expectation.main_result = case.main_result_assertion
-
             with self.subTest(case.expectation_type):
                 self._check(
                     arguments,
                     arrangement,
-                    expectation)
+                    mk_expectation(case.main_result_assertion))

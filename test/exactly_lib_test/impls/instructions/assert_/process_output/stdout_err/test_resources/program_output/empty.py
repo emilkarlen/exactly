@@ -35,7 +35,7 @@ class TestOutputIsEmpty(configuration.TestCaseBase):
             result_when_positive,
             program_that_outputs_nothing,
             matcher_arguments.emptiness_matcher(),
-            Expectation())
+            lambda main_result: Expectation(main_result=main_result))
 
 
 class TestOutputIsEmptyAfterTransformation(configuration.TestCaseBase):
@@ -51,7 +51,8 @@ class TestOutputIsEmptyAfterTransformation(configuration.TestCaseBase):
             result_when_positive,
             program_that_outputs_something,
             matcher_arguments.emptiness_matcher(),
-            Expectation(
+            lambda main_result: Expectation(
+                main_result=main_result,
                 symbol_usages=asrt.matches_sequence([
                     is_reference_to_string_transformer__usage(transformers_setup.DELETE_EVERYTHING_TRANSFORMER.name),
                 ])
@@ -73,4 +74,4 @@ class TestOutputIsNotEmpty(configuration.TestCaseBase):
             result_when_positive,
             program_that_outputs_something,
             matcher_arguments.emptiness_matcher(),
-            Expectation())
+            lambda main_result: Expectation(main_result=main_result))
