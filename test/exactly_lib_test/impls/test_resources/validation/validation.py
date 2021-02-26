@@ -6,6 +6,27 @@ from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
+
+class ValidationActual:
+    def __init__(self,
+                 pre_sds: Optional[str] = None,
+                 post_sds: Optional[str] = None):
+        self.pre_sds = pre_sds
+        self.post_sds = post_sds
+
+    @staticmethod
+    def passes():
+        return ValidationActual(None, None)
+
+    @staticmethod
+    def fails_pre_sds(err_msg: str = 'validation error/pre sds') -> 'ValidationActual':
+        return ValidationActual(err_msg, None)
+
+    @staticmethod
+    def fails_post_sds(err_msg: str = 'validation error/post sds') -> 'ValidationActual':
+        return ValidationActual(None, err_msg)
+
+
 ValidationResultAssertion = Assertion[Optional[TextRenderer]]
 
 
@@ -40,29 +61,16 @@ class Expectation:
     def pre_eds(result: bool) -> 'Expectation':
         return Expectation(result, True)
 
+    @staticmethod
+    def corresponding_to(actual: ValidationActual) -> 'Expectation':
+        return Expectation(
+            passes_pre_sds=actual.pre_sds is None,
+            passes_post_sds=actual.post_sds is None,
+        )
+
 
 PRE_SDS_FAILURE_EXPECTATION = Expectation(False, True)
 POST_SDS_FAILURE_EXPECTATION = Expectation(True, False)
-
-
-class ValidationActual:
-    def __init__(self,
-                 pre_sds: Optional[str] = None,
-                 post_sds: Optional[str] = None):
-        self.pre_sds = pre_sds
-        self.post_sds = post_sds
-
-    @staticmethod
-    def passes():
-        return ValidationActual(None, None)
-
-    @staticmethod
-    def fails_pre_sds(err_msg: str = 'validation error/pre sds') -> 'ValidationActual':
-        return ValidationActual(err_msg, None)
-
-    @staticmethod
-    def fails_post_sds(err_msg: str = 'validation error/post sds') -> 'ValidationActual':
-        return ValidationActual(None, err_msg)
 
 
 class ValidationAssertions:

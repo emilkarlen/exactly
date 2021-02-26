@@ -1,27 +1,32 @@
 from typing import Sequence
 
-from exactly_lib.impls.types.string_source import sdvs
-from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_val_deps.types.path import path_ddvs
-from exactly_lib.type_val_deps.types.path.path_sdv_impls import constant
-from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.test_resources.validation import validation
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
-from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes
-from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
-from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
+from exactly_lib_test.impls.test_resources.validation import validation, ddv_validators
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions, ValidationActual
+from exactly_lib_test.type_val_deps.types.string_source.test_resources import sdvs, ddvs
+from exactly_lib_test.type_val_deps.types.string_source.test_resources.symbol_context import StringSourceSymbolContext
 
 
 class ValidationCase:
     def __init__(self,
-                 syntax: StringSourceAbsStx,
-                 sdv: StringSourceSdv,
-                 expectation: validation.Expectation,
+                 symbol_name: str,
+                 actual: ValidationActual,
                  ):
-        self.syntax = syntax
-        self.sdv = sdv
-        self._expectation = expectation
+        self._symbol_context = StringSourceSymbolContext.of_sdv(
+            symbol_name,
+            sdvs.StringSourceSdvConstantTestImpl(
+                ddvs.StringSourceDdvWoResolvingTestImpl(
+                    ddv_validators.constant(actual)
+                )
+            )
+        )
+        self.syntax = self._symbol_context.abstract_syntax
+        self._expectation = validation.Expectation.corresponding_to(actual)
+        self._assertions = ValidationAssertions.corresponding_to(actual)
+
+    @property
+    def symbol_context(self) -> StringSourceSymbolContext:
+        return self._symbol_context
 
     @property
     def expectation(self) -> validation.Expectation:
@@ -29,41 +34,15 @@ class ValidationCase:
 
     @property
     def assertion(self) -> ValidationAssertions:
-        return validation.ValidationAssertions.of_expectation(self._expectation)
+        return self._assertions
 
 
-def failing_validation_cases() -> Sequence[NameAndValue[ValidationCase]]:
-    name_of_non_existing_file = 'non-existing-string-source-file'
-
-    def validation_case(relativity: RelOptionType,
-                        expectation: validation.Expectation) -> ValidationCase:
-        return ValidationCase(
-            abstract_syntaxes.StringSourceOfFileAbsStx(
-                path_abs_stx.RelOptPathAbsStx(relativity,
-                                              name_of_non_existing_file)
-            ),
-            sdvs.PathStringSourceSdv(
-                constant.PathConstantSdv(
-                    path_ddvs.of_rel_option(
-                        relativity,
-                        path_ddvs.constant_path_part(name_of_non_existing_file),
-                    ),
-                )
-            ),
-            expectation,
-        )
-
+def failing_validation_cases(symbol_name: str = 'STRING_SOURCE_SYMBOL') -> Sequence[NameAndValue[ValidationCase]]:
     return [
         NameAndValue(
-            'failure pre sds',
-            validation_case(RelOptionType.REL_HDS_CASE,
-                            validation.PRE_SDS_FAILURE_EXPECTATION,
-                            )
-        ),
-        NameAndValue(
-            'failure post sds',
-            validation_case(RelOptionType.REL_ACT,
-                            validation.POST_SDS_FAILURE_EXPECTATION,
-                            )
-        ),
+            case.name,
+            ValidationCase(symbol_name,
+                           case.actual)
+        )
+        for case in validation.failing_validation_cases()
     ]

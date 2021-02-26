@@ -25,10 +25,7 @@ class ValidationCase:
                 validator=ddv_validators.constant(actual)
             )
         )
-        self._expectation__bool = Expectation(
-            passes_pre_sds=actual.pre_sds is None,
-            passes_post_sds=actual.post_sds is None,
-        )
+        self._expectation__bool = Expectation.corresponding_to(actual)
 
     @property
     def transformer_arguments_string(self) -> str:
