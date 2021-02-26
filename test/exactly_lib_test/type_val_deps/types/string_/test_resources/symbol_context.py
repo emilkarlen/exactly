@@ -15,8 +15,7 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.w_str_rend import value_restriction_assertions as asrt_val_rest, \
-    data_restrictions_assertions as asrt_rest
+from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_rest
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_context import DataSymbolValueContext, \
     DataTypeSymbolContext
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
@@ -33,7 +32,7 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
     def __init__(self,
                  sdv: StringSdv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                 default_restrictions: Assertion[ReferenceRestrictions] = asrt_val_rest.is__string(),
+                 default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is__w_str_rendering(),
                  ):
         super().__init__(sdv, definition_source)
         self._default_restrictions = default_restrictions
@@ -41,7 +40,7 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
     @staticmethod
     def of_sdv(sdv: StringSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-               default_restrictions: Assertion[ReferenceRestrictions] = asrt_val_rest.is__string(),
+               default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is__w_str_rendering(),
                ) -> 'StringSymbolValueContext':
         """
         Use this to create from an SDV, since constructor will
@@ -52,7 +51,7 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
     @staticmethod
     def of_constant(primitive: str,
                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                    default_restrictions: Assertion[ReferenceRestrictions] = asrt_val_rest.is__string(),
+                    default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is__w_str_rendering(),
                     ) -> 'StringSymbolValueContext':
         return StringSymbolValueContext(string_sdvs.str_constant(primitive), definition_source, default_restrictions)
 
@@ -61,7 +60,7 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
             referenced_symbol_name: str,
             restrictions: ReferenceRestrictions = reference_restrictions.is_any_type_w_str_rendering(),
             definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-            default_restrictions: Assertion[ReferenceRestrictions] = asrt_val_rest.is__string(),
+            default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is__w_str_rendering(),
     ) -> 'StringSymbolValueContext':
         return StringSymbolValueContext.of_sdv(string_sdv_of_single_symbol_reference(referenced_symbol_name,
                                                                                      restrictions),
@@ -130,8 +129,7 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
     def of_sdv(name: str,
                sdv: StringSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-               default_restrictions: Assertion[
-                   ReferenceRestrictions] = asrt_rest.is__w_str_rendering(),
+               default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is__w_str_rendering(),
                ) -> 'StringSymbolContext':
         return StringSymbolContext(
             name,
@@ -142,8 +140,7 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
     def of_constant(name: str,
                     primitive: str,
                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                    default_restrictions: Assertion[
-                        ReferenceRestrictions] = asrt_val_rest.is__string(),
+                    default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is__w_str_rendering(),
                     ) -> 'StringSymbolContext':
         return StringSymbolContext(
             name,
@@ -156,7 +153,7 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
             referenced_symbol_name: str,
             restrictions: ReferenceRestrictions = reference_restrictions.is_any_type_w_str_rendering(),
             definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-            default_restrictions: Assertion[ReferenceRestrictions] = asrt_val_rest.is__string(),
+            default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is__w_str_rendering(),
     ) -> 'StringSymbolContext':
         return StringSymbolContext(name,
                                    StringSymbolValueContext.of_reference(referenced_symbol_name,
@@ -223,8 +220,7 @@ class StringConstantSymbolContext(StringSymbolContext):
                  name: str,
                  constant: str = 'string value',
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                 default_restrictions:
-                 Assertion[ReferenceRestrictions] = asrt_val_rest.is__string(),
+                 default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is__w_str_rendering(),
                  ):
         super().__init__(name,
                          StringSymbolValueContext.of_constant(constant, definition_source, default_restrictions))
@@ -240,8 +236,7 @@ class StringIntConstantSymbolContext(StringConstantSymbolContext):
                  name: str,
                  constant: int,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                 default_restrictions:
-                 Assertion[ReferenceRestrictions] = asrt_val_rest.is__string(),
+                 default_restrictions: Assertion[ReferenceRestrictions] = asrt_rest.is__w_str_rendering(),
                  ):
         super().__init__(name, str(constant), definition_source, default_restrictions)
         self._int_constant = constant
