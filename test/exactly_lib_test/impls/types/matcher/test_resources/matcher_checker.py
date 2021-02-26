@@ -36,7 +36,7 @@ class MatcherPropertiesConfiguration(
     def new_sdv_checker(self) -> FullDepsSdvPropertiesChecker[MatcherWTrace[MODEL]]:
         return self._sdv_checker
 
-    def new_execution_checker(self) -> WithNodeDescriptionExecutionPropertiesChecker[MatchingResult]:
+    def new_execution_checker(self) -> WithNodeDescriptionExecutionPropertiesChecker[MatcherWTrace, MatchingResult]:
         return WithNodeDescriptionExecutionPropertiesChecker(MatcherDdv,
                                                              MatcherWTrace,
                                                              asrt_matching_result.matches())

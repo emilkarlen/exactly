@@ -25,7 +25,7 @@ class StringSourcePropertiesConfiguration(
     def new_sdv_checker(self) -> CommonSdvPropertiesChecker[StringSource]:
         return _SdvPropertiesChecker()
 
-    def new_execution_checker(self) -> WithNodeDescriptionExecutionPropertiesChecker[None]:
+    def new_execution_checker(self) -> WithNodeDescriptionExecutionPropertiesChecker[StringSource, None]:
         return WithNodeDescriptionExecutionPropertiesChecker(
             StringSourceDdv,
             StringSource,

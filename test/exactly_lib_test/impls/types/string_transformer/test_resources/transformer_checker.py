@@ -30,7 +30,7 @@ class StringTransformerPropertiesConfiguration(
     def new_sdv_checker(self) -> FullDepsSdvPropertiesChecker[StringTransformer]:
         return FullDepsSdvPropertiesChecker(StringTransformerSdv)
 
-    def new_execution_checker(self) -> WithNodeDescriptionExecutionPropertiesChecker[StringSource]:
+    def new_execution_checker(self) -> WithNodeDescriptionExecutionPropertiesChecker[StringTransformer, StringSource]:
         generic_model_check = (
             asrt.anything_goes()
             if self._avoid_model_evaluation

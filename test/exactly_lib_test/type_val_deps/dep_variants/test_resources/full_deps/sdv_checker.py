@@ -1,5 +1,5 @@
 import unittest
-from typing import Generic, Type
+from typing import Generic, Type, TypeVar
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsWithNodeDescriptionDdv, FullDepsDdv
@@ -36,12 +36,17 @@ class FullDepsSdvPropertiesChecker(Generic[PRIMITIVE],
         self._is_valid_sdv.apply(put, actual, message_builder)
 
 
-class WithNodeDescriptionExecutionPropertiesChecker(Generic[OUTPUT],
-                                                    CommonExecutionPropertiesChecker[
-                                                        WithNodeDescription, OUTPUT]):
+PRIM_W_NODE_DESC = TypeVar('PRIM_W_NODE_DESC', bound=WithNodeDescription)
+
+
+class WithNodeDescriptionExecutionPropertiesChecker(
+    Generic[PRIM_W_NODE_DESC, OUTPUT],
+    CommonExecutionPropertiesChecker[PRIM_W_NODE_DESC, OUTPUT]
+):
+
     def __init__(self,
                  expected_ddv_object_type: Type[FullDepsWithNodeDescriptionDdv],
-                 expected_primitive_object_type: Type[WithNodeDescription],
+                 expected_primitive_object_type: Type[PRIM_W_NODE_DESC],
                  application_output: Assertion[OUTPUT],
                  ):
         self._expected_ddv_object_type = expected_ddv_object_type
@@ -51,7 +56,7 @@ class WithNodeDescriptionExecutionPropertiesChecker(Generic[OUTPUT],
 
     def check_ddv(self,
                   put: unittest.TestCase,
-                  actual: FullDepsDdv[WithNodeDescription],
+                  actual: FullDepsDdv[PRIM_W_NODE_DESC],
                   message_builder: MessageBuilder,
                   ):
         asrt.is_instance(self._expected_ddv_object_type).apply(
@@ -74,7 +79,7 @@ class WithNodeDescriptionExecutionPropertiesChecker(Generic[OUTPUT],
 
     def check_primitive(self,
                         put: unittest.TestCase,
-                        actual: WithNodeDescription,
+                        actual: PRIM_W_NODE_DESC,
                         message_builder: MessageBuilder,
                         ):
         asrt.is_instance(self._expected_primitive_object_type).apply(
@@ -93,7 +98,7 @@ class WithNodeDescriptionExecutionPropertiesChecker(Generic[OUTPUT],
 
     def _check_structure_of_primitive(self,
                                       put: unittest.TestCase,
-                                      actual: WithNodeDescription,
+                                      actual: PRIM_W_NODE_DESC,
                                       message_builder: MessageBuilder,
                                       ):
         structure_tree_of_primitive = actual.structure().render()
@@ -113,12 +118,16 @@ class WithNodeDescriptionExecutionPropertiesChecker(Generic[OUTPUT],
         )
 
 
-class WithDetailsDescriptionExecutionPropertiesChecker(Generic[OUTPUT],
-                                                       CommonExecutionPropertiesChecker[
-                                                           WithDetailsDescription, OUTPUT]):
+PRIM_W_DETAIL_DESC = TypeVar('PRIM_W_DETAIL_DESC', bound=WithDetailsDescription)
+
+
+class WithDetailsDescriptionExecutionPropertiesChecker(
+    Generic[PRIM_W_DETAIL_DESC, OUTPUT],
+    CommonExecutionPropertiesChecker[PRIM_W_DETAIL_DESC, OUTPUT]
+):
     def __init__(self,
                  expected_ddv_object_type: Type[WithDetailsDescription],
-                 expected_primitive_object_type: Type[WithDetailsDescription],
+                 expected_primitive_object_type: Type[PRIM_W_DETAIL_DESC],
                  application_output: Assertion[OUTPUT],
                  ):
         self._expected_ddv_object_type = expected_ddv_object_type
@@ -127,7 +136,7 @@ class WithDetailsDescriptionExecutionPropertiesChecker(Generic[OUTPUT],
 
     def check_ddv(self,
                   put: unittest.TestCase,
-                  actual: FullDepsDdv[WithDetailsDescription],
+                  actual: FullDepsDdv[PRIM_W_DETAIL_DESC],
                   message_builder: MessageBuilder,
                   ):
         asrt.is_instance(self._expected_ddv_object_type).apply(
@@ -144,7 +153,7 @@ class WithDetailsDescriptionExecutionPropertiesChecker(Generic[OUTPUT],
 
     def check_primitive(self,
                         put: unittest.TestCase,
-                        actual: WithDetailsDescription,
+                        actual: PRIM_W_DETAIL_DESC,
                         message_builder: MessageBuilder,
                         ):
         asrt.is_instance(self._expected_primitive_object_type).apply(
@@ -164,7 +173,7 @@ class WithDetailsDescriptionExecutionPropertiesChecker(Generic[OUTPUT],
     @staticmethod
     def _check_sanity_of_details_renderer(put: unittest.TestCase,
                                           message_builder: MessageBuilder,
-                                          actual: WithDetailsDescription,
+                                          actual: PRIM_W_DETAIL_DESC,
                                           ):
         expectation = asrt_trace_rendering.matches_details_renderer()
         expectation.apply(put, actual.describer, message_builder.for_sub_component('details description'))

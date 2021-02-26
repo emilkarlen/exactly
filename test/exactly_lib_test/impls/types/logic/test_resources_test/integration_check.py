@@ -86,7 +86,7 @@ class _CustomMatcherPropertiesConfiguration(MatcherPropertiesConfiguration):
         super().__init__()
         self._application_output = application_output
 
-    def new_execution_checker(self) -> WithNodeDescriptionExecutionPropertiesChecker[MatchingResult]:
+    def new_execution_checker(self) -> WithNodeDescriptionExecutionPropertiesChecker[MatcherWTrace, MatchingResult]:
         return WithNodeDescriptionExecutionPropertiesChecker(
             MatcherDdv,
             MatcherWTrace,

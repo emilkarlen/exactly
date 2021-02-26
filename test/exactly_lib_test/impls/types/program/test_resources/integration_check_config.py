@@ -27,5 +27,5 @@ class ProgramPropertiesConfiguration(Generic[INPUT, OUTPUT],
     def new_sdv_checker(self) -> FullDepsSdvPropertiesChecker[Program]:
         return FullDepsSdvPropertiesChecker(ProgramSdv)
 
-    def new_execution_checker(self) -> WithNodeDescriptionExecutionPropertiesChecker[OUTPUT]:
+    def new_execution_checker(self) -> WithNodeDescriptionExecutionPropertiesChecker[Program, OUTPUT]:
         return WithNodeDescriptionExecutionPropertiesChecker(ProgramDdv, Program, asrt.anything_goes())
