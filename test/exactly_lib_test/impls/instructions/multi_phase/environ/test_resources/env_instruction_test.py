@@ -221,10 +221,11 @@ class TestSetValidationOfValue(TestCaseBase):
 
         def expectation_corresponding_to(case: str_src_validation_cases.ValidationCase):
             return (
-                self.conf.expect_failing_validation_pre_sds(case.assertion.pre_sds)
+                self.conf.expect_failing_validation_pre_sds(case.assertion.pre_sds,
+                                                            symbol_usages=case.symbol_context.usages_assertion)
                 if not case.expectation.passes_pre_sds
                 else
-                self.conf.expect_hard_error_of_main__any()
+                self.conf.expect_hard_error_of_main__any(symbol_usages=case.symbol_context.usages_assertion)
             )
 
         for phase_spec in PHASE_SPECS:
@@ -237,7 +238,9 @@ class TestSetValidationOfValue(TestCaseBase):
                         SetVariableArgumentsAbsStx(name,
                                                    validation_case.value.syntax,
                                                    phase_spec=phase_spec),
-                        self.conf.arrangement(),
+                        self.conf.arrangement(
+                            symbols=validation_case.value.symbol_context.symbol_table
+                        ),
                         expectation_corresponding_to(validation_case.value),
                     )
 

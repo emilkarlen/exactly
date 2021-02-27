@@ -1,10 +1,12 @@
 import unittest
-from typing import Optional, Dict
+from abc import ABC
+from typing import Optional, Dict, Sequence
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.impls.os_services.os_services_access import new_for_current_os
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.environ import DefaultEnvironGetter
 from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
@@ -28,7 +30,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 
-class AssertConfigurationBase(ConfigurationBase):
+class AssertConfigurationBase(ConfigurationBase, ABC):
     def run_test_with_parser(self,
                              put: unittest.TestCase,
                              parser: InstructionParser,
@@ -66,33 +68,47 @@ class AssertConfigurationBase(ConfigurationBase):
         )
 
     def expect_failure_of_main(self,
-                               assertion_on_error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()
+                               assertion_on_error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text(),
+                               symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                                ):
         return Expectation(
-            main_result=pfh_assertions.is_fail(assertion_on_error_message)
+            main_result=pfh_assertions.is_fail(assertion_on_error_message),
+            symbol_usages=symbol_usages,
         )
 
     def expect_hard_error_of_main(self,
-                                  assertion_on_error_message: Assertion[str] = asrt.anything_goes()):
-        return Expectation(main_result=pfh_assertions.is_hard_error(
-            asrt_text_doc.is_string_for_test(assertion_on_error_message)
-        ))
+                                  assertion_on_error_message: Assertion[str] = asrt.anything_goes(),
+                                  symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                                  ):
+        return Expectation(
+            main_result=pfh_assertions.is_hard_error(asrt_text_doc.is_string_for_test(assertion_on_error_message)),
+            symbol_usages=symbol_usages,
+        )
 
-    def expect_hard_error_of_main__any(self):
-        return Expectation(main_result=pfh_assertions.is_hard_error(
-            asrt_text_doc.is_any_text()
-        ))
+    def expect_hard_error_of_main__any(self,
+                                       symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                                       ):
+        return Expectation(
+            main_result=pfh_assertions.is_hard_error(asrt_text_doc.is_any_text()),
+            symbol_usages=symbol_usages,
+        )
 
     def expect_failing_validation_pre_sds(self,
-                                          error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()):
+                                          error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text(),
+                                          symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                                          ):
         return Expectation(
-            validation_pre_sds=svh_assertions.is_validation_error(error_message)
+            validation_pre_sds=svh_assertions.is_validation_error(error_message),
+            symbol_usages=symbol_usages,
         )
 
     def expect_failing_validation_post_setup(self,
-                                             error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()):
+                                             error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text(),
+                                             symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                                             ):
         return Expectation(
-            validation_post_sds=svh_assertions.is_validation_error(error_message)
+            validation_post_sds=svh_assertions.is_validation_error(error_message),
+            symbol_usages=symbol_usages,
         )
 
     def arrangement(self,

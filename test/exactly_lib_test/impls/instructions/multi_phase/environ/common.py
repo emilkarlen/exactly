@@ -116,8 +116,11 @@ class TestSetValidationOfValue(unittest.TestCase):
                     SetVariableArgumentsAbsStx(name,
                                                validation_case.value.syntax,
                                                phase_spec=phase_spec),
-                    Arrangement.setup_phase_aware(),
+                    Arrangement.setup_phase_aware(
+                        symbols=validation_case.value.symbol_context.symbol_table
+                    ),
                     MultiSourceExpectation.setup_phase_aware(
+                        symbol_usages=validation_case.value.symbol_context.usages_assertion,
                         validation=validation_case.value.assertion,
                     ),
                     phase_spec=phase_spec,

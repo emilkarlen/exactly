@@ -1,10 +1,11 @@
 import unittest
-from typing import Dict, Optional
+from typing import Dict, Optional, Sequence
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.impls.os_services.os_services_access import new_for_current_os
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.environ import DefaultEnvironGetter
 from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
@@ -62,22 +63,31 @@ class CleanupConfigurationBase(ConfigurationBase):
         )
 
     def expect_failure_of_main(self,
-                               assertion_on_error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()
+                               assertion_on_error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text(),
+                               symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+
                                ):
         return Expectation(
-            main_result=asrt_sh.is_hard_error(assertion_on_error_message)
+            main_result=asrt_sh.is_hard_error(assertion_on_error_message),
+            symbol_usages=symbol_usages,
         )
 
     def expect_failing_validation_pre_sds(self,
-                                          error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()):
+                                          error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text(),
+                                          symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                                          ):
         return Expectation(
-            validate_pre_sds_result=svh_assertions.is_validation_error(error_message)
+            validate_pre_sds_result=svh_assertions.is_validation_error(error_message),
+            symbol_usages=symbol_usages,
         )
 
     def expect_failing_validation_post_setup(self,
-                                             error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()):
+                                             error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text(),
+                                             symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                                             ):
         return self.expect_failure_of_main(
-            assertion_on_error_message=error_message
+            assertion_on_error_message=error_message,
+            symbol_usages=symbol_usages,
         )
 
     def arrangement(self,

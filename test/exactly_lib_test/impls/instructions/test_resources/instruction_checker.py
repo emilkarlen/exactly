@@ -55,4 +55,5 @@ class InstructionChecker(Generic[ARRANGEMENT, EXPECTATION], ABC):
               instruction: Instruction,
               arrangement: ARRANGEMENT,
               expectation: EXPECTATION):
+        """Checks all properties of the instruction"""
         pass

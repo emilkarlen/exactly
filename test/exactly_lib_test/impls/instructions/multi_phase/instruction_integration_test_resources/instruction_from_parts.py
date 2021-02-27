@@ -1,4 +1,5 @@
 import unittest
+from abc import ABC
 from typing import Callable, Optional
 
 from exactly_lib.impls.instructions.multi_phase.utils import instruction_parts
@@ -28,7 +29,7 @@ from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_a
     matches_symbol_reference_with_restriction_on_direct_target
 
 
-class Configuration(ConfigurationBase):
+class Configuration(ConfigurationBase, ABC):
     def new_instruction_from_parts(self, parts: InstructionParts):
         raise NotImplementedError()
 

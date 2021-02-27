@@ -103,7 +103,8 @@ class ConfigurationBase(ABC):
         raise NotImplementedError()
 
     def expect_failure_of_main(self,
-                               assertion_on_error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()
+                               assertion_on_error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text(),
+                               symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                                ):
         """
         Expectation that the result should be HARD_ERROR for non-assertions and FAIL for assertions.
@@ -111,7 +112,8 @@ class ConfigurationBase(ABC):
         raise NotImplementedError()
 
     def expect_hard_error_of_main(self,
-                                  assertion_on_error_message: Assertion[str] = asrt.anything_goes()
+                                  assertion_on_error_message: Assertion[str] = asrt.anything_goes(),
+                                  symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                                   ):
         """
         Expectation that the result should be HARD_ERROR,
@@ -121,19 +123,25 @@ class ConfigurationBase(ABC):
             asrt_text_doc.is_string_for_test(assertion_on_error_message)
         )
 
-    def expect_hard_error_of_main__any(self):
+    def expect_hard_error_of_main__any(self,
+                                       symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                                       ):
         """
         Expectation that the result should be HARD_ERROR,
         both for assert- and non-assert phase instructions.
         """
-        return self.expect_failure_of_main()
+        return self.expect_failure_of_main(symbol_usages=symbol_usages)
 
     def expect_failing_validation_pre_sds(self,
-                                          error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text()):
+                                          error_message: Assertion[TextRenderer] = asrt_text_doc.is_any_text(),
+                                          symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                                          ):
         raise NotImplementedError()
 
     def expect_failing_validation_post_setup(self,
-                                             error_message: Assertion[TextRenderer] = asrt.anything_goes()):
+                                             error_message: Assertion[TextRenderer] = asrt.anything_goes(),
+                                             symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                                             ):
         raise NotImplementedError()
 
 

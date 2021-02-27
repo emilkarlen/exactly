@@ -1,5 +1,6 @@
 import os
 import unittest
+from typing import Sequence
 
 from exactly_lib.execution import phase_step
 from exactly_lib.impls.os_services.os_services_access import new_for_current_os
@@ -7,6 +8,9 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
+from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.tcfs.sds import SandboxDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
 from exactly_lib.test_case.phases.environ import DefaultEnvironGetter
@@ -66,11 +70,12 @@ class Arrangement(ArrangementWithSds):
 class MultiSourceExpectation(ExpectationBase):
     def __init__(self,
                  act_result: SubProcessResult = SubProcessResult(),
-                 validate_pre_sds_result: Assertion = svh_assertions.is_success(),
-                 main_result: Assertion = sh_assertions.is_success(),
-                 symbol_usages: Assertion = asrt.is_empty_sequence,
-                 main_side_effects_on_sds: Assertion = asrt.anything_goes(),
-                 main_side_effects_on_tcds: Assertion = asrt.anything_goes(),
+                 validate_pre_sds_result: Assertion[svh.SuccessOrValidationErrorOrHardError]
+                 = svh_assertions.is_success(),
+                 main_result: Assertion[sh.SuccessOrHardError] = sh_assertions.is_success(),
+                 symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                 main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+                 main_side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
                  proc_exe_settings: Assertion[ProcessExecutionSettings]
                  = asrt.is_instance(ProcessExecutionSettings),
                  instruction_settings: Assertion[InstructionSettings]
@@ -82,19 +87,28 @@ class MultiSourceExpectation(ExpectationBase):
                          symbol_usages,
                          proc_exe_settings,
                          instruction_settings)
-        self.act_result = act_result
-        self.main_result = main_result
+        self._act_result = act_result
+        self._main_result = main_result
+
+    @property
+    def act_result(self) -> SubProcessResult:
+        return self._act_result
+
+    @property
+    def main_result(self) -> Assertion[sh.SuccessOrHardError]:
+        return self._main_result
 
 
 class Expectation(MultiSourceExpectation):
     def __init__(self,
                  act_result: SubProcessResult = SubProcessResult(),
-                 validate_pre_sds_result: Assertion = svh_assertions.is_success(),
-                 main_result: Assertion = sh_assertions.is_success(),
-                 symbol_usages: Assertion = asrt.is_empty_sequence,
-                 main_side_effects_on_sds: Assertion = asrt.anything_goes(),
-                 main_side_effects_on_tcds: Assertion = asrt.anything_goes(),
-                 source: Assertion = asrt.anything_goes(),
+                 validate_pre_sds_result: Assertion[svh.SuccessOrValidationErrorOrHardError]
+                 = svh_assertions.is_success(),
+                 main_result: Assertion[sh.SuccessOrHardError] = sh_assertions.is_success(),
+                 symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                 main_side_effects_on_sds: Assertion[SandboxDs] = asrt.anything_goes(),
+                 main_side_effects_on_tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+                 source: Assertion[ParseSource] = asrt.anything_goes(),
                  proc_exe_settings: Assertion[ProcessExecutionSettings]
                  = asrt.is_instance(ProcessExecutionSettings),
                  instruction_settings: Assertion[InstructionSettings]
@@ -108,7 +122,11 @@ class Expectation(MultiSourceExpectation):
                          main_side_effects_on_tcds,
                          proc_exe_settings,
                          instruction_settings)
-        self.source = source
+        self._source = source
+
+    @property
+    def source(self) -> Assertion[ParseSource]:
+        return self._source
 
 
 is_success = Expectation

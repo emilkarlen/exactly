@@ -1,5 +1,6 @@
 import random
 import unittest
+from abc import ABC
 from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -34,13 +35,11 @@ from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.programs import shell_commands, py_programs
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
-from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.test_resources import py_program as py
 
 
-class Configuration(ConfigurationBase):
+class Configuration(ConfigurationBase, ABC):
     def run_sub_process_test(self,
                              put: unittest.TestCase,
                              source: ParseSource,
@@ -66,10 +65,6 @@ class Configuration(ConfigurationBase):
                 program_parser: Parser[ProgramSdv]) -> InstructionParser:
         parts_parser = spe_parts.parts_parser(instruction_name, program_parser)
         return self.instruction_from_parts_parser(parts_parser)
-
-    def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: Assertion[str] = asrt.anything_goes()):
-        raise NotImplementedError()
 
     def expectation_for_non_zero_exitcode(self):
         raise NotImplementedError()

@@ -1,5 +1,6 @@
 import pathlib
 import unittest
+from abc import ABC
 
 from exactly_lib.impls.instructions.multi_phase import change_dir as sut
 from exactly_lib.tcfs.path_relativity import RelOptionType, RelSdsOptionType
@@ -14,7 +15,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
 
-class Configuration(ConfigurationBase):
+class Configuration(ConfigurationBase, ABC):
     def expect_successful_execution_with_side_effect(self,
                                                      side_effects_check: Assertion,
                                                      symbol_usages: Assertion = asrt.is_empty_sequence):

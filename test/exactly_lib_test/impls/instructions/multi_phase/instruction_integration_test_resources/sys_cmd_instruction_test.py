@@ -1,4 +1,5 @@
 import unittest
+from abc import ABC
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -19,7 +20,7 @@ from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.programs import py_programs
 
 
-class Configuration(ConfigurationBase):
+class Configuration(ConfigurationBase, ABC):
     def expectation_for_non_zero_exitcode(self):
         raise NotImplementedError()
 
