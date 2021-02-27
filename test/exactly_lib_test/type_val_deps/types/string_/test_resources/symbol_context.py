@@ -8,10 +8,9 @@ from exactly_lib.tcfs.path_relativity import PathRelativityVariants
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
-from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as args
-from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_building2 import StringMatcherArg
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
@@ -171,8 +170,8 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
         return self._value
 
     @property
-    def argument(self) -> StringMatcherArg:
-        return args.SymbolReferenceWReferenceSyntax(self.name)
+    def argument(self) -> SymbolReferenceArgument:
+        return SymbolReferenceArgument(self.name)
 
     @property
     def abstract_syntax(self) -> NonHereDocStringAbsStx:
