@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Callable, Iterator, ContextManager, Sequence
 
 from exactly_lib.definitions import logic
+from exactly_lib.definitions.entity.syntax_elements import SyntaxElementInfo
 from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.symbol.sdv_structure import SymbolReference
@@ -29,19 +30,19 @@ ELEMENT = TypeVar('ELEMENT')
 class ElementRendering(Generic[MODEL, ELEMENT]):
     def __init__(self,
                  type_name: str,
-                 element_matcher_syntax_name: str,
+                 element_matcher_syntax_info: SyntaxElementInfo,
                  renderer: Callable[[ELEMENT], DetailsRenderer],
                  ):
         self.type_name = type_name
-        self.element_matcher_syntax_name = element_matcher_syntax_name
+        self.element_matcher_syntax_info = element_matcher_syntax_info
         self.renderer = renderer
 
 
 class ElementSetup(Generic[MODEL, ELEMENT]):
     def __init__(self,
                  rendering: ElementRendering[MODEL, ELEMENT],
-                 elements_getter: Callable[
-                     [TestCaseDs, ApplicationEnvironment, MODEL], ContextManager[Iterator[ELEMENT]]],
+                 elements_getter: Callable[[TestCaseDs, ApplicationEnvironment, MODEL],
+                                           ContextManager[Iterator[ELEMENT]]],
                  ):
         self.rendering = rendering
         self.elements_getter = elements_getter
@@ -91,7 +92,7 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
         return ' '.join((logic.QUANTIFIER_ARGUMENTS[quantifier],
                          element_rendering.type_name,
                          logic.QUANTIFICATION_SEPARATOR_ARGUMENT,
-                         element_rendering.element_matcher_syntax_name,
+                         element_rendering.element_matcher_syntax_info.singular_name,
                          ))
 
     @staticmethod

@@ -1,6 +1,8 @@
 from typing import Sequence, Generic
 
 from exactly_lib.definitions import logic
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
+from exactly_lib.definitions.entity.syntax_elements import SyntaxElementInfo
 from exactly_lib.impls import texts
 from exactly_lib.impls.types.expression import grammar
 from exactly_lib.impls.types.matcher.impls import quantifier_matchers
@@ -56,7 +58,7 @@ class GrammarSetup(Generic[MODEL, ELEMENT]):
                     self.parse_all,
                     QuantificationDoc(Quantifier.ALL,
                                       self._setup.rendering.type_name,
-                                      self._setup.rendering.element_matcher_syntax_name)
+                                      self._setup.rendering.element_matcher_syntax_info)
                 )
             ),
             NameAndValue(
@@ -65,7 +67,7 @@ class GrammarSetup(Generic[MODEL, ELEMENT]):
                     self.parse_exists,
                     QuantificationDoc(Quantifier.EXISTS,
                                       self._setup.rendering.type_name,
-                                      self._setup.rendering.element_matcher_syntax_name)
+                                      self._setup.rendering.element_matcher_syntax_info)
                 )
             ),
         )
@@ -75,11 +77,11 @@ class QuantificationDoc(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
     def __init__(self,
                  quantifier: Quantifier,
                  element_name: str,
-                 element_matcher_syntax_name: str,
+                 element_matcher_syntax_info: SyntaxElementInfo,
                  ):
         self._quantifier = quantifier
         self._element_name = element_name
-        self._element_matcher_syntax_name = element_matcher_syntax_name
+        self._element_matcher_syntax_info = element_matcher_syntax_info
 
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
@@ -89,12 +91,9 @@ class QuantificationDoc(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
         separator_arg = a.Single(a.Multiplicity.MANDATORY,
                                  a.Constant(logic.QUANTIFICATION_SEPARATOR_ARGUMENT)
                                  )
-        element_matcher_arg = a.Single(a.Multiplicity.MANDATORY,
-                                       a.Named(self._element_matcher_syntax_name)
-                                       )
         return (element_arg,
                 separator_arg,
-                element_matcher_arg,
+                self._element_matcher_syntax_info.single_mandatory,
                 )
 
     @property
@@ -102,14 +101,18 @@ class QuantificationDoc(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
         tp = TextParser({
             'quantifier_description': logic.QUANTIFIER_ARGUMENTS[self._quantifier],
             'element': self._element_name,
-            'element_matcher': self._element_matcher_syntax_name,
+            'element_matcher': self._element_matcher_syntax_info.singular_name,
         })
 
         ret_val = tp.fnap(_DESCRIPTION_OF_QUANTIFICATION)
         ret_val += texts.type_expression_has_syntax_of_primitive([
-            self._element_matcher_syntax_name,
+            self._element_matcher_syntax_info.singular_name,
         ])
         return ret_val
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return (self._element_matcher_syntax_info.cross_reference_target,)
 
 
 _DESCRIPTION_OF_QUANTIFICATION = """\

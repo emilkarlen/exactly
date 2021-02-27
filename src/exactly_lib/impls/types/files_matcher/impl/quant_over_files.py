@@ -30,7 +30,7 @@ def _file_elements_from_model(tcds: TestCaseDs,
 ELEMENT_SETUP = quantifier_matchers.ElementSetup(
     quantifier_matchers.ElementRendering(
         config.QUANTIFICATION_OVER_FILE_ARGUMENT,
-        syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
+        syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
         _element_detail_renderer,
     ),
     _file_elements_from_model,

@@ -41,7 +41,7 @@ def _line_renderer(line: LineMatcherLine) -> DetailsRenderer:
 ELEMENT_SETUP = quantifier_matchers.ElementSetup(
     quantifier_matchers.ElementRendering(
         matcher_options.LINE_ARGUMENT,
-        syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.singular_name,
+        syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
         _line_renderer,
     ),
     _get_line_elements,
