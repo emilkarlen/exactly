@@ -1,0 +1,22 @@
+[setup]
+
+def string-source CONSTANT = 'the constant string'
+def string-source HERE_DOC = <<EOF
+1st line
+2nd line
+EOF
+
+def string-source FILE = -contents-of string-source.case
+
+def string-source PGM_OUT__STDOUT = -stdout-from -python -c :> print("Hello")
+def string-source PGM_OUT__STDERR = -stderr-from -python -c :> print("Hello")
+
+def string-source TRANSFORMED_STRING =
+
+    'the constant string'
+    -transformed-by char-case -to-upper
+
+def string-source MULTI_TRANSFORMATIONS =
+
+    @[TRANSFORMED_STRING]@
+    -transformed-by strip
