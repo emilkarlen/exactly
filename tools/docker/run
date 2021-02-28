@@ -3,8 +3,8 @@
 HERE=$(dirname $0)
 MY_NAME=$(basename $0)
 
-readonly PY_VERSIONS='35 36 37 38 39'
-readonly DEFAULT_PY_V='35'
+readonly PY_VERSIONS='36 37 38 39'
+readonly DEFAULT_PY_V='36'
 
 function abs_path_of_repo_root() (
   cd ${HERE}/../..
@@ -39,6 +39,7 @@ OPTIONS
   -u USER    Enter container as user USER
   -v VERSION Use docker image for Python v VERSION
              VERSION is one of: ${PY_VERSIONS}
+             Default version is ${DEFAULT_PY_V}
 
 ACTION
   ${ACTION__TEST}

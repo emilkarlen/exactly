@@ -59,7 +59,7 @@ DOCUMENTATION = syntax_element_documentation(
     [],
     [
         SeeAlsoUrlInfo('Python file name matching',
-                       'https://docs.python.org/3.5/library/fnmatch.html'
+                       'https://docs.python.org/3/library/fnmatch.html'
                        ),
         SeeAlsoUrlInfo('Glob patterns on Wikipedia',
                        'https://en.wikipedia.org/wiki/Glob_(programming)#Unix'

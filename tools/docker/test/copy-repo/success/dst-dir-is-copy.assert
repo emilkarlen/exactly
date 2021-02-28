@@ -5,7 +5,7 @@ exists dst :
       (
         -selection ( type file )
         matches -full {
-          src/a.py : contents equals -file -rel-act repo/src/a.py
+          src/a.py : contents equals -contents-of -rel-act repo/src/a.py
           src/b.py
 
           test/sub/x.py

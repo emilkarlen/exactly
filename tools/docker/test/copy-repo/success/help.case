@@ -4,5 +4,5 @@ copy-repo -h
 
 exit-code == 0
 
-stdout ! empty
-stderr empty
+stdout ! is-empty
+stderr is-empty

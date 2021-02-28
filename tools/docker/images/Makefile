@@ -1,5 +1,5 @@
-DOCKER_FILES = Dockerfile.35 Dockerfile.36 Dockerfile.37 Dockerfile.38 Dockerfile.39
-IMAGES = 35 36 37 38 39
+DOCKER_FILES = Dockerfile.36 Dockerfile.37 Dockerfile.38 Dockerfile.39
+IMAGES = 36 37 38 39
 IMAGE_PFX = exactly-alpine-py
 IMAGES__FULL_NAME = $(foreach img,$(IMAGES),"$(IMAGE_PFX)$(img)")
 
@@ -16,9 +16,6 @@ clean:
 
 dockerfiles: $(DOCKER_FILES)
 
-Dockerfile.35: Dockerfile.in
-	sed 's/__IMAGE_TAG__/3.5-alpine/g' < Dockerfile.in > $@
-
 Dockerfile.36: Dockerfile.in
 	sed 's/__IMAGE_TAG__/3.6-alpine/g' < Dockerfile.in > $@
 
@@ -31,9 +28,6 @@ Dockerfile.38: Dockerfile.in
 Dockerfile.39: Dockerfile.in
 	sed 's/__IMAGE_TAG__/3.9-alpine/g' < Dockerfile.in > $@
 
-
-35: Dockerfile.35
-	docker build -f Dockerfile.35 -t $(IMAGE_PFX)35 .
 
 36: Dockerfile.36
 	docker build -f Dockerfile.36 -t $(IMAGE_PFX)36 .

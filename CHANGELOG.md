@@ -20,6 +20,10 @@ with exception of a "0." prefix until version 1 is released.
  - Instruction `setup`/`env` - VALUE argument is a `STRING-SOURCE`
  - Instruction `conf`/`timeout` - Move to later phases (breaking)
 
+### Removed
+
+ - Support of Python v 3.5
+
 ## [0.13.0] - 2021-02-07
 
 ### Added
