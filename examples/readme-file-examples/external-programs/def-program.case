@@ -8,7 +8,7 @@ run @ EXECUTE_SQL "create table my_table(id int)"
 
 [act]
 
-system-under-test
+@ EXECUTE_SQL :> CALL MyStoredProcedure()
 
 [assert]
 

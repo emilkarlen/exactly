@@ -300,7 +300,7 @@ Program values can be defined for reuse using ``def``, and referenced using ``@`
 
     [act]
 
-    system-under-test
+    @ EXECUTE_SQL :> CALL MyStoredProcedure()
 
     [assert]
 
@@ -313,12 +313,10 @@ Program values can be defined for reuse using ``def``, and referenced using ``@`
     run @ EXECUTE_SQL :> drop table my_table
 
 
-Programs can also be referenced in ``[act]``::
+``:>`` treats the rest of the line as a single string.
 
+Thus ``:> a b c`` becomes the string ``a b c``.
 
-    [act]
-
-    @ EXECUTE_SQL :> CALL MyStoredProcedure()
 
 Testing existing OS environment - tests without ``[act]``
 ----------------------------------------------------------------------
@@ -362,6 +360,67 @@ and must contain a 'Makefile' with a target 'all'::
         dir-contents -recursive
           -selection name @[MY_PROJECT_DIR_NAME]@
             every file : @[IS_VALID_PROJECT_DIR]@
+
+
+The ``@[SYMBOL_NAME]@`` syntax is a reference to the "symbol" "SYMBOL_NAME".
+This syntax can always be used.
+
+In some contexts, just ``SYMBOL_NAME`` will also do.
+
+
+Testing a git commit hook
+------------------------------------------------------------
+
+The following tests a git commit hook (``prepare-commit-msg``).
+
+The hook should add the issue id in the branch name,
+to commit messages::
+
+    [setup]
+
+
+    def string ISSUE_ID            = ABC-123
+    def string MESSAGE_WO_ISSUE_ID = "commit message without issue id"
+
+    def program GET_LOG_MESSAGE_OF_LAST_COMMIT = % git log -1 --format=%s
+
+
+    #### Setup a git repo with the commit hook to test
+
+    % git init
+
+    copy prepare-commit-msg .git/hooks
+
+
+    #### Setup a branch, with issue number in its name,
+    # and a file to commit
+
+    % git checkout -b @[ISSUE_ID]@-branch-with-issue-id
+
+    file file-on-branch.txt
+
+    % git add file-on-branch.txt
+
+
+    [act]
+
+
+    % git commit -m @[MESSAGE_WO_ISSUE_ID]@
+
+
+    [assert]
+
+
+    exit-code == 0
+
+    stdout -from
+           @ GET_LOG_MESSAGE_OF_LAST_COMMIT
+           equals
+    <<-
+    @[ISSUE_ID]@ : @[MESSAGE_WO_ISSUE_ID]@
+    -
+
+``% ...`` runs a program in the OS PATH.
 
 
 Testing source code files
@@ -446,57 +505,6 @@ The test case is executed in a temporary sandbox, as usual,
 but assertions are ignored.
 
 
-Testing a git commit hook
-------------------------------------------------------------
-
-The following tests a git commit hook (`prepare-commit-msg`).
-
-The hook should add the issue id in the branch name,
-to commit messages::
-
-    [setup]
-
-
-    def string ISSUE_ID            = ABC-123
-    def string MESSAGE_WO_ISSUE_ID = "commit message without issue id"
-
-    def program GET_LOG_MESSAGE_OF_LAST_COMMIT = % git log -1 --format=%s
-
-
-    #### Setup a git repo with the commit hook to test
-
-    % git init
-
-    copy prepare-commit-msg .git/hooks
-
-
-    #### Setup a branch, with issue number in its name,
-    # and a file to commit
-
-    % git checkout -b @[ISSUE_ID]@-branch-with-issue-id
-
-    file file-on-branch.txt
-
-    % git add file-on-branch.txt
-
-
-    [act]
-
-
-    % git commit -m @[MESSAGE_WO_ISSUE_ID]@
-
-
-    [assert]
-
-
-    stdout -from
-           @ GET_LOG_MESSAGE_OF_LAST_COMMIT
-           equals
-    <<-
-    @[ISSUE_ID]@ : @[MESSAGE_WO_ISSUE_ID]@
-    -
-
-
 Referencing files
 ------------------------------------------------------------
 
@@ -513,6 +521,8 @@ predefined files involved in a test case:
 Both of them defaults to the directory
 that contains the test case file,
 but can be changed via ``[conf]``.
+
+Exactly does it's best to prevent files in these directories from being modified.
 
 
 The **sandbox directory structure** is temporary directories for
@@ -554,6 +564,8 @@ and ``-rel-act`` to the *act* directory, for example::
              equals
              -contents-of -rel-home expected.txt
 
+
+``-rel-home input.txt`` becomes a single path argument.
 
 These "relativity" options have defaults designed to minimize the
 need for them.

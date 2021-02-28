@@ -33,6 +33,8 @@ file file-on-branch.txt
 [assert]
 
 
+exit-code == 0
+
 stdout -from
        @ GET_LOG_MESSAGE_OF_LAST_COMMIT
        equals
