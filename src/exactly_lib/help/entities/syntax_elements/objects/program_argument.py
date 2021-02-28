@@ -104,7 +104,7 @@ _TEXT_PARSER = TextParser({
     'path_type': types.PATH_TYPE_INFO.name,
     'path_se': formatting.syntax_element_(syntax_elements.PATH_SYNTAX_ELEMENT),
     'to_string_types': english_text.or_sequence([dt.singular_name for dt in types.TYPES_WITH_W_STR_RENDERING]),
-    'soft_quote': formatting.entity_name_with_formatting(syntax_descriptions.SOFT_QUOTE_NAME),
+    'soft_quote': syntax_descriptions.SOFT_QUOTE_NAME,
     'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
     'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
     'Note': headers.NOTE_LINE_HEADER,

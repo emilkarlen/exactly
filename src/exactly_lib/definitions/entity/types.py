@@ -163,6 +163,13 @@ def types__or_list(types: Sequence[ValueType]) -> str:
     ])
 
 
+def types__and_list(types: Sequence[ValueType]) -> str:
+    return english_text.and_sequence([
+        formatting.keyword(VALUE_TYPE_2_TYPES_INFO_DICT[t].singular_name) for
+        t in types
+    ])
+
+
 def a_ref_to_a_symbol_w_string_conversion__sentence() -> str:
     return a_ref_to_a_symbol__of_either_types(value_type.VALUE_TYPES_W_STR_RENDERING)
 
