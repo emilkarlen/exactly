@@ -38,6 +38,7 @@ from exactly_lib_test.impls.test_resources.symbol_table_check_help import \
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, sds_populator
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly, result_dir_contains_exactly
@@ -184,13 +185,26 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
     def test_side_effects_on_files(self):
         self._check_source_and_exe_variants(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
-            Arrangement.phase_agnostic(),
+            Arrangement.phase_agnostic(
+                tcds=TcdsArrangement(),
+            ),
             MultiSourceExpectation.phase_agnostic(
                 main_side_effects_on_sds=asrt.IsInstance(SandboxDs)
             ),
         )
 
     def test_tcds(self):
+        self._check_source_and_exe_variants(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            Arrangement.phase_agnostic(
+                tcds=TcdsArrangement(),
+            ),
+            MultiSourceExpectation.phase_agnostic(
+                side_effects_on_tcds=asrt.IsInstance(TestCaseDs)
+            ),
+        )
+
+    def test_tcds__dummy(self):
         self._check_source_and_exe_variants(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(),
@@ -202,7 +216,9 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
     def test_hds(self):
         self._check_source_and_exe_variants(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
-            Arrangement.phase_agnostic(),
+            Arrangement.phase_agnostic(
+                tcds=TcdsArrangement(),
+            ),
             MultiSourceExpectation.phase_agnostic(
                 side_effects_on_hds=asrt.IsInstance(pathlib.Path)
             ),
@@ -328,7 +344,9 @@ class TestHdsDirHandling(TestCaseBase):
     def test_fail_due_to_side_effects_on_hds(self):
         self._check_source_and_exe_variants__failing_assertions(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
-            Arrangement.phase_agnostic(),
+            Arrangement.phase_agnostic(
+                tcds=TcdsArrangement(),
+            ),
             MultiSourceExpectation.phase_agnostic(
                 side_effects_on_hds=f_asrt.dir_contains_at_least(
                     DirContents([File.empty('file-name.txt')]))
@@ -340,7 +358,9 @@ class TestHdsDirHandling(TestCaseBase):
         self._check_source_and_exe_variants(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(
-                hds_contents=hds_case_dir_contents(home_dir_contents)),
+                tcds=TcdsArrangement(
+                    hds_contents=hds_case_dir_contents(home_dir_contents)),
+            ),
             MultiSourceExpectation.phase_agnostic(
                 side_effects_on_hds=f_asrt.dir_contains_exactly(home_dir_contents)),
         )
@@ -352,8 +372,10 @@ class TestPopulate(TestCaseBase):
         self._check_source_and_exe_variants(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(
-                non_hds_contents=non_hds_populator.rel_option(RelNonHdsOptionType.REL_TMP,
-                                                              populated_dir_contents)),
+                tcds=TcdsArrangement(
+                    non_hds_contents=non_hds_populator.rel_option(RelNonHdsOptionType.REL_TMP,
+                                                                  populated_dir_contents)),
+            ),
             MultiSourceExpectation.phase_agnostic(
                 main_side_effects_on_sds=tmp_user_dir_contains_exactly(
                     populated_dir_contents)),
@@ -364,8 +386,10 @@ class TestPopulate(TestCaseBase):
         self._check_source_and_exe_variants(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             Arrangement.phase_agnostic(
-                sds_contents=sds_populator.contents_in(RelSdsOptionType.REL_RESULT,
-                                                       populated_dir_contents)),
+                tcds=TcdsArrangement(
+                    sds_contents=sds_populator.contents_in(RelSdsOptionType.REL_RESULT,
+                                                           populated_dir_contents)),
+            ),
             MultiSourceExpectation.phase_agnostic(
                 main_side_effects_on_sds=result_dir_contains_exactly(
                     populated_dir_contents)),
@@ -471,7 +495,9 @@ class TestExecution(TestCaseBase):
         )
         self._check_source_and_exe_variants(
             ParserThatGives(instruction_that_raises_exception_if_unexpected_state),
-            Arrangement.phase_agnostic(),
+            Arrangement.phase_agnostic(
+                tcds=TcdsArrangement(),
+            ),
             MultiSourceExpectation.phase_agnostic(),
         )
 
@@ -653,7 +679,9 @@ class TestSideEffectsOfMain(TestCaseBase):
     def test_fail_due_to_fail_of_side_effects_on_files(self):
         self._check_source_and_exe_variants__failing_assertions(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
-            Arrangement.phase_agnostic(),
+            Arrangement.phase_agnostic(
+                tcds=TcdsArrangement(),
+            ),
             MultiSourceExpectation.phase_agnostic(
                 main_side_effects_on_sds=act_dir_contains_exactly(
                     DirContents([File.empty('non-existing-file.txt')]))
@@ -661,13 +689,17 @@ class TestSideEffectsOfMain(TestCaseBase):
         )
 
     def test_fail_due_to_side_effects_check(self):
-        self._check_source_and_exe_variants__failing_assertions(
-            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
-            Arrangement.phase_agnostic(),
-            MultiSourceExpectation.phase_agnostic(
-                side_effects_on_tcds=asrt.not_(asrt.is_instance(TestCaseDs))
-            ),
-        )
+        for tcds_case in TCDS_CASES:
+            with self.subTest(tcds_case.name):
+                self._check_source_and_exe_variants__failing_assertions(
+                    PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+                    Arrangement.phase_agnostic(
+                        tcds=tcds_case.value
+                    ),
+                    MultiSourceExpectation.phase_agnostic(
+                        side_effects_on_tcds=asrt.not_(asrt.is_instance(TestCaseDs))
+                    ),
+                )
 
     def test_populate_environ(self):
         default_from_default_getter = {'default': 'value of default'}
@@ -816,5 +848,15 @@ class _IsSettingsBuilderWoStdinWEnviron(AssertionBase[SetupSettingsBuilder]):
         self._environ.apply(put, value.environ, message_builder.for_sub_component('environ'))
 
 
+TCDS_CASES = [
+    NameAndValue(
+        'w existing empty tcds',
+        TcdsArrangement(),
+    ),
+    NameAndValue(
+        'wo tcds',
+        None,
+    ),
+]
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

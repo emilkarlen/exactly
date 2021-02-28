@@ -18,6 +18,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.tcfs.test_resources import sds_populator
 from exactly_lib_test.tcfs.test_resources import tcds_contents_assertions as asrt_tcds_contents
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgument
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     SubDirOfSdsContainsExactly
@@ -87,7 +88,9 @@ class TestParse(unittest.TestCase):
                 _CHECKER.check__w_source_variants(
                     self,
                     case.input_value,
-                    embryo_check.Arrangement.phase_agnostic(),
+                    embryo_check.Arrangement.phase_agnostic(
+                        tcds=TcdsArrangement(),
+                    ),
                     MultiSourceExpectation.phase_agnostic(
                         main_result=asrt.is_none,
                         side_effects_on_tcds=asrt_tcds_contents.dir_contains_exactly(
@@ -106,7 +109,9 @@ class TestParse(unittest.TestCase):
                 _CHECKER.check__w_source_variants(
                     self,
                     path_argument.as_str,
-                    embryo_check.Arrangement.phase_agnostic(),
+                    embryo_check.Arrangement.phase_agnostic(
+                        tcds=TcdsArrangement(),
+                    ),
                     MultiSourceExpectation.phase_agnostic(
                         main_result=asrt.is_none,
                         side_effects_on_tcds=asrt_tcds_contents.dir_contains_exactly(

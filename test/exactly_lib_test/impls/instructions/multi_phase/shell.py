@@ -16,6 +16,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.tcfs.test_resources.tcds_populators import \
     TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_resources.files import file_structure as fs
@@ -58,9 +59,11 @@ class TestSymbolReferences(unittest.TestCase):
         source = remaining_source(argument, [following_line])
 
         arrangement = Arrangement.phase_agnostic(
-            tcds_contents=TcdsPopulatorForRelOptionType(
-                RelOptionType.REL_ACT,
-                fs.DirContents([file_to_interpret])),
+            tcds=TcdsArrangement(
+                tcds_contents=TcdsPopulatorForRelOptionType(
+                    RelOptionType.REL_ACT,
+                    fs.DirContents([file_to_interpret])),
+            ),
             symbols=SymbolContext.symbol_table_of_contexts([
                 python_interpreter_symbol,
                 file_to_interpret_symbol,

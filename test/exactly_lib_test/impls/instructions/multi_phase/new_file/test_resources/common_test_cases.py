@@ -15,10 +15,11 @@ from exactly_lib_test.impls.test_resources.validation.validation import Validati
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_non_hds
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.tcfs.test_resources.dir_populator import TcdsPopulator
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
+    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext
@@ -72,9 +73,11 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(unittest.TestCas
                             self,
                             instruction_syntax,
                             Arrangement.phase_agnostic(
-                                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                                tcds_contents=cases_data.pre_existing_files,
-                                non_hds_contents=non_hds_contents,
+                                tcds=TcdsArrangement(
+                                    pre_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN,
+                                    tcds_contents=cases_data.pre_existing_files,
+                                    non_hds_contents=non_hds_contents,
+                                ),
                                 symbols=cases_data.symbols,
                             ),
                             Expectation.phase_agnostic_2(

@@ -22,11 +22,11 @@ from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import hds_populators, sds_populator
+from exactly_lib_test.tcfs.test_resources.ds_action import ChangeDirectoryToDirectory
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.tcfs.test_resources.sds_check import sds_contents_check as sds_contents_check
 from exactly_lib_test.tcfs.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
-from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
-    ChangeDirectoryToDirectory
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -103,6 +103,7 @@ class TestValidationErrorScenarios(unittest.TestCase):
                             relativity_option.path_argument_of_rel_name('source-that-do-not-exist')
                         ).as_remaining_source,
                         Arrangement.phase_agnostic(
+                            tcds=TcdsArrangement(),
                             symbols=relativity_option.symbols.in_arrangement(),
                         ),
                         Expectation.phase_agnostic_2(
@@ -123,6 +124,7 @@ class TestValidationErrorScenarios(unittest.TestCase):
                             defs.ARBITRARY_DST_REL_OPT.path_argument_of_rel_name('destination')
                         ).as_str,
                         Arrangement.phase_agnostic(
+                            tcds=TcdsArrangement(),
                             symbols=relativity_option.symbols.in_arrangement(),
                         ),
                         MultiSourceExpectation.phase_agnostic(
@@ -142,6 +144,7 @@ class TestValidationErrorScenarios(unittest.TestCase):
                             relativity_option.path_argument_of_rel_name('source-that-do-not-exist')
                         ).as_remaining_source,
                         Arrangement.phase_agnostic(
+                            tcds=TcdsArrangement(),
                             symbols=relativity_option.symbols.in_arrangement(),
                         ),
                         Expectation.phase_agnostic_2(
@@ -162,6 +165,7 @@ class TestValidationErrorScenarios(unittest.TestCase):
                             defs.ARBITRARY_DST_REL_OPT.path_argument_of_rel_name('destination')
                         ).as_remaining_source,
                         Arrangement.phase_agnostic(
+                            tcds=TcdsArrangement(),
                             symbols=src_relativity.symbols.in_arrangement(),
                         ),
                         Expectation.phase_agnostic_2(
@@ -184,9 +188,12 @@ class TestSuccessfulScenariosWithoutExplicitDestination(unittest.TestCase):
                         self,
                         args.copy(file_arg).as_remaining_source,
                         Arrangement.phase_agnostic(
-                            pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                            hds_contents=src_relativity_option.populator_for_relativity_option_root__hds(
-                                file_to_install),
+                            tcds=TcdsArrangement(
+                                pre_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
+                                hds_contents=src_relativity_option.populator_for_relativity_option_root__hds(
+                                    file_to_install
+                                ),
+                            ),
                             symbols=src_relativity_option.symbols.in_arrangement(),
                         ),
                         Expectation.phase_agnostic_2(
@@ -207,9 +214,11 @@ class TestSuccessfulScenariosWithoutExplicitDestination(unittest.TestCase):
                         self,
                         args.copy(file_arg).as_remaining_source,
                         Arrangement.phase_agnostic(
-                            pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                            non_hds_contents=relativity_option.populator_for_relativity_option_root__non_hds(
-                                file_to_install
+                            tcds=TcdsArrangement(
+                                pre_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
+                                non_hds_contents=relativity_option.populator_for_relativity_option_root__non_hds(
+                                    file_to_install
+                                ),
                             ),
                             symbols=relativity_option.symbols.in_arrangement(),
                         ),
@@ -233,9 +242,11 @@ class TestSuccessfulScenariosWithoutExplicitDestination(unittest.TestCase):
                     self,
                     args.copy(src_path_arg).as_remaining_source,
                     Arrangement.phase_agnostic(
-                        pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                        hds_contents=defs.DEFAULT_SRC_REL_OPT.populator_for_relativity_option_root__hds(
-                            files_to_install),
+                        tcds=TcdsArrangement(
+                            pre_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
+                            hds_contents=defs.DEFAULT_SRC_REL_OPT.populator_for_relativity_option_root__hds(
+                                files_to_install),
+                        ),
                     ),
                     Expectation.phase_agnostic_2(
                         main_side_effects_on_sds=sds_contents_check.cwd_contains_exactly(
@@ -347,9 +358,11 @@ class TestSuccessfulScenariosWithExplicitDestination(unittest.TestCase):
                     self,
                     arguments.as_str,
                     Arrangement.phase_agnostic(
-                        pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                        hds_contents=hds_contents,
-                        sds_contents=sds_populator_before_main,
+                        tcds=TcdsArrangement(
+                            pre_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
+                            hds_contents=hds_contents,
+                            sds_contents=sds_populator_before_main,
+                        ),
                         symbols=symbols_in_arrangement,
                     ),
                     MultiSourceExpectation.phase_agnostic(
@@ -379,12 +392,14 @@ class TestSuccessfulScenariosWithExplicitDestination(unittest.TestCase):
                         defs.DEFAULT_DST_REL_OPT.path_argument_of_rel_name(dst)
                     ).as_str,
                     Arrangement.phase_agnostic(
-                        pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                        hds_contents=defs.DEFAULT_SRC_REL_OPT.populator_for_relativity_option_root__hds(
-                            DirContents(home_dir_contents)
-                        ),
-                        sds_contents=defs.DEFAULT_DST_REL_OPT.populator_for_relativity_option_root__sds(
-                            DirContents(act_dir_contents)
+                        tcds=TcdsArrangement(
+                            pre_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
+                            hds_contents=defs.DEFAULT_SRC_REL_OPT.populator_for_relativity_option_root__hds(
+                                DirContents(home_dir_contents)
+                            ),
+                            sds_contents=defs.DEFAULT_DST_REL_OPT.populator_for_relativity_option_root__sds(
+                                DirContents(act_dir_contents)
+                            ),
                         ),
                     ),
                     MultiSourceExpectation.phase_agnostic(
@@ -415,12 +430,14 @@ class TestSuccessfulScenariosWithExplicitDestination(unittest.TestCase):
                         defs.DEFAULT_DST_REL_OPT.path_argument_of_rel_name(dst_dir)
                     ).as_str,
                     Arrangement.phase_agnostic(
-                        pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                        hds_contents=defs.DEFAULT_SRC_REL_OPT.populator_for_relativity_option_root__hds(
-                            DirContents(files_to_install)
-                        ),
-                        sds_contents=defs.DEFAULT_DST_REL_OPT.populator_for_relativity_option_root__sds(
-                            cwd_dir_contents_before
+                        tcds=TcdsArrangement(
+                            pre_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
+                            hds_contents=defs.DEFAULT_SRC_REL_OPT.populator_for_relativity_option_root__hds(
+                                DirContents(files_to_install)
+                            ),
+                            sds_contents=defs.DEFAULT_DST_REL_OPT.populator_for_relativity_option_root__sds(
+                                cwd_dir_contents_before
+                            ),
                         ),
                     ),
                     MultiSourceExpectation.phase_agnostic(
@@ -445,12 +462,14 @@ class TestFailingScenarios(unittest.TestCase):
                         defs.DEFAULT_SRC_REL_OPT.path_argument_of_rel_name(file_name)
                     ).as_remaining_source,
                     Arrangement.phase_agnostic(
-                        pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                        hds_contents=defs.DEFAULT_SRC_REL_OPT.populator_for_relativity_option_root__hds(
-                            file_to_install),
-                        sds_contents=defs.DEFAULT_DST_REL_OPT.populator_for_relativity_option_root__sds(
-                            DirContents([File.empty(file_name)])
-                        ),
+                        tcds=TcdsArrangement(
+                            pre_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
+                            hds_contents=defs.DEFAULT_SRC_REL_OPT.populator_for_relativity_option_root__hds(
+                                file_to_install),
+                            sds_contents=defs.DEFAULT_DST_REL_OPT.populator_for_relativity_option_root__sds(
+                                DirContents([File.empty(file_name)])
+                            ),
+                        )
                     ),
                     Expectation.phase_agnostic_2(
                         main_result=asrt_text_doc.is_any_text(),
@@ -472,12 +491,14 @@ class TestFailingScenarios(unittest.TestCase):
                         defs.DEFAULT_DST_REL_OPT.path_argument_of_rel_name(dst)
                     ).as_remaining_source,
                     Arrangement.phase_agnostic(
-                        pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                        hds_contents=defs.DEFAULT_SRC_REL_OPT.populator_for_relativity_option_root__hds(
-                            home_dir_contents),
-                        sds_contents=defs.DEFAULT_DST_REL_OPT.populator_for_relativity_option_root__sds(
-                            cwd_dir_contents
-                        ),
+                        tcds=TcdsArrangement(
+                            pre_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
+                            hds_contents=defs.DEFAULT_SRC_REL_OPT.populator_for_relativity_option_root__hds(
+                                home_dir_contents),
+                            sds_contents=defs.DEFAULT_DST_REL_OPT.populator_for_relativity_option_root__sds(
+                                cwd_dir_contents
+                            ),
+                        )
                     ),
                     Expectation.phase_agnostic(
                         main_result=asrt_text_doc.is_any_text(),
@@ -500,12 +521,14 @@ class TestFailingScenarios(unittest.TestCase):
                         defs.DEFAULT_DST_REL_OPT.path_argument_of_rel_name(dst)
                     ).as_remaining_source,
                     Arrangement.phase_agnostic(
-                        pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                        hds_contents=defs.DEFAULT_SRC_REL_OPT.populator_for_relativity_option_root__hds(
-                            home_dir_contents),
-                        sds_contents=defs.DEFAULT_DST_REL_OPT.populator_for_relativity_option_root__sds(
-                            cwd_dir_contents
-                        ),
+                        tcds=TcdsArrangement(
+                            pre_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
+                            hds_contents=defs.DEFAULT_SRC_REL_OPT.populator_for_relativity_option_root__hds(
+                                home_dir_contents),
+                            sds_contents=defs.DEFAULT_DST_REL_OPT.populator_for_relativity_option_root__sds(
+                                cwd_dir_contents
+                            ),
+                        )
                     ),
                     Expectation.phase_agnostic(
                         main_result=asrt_text_doc.is_any_text(),
@@ -541,7 +564,9 @@ class TestSuccessfulScenariosWithSymbolReferences(unittest.TestCase):
                               dst_rel_option.path_argument_of_rel_name(dst_file_name)
                               ).as_remaining_source,
                     Arrangement.phase_agnostic(
-                        hds_contents=src_rel_option.populator_for_relativity_option_root__hds(home_dir_contents),
+                        tcds=TcdsArrangement(
+                            hds_contents=src_rel_option.populator_for_relativity_option_root__hds(home_dir_contents),
+                        ),
                         symbols=SymbolContext.symbol_table_of_contexts(
                             src_rel_option.symbols.contexts_for_arrangement() +
                             dst_rel_option.symbols.contexts_for_arrangement()

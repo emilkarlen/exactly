@@ -27,6 +27,7 @@ from exactly_lib_test.impls.types.string_source.test_resources import abstract_s
 from exactly_lib_test.impls.types.string_transformer.test_resources import abstract_syntaxes as str_trans_abs_stx
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly
 from exactly_lib_test.test_resources.files import file_structure as fs
@@ -108,6 +109,7 @@ class TestSymbolUsages(unittest.TestCase):
             instruction_syntax,
             Arrangement.phase_agnostic(
                 symbols=symbols,
+                tcds=TcdsArrangement(),
             ),
             MultiSourceExpectation.phase_agnostic(
                 main_result=IS_SUCCESS,
@@ -225,6 +227,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(unittest.TestCase)
                         instruction_syntax,
                         Arrangement.phase_agnostic(
                             symbols=symbols,
+                            tcds=TcdsArrangement(),
                         ),
                         MultiSourceExpectation.phase_agnostic(
                             main_result=IS_SUCCESS,
@@ -305,6 +308,7 @@ class TestUnableToExecute(unittest.TestCase):
                         instruction_syntax,
                         Arrangement.phase_agnostic(
                             symbols=symbols,
+                            tcds=TcdsArrangement(),
                         ),
                         MultiSourceExpectation.phase_agnostic(
                             symbol_usages=asrt.anything_goes(),
@@ -408,9 +412,11 @@ class TestNonZeroExitCode(unittest.TestCase):
                                 instruction_syntax,
                                 Arrangement.phase_agnostic(
                                     symbols=SymbolContext.symbol_table_of_contexts(symbol_contexts),
-                                    tcds_contents=py_file_rel_conf.populator_for_relativity_option_root(
-                                        DirContents([py_file])
-                                    )
+                                    tcds=TcdsArrangement(
+                                        tcds_contents=py_file_rel_conf.populator_for_relativity_option_root(
+                                            DirContents([py_file])
+                                        )
+                                    ),
                                 ),
                                 MultiSourceExpectation.phase_agnostic(
                                     symbol_usages=SymbolContext.usages_assertion_of_contexts(symbol_contexts),

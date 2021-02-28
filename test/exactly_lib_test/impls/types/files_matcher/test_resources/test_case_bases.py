@@ -17,9 +17,9 @@ from exactly_lib_test.impls.types.test_resources.negation_argument_handling impo
     pfh_expectation_type_config
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.tcfs.test_resources.ds_action import MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.tcfs.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
-from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
-    MkSubDirAndMakeItCurrentDirectory
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import TcdsActionFromPlainTcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import is_reference_to_file_matcher
 
@@ -105,5 +105,8 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
         asrt_source.is_at_end_of_line(1)
 
 
-MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR = MkSubDirAndMakeItCurrentDirectory(
-    SdsSubDirResolverFromSdsFun(lambda sds: sds.root_dir / 'test-cwd'))
+MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR = TcdsActionFromPlainTcdsAction(
+    MkSubDirAndMakeItCurrentDirectory(
+        SdsSubDirResolverFromSdsFun(lambda sds: sds.root_dir / 'test-cwd')
+    )
+)

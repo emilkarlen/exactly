@@ -50,3 +50,12 @@ class MkSubDirAndMakeItCurrentDirectory(PlainTcdsAction):
     def apply(self, tcds: TestCaseDs):
         sub_dir = self.sub_dir_resolver.population_dir__create_if_not_exists(tcds.sds)
         os.chdir(str(sub_dir))
+
+
+class ChangeDirectoryToDirectory(PlainTcdsAction):
+    def __init__(self, sub_dir_resolver: SdsSubDirResolver):
+        self.sub_dir_resolver = sub_dir_resolver
+
+    def apply(self, tcds: TestCaseDs):
+        sub_dir = self.sub_dir_resolver.population_dir(tcds.sds)
+        os.chdir(str(sub_dir))

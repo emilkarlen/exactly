@@ -27,6 +27,7 @@ from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.tcfs.test_resources.tcds_populators import \
     multiple, TcdsPopulatorForRelOptionType
@@ -76,6 +77,7 @@ class TestValidationAndSymbolUsagesOfExecute(unittest.TestCase):
 
             arrangement = Arrangement.phase_agnostic(
                 symbols=relativity_option_conf.symbols.in_arrangement(),
+                tcds=TcdsArrangement(),
             )
             with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
                 EXECUTION_CHECKER.check__w_source_variants(
@@ -96,8 +98,11 @@ class TestValidationAndSymbolUsagesOfExecute(unittest.TestCase):
             )
 
             arrangement = Arrangement.phase_agnostic(
-                tcds_contents=relativity_option_conf.populator_for_relativity_option_root(
-                    fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
+                tcds=TcdsArrangement(
+                    tcds_contents=relativity_option_conf.populator_for_relativity_option_root(
+                        fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])
+                    ),
+                ),
                 symbols=relativity_option_conf.symbols.in_arrangement(),
             )
             with self.subTest(option=relativity_option_conf.test_case_description):
@@ -124,6 +129,7 @@ class TestValidationAndSymbolUsagesOfExecute(unittest.TestCase):
                 execute_program_option_symbol,
                 exit_code_symbol,
             ]),
+            tcds=TcdsArrangement(),
         )
 
         expectation = Expectation.phase_agnostic(
@@ -167,12 +173,14 @@ class TestValidationAndSymbolUsagesOfInterpret(unittest.TestCase):
                 )
 
                 arrangement = Arrangement.phase_agnostic(
-                    tcds_contents=multiple([
-                        roc_executable_file.populator_for_relativity_option_root(
-                            fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
-                        roc_source_file.populator_for_relativity_option_root(
-                            fs.DirContents([source_file])),
-                    ]),
+                    tcds=TcdsArrangement(
+                        tcds_contents=multiple([
+                            roc_executable_file.populator_for_relativity_option_root(
+                                fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
+                            roc_source_file.populator_for_relativity_option_root(
+                                fs.DirContents([source_file])),
+                        ]),
+                    ),
                     symbols=SymbolContext.symbol_table_of_contexts(
                         roc_executable_file.symbols.contexts_for_arrangement() +
                         roc_source_file.symbols.contexts_for_arrangement()),
@@ -205,7 +213,9 @@ class TestValidationAndSymbolUsagesOfInterpret(unittest.TestCase):
 
             arrangement = Arrangement.phase_agnostic(
                 symbols=relativity_option_conf.symbols.in_arrangement(),
-                hds_contents=hds_case_dir_contents(home_dir_contents),
+                tcds=TcdsArrangement(
+                    hds_contents=hds_case_dir_contents(home_dir_contents),
+                ),
             )
             with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
                 EXECUTION_CHECKER.check__w_source_variants(
@@ -253,9 +263,12 @@ class TestValidationAndSymbolUsagesOfInterpret(unittest.TestCase):
         source = remaining_source(argument, [following_line])
 
         arrangement = Arrangement.phase_agnostic(
-            tcds_contents=TcdsPopulatorForRelOptionType(
-                path_relativities.ALL_REL_OPTIONS_ARG_CONFIG.options.default_option,
-                fs.DirContents([file_to_interpret])),
+            tcds=TcdsArrangement(
+                tcds_contents=TcdsPopulatorForRelOptionType(
+                    path_relativities.ALL_REL_OPTIONS_ARG_CONFIG.options.default_option,
+                    fs.DirContents([file_to_interpret])
+                ),
+            ),
             symbols=SymbolContext.symbol_table_of_contexts([
                 python_interpreter_symbol,
                 file_to_interpret_symbol,
@@ -304,8 +317,10 @@ class TestProgramViaSymbolReference(unittest.TestCase):
             args.sequence([pgm_args.symbol_ref_command_line(self.program_that_executes_py_pgm_symbol.name),
                            0]).as_str,
             Arrangement.phase_agnostic(
-                tcds_contents=self.py_file_rel_opt_conf.populator_for_relativity_option_root(
-                    DirContents([self.py_file])
+                tcds=TcdsArrangement(
+                    tcds_contents=self.py_file_rel_opt_conf.populator_for_relativity_option_root(
+                        DirContents([self.py_file])
+                    ),
                 ),
                 symbols=self.symbols
             ),
@@ -327,8 +342,10 @@ class TestProgramViaSymbolReference(unittest.TestCase):
                 exit_code
             ]).as_str,
             Arrangement.phase_agnostic(
-                tcds_contents=self.py_file_rel_opt_conf.populator_for_relativity_option_root(
-                    DirContents([self.py_file])
+                tcds=TcdsArrangement(
+                    tcds_contents=self.py_file_rel_opt_conf.populator_for_relativity_option_root(
+                        DirContents([self.py_file])
+                    ),
                 ),
                 symbols=self.symbols
             ),
@@ -356,8 +373,11 @@ class TestValidationAndSymbolUsagesOfSource(unittest.TestCase):
             )
 
             arrangement = Arrangement.phase_agnostic(
-                tcds_contents=relativity_option_conf.populator_for_relativity_option_root(
-                    fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
+                tcds=TcdsArrangement(
+                    tcds_contents=relativity_option_conf.populator_for_relativity_option_root(
+                        fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])
+                    ),
+                ),
                 symbols=relativity_option_conf.symbols.in_arrangement(),
             )
             with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
@@ -378,6 +398,7 @@ class TestValidationAndSymbolUsagesOfSource(unittest.TestCase):
 
             arrangement = Arrangement.phase_agnostic(
                 symbols=relativity_option_conf.symbols.in_arrangement(),
+                tcds=TcdsArrangement(),
             )
             with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
                 EXECUTION_CHECKER.check__w_source_variants(
@@ -404,6 +425,7 @@ class TestValidationAndSymbolUsagesOfSource(unittest.TestCase):
                 execute_program_option_symbol,
                 exit_code_symbol,
             ]),
+            tcds=TcdsArrangement(),
         )
 
         source = remaining_source(argument,
@@ -452,7 +474,9 @@ class TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine(unittest.TestC
         EXECUTION_CHECKER.check__w_source_variants(
             self,
             pgm_args.interpret_py_source_line('exit(0)').as_str,
-            Arrangement.phase_agnostic(),
+            Arrangement.phase_agnostic(
+                tcds=TcdsArrangement(),
+            ),
             MultiSourceExpectation.phase_agnostic(
                 main_result=result_assertions.equals(0, None)
             )
@@ -462,7 +486,9 @@ class TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine(unittest.TestC
         EXECUTION_CHECKER.check__w_source_variants(
             self,
             pgm_args.interpret_py_source_line('exit(1)').as_str,
-            Arrangement.phase_agnostic(),
+            Arrangement.phase_agnostic(
+                tcds=TcdsArrangement(),
+            ),
             MultiSourceExpectation.phase_agnostic(
                 main_result=result_assertions.equals(1, '')
             )
@@ -473,7 +499,9 @@ class TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine(unittest.TestC
         EXECUTION_CHECKER.check__w_source_variants(
             self,
             pgm_args.interpret_py_source_line(python_program).as_str,
-            Arrangement.phase_agnostic(),
+            Arrangement.phase_agnostic(
+                tcds=TcdsArrangement(),
+            ),
             MultiSourceExpectation.phase_agnostic(
                 main_result=result_assertions.equals(2, 'on stderr')
             )
@@ -504,7 +532,9 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
                     Arrangement.phase_agnostic(
                         os_services=test_setup.os_services_w_stdin_check,
                         symbols=pgm_and_args_case.symbol_table,
-                        tcds_contents=pgm_and_args_case.tcds,
+                        tcds=TcdsArrangement(
+                            tcds_contents=pgm_and_args_case.tcds,
+                        ),
                     ),
                     MultiSourceExpectation.phase_agnostic(
                         symbol_usages=pgm_and_args_case.usages_assertion,
@@ -524,7 +554,9 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
                     Arrangement.phase_agnostic(
                         os_services=test_setup.os_services_w_stdin_check,
                         symbols=pgm_and_args_case.symbol_table,
-                        tcds_contents=pgm_and_args_case.tcds,
+                        tcds=TcdsArrangement(
+                            tcds_contents=pgm_and_args_case.tcds,
+                        ),
                     ),
                     MultiSourceExpectation.phase_agnostic(
                         symbol_usages=pgm_and_args_case.usages_assertion,
@@ -541,6 +573,7 @@ class TestStdinIsGivenToCommandExecutor(unittest.TestCase):
             Arrangement.phase_agnostic(
                 os_services=test_setup.os_services_w_stdin_check,
                 symbols=test_setup.program_symbol.symbol_table,
+                tcds=TcdsArrangement(),
             ),
             MultiSourceExpectation.phase_agnostic(
                 symbol_usages=test_setup.program_symbol.usages_assertion,
@@ -557,7 +590,9 @@ class TestNonEmptyStdinViaExecution(unittest.TestCase):
             self,
             test_setup.program_that_checks_stdin__syntax('the contents of stdin'),
             Arrangement.phase_agnostic(
-                tcds_contents=test_setup.tcds_contents,
+                tcds=TcdsArrangement(
+                    tcds_contents=test_setup.tcds_contents,
+                ),
             ),
             Expectation.phase_agnostic(
                 main_result=result_assertions.equals(

@@ -1,7 +1,7 @@
 import os
 from contextlib import contextmanager
 from time import strftime, localtime
-from typing import ContextManager
+from typing import ContextManager, Optional
 
 from exactly_lib import program_info
 from exactly_lib.tcfs.sds import SandboxDs
@@ -51,7 +51,7 @@ class TcdsActionFromPlainTcdsAction(TcdsAction):
 class PlainTcdsActionFromTcdsAction(PlainTcdsAction):
     def __init__(self,
                  action: TcdsAction,
-                 symbols: SymbolTable,
+                 symbols: Optional[SymbolTable] = None,
                  ):
         self.symbols = symbols
         self.action = action
@@ -85,6 +85,10 @@ def tcds_with_act_as_curr_dir(
                 yield ret_val
 
 
-SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR = TcdsActionFromSdsAction(
+SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN = (
     mk_dir_and_change_to_it_inside_of_sds_but_outside_of_any_of_the_relativity_option_dirs()
+)
+
+SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR = TcdsActionFromSdsAction(
+    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN
 )

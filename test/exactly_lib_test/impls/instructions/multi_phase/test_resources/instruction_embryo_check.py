@@ -29,6 +29,7 @@ from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instru
     equivalent_source_variants__with_source_check__consume_last_line_2
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.tcfs.test_resources.ds_construction import tcds_with_act_as_curr_dir_3
 from exactly_lib_test.test_case.test_resources import instruction_settings as _instruction_settings
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_case.test_resources.settings_builder_assertions import SettingsBuilderAssertionModel
@@ -36,8 +37,6 @@ from exactly_lib_test.test_resources.source import abs_stx_utils
 from exactly_lib_test.test_resources.source import layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.layout import LayoutSpec
-from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
@@ -257,15 +256,7 @@ class _ExecutionChecker(Generic[T]):
         self.message_builder = asrt.MessageBuilder()
 
     def check(self, instruction: InstructionEmbryo[T]):
-        with tcds_with_act_as_curr_dir(
-                pre_contents_population_action=self.arrangement.pre_contents_population_action,
-                hds_contents=self.arrangement.hds_contents,
-                sds_contents=self.arrangement.sds_contents,
-                non_hds_contents=self.arrangement.non_hds_contents,
-                tcds_contents=self.arrangement.tcds_contents,
-                symbols=self.arrangement.symbols) as path_resolving_environment:
-            tcds = path_resolving_environment.tcds
-            self.arrangement.post_sds_population_action.apply(path_resolving_environment)
+        with tcds_with_act_as_curr_dir_3(self.arrangement.tcds) as tcds:
 
             environment_builder = InstructionEnvironmentPostSdsBuilder.new_tcds(
                 tcds,

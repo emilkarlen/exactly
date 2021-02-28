@@ -20,11 +20,11 @@ from exactly_lib_test.impls.types.test_resources.relativity_options import Relat
     SymbolsConfiguration
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
+from exactly_lib_test.tcfs.test_resources.ds_action import MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.tcfs.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
-from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
-    MkSubDirAndMakeItCurrentDirectory
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import TcdsActionFromPlainTcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
@@ -260,8 +260,11 @@ class InstructionChecker:
                     following_symbols_setup=following_symbols_setup)
 
 
-MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR = MkSubDirAndMakeItCurrentDirectory(
-    SdsSubDirResolverFromSdsFun(lambda sds: sds.root_dir / 'test-cwd'))
+MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR = TcdsActionFromPlainTcdsAction(
+    MkSubDirAndMakeItCurrentDirectory(
+        SdsSubDirResolverFromSdsFun(lambda sds: sds.root_dir / 'test-cwd')
+    )
+)
 
 
 def _symbol_table_of(sym_conf: SymbolsConfiguration,

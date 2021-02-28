@@ -22,13 +22,14 @@ from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_e
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly, dir_contains_exactly
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.source import custom_abstract_syntax as custom_abs_stx
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
+    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt, value_assertion as asrt
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_rest
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
@@ -67,7 +68,9 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
                         self,
                         instruction_syntax,
                         Arrangement.phase_agnostic(
-                            pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
+                            tcds=TcdsArrangement(
+                                pre_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN,
+                            ),
                         ),
                         MultiSourceExpectation.phase_agnostic(
                             main_result=IS_SUCCESS,
@@ -96,7 +99,9 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
                     self,
                     instruction_syntax,
                     Arrangement.phase_agnostic(
-                        pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
+                        tcds=TcdsArrangement(
+                            pre_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN,
+                        ),
                     ),
                     MultiSourceExpectation.phase_agnostic(
                         main_result=IS_SUCCESS,
@@ -127,7 +132,9 @@ class TestSymbolReferences(unittest.TestCase):
             self,
             instruction_syntax,
             Arrangement.phase_agnostic(
-                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
+                tcds=TcdsArrangement(
+                    pre_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN,
+                ),
                 symbols=dst_path_symbol.symbol_table,
             ),
             Expectation.phase_agnostic(
@@ -210,7 +217,9 @@ class TestSymbolReferences(unittest.TestCase):
             self,
             instruction_syntax,
             Arrangement.phase_agnostic(
-                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
+                tcds=TcdsArrangement(
+                    pre_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN,
+                ),
                 symbols=symbol_table,
             ),
             Expectation.phase_agnostic(

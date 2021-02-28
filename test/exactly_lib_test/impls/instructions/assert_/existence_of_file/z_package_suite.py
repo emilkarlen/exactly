@@ -41,6 +41,7 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.tcfs.test_resources.ds_action import MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangementPostAct
 from exactly_lib_test.tcfs.test_resources.path_arguments import symbol_path_argument, \
     path_argument
@@ -49,8 +50,7 @@ from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ArrangementPostAct2
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Link, \
     empty_dir_contents, File, Dir
-from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
-    MkSubDirAndMakeItCurrentDirectory
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import TcdsActionFromPlainTcdsAction
 from exactly_lib_test.test_resources.test_utils import NEA, NInpArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
@@ -649,8 +649,10 @@ UNACCEPTED_REL_OPT_CONFIGURATIONS = [
     rel_opt_conf.conf_rel_sds(RelSdsOptionType.REL_RESULT),
 ]
 
-MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR = MkSubDirAndMakeItCurrentDirectory(
-    SdsSubDirResolverFromSdsFun(lambda sds: sds.root_dir / 'test-cwd'))
-
+MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR = TcdsActionFromPlainTcdsAction(
+    MkSubDirAndMakeItCurrentDirectory(
+        SdsSubDirResolverFromSdsFun(lambda sds: sds.root_dir / 'test-cwd')
+    )
+)
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

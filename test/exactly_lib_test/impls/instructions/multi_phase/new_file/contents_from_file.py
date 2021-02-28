@@ -28,11 +28,12 @@ from exactly_lib_test.impls.types.test_resources.relativity_options import conf_
     conf_rel_non_hds, conf_rel_any, RelativityOptionConfigurationForRelNonHds, RelativityOptionConfiguration, \
     conf_rel_sds
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, File, Dir
 from exactly_lib_test.test_resources.source import custom_abstract_syntax as custom_abs_stx
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
+    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
@@ -116,8 +117,10 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                     instruction_syntax,
                     Arrangement.phase_agnostic(
                         symbols=symbols,
-                        hds_contents=src_file_rel_conf.populator_for_relativity_option_root__hds(
-                            DirContents([src_file]))
+                        tcds=TcdsArrangement(
+                            hds_contents=src_file_rel_conf.populator_for_relativity_option_root__hds(
+                                DirContents([src_file]))
+                        ),
                     ),
                     MultiSourceExpectation.phase_agnostic(
                         main_result=IS_SUCCESS,
@@ -209,9 +212,11 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                             self,
                             instruction_syntax,
                             Arrangement.phase_agnostic(
-                                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                                tcds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
-                                    DirContents([src_file]))
+                                tcds=TcdsArrangement(
+                                    pre_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN,
+                                    tcds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
+                                        DirContents([src_file]))
+                                ),
                             ),
                             MultiSourceExpectation.phase_agnostic(
                                 main_result=IS_SUCCESS,
@@ -261,9 +266,11 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                     self,
                     instruction_syntax,
                     Arrangement.phase_agnostic(
-                        pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                        tcds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
-                            DirContents([src_file])),
+                        tcds=TcdsArrangement(
+                            pre_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN,
+                            tcds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
+                                DirContents([src_file])),
+                        ),
                         symbols=symbols,
                     ),
                     MultiSourceExpectation.phase_agnostic(
@@ -350,9 +357,11 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                                 self,
                                 instruction_syntax,
                                 Arrangement.phase_agnostic(
-                                    pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                                    tcds_contents=src_file_rel_conf.populator_for_relativity_option_root(
-                                        actual_src_file_variant.value),
+                                    tcds=TcdsArrangement(
+                                        pre_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN,
+                                        tcds_contents=src_file_rel_conf.populator_for_relativity_option_root(
+                                            actual_src_file_variant.value),
+                                    ),
                                     symbols=symbols,
                                 ),
                                 expectation_,

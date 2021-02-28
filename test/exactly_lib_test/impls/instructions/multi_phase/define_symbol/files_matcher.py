@@ -31,6 +31,7 @@ from exactly_lib_test.impls.types.test_resources.relativity_options import Relat
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -194,7 +195,14 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
             with self.subTest(case.name):
                 # ACT & ASSERT #
-                INSTRUCTION_CHECKER.check(self, source, Arrangement.phase_agnostic(), expectation)
+                INSTRUCTION_CHECKER.check(
+                    self,
+                    source,
+                    Arrangement.phase_agnostic(
+                        tcds=TcdsArrangement()
+                    ),
+                    expectation,
+                )
 
     @staticmethod
     def _not_num_files_beginning_with_a_eq_1_arg() -> str:

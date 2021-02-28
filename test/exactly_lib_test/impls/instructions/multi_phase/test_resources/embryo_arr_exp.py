@@ -21,10 +21,8 @@ from exactly_lib_test.execution.test_resources.predefined_properties import get_
 from exactly_lib_test.impls.test_resources.validation import validation as validation_utils
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions, ValidationResultAssertion
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.tcfs.test_resources import hds_populators, sds_populator, non_hds_populator, tcds_populators
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_case.test_resources.settings_builder_assertions import SettingsBuilderAssertionModel
-from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import TcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
@@ -68,59 +66,38 @@ class SetupSettingsArr:
         )
 
 
-class Arrangement(ArrangementWithSds):
+class Arrangement:
     def __init__(self,
-                 pre_contents_population_action: TcdsAction = TcdsAction(),
-                 hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
-                 sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
-                 non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
-                 tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
-                 os_services: OsServices = os_services_access.new_for_current_os(),
-                 process_execution_settings: ProcessExecutionSettings = proc_exe_env_for_test(),
-                 default_environ_getter: DefaultEnvironGetter = get_empty_environ,
-                 post_sds_population_action: TcdsAction = TcdsAction(),
-                 symbols: SymbolTable = None,
-                 fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
-                 setup_settings: Optional[SetupSettingsArr] = None,
+                 tcds: Optional[TcdsArrangement],
+                 os_services: OsServices,
+                 process_execution_settings: ProcessExecutionSettings,
+                 default_environ_getter: DefaultEnvironGetter,
+                 symbols: Optional[SymbolTable],
+                 fs_location_info: FileSystemLocationInfo,
+                 setup_settings: Optional[SetupSettingsArr],
                  ):
-        super().__init__(hds_contents=hds_contents,
-                         process_execution_settings=process_execution_settings,
-                         default_environ_getter=default_environ_getter)
-        self.pre_contents_population_action = pre_contents_population_action
-        self.sds_contents = sds_contents
-        self.non_hds_contents = non_hds_contents
-        self.tcds_contents = tcds_contents
-        self.post_sds_population_action = post_sds_population_action
+        self.tcds = tcds
         self.os_services = os_services
         self.process_execution_settings = process_execution_settings
         self.setup_settings = setup_settings
         self.symbols = symbol_table_from_none_or_value(symbols)
+        self.default_environ_getter = default_environ_getter
         self.fs_location_info = fs_location_info
 
     @staticmethod
     def phase_agnostic(
-            pre_contents_population_action: TcdsAction = TcdsAction(),
-            hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
-            sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
-            non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
-            tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
+            tcds: Optional[TcdsArrangement] = None,
             os_services: OsServices = os_services_access.new_for_current_os(),
             process_execution_settings: ProcessExecutionSettings = proc_exe_env_for_test(),
             default_environ_getter: DefaultEnvironGetter = get_empty_environ,
-            post_sds_population_action: TcdsAction = TcdsAction(),
-            symbols: SymbolTable = None,
+            symbols: Optional[SymbolTable] = None,
             fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
     ) -> 'Arrangement':
         return Arrangement(
-            pre_contents_population_action,
-            hds_contents,
-            sds_contents,
-            non_hds_contents,
-            tcds_contents,
+            tcds,
             os_services,
             process_execution_settings,
             default_environ_getter,
-            post_sds_population_action,
             symbols,
             fs_location_info,
             None,
@@ -128,29 +105,19 @@ class Arrangement(ArrangementWithSds):
 
     @staticmethod
     def setup_phase_aware(
-            pre_contents_population_action: TcdsAction = TcdsAction(),
-            hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
-            sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
-            non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
-            tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
+            tcds: Optional[TcdsArrangement] = None,
             setup_settings: Optional[SetupSettingsArr] = None,
             os_services: OsServices = os_services_access.new_for_current_os(),
             process_execution_settings: ProcessExecutionSettings = proc_exe_env_for_test(),
             default_environ_getter: DefaultEnvironGetter = get_empty_environ,
-            post_sds_population_action: TcdsAction = TcdsAction(),
-            symbols: SymbolTable = None,
+            symbols: Optional[SymbolTable] = None,
             fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
     ) -> 'Arrangement':
         return Arrangement(
-            pre_contents_population_action,
-            hds_contents,
-            sds_contents,
-            non_hds_contents,
-            tcds_contents,
+            tcds,
             os_services,
             process_execution_settings,
             default_environ_getter,
-            post_sds_population_action,
             symbols,
             fs_location_info,
             setup_settings,

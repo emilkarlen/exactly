@@ -22,13 +22,14 @@ from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_e
 from exactly_lib_test.impls.types.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.tcfs.test_resources.format_rel_option import format_rel_options
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import File, Dir
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
+    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -85,7 +86,9 @@ class TestSuccessfulScenariosWithNoContents(unittest.TestCase):
                         self,
                         instruction_syntax,
                         Arrangement.phase_agnostic(
-                            pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
+                            tcds=TcdsArrangement(
+                                pre_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN,
+                            ),
                         ),
                         MultiSourceExpectation.phase_agnostic(
                             main_result=IS_SUCCESS,
@@ -115,7 +118,9 @@ class TestSuccessfulScenariosWithNoContents(unittest.TestCase):
                         self,
                         instruction_syntax,
                         Arrangement.phase_agnostic(
-                            pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
+                            tcds=TcdsArrangement(
+                                pre_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN,
+                            ),
                         ),
                         MultiSourceExpectation.phase_agnostic(
                             main_result=IS_SUCCESS,
@@ -143,10 +148,12 @@ class TestSuccessfulScenariosWithNoContents(unittest.TestCase):
                         self,
                         instruction_syntax,
                         Arrangement.phase_agnostic(
-                            pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                            non_hds_contents=rel_opt_conf.populator_for_relativity_option_root__non_hds(
-                                fs.DirContents([Dir.empty(sub_dir_name)])
-                            )
+                            tcds=TcdsArrangement(
+                                pre_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN,
+                                non_hds_contents=rel_opt_conf.populator_for_relativity_option_root__non_hds(
+                                    fs.DirContents([Dir.empty(sub_dir_name)])
+                                ),
+                            ),
                         ),
                         MultiSourceExpectation.phase_agnostic(
                             main_result=IS_SUCCESS,

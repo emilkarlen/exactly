@@ -23,6 +23,7 @@ from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_e
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.tcfs.test_resources import tcds_populators
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.tcfs.test_resources.format_rel_option import format_rel_options
 from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgument
 from exactly_lib_test.tcfs.test_resources.sds_populator import contents_in
@@ -155,10 +156,12 @@ class TestParse(unittest.TestCase):
                             self,
                             path_argument.as_str,
                             Arrangement.phase_agnostic(
-                                tcds_contents=tcds_populators.TcdsPopulatorForRelOptionType(
-                                    relativity,
-                                    DirContents([Dir.empty(case.expected_value)])
-                                )
+                                tcds=TcdsArrangement(
+                                    tcds_contents=tcds_populators.TcdsPopulatorForRelOptionType(
+                                        relativity,
+                                        DirContents([Dir.empty(case.expected_value)])
+                                    )
+                                ),
                             ),
                             MultiSourceExpectation.phase_agnostic(
                                 side_effects_on_tcds=CwdAssertion(

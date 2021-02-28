@@ -30,6 +30,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import path_arguments
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments, \
     CommandExecutorThatRaisesHardError, CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
@@ -215,8 +216,9 @@ class TestHardErrorFromExecution(unittest.TestCase):
                 os_services=os_services_access.new_for_cmd_exe(
                     CommandExecutorThatRaisesHardError(
                         asrt_text_doc.new_single_string_text_for_test('the error message')
-                    )
+                    ),
                 ),
+                tcds=TcdsArrangement(),
             ),
             MultiSourceExpectation.phase_agnostic(
                 main_raises_hard_error=True
@@ -237,6 +239,7 @@ class TestNonZeroExitCodeFromExecution(unittest.TestCase):
             ).as_str,
             Arrangement.phase_agnostic(
                 os_services=os_services_access.new_for_cmd_exe(executor),
+                tcds=TcdsArrangement(),
             ),
             MultiSourceExpectation.phase_agnostic(
                 main_result=result_assertions.equals(executor.constant_return_value,
@@ -260,7 +263,8 @@ class TestContentsOfStdinShouldBeEmpty(unittest.TestCase):
                     exe_file.name,
                 ).as_remaining_source,
                 Arrangement.phase_agnostic(
-                    process_execution_settings=proc_exe_env_for_test(environ=env)
+                    process_execution_settings=proc_exe_env_for_test(environ=env),
+                    tcds=TcdsArrangement(),
                 ),
                 Expectation.phase_agnostic_2(
                     source=asrt_source.source_is_at_end,
@@ -310,6 +314,7 @@ def check_successful_execution(put: unittest.TestCase,
         Arrangement.phase_agnostic(
             os_services=os_services_access.new_for_cmd_exe(executor_that_records_arguments),
             symbols=symbols,
+            tcds=TcdsArrangement(),
         ),
         MultiSourceExpectation.phase_agnostic(
             symbol_usages=symbol_usages,
