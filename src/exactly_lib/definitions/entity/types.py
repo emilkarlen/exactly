@@ -125,7 +125,7 @@ PROGRAM_TYPE_INFO = name_and_ref_target(
 
 FILES_CONDITION_TYPE_INFO = name_and_ref_target(
     ValueType.FILES_CONDITION,
-    TypeCategory.DATA,
+    TypeCategory.LOGIC,
     a_name_with_plural_s('files-condition'),
     'A condition of existence of a set of named files',
 )

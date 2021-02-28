@@ -69,11 +69,11 @@ def header_only_item(header_str_or_text: StrOrText) -> lists.HeaderContentListIt
     return list_item(header_str_or_text, [])
 
 
-def para(str_or_text) -> ParagraphItem:
+def para(str_or_text: StrOrText) -> ParagraphItem:
     return Paragraph([text_from_unknown(str_or_text)])
 
 
-def paras(str_or_text) -> List[ParagraphItem]:
+def paras(str_or_text: StrOrText) -> List[ParagraphItem]:
     """
     :type str_or_text: Either str or Text
     Singleton list of Paragraph.
@@ -94,7 +94,7 @@ def str_text(x: StrOrStringText) -> StringText:
     return StringText(x) if isinstance(x, str) else x
 
 
-def cross_reference(title_str_or_string_text,
+def cross_reference(title_str_or_string_text: StrOrText,
                     target: CrossReferenceTarget,
                     target_is_id_in_same_document: bool = True,
                     allow_rendering_of_visible_extra_target_text: bool = True) -> ConcreteText:

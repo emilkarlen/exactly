@@ -1,5 +1,5 @@
 from exactly_lib import program_info
-from exactly_lib.definitions import formatting, type_system, misc_texts
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions import test_case_file_structure
 from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.formatting import InstructionName
@@ -40,8 +40,7 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
 
         'act_hds_conf_param': formatting.conf_param(test_case_file_structure.HDS_ACT_INFO.identifier),
 
-        'data': type_system.DATA_TYPE_CATEGORY_NAME,
-        'path_type': formatting.term(types.PATH_TYPE_INFO.singular_name),
+        'path_type': types.PATH_TYPE_INFO.name,
 
         'symbol_concept': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
         'def_instruction': InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
@@ -50,6 +49,7 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
         'env_var': concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.name,
         'timeout': concepts.TIMEOUT_CONCEPT_INFO.name,
         'timeout_instruction': InstructionName(instruction_names.TIMEOUT_INSTRUCTION_NAME),
+        'type': concepts.TYPE_CONCEPT_INFO.name,
         'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
 
         'relativity': formatting.concept(misc_texts.RELATIVITY.singular),
@@ -217,17 +217,17 @@ They can be changed by the {conf_phase} phase.
 ############################################################
 _FILE_REFERENCES = """\
 {program_name} has functionality for referencing files in the
-{TCDS} using the {path_type} type.
+{TCDS} using the {path_type:/q} {type}.
 
 
-The {path_type} {data} type has syntax for expressing paths relative to any of the {TCDS} directories.
+The {path_type:/q} {type} has syntax for expressing paths relative to any of the {TCDS} directories.
   
 
-The directory that a {path_type} value is relative to is called the
+The directory that {path_type:a/q} value is relative to is called the
 {relativity} of the value.
 
 
-Arguments to instructions that are paths use the {path_type} {data} type.
+Arguments to {instruction:s} that are paths use the {path_type:/q} {type}.
 
 Each argument have different accepted {relativities}
 and

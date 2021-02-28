@@ -21,9 +21,9 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 from exactly_lib.util.textformat.utils import append_section_if_contents_is_non_empty
 
-LOGIC_TYPES_HEADER = type_system.LOGIC_TYPE_CATEGORY_NAME.capitalize() + ' types'
+LOGIC_TYPES_HEADER = type_system.LOGIC_TYPE_CATEGORY_NAME.capitalize()
 
-DATA_TYPES_HEADER = type_system.DATA_TYPE_CATEGORY_NAME.capitalize() + ' types'
+DATA_TYPES_HEADER = type_system.DATA_TYPE_CATEGORY_NAME.capitalize()
 
 _PARTITIONS_SETUP = [
     pes.PartitionSetup(pes.PartitionNamesSetup('data-type',

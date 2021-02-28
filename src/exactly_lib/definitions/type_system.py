@@ -9,8 +9,8 @@ from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.util.str_.name import NumberOfItemsString, Name, NameWithGender, NameWithGenderWithFormatting
 from exactly_lib.util.textformat.structure.core import StringText
 
-DATA_TYPE_CATEGORY_NAME = 'data'
-LOGIC_TYPE_CATEGORY_NAME = 'logic'
+DATA_TYPE_CATEGORY_NAME = 'Data types'
+LOGIC_TYPE_CATEGORY_NAME = 'Types involving logic'
 
 LIST_ELEMENT = 'ELEMENT'
 NUMBER_OF_LIST_ELEMENTS = NumberOfItemsString(Name.new_with_plural_s('element'))
@@ -20,6 +20,7 @@ NUMBER_OF_STRING_CHARACTERS = NumberOfItemsString(Name.new_with_plural_s('charac
 
 @enum.unique
 class TypeCategory(Enum):
+    """Type categories, in display order"""
     DATA = 1
     LOGIC = 2
 
