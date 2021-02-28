@@ -1,9 +1,15 @@
+from abc import ABC
+
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 
 
-class SectionHeaderAbStx(AbstractSyntax):
+class SectionDocElementAbStx(AbstractSyntax, ABC):
+    pass
+
+
+class SectionHeaderAbStx(SectionDocElementAbStx):
     def __init__(self, name: str):
         self._name = name
 
@@ -13,7 +19,7 @@ class SectionHeaderAbStx(AbstractSyntax):
         )
 
 
-class NamedInstruction(AbstractSyntax):
+class NamedInstruction(SectionDocElementAbStx):
     def __init__(self,
                  name: str,
                  argument: AbstractSyntax,

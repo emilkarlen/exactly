@@ -2,14 +2,14 @@ from typing import Optional
 
 from exactly_lib.definitions import logic
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib_test.impls.instructions.test_resources.abstract_syntax import InstructionArgsAbsStx
 from exactly_lib_test.test_resources.source import layout
-from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.abstract_syntax import FileMatcherAbsStx
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 
 
-class InstructionArguments(AbstractSyntax):
+class InstructionArguments(InstructionArgsAbsStx):
     def __init__(self,
                  path: PathAbsStx,
                  expectation_type: ExpectationType = ExpectationType.POSITIVE,

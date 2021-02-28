@@ -5,8 +5,8 @@ from exactly_lib.impls.instructions.multi_phase.environ import defs
 from exactly_lib.impls.instructions.multi_phase.environ.impl import Phase
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType
+from exactly_lib_test.impls.instructions.test_resources.abstract_syntax import InstructionArgsAbsStx
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
-from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.source.token_sequences import OptionWMandatoryValue
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
@@ -20,7 +20,7 @@ _PHASE_SPEC_VALUES = {
 }
 
 
-class InstructionArgumentsAbsStx(AbstractSyntax, ABC):
+class InstructionArgumentsAbsStx(InstructionArgsAbsStx, ABC):
     def __init__(self, phase_spec: Optional[Phase]):
         self.phase_spec = phase_spec
 

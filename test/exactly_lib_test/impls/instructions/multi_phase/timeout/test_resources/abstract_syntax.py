@@ -1,5 +1,5 @@
 from exactly_lib.impls.instructions.multi_phase.timeout import defs
-from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
+from exactly_lib_test.impls.instructions.test_resources.abstract_syntax import InstructionArgsAbsStx
 from exactly_lib_test.test_resources.source.abstract_syntax_impls import CustomAbsStx
 from exactly_lib_test.test_resources.source.custom_abstract_syntax import SequenceAbsStx
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
@@ -8,7 +8,7 @@ from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax
     MISSING_END_QUOTE__SOFT
 
 
-class InstructionArgumentsAbsStx(AbstractSyntax):
+class InstructionArgumentsAbsStx(InstructionArgsAbsStx):
     def __init__(self, value: StringAbsStx):
         self._value = value
 

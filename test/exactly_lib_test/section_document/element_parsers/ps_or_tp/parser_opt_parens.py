@@ -10,6 +10,7 @@ from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.test_case import reserved_words
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__for_expr_parse__s__nsc, NSourceCase
@@ -242,10 +243,10 @@ class _ExprWithinParenthesesAbsStx(AbstractSyntax):
     def tokenization(self) -> TokenSequence:
         return TokenSequence.sequence([
             layout.OPTIONAL_NEW_LINE,
-            '(',
+            reserved_words.PAREN_BEGIN,
             self._plain_expt,
             layout.OPTIONAL_NEW_LINE,
-            ')',
+            reserved_words.PAREN_END,
         ])
 
 

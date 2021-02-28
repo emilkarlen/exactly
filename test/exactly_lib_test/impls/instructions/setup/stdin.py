@@ -8,6 +8,7 @@ from exactly_lib_test.common.help.test_resources.check_documentation import suit
 from exactly_lib_test.impls.instructions.setup.test_resources import instruction_check
 from exactly_lib_test.impls.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation, MultiSourceExpectation
+from exactly_lib_test.impls.instructions.test_resources.abstract_syntax import InstructionArgsAbsStx
 from exactly_lib_test.impls.test_resources import abstract_syntaxes
 from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfFileAbsStx, \
@@ -18,7 +19,6 @@ from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_con
 from exactly_lib_test.test_case.test_resources import settings_builder_assertions as asrt_settings
 from exactly_lib_test.test_case.test_resources.settings_builder_assertions import SettingsBuilderAssertionModel
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
-from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
@@ -298,7 +298,7 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
         )
 
 
-class InstructionAbsStx(AbstractSyntax):
+class InstructionAbsStx(InstructionArgsAbsStx):
     def __init__(self, value: StringSourceAbsStx):
         self._value = value
 

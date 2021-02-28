@@ -3,9 +3,10 @@ from abc import ABC
 from exactly_lib_test.symbol.test_resources import token_sequences
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
+from exactly_lib_test.type_val_deps.test_resources.abstract_syntax import DataTypeAbsStx
 
 
-class StringAbsStx(AbstractSyntax, ABC):
+class StringAbsStx(DataTypeAbsStx, ABC):
     pass
 
 
