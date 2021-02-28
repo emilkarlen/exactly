@@ -10,11 +10,11 @@ from exactly_lib_test.test_resources.source.layout import LayoutAble, LayoutSpec
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence, Token
 from exactly_lib_test.type_val_deps.types.string_.test_resources import here_doc
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx, \
-    NonHereDocStringAbsStx
+    StringOrHereDocStringAbsStx
 from exactly_lib_test.util.test_resources import quoting
 
 
-class StringLiteralAbsStx(NonHereDocStringAbsStx):
+class StringLiteralAbsStx(StringAbsStx):
     def __init__(self,
                  value: str,
                  quoting_: Optional[QuoteType] = None,
@@ -54,8 +54,8 @@ MISSING_END_QUOTE__SOFT = StringLiteralAbsStx(MISSING_END_QUOTE_STR__SOFT)
 MISSING_END_QUOTE__HARD = StringLiteralAbsStx(MISSING_END_QUOTE_STR__HARD)
 
 
-class StringConcatAbsStx(NonHereDocStringAbsStx):
-    def __init__(self, fragments: Sequence[NonHereDocStringAbsStx]):
+class StringConcatAbsStx(StringAbsStx):
+    def __init__(self, fragments: Sequence[StringAbsStx]):
         if not fragments:
             raise ValueError('Concatenation must contain at least 1 fragment:' + str(len(fragments)))
         self.fragments = fragments
@@ -67,7 +67,15 @@ class StringConcatAbsStx(NonHereDocStringAbsStx):
         ])
 
 
-class StringHereDocAbsStx(StringAbsStx):
+class StringOrHereDocOfStringAbsStx(StringOrHereDocStringAbsStx):
+    def __init__(self, string: StringAbsStx):
+        self._string = string
+
+    def tokenization(self) -> TokenSequence:
+        return self._string.tokenization()
+
+
+class StringHereDocAbsStx(StringOrHereDocStringAbsStx):
     def __init__(self,
                  new_line_ended_value: str,
                  marker: str = 'EOF',
@@ -95,7 +103,7 @@ class StringHereDocAbsStx(StringAbsStx):
         ])
 
 
-class StringSymbolAbsStx(NonHereDocStringAbsStx):
+class StringSymbolAbsStx(StringAbsStx):
     def __init__(self, symbol_name: str):
         self.symbol_name = symbol_name
 

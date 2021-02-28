@@ -5,14 +5,14 @@ from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentsAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
-from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import NonHereDocStringAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
 
 
 class RawSystemCommandLineAbsStx(AbstractSyntax):
     """A system command, without the leading sys-cmd-token used by "full" programs."""
 
     def __init__(self,
-                 system_command: NonHereDocStringAbsStx,
+                 system_command: StringAbsStx,
                  arguments: Sequence[ArgumentAbsStx] = (),
                  ):
         self.system_command = system_command

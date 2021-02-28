@@ -10,7 +10,7 @@ from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
-from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import NonHereDocStringAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringHereDocAbsStx
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx, \
     TransformableStringSourceAbsStx
@@ -59,7 +59,7 @@ class CustomStringSourceAbsStx(StringSourceAbsStx):
 
 
 class StringSourceOfStringAbsStx(TransformableStringSourceAbsStx):
-    def __init__(self, string: NonHereDocStringAbsStx):
+    def __init__(self, string: StringAbsStx):
         self.string = string
 
     @staticmethod

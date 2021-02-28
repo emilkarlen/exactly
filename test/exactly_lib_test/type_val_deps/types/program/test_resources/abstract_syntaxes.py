@@ -12,7 +12,7 @@ from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_st
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
     ArgumentOfExistingPathAbsStx, ArgumentsAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
-from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import NonHereDocStringAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
     StringTransformerAbsStx
@@ -110,7 +110,7 @@ class ProgramOfExecutableFileCommandLineAbsStx(PgmAndArgsAbsStx):
 
 class ProgramOfSystemCommandLineAbsStx(PgmAndArgsAbsStx):
     def __init__(self,
-                 system_command: NonHereDocStringAbsStx,
+                 system_command: StringAbsStx,
                  arguments: Sequence[ArgumentAbsStx] = (),
                  ):
         self.system_command = system_command
@@ -159,7 +159,7 @@ class ProgramOfPythonInterpreterAbsStx(PgmAndArgsAbsStx):
 
 
 class ProgramOfShellCommandLineAbsStx(PgmAndArgsAbsStx):
-    def __init__(self, command_line: NonHereDocStringAbsStx):
+    def __init__(self, command_line: StringAbsStx):
         self.command_line = command_line
 
     @staticmethod

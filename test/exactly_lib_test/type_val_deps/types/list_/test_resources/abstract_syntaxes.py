@@ -4,11 +4,11 @@ from exactly_lib.util.parse.token import QuoteType
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.list_.test_resources.abstract_syntax import ListAbsStx, ListElementAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
-from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import NonHereDocStringAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
 
 
 class ListElementStringAbsStx(ListElementAbsStx):
-    def __init__(self, string: NonHereDocStringAbsStx):
+    def __init__(self, string: StringAbsStx):
         self.string = string
 
     @staticmethod
@@ -39,7 +39,7 @@ class NonEmptyListAbsStx(ListAbsStx):
         return NonEmptyListAbsStx((element,))
 
     @staticmethod
-    def singleton_string(element: NonHereDocStringAbsStx) -> 'NonEmptyListAbsStx':
+    def singleton_string(element: StringAbsStx) -> 'NonEmptyListAbsStx':
         return NonEmptyListAbsStx.singleton(ListElementStringAbsStx(element))
 
     @staticmethod

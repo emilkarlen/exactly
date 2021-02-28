@@ -21,7 +21,7 @@ from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_a
     symbol_usage_equals_data_type_symbol_reference
 from exactly_lib_test.type_val_deps.types.string_.test_resources import reference_assertions
 from exactly_lib_test.type_val_deps.types.string_.test_resources import sdv_assertions as asrt_value
-from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import NonHereDocStringAbsStx, \
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx, \
     StringReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.string_sdvs import \
     string_sdv_of_single_symbol_reference
@@ -174,7 +174,7 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
         return SymbolReferenceArgument(self.name)
 
     @property
-    def abstract_syntax(self) -> NonHereDocStringAbsStx:
+    def abstract_syntax(self) -> StringAbsStx:
         return StringReferenceAbsStx(self._name)
 
     def reference__path_or_string(self, accepted_relativities: PathRelativityVariants) -> SymbolReference:

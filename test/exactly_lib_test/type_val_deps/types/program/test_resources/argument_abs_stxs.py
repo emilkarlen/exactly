@@ -10,7 +10,7 @@ from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
-from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import NonHereDocStringAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
 
 
 class ArgumentOfSymbolReferenceAbsStx(ArgumentAbsStx):
@@ -22,7 +22,7 @@ class ArgumentOfSymbolReferenceAbsStx(ArgumentAbsStx):
 
 
 class ArgumentOfStringAbsStx(ArgumentAbsStx):
-    def __init__(self, string: NonHereDocStringAbsStx):
+    def __init__(self, string: StringAbsStx):
         self.string = string
 
     @staticmethod
@@ -42,7 +42,7 @@ class ArgumentOfStringAbsStx(ArgumentAbsStx):
 
 
 class ArgumentOfTextUntilEndOfLineAbsStx(ArgumentAbsStx):
-    def __init__(self, text_until_end_of_line: NonHereDocStringAbsStx):
+    def __init__(self, text_until_end_of_line: StringAbsStx):
         self.text_until_end_of_line = text_until_end_of_line
 
     @staticmethod

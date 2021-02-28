@@ -11,7 +11,7 @@ from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSynta
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
-from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import NonHereDocStringAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx
 
 
@@ -72,7 +72,7 @@ class PathStringAbsStx(PathAbsStx):
 class PathWRelativityAbsStx(PathAbsStx, ABC):
     def __init__(self,
                  relativity: RelativityAbsStx,
-                 name: NonHereDocStringAbsStx,
+                 name: StringAbsStx,
                  ):
         self._relativity = relativity
         self._name_abs_stx = name
@@ -94,7 +94,7 @@ def file_name_from_components__str(components: Sequence[str]) -> str:
 
 def file_name_from_components(components: Sequence[str],
                               quoting: Optional[QuoteType] = None,
-                              ) -> NonHereDocStringAbsStx:
+                              ) -> StringAbsStx:
     return StringLiteralAbsStx(file_name_from_components__str(components),
                                quoting)
 

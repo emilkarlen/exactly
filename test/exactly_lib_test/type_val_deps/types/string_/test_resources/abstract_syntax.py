@@ -9,11 +9,11 @@ class StringAbsStx(AbstractSyntax, ABC):
     pass
 
 
-class NonHereDocStringAbsStx(StringAbsStx, ABC):
+class StringOrHereDocStringAbsStx(AbstractSyntax, ABC):
     pass
 
 
-class StringReferenceAbsStx(NonHereDocStringAbsStx):
+class StringReferenceAbsStx(StringAbsStx):
     def __init__(self, symbol_name: str):
         self._symbol_name = symbol_name
 
