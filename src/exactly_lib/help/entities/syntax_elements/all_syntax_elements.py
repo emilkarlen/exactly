@@ -1,5 +1,4 @@
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.definitions.type_system import TypeCategory
 from exactly_lib.help.entities.syntax_elements.contents_structure import for_type_with_grammar
 from exactly_lib.help.entities.syntax_elements.objects import here_document, regex, glob_pattern, \
     type_string, type_list, type_path, type_program, symbol_name, symbol_reference, \
@@ -27,32 +26,25 @@ ALL_SYNTAX_ELEMENT_DOCS = (
     type_list.DOCUMENTATION,
     type_path.DOCUMENTATION,
 
-    for_type_with_grammar(TypeCategory.LOGIC,
-                          syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT,
+    for_type_with_grammar(syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT,
                           parse_integer_matcher.GRAMMAR),
 
-    for_type_with_grammar(TypeCategory.LOGIC,
-                          syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
+    for_type_with_grammar(syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
                           parse_file_matcher.GRAMMAR),
 
-    for_type_with_grammar(TypeCategory.LOGIC,
-                          syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT,
+    for_type_with_grammar(syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT,
                           parse_files_matcher.GRAMMAR),
 
-    for_type_with_grammar(TypeCategory.LOGIC,
-                          syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
+    for_type_with_grammar(syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
                           parse_string_matcher.GRAMMAR),
 
-    for_type_with_grammar(TypeCategory.LOGIC,
-                          syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
+    for_type_with_grammar(syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
                           parse_line_matcher.GRAMMAR),
 
-    for_type_with_grammar(TypeCategory.LOGIC,
-                          syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
+    for_type_with_grammar(syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
                           parse_string_transformer.GRAMMAR),
 
-    for_type_with_grammar(TypeCategory.DATA,
-                          syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT,
+    for_type_with_grammar(syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT,
                           parse_files_condition.GRAMMAR),
 
     type_program.DOCUMENTATION,
