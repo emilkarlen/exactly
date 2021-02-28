@@ -1,0 +1,32 @@
+[setup]
+
+
+file hypothetical-output-from-sut.txt =
+<<EOF
+timing 00:01 begin
+Not interesting for the moment 1
+timing 01:10 preprocessing
+Not interesting for the moment 2
+timing 02:20 validation
+timing 03:30 execution
+timing 04:40 end
+Not interesting for the moment 3
+EOF
+
+
+[assert]
+
+
+def string TIMESTAMP_RE = [0-9]{2}:[0-9]{2}
+
+contents hypothetical-output-from-sut.txt :
+  -transformed-by
+    grep ^timing
+    matches -full
+<<EOF
+timing @[TIMESTAMP_RE]@ begin
+timing @[TIMESTAMP_RE]@ preprocessing
+timing @[TIMESTAMP_RE]@ validation
+timing @[TIMESTAMP_RE]@ execution
+timing @[TIMESTAMP_RE]@ end
+EOF

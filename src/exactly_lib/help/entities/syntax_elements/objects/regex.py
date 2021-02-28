@@ -1,6 +1,6 @@
 from exactly_lib.common.help.see_also import SeeAlsoUrlInfo
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, cli_argument_syntax_element_description
-from exactly_lib.definitions.argument_rendering import cl_syntax
+from exactly_lib.common.help.syntax_contents_structure import cli_argument_syntax_element_description, \
+    invokation_variant_from_args
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation
 from exactly_lib.impls.types.regex import parse_regex
@@ -12,9 +12,11 @@ _IGNORE_CASE_ARGUMENT = a.Option(parse_regex.IGNORE_CASE_OPTION_NAME)
 _CL_ARGUMENTS = [
     a.Single(a.Multiplicity.OPTIONAL,
              _IGNORE_CASE_ARGUMENT),
-    a.Single(a.Multiplicity.MANDATORY,
-             syntax_elements.STRING_SYNTAX_ELEMENT.argument),
-
+    a.Choice.of_multiple_single_argument_choices(
+        a.Multiplicity.MANDATORY,
+        (syntax_elements.STRING_SYNTAX_ELEMENT.argument,
+         syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.argument,)
+    ),
 ]
 
 SEE_ALSO_URL_INFO = SeeAlsoUrlInfo('Python regular expressions',
@@ -30,9 +32,7 @@ DOCUMENTATION = syntax_element_documentation(
     [],
     (),
     [
-        InvokationVariant(
-            cl_syntax.cl_syntax_for_args(_CL_ARGUMENTS)
-        ),
+        invokation_variant_from_args(_CL_ARGUMENTS),
     ],
     [
         cli_argument_syntax_element_description(_IGNORE_CASE_ARGUMENT,
@@ -40,6 +40,7 @@ DOCUMENTATION = syntax_element_documentation(
     ],
     [
         syntax_elements.STRING_SYNTAX_ELEMENT.cross_reference_target,
+        syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.cross_reference_target,
         SEE_ALSO_URL_INFO,
     ]
 )

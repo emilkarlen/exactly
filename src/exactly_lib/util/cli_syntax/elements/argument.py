@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Sequence, List
+from typing import Sequence
 
 
 class Argument:
@@ -203,25 +203,31 @@ class Choice(ArgumentUsage):
 
     def __init__(self,
                  multiplicity: Multiplicity,
-                 choices: List[List[Argument]]):
+                 choices: Sequence[Sequence[Argument]]):
         super().__init__(multiplicity)
         self._choices = choices
 
     @staticmethod
     def of_single_argument_choices(
             multiplicity: Multiplicity,
-            choices: List[Argument]) -> 'Choice':
+            choices: Sequence[Argument]) -> 'Choice':
         return Choice(multiplicity,
                       [[argument] for argument in choices])
 
     @staticmethod
     def of_multiple_argument_choices(
             multiplicity: Multiplicity,
-            choices: List[List[Argument]]) -> 'Choice':
+            choices: Sequence[Sequence[Argument]]) -> 'Choice':
         return Choice(multiplicity, choices)
 
+    @staticmethod
+    def of_multiple_single_argument_choices(
+            multiplicity: Multiplicity,
+            choices: Sequence[Argument]) -> 'Choice':
+        return Choice(multiplicity, [(choice,) for choice in choices])
+
     @property
-    def choices(self) -> List[List[Argument]]:
+    def choices(self) -> Sequence[Sequence[Argument]]:
         return self._choices
 
     def __str__(self):
