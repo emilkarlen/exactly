@@ -2,6 +2,7 @@ import collections
 import enum
 from enum import Enum
 from types import MappingProxyType
+from typing import Iterable, Tuple
 
 
 @enum.unique
@@ -42,4 +43,16 @@ VALUE_TYPE_2_W_STR_RENDERING_TYPE = MappingProxyType(
     ]
     ))
 
-VALUE_TYPES_W_STR_RENDERING = tuple(VALUE_TYPE_2_W_STR_RENDERING_TYPE.keys())
+
+def sorted_types(values: Iterable[ValueType]) -> Tuple[ValueType, ...]:
+    return tuple(
+        sorted(values,
+               key=_value_type_sorting_key)
+    )
+
+
+def _value_type_sorting_key(x: ValueType) -> int:
+    return x.value
+
+
+VALUE_TYPES_W_STR_RENDERING = sorted_types(VALUE_TYPE_2_W_STR_RENDERING_TYPE.keys())

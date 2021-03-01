@@ -1,5 +1,4 @@
-from exactly_lib.common.help.documentation_text import POSIX_SYNTAX
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.current_directory_and_path_type import path_type_path_rendering
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import types, syntax_elements
@@ -18,17 +17,13 @@ and for the {run} instruction, e.g.
 """
 
 _STRING_MAIN_DESCRIPTION_REST = """\
-Used for arbitrary {string_type} values, and relative file names.
- 
- 
-When used as a relative file name, {POSIX_SYNTAX} should be used.
+Used for arbitrary {plain_string} values, relative file names etc.
 """
 
 _TEXT_PARSER = TextParser({
     'run': InstructionName(instruction_names.RUN_INSTRUCTION_NAME),
-    'POSIX_SYNTAX': POSIX_SYNTAX,
     'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
-    'string_type': types.STRING_TYPE_INFO.name,
+    'plain_string': misc_texts.PLAIN_STRING,
 })
 
 STRING_DOCUMENTATION = TypeDocumentation(types.STRING_TYPE_INFO,

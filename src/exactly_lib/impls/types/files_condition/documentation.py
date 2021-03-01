@@ -56,9 +56,6 @@ def _constant_sed(name: str) -> SyntaxElementDescription:
     )
 
 
-_FILE_NAME = a.Single(a.Multiplicity.MANDATORY,
-                      a.Named(syntax.FILE_NAME))
-
 _CONSTANT_SYNTAX_ELEMENT_NAME = 'CONSTANT'
 _FILE_CONDITION = 'FILE-CONDITION'
 
@@ -95,17 +92,14 @@ must appear on the same line as the file name.
 """
 
 _FILE_NAME_DESCRIPTION_REST = """\
-A {FILE_NAME} is a {STRING}.
-
-
-The file name must be a relative path, using {posix_syntax}.
+A relative path, using {posix_syntax}.
 """
 
 _SPACE_SEPARATION_PARAGRAPH = 'All parts must be separated by {whitespace}.'
 
 _TP = TextParser({
     'FILE_MATCHER': syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
-    'FILE_NAME': syntax.FILE_NAME,
+    'FILE_NAME': syntax.FILE_NAME.name,
     'FILE_CONDITION': _FILE_CONDITION,
     'STRING': syntax_elements.STRING_SYNTAX_ELEMENT.singular_name,
     'FILE_MATCHER_SEPARATOR': formatting.keyword(syntax.FILE_MATCHER_SEPARATOR),
@@ -121,10 +115,10 @@ def _file_condition_sed() -> SyntaxElementDescription:
         _TP.fnap(_FILE_CONDITION_DESCRIPTION_REST),
         [
             invokation_variant_from_args([
-                _FILE_NAME,
+                syntax.FILE_NAME__ARG,
             ]),
             invokation_variant_from_args([
-                _FILE_NAME,
+                syntax.FILE_NAME__ARG,
                 a.Single(a.Multiplicity.MANDATORY, a.Constant(syntax.FILE_MATCHER_SEPARATOR)),
                 syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.single_mandatory,
             ],
@@ -135,7 +129,8 @@ def _file_condition_sed() -> SyntaxElementDescription:
 
 def _file_name_sed() -> SyntaxElementDescription:
     return SyntaxElementDescription(
-        syntax.FILE_NAME,
+        syntax.FILE_NAME.name,
+        (),
+        [invokation_variant_from_args([syntax_elements.STRING_SYNTAX_ELEMENT.single_mandatory])],
         _TP.fnap(_FILE_NAME_DESCRIPTION_REST),
-        []
     )

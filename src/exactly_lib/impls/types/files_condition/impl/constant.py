@@ -3,6 +3,7 @@ from typing import Sequence, Optional, Tuple, Mapping, List, TypeVar, Generic
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.definitions import misc_texts
 from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.impls.types.files_condition import syntax
 from exactly_lib.impls.types.matcher.impls import combinator_matchers
@@ -127,7 +128,7 @@ class _IsRelativePosixPath(DdvValidator):
                 str_constructor.FormatMap(
                     'A {FILE_NAME} must not be absolute: {path}',
                     {
-                        'FILE_NAME': syntax.FILE_NAME,
+                        'FILE_NAME': syntax.FILE_NAME.name,
                         'path': str(path),
                     }
                 )
@@ -139,10 +140,11 @@ class _IsRelativePosixPath(DdvValidator):
 
 
 _FORMAT_MAP = {
-    'FILE_NAME': syntax.FILE_NAME,
+    'FILE_NAME': syntax.FILE_NAME.name,
+    'string': misc_texts.PLAIN_STRING,
 }
 _EMPTY_FILE_NAME = str_constructor.FormatMap(
-    'A {FILE_NAME} must not be the empty string',
+    'A {FILE_NAME} must not be the empty {string}.',
     _FORMAT_MAP,
 )
 

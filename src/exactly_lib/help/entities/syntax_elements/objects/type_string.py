@@ -21,9 +21,10 @@ class _Documentation(SyntaxElementDocumentation):
     def __init__(self):
         super().__init__(syntax_elements.STRING_SYNTAX_ELEMENT)
         the_string_type = 'the ' + types.STRING_TYPE_INFO.singular_name
-        non_str_types_w_str_conversion = tuple(set(value_type.VALUE_TYPES_W_STR_RENDERING) -
-                                               {value_type.ValueType.STRING}
-                                               )
+        non_str_types_w_str_conversion = value_type.sorted_types(
+            set(value_type.VALUE_TYPES_W_STR_RENDERING) -
+            {value_type.ValueType.STRING}
+        )
         self._tp = TextParser({
             'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
             'symbol_reference': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,

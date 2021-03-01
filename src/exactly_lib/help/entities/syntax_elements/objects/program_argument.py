@@ -10,7 +10,6 @@ from exactly_lib.impls.types.path import relative_path_options_documentation as 
 from exactly_lib.impls.types.path.rel_opts_configuration import arg_config_with_name
 from exactly_lib.impls.types.program import syntax_elements as pgm_syntax_elements
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.str_ import english_text
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 TEXT_UNTIL_END_OF_LINE_ARGUMENT = a.Named('TEXT-UNTIL-END-OF-LINE')
@@ -103,7 +102,7 @@ _TEXT_PARSER = TextParser({
     'list_se': formatting.syntax_element_(syntax_elements.LIST_SYNTAX_ELEMENT),
     'path_type': types.PATH_TYPE_INFO.name,
     'path_se': formatting.syntax_element_(syntax_elements.PATH_SYNTAX_ELEMENT),
-    'to_string_types': english_text.or_sequence([dt.singular_name for dt in types.TYPES_WITH_W_STR_RENDERING]),
+    'A_ref_to_symbol_w_string_conversion': types.a_ref_to_a_symbol_w_string_conversion__sentence(),
     'soft_quote': syntax_descriptions.SOFT_QUOTE_NAME,
     'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
     'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
@@ -123,7 +122,7 @@ for text-until-end-of-line and references to existing files.
 """
 
 _SYMBOL_REFERENCE_DESCRIPTION = """\
-A reference to a symbol of type {to_string_types}.
+{A_ref_to_symbol_w_string_conversion}
 
 
 {path_type:a/u} {symbol} gives a single argument that is its absolute path.

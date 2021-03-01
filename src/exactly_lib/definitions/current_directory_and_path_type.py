@@ -103,7 +103,6 @@ which may use them without consideration of the current directory of the {os_pro
 {Note} {path_type:a/u} value that is defined using the {def_instruction} instruction
 with relativity of {current_directory_concept}
 ({rel_cd_option}) is evaluated when it is REFERENCED,
-
 not when it is defined.
 
 

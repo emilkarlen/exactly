@@ -81,19 +81,20 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def _name_sed(self) -> SyntaxElementDescription:
         return SyntaxElementDescription(
             defs.VAR_NAME_ELEMENT,
-            self._tp.fnap(_DESCRIPTION__NAME),
             (),
+            [invokation_variant_from_args([syntax_elements.STRING_SYNTAX_ELEMENT.single_mandatory])],
         )
 
     def _value_sed(self) -> SyntaxElementDescription:
-        before_invokation_variants = self._tp.fnap(_DESCRIPTION__VALUE)
+        after_invokation_variants = []
         if self._is_in_setup_phase:
-            before_invokation_variants += self._tp.fnap(_DESCRIPTION__VALUE__ACT)
+            after_invokation_variants += self._tp.fnap(_DESCRIPTION__VALUE__ACT)
 
         return SyntaxElementDescription(
             defs.VAR_VALUE_ELEMENT,
-            before_invokation_variants,
             (),
+            [invokation_variant_from_args([syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.single_mandatory])],
+            after_invokation_variants,
         )
 
     def _phase_spec_sed(self) -> SyntaxElementDescription:
@@ -143,7 +144,6 @@ def _format_dict(is_in_setup_phase: bool) -> Dict[str, str]:
         'os_process': misc_texts.OS_PROCESS_NAME,
         'act_phase': phase_names.ACT,
         'setup_phase': phase_names.SETUP,
-        'string_se': syntax_elements.STRING_SYNTAX_ELEMENT.singular_name,
         'string_source_se': syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.singular_name,
         'plain_string': misc_texts.PLAIN_STRING,
         'in_the_specified_phase': in_the_specified_phase,
@@ -173,16 +173,8 @@ The manipulation will affect the {env_var:s} of all
 {os_process:s} in all phases except for the {ATC:/q} in the {act_phase} phase.
 """
 
-_DESCRIPTION__NAME = """\
-A {string_se}.
-"""
-
-_DESCRIPTION__VALUE = """\
-A {string_source_se}.
-"""
-
 _DESCRIPTION__VALUE__ACT = """\
-If the {string_source_se} involves a {PROGRAM},
+If {string_source_se} involves a {PROGRAM},
 it will be executed in an environment with the {env_var:s}
 of the specified phase.
 """

@@ -18,7 +18,6 @@ _TP = TextParser({
     'current_OS': misc_texts.CURRENT_OS,
     'First_line_number': line_matcher.FIRST_LINE_NUMBER_DESCRIPTION,
     'Line_separator_description': line_matcher.LINE_SEPARATOR_DESCRIPTION,
-    'STRING_SOURCE': syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.singular_name,
     'text_model': matcher_model.TEXT_MODEL,
     'string_source_type': types.STRING_SOURCE_TYPE_INFO.name,
 })
@@ -41,11 +40,11 @@ The line separator is not included in the text contents.
 """
 
 _STRING_TRANSFORMER_DESCRIPTION = """\
-The {text_model} to transform is given by a {STRING_SOURCE}.
+The {text_model} to transform is given by {string_source_type:a/q}.
 """
 
 _STRING_MATCHER_DESCRIPTION = """\
-The {text_model} to match is given by a {STRING_SOURCE}.
+The {text_model} to match is given by {string_source_type:a/q}.
 """
 
 INTEGER_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
@@ -65,13 +64,13 @@ STRING_TRANSFORMER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
     types.STRING_TRANSFORMER_TYPE_INFO,
     syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
     _TP.section_contents(_STRING_TRANSFORMER_DESCRIPTION),
-    (syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.cross_reference_target,))
+    (types.STRING_SOURCE_TYPE_INFO.cross_reference_target,))
 
 STRING_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
     types.STRING_MATCHER_TYPE_INFO,
     syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
     _TP.section_contents(_STRING_MATCHER_DESCRIPTION),
-    (syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.cross_reference_target,))
+    (types.STRING_SOURCE_TYPE_INFO.cross_reference_target,))
 
 FILES_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
     types.FILES_MATCHER_TYPE_INFO,

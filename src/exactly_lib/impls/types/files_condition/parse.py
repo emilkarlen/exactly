@@ -84,7 +84,7 @@ _FILE_NAME_STRING_REFERENCES_RESTRICTION = is_string__all_indirect_refs_are_stri
 )
 
 _FILE_NAME_STRING_CONFIGURATION = parse_string.Configuration(
-    'FILE-NAME',
+    syntax.FILE_NAME.name,
     _FILE_NAME_STRING_REFERENCES_RESTRICTION,
 )
 

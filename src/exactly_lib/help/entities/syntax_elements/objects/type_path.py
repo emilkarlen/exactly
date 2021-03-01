@@ -2,7 +2,8 @@ from pathlib import PurePosixPath
 from typing import List, Sequence
 
 from exactly_lib.common.help import documentation_text, headers
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
+    invokation_variant_from_args
 from exactly_lib.definitions import instruction_arguments, formatting, misc_texts
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -35,7 +36,7 @@ class _Documentation(SyntaxElementDocumentation):
     def __init__(self):
         super().__init__(syntax_elements.PATH_SYNTAX_ELEMENT)
 
-        self._string_name = a.Named(syntax_elements.STRING_SYNTAX_ELEMENT.singular_name)
+        self._file_name = instruction_arguments.FILE_NAME_STRING
         self._relativity_name = instruction_arguments.RELATIVITY_ARGUMENT
 
         path_type_symbol = 'MY_PATH_SYMBOL'
@@ -43,7 +44,7 @@ class _Documentation(SyntaxElementDocumentation):
         self._parser = TextParser({
             'Note': headers.NOTE_LINE_HEADER,
             'RELATIVITY_OPTION': self._relativity_name.name,
-            'PATH_STRING': self._string_name.name,
+            'PATH_STRING': self._file_name.name,
             'posix_syntax': documentation_text.POSIX_SYNTAX,
             'string_type': formatting.keyword(types.STRING_TYPE_INFO.name.singular),
             'string_type_plain': types.STRING_TYPE_INFO.name,
@@ -72,7 +73,7 @@ class _Documentation(SyntaxElementDocumentation):
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return [
-            self._string_sed(),
+            self._file_name_string_sed(),
             self._relativity_sed(),
             self._symbol_name_sed(),
         ]
@@ -82,7 +83,7 @@ class _Documentation(SyntaxElementDocumentation):
 
     def main_description_rest_sub_sections(self) -> List[SectionItem]:
         return [
-            docs.section('Relativity',
+            docs.section(misc_texts.RELATIVITY.singular.capitalize(),
                          self._parser.fnap(_MAIN_DESCRIPTION_RELATIVITY),
                          [docs.section(headers.NOTES__HEADER__CAPITALIZED,
                                        self._parser.fnap(_MAIN_DESCRIPTION_RELATIVITY_NOTE))]),
@@ -106,9 +107,12 @@ class _Documentation(SyntaxElementDocumentation):
         return SyntaxElementDescription(self._relativity_name.name,
                                         description_rest)
 
-    def _string_sed(self) -> SyntaxElementDescription:
-        return SyntaxElementDescription(self._string_name.name,
-                                        self._parser.fnap(_STRING_DESCRIPTION_REST))
+    def _file_name_string_sed(self) -> SyntaxElementDescription:
+        return SyntaxElementDescription(
+            self._file_name.name,
+            (),
+            [invokation_variant_from_args([syntax_elements.STRING_SYNTAX_ELEMENT.single_mandatory])],
+            self._parser.fnap(_STRING_DESCRIPTION_REST))
 
     def _symbol_name_sed(self) -> SyntaxElementDescription:
         return SyntaxElementDescription(syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.singular_name,
@@ -119,7 +123,7 @@ class _Documentation(SyntaxElementDocumentation):
             a.Single(a.Multiplicity.OPTIONAL,
                      self._relativity_name),
             a.Single(a.Multiplicity.MANDATORY,
-                     self._string_name),
+                     self._file_name),
 
         ]
 
