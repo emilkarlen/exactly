@@ -6,7 +6,7 @@ file input.txt =
 2
 -
 
-def string-transformer REMOVE_NEW_LINE = replace @[NEW_LINE]@ ''
+def text-transformer REMOVE_NEW_LINE = replace @[NEW_LINE]@ ''
 
 [assert]
 

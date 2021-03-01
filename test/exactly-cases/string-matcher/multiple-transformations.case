@@ -1,8 +1,8 @@
 [setup]
 
-def string-transformer RM_FIRST_LINE = filter line-num > 1
+def text-transformer RM_FIRST_LINE = filter line-num > 1
 
-def string-matcher NUM_LINES_AFTER_FIRST_LINE_EQ_1 = -transformed-by RM_FIRST_LINE num-lines == 1
+def text-matcher NUM_LINES_AFTER_FIRST_LINE_EQ_1 = -transformed-by RM_FIRST_LINE num-lines == 1
 
 file 3-lines.txt = <<-
 1

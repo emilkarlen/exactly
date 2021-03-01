@@ -27,7 +27,7 @@ file transformed-program-output.txt =
       -transformed-by char-case -to-upper
 
 
-def string-source SS = 'contents of string source symbol'
+def text-source SS = 'contents of string source symbol'
 
 file transformed-ss.txt =
     @[SS]@

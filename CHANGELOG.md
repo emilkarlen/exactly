@@ -11,14 +11,16 @@ with exception of a "0." prefix until version 1 is released.
 
  - Instruction `setup`/`env` - Ability to set variables separately for the `action to check` 
  - Instruction `timeout` - Ability to set no-timeout
- - Type `string-source` (together with improvements of corresponding element `STRING-SOURCE`)   
- - Type `string-transformer` - Shortcut `grep` for `filter contents matches`
- - Type `string-transformer` - `replace` - `-at LINE-MATCHER` - Limits replacement to certain lines
+ - Type `text-source` (together with improvements of corresponding element `TEXT-SOURCE`)   
+ - Type `text-transformer` - `grep` - Shortcut for `filter contents matches`
+ - Type `text-transformer` - `replace` - `-at LINE-MATCHER` - Limits replacement to certain lines
 
 ### Changed
 
- - Instruction `setup`/`env` - VALUE argument is a `STRING-SOURCE`
+ - Instruction `setup`/`env` - VALUE argument is a `text-source`
  - Instruction `conf`/`timeout` - Move to later phases (breaking)
+ - Type `string-matcher`     - Rename to `text-matcher` (breaking)
+ - Type `string-transformer` - Rename to `text-transformer` (breaking)
 
 ### Removed
 

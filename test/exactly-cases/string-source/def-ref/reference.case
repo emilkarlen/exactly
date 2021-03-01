@@ -7,11 +7,11 @@ def list   LIST_SYMBOL   = 1st 2nd 3rd
 def string LIST_AS_STRING = @[LIST_SYMBOL]@
 def string PATH_AS_STRING = @[PATH_SYMBOL]@
 
-def string-source STRING_SS   = @[STRING_SYMBOL]@
-def string-source SS_SS       = @[STRING_SS]@
-def string-source PATH_SS     = "@[PATH_SYMBOL]@"
-def string-source LIST_SS     = "@[LIST_SYMBOL]@"
-def string-source HERE_DOC_SS = <<EOF
+def text-source STRING_SS   = @[STRING_SYMBOL]@
+def text-source SS_SS       = @[STRING_SS]@
+def text-source PATH_SS     = "@[PATH_SYMBOL]@"
+def text-source LIST_SS     = "@[LIST_SYMBOL]@"
+def text-source HERE_DOC_SS = <<EOF
 contents of
 the string source
 EOF

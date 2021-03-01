@@ -2,32 +2,32 @@
 
 def line-matcher LINE_NUM = line-num > 2
 
-def string-matcher CONSTANT = constant true
+def text-matcher CONSTANT = constant true
 
 
-def string-matcher QUANT_LINE_E = any   line : LINE_NUM
-def string-matcher QUANT_LINE_A = every line : LINE_NUM
+def text-matcher QUANT_LINE_E = any   line : LINE_NUM
+def text-matcher QUANT_LINE_A = every line : LINE_NUM
 
-def string-matcher EMPTY       = is-empty
-def string-matcher NOT_EMPTY   = ! EMPTY
+def text-matcher EMPTY       = is-empty
+def text-matcher NOT_EMPTY   = ! EMPTY
 
-def string-matcher EQUALS         = equals 'hello'
-def string-matcher EQUALS_NOT     = ! EQUALS
-def string-matcher EQUALS_FILE    = equals -contents-of expected.txt
-def string-matcher EQUALS_PROGRAM = equals -stdout-from
+def text-matcher EQUALS         = equals 'hello'
+def text-matcher EQUALS_NOT     = ! EQUALS
+def text-matcher EQUALS_FILE    = equals -contents-of expected.txt
+def text-matcher EQUALS_PROGRAM = equals -stdout-from
                                     -python -c :> print('hello')
 
-def string-matcher MATCHES         = matches [a-z]+
-def string-matcher MATCHES_FULL    = matches -full [a-z]+
-def string-matcher MATCHES_FULL_IC = matches -full -ignore-case [a-z]+
-def string-matcher NOT_MATCHES     = ! MATCHES
-def string-matcher MATCHES_ALIAS   = ~ -full -ignore-case [a-z]+
+def text-matcher MATCHES         = matches [a-z]+
+def text-matcher MATCHES_FULL    = matches -full [a-z]+
+def text-matcher MATCHES_FULL_IC = matches -full -ignore-case [a-z]+
+def text-matcher NOT_MATCHES     = ! MATCHES
+def text-matcher MATCHES_ALIAS   = ~ -full -ignore-case [a-z]+
 
-def string-matcher RUN = run % grep pattern
+def text-matcher RUN = run % grep pattern
 
-def string-matcher NUM_LINES     = num-lines == 4+1
-def string-matcher NOT_NUM_LINES = ! NUM_LINES
+def text-matcher NUM_LINES     = num-lines == 4+1
+def text-matcher NOT_NUM_LINES = ! NUM_LINES
 
-def string-matcher TRANSFORMED = -transformed-by filter line-num == 1 NUM_LINES
+def text-matcher TRANSFORMED = -transformed-by filter line-num == 1 NUM_LINES
 
-def string-matcher SYM_REF     = NOT_NUM_LINES
+def text-matcher SYM_REF     = NOT_NUM_LINES

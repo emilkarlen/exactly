@@ -39,7 +39,7 @@ class _SymbolConcept(ConceptDocumentation):
             'symbol_name_syntax': syntax_descriptions.SYMBOL_NAME_SYNTAX_DESCRIPTION,
             'def': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
 
-            'string_type_in_text': formatting.keyword(types.VALUE_TYPE_2_TYPES_INFO_DICT[ValueType.STRING].identifier),
+            'string_type_in_text': types.STRING_TYPE_INFO.name,
 
             'string_type': types.VALUE_TYPE_2_TYPES_INFO_DICT[ValueType.STRING].identifier,
             'list_type': types.VALUE_TYPE_2_TYPES_INFO_DICT[ValueType.LIST].identifier,
@@ -175,7 +175,7 @@ following the definition - both in the phase where it is defined
 and in following phases.
 
 
-A {symbol} reference may appear in {string_type:s} and
+A {symbol} reference may appear in {string_type_in_text:s} and
 as {instruction} arguments,
 in places where an argument of a certain type is expected.
 

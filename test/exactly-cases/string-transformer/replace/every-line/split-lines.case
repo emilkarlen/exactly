@@ -5,7 +5,7 @@ file input.txt =
 aPb
 -
 
-def string-transformer SPLIT_ON_P = replace P @[NEW_LINE]@
+def text-transformer SPLIT_ON_P = replace P @[NEW_LINE]@
 
 [assert]
 

@@ -7,9 +7,9 @@
 [setup]
 
 
-def string-transformer TURN_WINTER_TO_SPRING = replace 'winter' 'spring'
+def text-transformer TURN_WINTER_TO_SPRING = replace 'winter' 'spring'
 
-def string-transformer TURN_WINTER_AND_SPRING_TO_SUMMER = TURN_WINTER_TO_SPRING | replace 'spring' 'summer'
+def text-transformer TURN_WINTER_AND_SPRING_TO_SUMMER = TURN_WINTER_TO_SPRING | replace 'spring' 'summer'
 
 
 [act]

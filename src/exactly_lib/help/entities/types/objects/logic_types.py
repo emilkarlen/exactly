@@ -7,6 +7,7 @@ from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.types.contents_structure import TypeWithExpressionGrammarDocumentation, \
     TypeDocumentation
 from exactly_lib.type_val_prims.matcher import line_matcher
+from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _TP = TextParser({
@@ -39,14 +40,6 @@ The line separator is not included in the text contents.
 {Line_separator_description}
 """
 
-_STRING_TRANSFORMER_DESCRIPTION = """\
-The {text_model} to transform is given by {string_source_type:a/q}.
-"""
-
-_STRING_MATCHER_DESCRIPTION = """\
-The {text_model} to match is given by {string_source_type:a/q}.
-"""
-
 INTEGER_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
     types.INTEGER_MATCHER_TYPE_INFO,
     syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT)
@@ -63,14 +56,14 @@ FILE_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
 STRING_TRANSFORMER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
     types.STRING_TRANSFORMER_TYPE_INFO,
     syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
-    _TP.section_contents(_STRING_TRANSFORMER_DESCRIPTION),
-    (types.STRING_SOURCE_TYPE_INFO.cross_reference_target,))
+    SectionContents.empty(),
+    ())
 
 STRING_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
     types.STRING_MATCHER_TYPE_INFO,
     syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
-    _TP.section_contents(_STRING_MATCHER_DESCRIPTION),
-    (types.STRING_SOURCE_TYPE_INFO.cross_reference_target,))
+    SectionContents.empty(),
+    ())
 
 FILES_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
     types.FILES_MATCHER_TYPE_INFO,

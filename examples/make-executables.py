@@ -36,7 +36,7 @@ MY_SETUP_HELPER_PROGRAM = 'my-setup-helper-program'
 
 MY_ASSERT_HELPER_PROGRAM = 'my-assert-helper-program'
 
-MY_STRING_TRANSFORMER_PROGRAM = 'my-string-transformer-program'
+MY_STRING_TRANSFORMER_PROGRAM = 'my-text-transformer-program'
 
 MY_HELPER_PROGRAM = 'my-helper-program'
 

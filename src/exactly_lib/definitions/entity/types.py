@@ -90,7 +90,7 @@ FILES_MATCHER_TYPE_INFO = name_and_ref_target(
 STRING_SOURCE_TYPE_INFO = name_and_ref_target(
     ValueType.STRING_SOURCE,
     TypeCategory.LOGIC,
-    a_name_with_plural_s('string-source'),
+    a_name_with_plural_s('text-source'),
     'Produces {:a}, from various sources'.format(
         matcher_model.TEXT_MODEL
     ),
@@ -99,8 +99,8 @@ STRING_SOURCE_TYPE_INFO = name_and_ref_target(
 STRING_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.STRING_MATCHER,
     TypeCategory.LOGIC,
-    a_name_with_plural_s('string-matcher'),
-    'Matches {model:a} (a sequence of characters)'.format(
+    a_name_with_plural_s('text-matcher'),
+    'Matches {model:a}'.format(
         model=matcher_model.TEXT_MODEL,
     ),
 )
@@ -108,8 +108,8 @@ STRING_MATCHER_TYPE_INFO = name_and_ref_target(
 STRING_TRANSFORMER_TYPE_INFO = name_and_ref_target(
     ValueType.STRING_TRANSFORMER,
     TypeCategory.LOGIC,
-    a_name_with_plural_s('string-transformer'),
-    'Transforms {model:a} (a sequence of characters)'.format(
+    a_name_with_plural_s('text-transformer'),
+    'Transforms {model:a}'.format(
         model=matcher_model.TEXT_MODEL,
     ),
 )

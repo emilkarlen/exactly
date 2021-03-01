@@ -1,31 +1,31 @@
 [setup]
 
-def string-transformer IDENTITY = identity
+def text-transformer IDENTITY = identity
 
-def string-transformer REPLACE              = replace abc ABC
-def string-transformer REPLACE__PRESERVE    = replace -preserve-new-lines abc ABC
-def string-transformer REPLACE__AT          = replace -at line-num == 1 abc ABC
-def string-transformer REPLACE__AT_PRESERVE = replace -at line-num == 1 -preserve-new-lines abc ABC
+def text-transformer REPLACE              = replace abc ABC
+def text-transformer REPLACE__PRESERVE    = replace -preserve-new-lines abc ABC
+def text-transformer REPLACE__AT          = replace -at line-num == 1 abc ABC
+def text-transformer REPLACE__AT_PRESERVE = replace -at line-num == 1 -preserve-new-lines abc ABC
 
-def string-transformer FILTER = filter line-num == 3
+def text-transformer FILTER = filter line-num == 3
 
 def string LIMIT_UL_STR = '1+2:3-4'
 
-def string-transformer FILTER_LINE_NUM__SINGLE = filter -line-nums 70+2
-def string-transformer FILTER_LINE_NUM__UPPER  = filter -line-nums :70+2
-def string-transformer FILTER_LINE_NUM__LOWER  = filter -line-nums 70+2:
-def string-transformer FILTER_LINE_NUM__LU     = filter -line-nums @[LIMIT_UL_STR]@
-def string-transformer FILTER_LINE_NUM__MULTI  = filter -line-nums 1 2 4: :5 6:7
+def text-transformer FILTER_LINE_NUM__SINGLE = filter -line-nums 70+2
+def text-transformer FILTER_LINE_NUM__UPPER  = filter -line-nums :70+2
+def text-transformer FILTER_LINE_NUM__LOWER  = filter -line-nums 70+2:
+def text-transformer FILTER_LINE_NUM__LU     = filter -line-nums @[LIMIT_UL_STR]@
+def text-transformer FILTER_LINE_NUM__MULTI  = filter -line-nums 1 2 4: :5 6:7
 
-def string-transformer SEQUENCE = REPLACE | FILTER
+def text-transformer SEQUENCE = REPLACE | FILTER
 
-def string-transformer RUN__INTERPRET_EXIT_CODE = run % my-program arg1 "arg 2"
-def string-transformer RUN__IGNORE_EXIT_CODE    = run -ignore-exit-code % my-program arg1 "arg 2"
+def text-transformer RUN__INTERPRET_EXIT_CODE = run % my-program arg1 "arg 2"
+def text-transformer RUN__IGNORE_EXIT_CODE    = run -ignore-exit-code % my-program arg1 "arg 2"
 
-def string-transformer RUN__W_TRANSFORMER = run -ignore-exit-code % my-program arg1 "arg 2"
-                                            -transformed-by char-case -to-lower
+def text-transformer RUN__W_TRANSFORMER = run -ignore-exit-code % my-program arg1 "arg 2"
+                                              -transformed-by char-case -to-lower
 
-def string-transformer RUN__COMPLEX =
+def text-transformer RUN__COMPLEX =
 
     run % my-program arg1 "arg 2"
           -stdin (
@@ -34,11 +34,11 @@ def string-transformer RUN__COMPLEX =
              )
           -transformed-by char-case -to-lower
 
-def string-transformer REPLACE_TCDS_DIRS  = replace-test-case-dirs
+def text-transformer REPLACE_TCDS_DIRS  = replace-test-case-dirs
 
-def string-transformer TO_LOWER_CASE = char-case -to-lower
-def string-transformer TO_UPPER_CASE = char-case -to-upper
+def text-transformer TO_LOWER_CASE = char-case -to-lower
+def text-transformer TO_UPPER_CASE = char-case -to-upper
 
-def string-transformer STRIP_TRAILING_NL = strip -trailing-new-lines
-def string-transformer STRIP_TRAILING_WS = strip -trailing-space
-def string-transformer STRIP_WS          = strip
+def text-transformer STRIP_TRAILING_NL = strip -trailing-new-lines
+def text-transformer STRIP_TRAILING_WS = strip -trailing-space
+def text-transformer STRIP_WS          = strip

@@ -28,7 +28,7 @@ $ ls *.txt
 file root-files.txt =
      -stdout-from % ls /
        -transformed-by
-         run my-string-transformer-program
+         run my-text-transformer-program
 
 file interesting-pgm-output.txt =
      -stdout-from
@@ -59,7 +59,7 @@ exists output.txt : (
        &&
        run -python @[EXACTLY_HOME]@/my-file-matcher.py arg1
        &&
-       contents run -python @[EXACTLY_HOME]@/my-string-matcher.py arg1 "arg 2"
+       contents run -python @[EXACTLY_HOME]@/my-text-matcher.py arg1 "arg 2"
        )
 
 [cleanup]

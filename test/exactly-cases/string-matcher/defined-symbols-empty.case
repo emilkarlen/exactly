@@ -1,11 +1,11 @@
 [setup]
 
 
-def string-matcher IS_EMPTY               = is-empty
+def text-matcher IS_EMPTY               = is-empty
 
-def string-matcher IS_NOT_EMPTY           = ! is-empty
+def text-matcher IS_NOT_EMPTY           = ! is-empty
 
-def string-matcher IS_NOT_EMPTY__WITH_REF = ! IS_EMPTY
+def text-matcher IS_NOT_EMPTY__WITH_REF = ! IS_EMPTY
 
 
 file empty.txt

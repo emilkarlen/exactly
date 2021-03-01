@@ -17,7 +17,7 @@ Supports execution of arbitrary programs, as well as checking their result.
 Exactly has a  built in help system,
 which can, among other things,
 generate this `Reference Manual
-<https://emilkarlen.github.io/exactly/version/0-13-0/reference-manual.html>`_.
+<https://emilkarlen.github.io/exactly/version/next/reference-manual.html>`_.
 
 
 .. contents::
@@ -159,9 +159,9 @@ Testing and transforming the contents of files
 
 Use ``contents`` to test the contents of a file,
 or a transformed version of it,
-by applying a "string transformer".
+by applying a "text transformer".
 
-Such a "string transformer" may be given a name
+Such a "text transformer" may be given a name
 using the ``def`` instruction
 to make the test easier to read.
 
@@ -173,17 +173,17 @@ non-timing lines that the test is not interested in,
 and that timing lines contains a time stamp of the form
 "NN:NN", who's exact value also is not interesting.
 
-A "string transformer" is used to extract all timing lines
+A "text transformer" is used to extract all timing lines
 and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
 
     [setup]
 
-    def line-matcher       IS_TIMING_LINE     = contents matches ^timing
+    def line-matcher     IS_TIMING_LINE     = contents matches ^timing
 
-    def string-transformer REPLACE_TIMESTAMPS = replace [0-9]{2}:[0-9]{2} TIMESTAMP
+    def text-transformer REPLACE_TIMESTAMPS = replace [0-9]{2}:[0-9]{2} TIMESTAMP
 
-    def string-transformer GET_TIMING_LINES   = filter IS_TIMING_LINE | REPLACE_TIMESTAMPS
+    def text-transformer GET_TIMING_LINES   = filter IS_TIMING_LINE | REPLACE_TIMESTAMPS
 
     [act]
 
@@ -246,7 +246,7 @@ The following case shows some examples, but **doesn't make sense** as a realisti
     file root-files.txt =
          -stdout-from % ls /
            -transformed-by
-             run my-string-transformer-program
+             run my-text-transformer-program
 
     file interesting-pgm-output.txt =
          -stdout-from
@@ -277,7 +277,7 @@ The following case shows some examples, but **doesn't make sense** as a realisti
            &&
            run -python @[EXACTLY_HOME]@/my-file-matcher.py arg1
            &&
-           contents run -python @[EXACTLY_HOME]@/my-string-matcher.py arg1 "arg 2"
+           contents run -python @[EXACTLY_HOME]@/my-text-matcher.py arg1 "arg 2"
            )
 
     [cleanup]
@@ -732,7 +732,7 @@ Including (but by no means limited to):
 * Support for non-terminating processes
 * Windows port (most features work, but have not been thoroughly tested)
 * Symbol substitution in files
-* More matchers, string transformers, etc
+* More matchers, text transformers, etc
 * Long term goals
 
   - Dynamic symbol values (contents of dir, current date, e.g.)

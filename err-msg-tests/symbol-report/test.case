@@ -49,7 +49,7 @@ def line-matcher LINE_MATCHER = line-num < 2 || contents ~ .+
 ########################################
 
 
-def string-matcher STRING_MATCHER = equals -contents-of expected.txt
+def text-matcher STRING_MATCHER = equals -contents-of expected.txt
 
 
 ########################################
