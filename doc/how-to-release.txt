@@ -14,6 +14,9 @@ See https://keepachangelog.com/en/1.0.0/
 ### Removed
 ### Fixed
 ### Security
+* HOWTO-UPGRADE
+Should contain a description of how to upgrade
+each backwards incompatible change from the previous version.
 * README/Future development
 Make sure to be in line with the release
 * doc/

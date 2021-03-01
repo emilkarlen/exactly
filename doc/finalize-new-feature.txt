@@ -9,6 +9,7 @@ Make sure documentation is correct.
 *** instructions
 ** examples
 ** CHANGELOG
+** HOWTO-UPGRADE
 ** README/features
 *** examples
 *** future development
