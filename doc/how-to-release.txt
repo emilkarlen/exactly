@@ -17,7 +17,9 @@ See https://keepachangelog.com/en/1.0.0/
 * HOWTO-UPGRADE
 Should contain a description of how to upgrade
 each backwards incompatible change from the previous version.
-* README/Future development
+* README - Development info
+** Development status
+** Future development
 Make sure to be in line with the release
 * doc/
 ** TODOs
@@ -28,12 +30,18 @@ Make sure the contact info at the end of the COPYRIGHT is correct.
 ** proram_info.py
 ** setup.py
 ** README
+* github pages - Add Ref Man for release version
+Note: The version number in the doc has not been updated
+yet, but this is ok: this allows us to update README
+and test its lik to the ref-man.
+The manual on github pages can be updated any time later.
+** exactly/version/Z-Y-Z/reference-manual.html
 * Set version number
-** Validate syntax
-python3 -m rstvalidator README.rst
 ** code
 src/exactly_lib/program_info.py
 ** CHANGELOG
+** HOWTO-UPGRADE
+** README - update link to Ref Man on github pages
 * Test
 ** run-test-suite.py
 ** Run tests towards installed program
@@ -48,11 +56,10 @@ Make release artifacts
  > exactly suite test/exactly-cases
 ** run on as many platforms as possible - on linux using docker
 * Make sure syntax of examples is correct
-* github pages - Add Ref Man for release
-** exactly/version/Z-Y-Z/reference-manual.html
 * README - link to Ref Man on github pages
-** README - update link to Ref Man on github pages
 ** Check that link from README shows Ref Man for correct version
+** Validate syntax
+python3 -m rstvalidator README.rst
 * github pages - Add README for the new release
 ** exactly/version/Z-Y-Z/README.rst
 * Set release date
