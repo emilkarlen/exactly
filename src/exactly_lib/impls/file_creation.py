@@ -3,6 +3,8 @@ from typing import Optional, Callable, TextIO, TypeVar
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.definitions import file_types
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.types.path import path_err_msgs
 from exactly_lib.impls.types.string_source import file_source
 from exactly_lib.test_case.hard_error import HardErrorException
@@ -13,6 +15,7 @@ from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.file_utils.ensure_file_existence import ensure_directory_exists, \
     ensure_parent_directory_does_exist_and_is_a_directory
+from exactly_lib.util.str_.formatter import StringFormatter
 
 
 def create_file(file_path: pathlib.Path,
@@ -48,6 +51,36 @@ def create_file__dp(path: DescribedPath,
 
     return _create_file(path.primitive, ensure_parent_path_is_existing_dir, render_error, operation_on_open_file)
 
+
+def ensure_dir_exists__mb_make(path: DescribedPath) -> Optional[TextRenderer]:
+    p = path.primitive
+    try:
+        if p.is_dir():
+            return None
+    except NotADirectoryError:
+        _dir_error(path, 'Part of {PATH} exists, but is not {directory:a}')
+
+    try:
+        p.mkdir(parents=True)
+    except FileExistsError:
+        return _dir_error(path, '{PATH} exists, but is not {directory:a}')
+    except NotADirectoryError:
+        return _dir_error(path, 'Clash with existing file')
+
+    return None
+
+
+def _dir_error(path: DescribedPath, header_tmpl: str) -> TextRenderer:
+    return path_err_msgs.line_header__primitive(
+        _DIR_ERROR_FORMATTER.format(header_tmpl),
+        path.describer,
+    )
+
+
+_DIR_ERROR_FORMATTER = StringFormatter({
+    'PATH': syntax_elements.PATH_SYNTAX_ELEMENT.singular_name,
+    'directory': file_types.DIRECTORY,
+})
 
 ERR = TypeVar('ERR')
 

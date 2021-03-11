@@ -1,6 +1,6 @@
 import itertools
 from abc import ABC, abstractmethod
-from typing import Sequence, Optional, List
+from typing import Sequence, Optional, List, TypeVar, Generic
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.value_type import ValueType
@@ -17,6 +17,14 @@ class ObjectWithSymbolReferences:
         """
         return []
 
+    @staticmethod
+    def references__optional(x: Optional['ObjectWithSymbolReferences']) -> Sequence['SymbolReference']:
+        return (
+            ()
+            if x is None
+            else x.references
+        )
+
 
 class SymbolDependentValue(ObjectWithSymbolReferences):
     """A value that may depend on symbols in a :class:`SymbolTable`"""
@@ -29,6 +37,27 @@ class SymbolDependentValue(ObjectWithSymbolReferences):
         the types specified by the references' :class:`ReferenceRestrictions`.
         """
         raise NotImplementedError('abstract method')
+
+
+T = TypeVar('T')
+
+
+class TypesSymbolDependentValue(Generic[T], SymbolDependentValue):
+    """Hopefully, this class can replace :class:`SymbolDependentValue`"""
+
+    def resolve(self, symbols: SymbolTable) -> T:
+        raise NotImplementedError('abstract method')
+
+    @staticmethod
+    def resolve__optional(sdv: Optional['TypesSymbolDependentValue[T]'],
+                          symbols: SymbolTable,
+                          ) -> Optional[T]:
+        return (
+            None
+            if sdv is None
+            else
+            sdv.resolve(symbols)
+        )
 
 
 class SymbolContainer(SymbolTableValue):

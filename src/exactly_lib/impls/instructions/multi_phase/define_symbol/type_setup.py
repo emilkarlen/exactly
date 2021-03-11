@@ -54,6 +54,8 @@ TYPE_SETUPS_LIST = [
                                   type_parser.FilesMatcherParser()),
     TypeSetup.new_with_std_syntax(types.FILES_CONDITION_TYPE_INFO,
                                   type_parser.FilesConditionParser()),
+    TypeSetup.new_with_std_syntax(types.FILES_SOURCE_TYPE_INFO,
+                                  type_parser.FilesSourceParser()),
     TypeSetup.new_with_std_syntax(types.STRING_SOURCE_TYPE_INFO,
                                   type_parser.StringSourceParser()),
     TypeSetup.new_with_std_syntax(types.STRING_MATCHER_TYPE_INFO,

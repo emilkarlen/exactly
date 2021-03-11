@@ -3,6 +3,7 @@ from exactly_lib.definitions.path import REL_SYMBOL_OPTION_NAME
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 ASSIGNMENT_OPERATOR = '='
+APPEND_OPERATOR = '+='
 
 SYMBOL_SYNTAX_ELEMENT_NAME = 'SYMBOL'
 

@@ -1,0 +1,15 @@
+[setup]
+
+def files-source CONSTANT__EMPTY = { }
+
+def files-source EMPTY_FILES = {
+  file 1st-name
+  dir  2nd-name
+  }
+
+def files-source COMPLEX = {
+  file 1st-name =  'file contents'
+  file 2nd-name += 'added'
+  dir  3rd-name =  { file f.txt }
+  dir  3rd-name += { file f.txt = 'contents' }
+  }

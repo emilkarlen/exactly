@@ -1,0 +1,14 @@
+[setup]
+
+def files-source EMPTY = { }
+
+def files-source COMPLEX = {
+  file empty.txt
+  file non-empty.txt = 'contents'
+  dir  d = {
+    file in-dir.txt = 'file in dir'
+    }
+ }
+
+def files-source REF__PLAIN  = EMPTY
+def files-source REF__SYNTAX = @[EMPTY]@

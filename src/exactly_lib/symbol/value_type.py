@@ -20,6 +20,7 @@ class ValueType(Enum):
     PROGRAM = 9
     FILES_CONDITION = 10
     STRING_SOURCE = 11
+    FILES_SOURCE = 12
 
 
 @enum.unique

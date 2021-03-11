@@ -53,6 +53,15 @@ class DirDependentValue(Generic[RESOLVED_TYPE]):
         """Gives the value, regardless of actual dependency."""
         raise NotImplementedError()
 
+    @staticmethod
+    def value_of_any_dependency__optional(ddv: Optional['DirDependentValue[RESOLVED_TYPE]'],
+                                          tcds: TestCaseDs) -> Optional[RESOLVED_TYPE]:
+        return (
+            None
+            if ddv is None
+            else ddv.value_of_any_dependency(tcds)
+        )
+
 
 class WithDirDependenciesReporting:
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:

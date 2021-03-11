@@ -4,6 +4,8 @@ from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.type_val_deps.sym_ref import restrictions as sut
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.impls.types.files_matcher.test_resources import symbol_context as files_matcher_symbol_context
+from exactly_lib_test.type_val_deps.types.files_source.test_resources import \
+    symbol_context as files_source_symbol_context
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
 from exactly_lib_test.type_val_deps.types.path.test_resources import path
 from exactly_lib_test.type_val_deps.types.string_.test_resources import symbol_context as string
@@ -40,8 +42,14 @@ class TestValueTypeRestriction(unittest.TestCase):
         ValueType.FILE_MATCHER:
             file_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT,
 
+        ValueType.FILES_CONDITION:
+            files_condition.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+
         ValueType.FILES_MATCHER:
             files_matcher_symbol_context.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+
+        ValueType.FILES_SOURCE:
+            files_source_symbol_context.ARBITRARY_SYMBOL_VALUE_CONTEXT,
 
         ValueType.STRING_SOURCE:
             string_source.ARBITRARY_SYMBOL_VALUE_CONTEXT,
@@ -54,9 +62,6 @@ class TestValueTypeRestriction(unittest.TestCase):
 
         ValueType.PROGRAM:
             program.ARBITRARY_SYMBOL_VALUE_CONTEXT,
-
-        ValueType.FILES_CONDITION:
-            files_condition.ARBITRARY_SYMBOL_VALUE_CONTEXT,
     }
 
     def test_satisfied_restriction(self):
@@ -100,7 +105,8 @@ class TestValueTypeRestriction(unittest.TestCase):
             ValueType.STRING_MATCHER: ValueType.STRING_TRANSFORMER,
             ValueType.STRING_TRANSFORMER: ValueType.PROGRAM,
             ValueType.PROGRAM: ValueType.FILES_CONDITION,
-            ValueType.FILES_CONDITION: ValueType.STRING,
+            ValueType.FILES_CONDITION: ValueType.FILES_SOURCE,
+            ValueType.FILES_SOURCE: ValueType.STRING,
         }
 
         symbols = empty_symbol_table()
@@ -127,7 +133,8 @@ class TestValueTypeRestriction(unittest.TestCase):
             ValueType.STRING_MATCHER: [ValueType.FILES_MATCHER, ValueType.STRING],
             ValueType.STRING_TRANSFORMER: [ValueType.STRING_MATCHER, ValueType.PATH],
             ValueType.PROGRAM: [ValueType.STRING_TRANSFORMER, ValueType.PATH],
-            ValueType.FILES_CONDITION: [ValueType.PROGRAM, ValueType.PATH],
+            ValueType.FILES_CONDITION: [ValueType.FILES_SOURCE, ValueType.PATH],
+            ValueType.FILES_SOURCE: [ValueType.FILES_MATCHER, ValueType.PATH],
             ValueType.STRING: [ValueType.FILES_CONDITION, ValueType.PATH],
         }
 

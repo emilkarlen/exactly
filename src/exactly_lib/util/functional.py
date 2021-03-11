@@ -4,6 +4,10 @@ T = TypeVar('T')
 U = TypeVar('U')
 
 
+def identity(x: T) -> T:
+    return x
+
+
 def compose_first_and_second(f, g):
     return Composition(g, f)
 

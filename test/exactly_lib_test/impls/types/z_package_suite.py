@@ -4,6 +4,7 @@ from exactly_lib_test.impls.types.expression import z_package_suite as expressio
 from exactly_lib_test.impls.types.file_matcher import z_package_suite as file_matcher
 from exactly_lib_test.impls.types.files_condition import z_package_suite as files_condition
 from exactly_lib_test.impls.types.files_matcher import z_package_suite as files_matcher
+from exactly_lib_test.impls.types.files_source import z_package_suite as files_source
 from exactly_lib_test.impls.types.integer import z_package_suite as integer
 from exactly_lib_test.impls.types.integer_matcher import z_package_suite as integer_matcher
 from exactly_lib_test.impls.types.interval import z_package_suite as interval
@@ -40,6 +41,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(files_matcher.suite())
     ret_val.addTest(string_transformers.suite())
     ret_val.addTest(program.suite())
+    ret_val.addTest(files_source.suite())
     return ret_val
 
 

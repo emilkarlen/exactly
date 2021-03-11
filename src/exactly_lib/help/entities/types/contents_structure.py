@@ -14,7 +14,7 @@ class TypeDocumentation(EntityDocumentation):
     def __init__(self,
                  name_and_cross_ref_target: TypeNameAndCrossReferenceId,
                  corresponding_syntax_element: SyntaxElementInfo,
-                 main_description_rest: SectionContents,
+                 main_description_rest: SectionContents = SectionContents.empty(),
                  custom_see_also_targets: Iterable[SeeAlsoTarget] = (),
                  syntax_elements: Sequence[SyntaxElementDescription] = ()):
         super().__init__(name_and_cross_ref_target)
@@ -53,23 +53,6 @@ class TypeDocumentation(EntityDocumentation):
                 +
                 self._custom_see_also_targets
                 )
-
-
-class TypeWithExpressionGrammarDocumentation(TypeDocumentation):
-    def __init__(self,
-                 name_and_cross_ref_target: TypeNameAndCrossReferenceId,
-                 corresponding_syntax_element: SyntaxElementInfo,
-                 description: SectionContents = SectionContents.empty(),
-                 custom_see_also: Sequence[SeeAlsoTarget] = (),
-                 ):
-        super().__init__(name_and_cross_ref_target,
-                         corresponding_syntax_element,
-                         description,
-                         custom_see_also_targets=custom_see_also)
-
-    """
-    Documents a type of the type system.
-    """
 
 
 def types_help(types: Iterable[TypeDocumentation]) -> EntityTypeHelp:

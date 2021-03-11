@@ -4,8 +4,7 @@ from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelp
 from exactly_lib.definitions.entity import types, syntax_elements, concepts
 from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
-from exactly_lib.help.entities.types.contents_structure import TypeWithExpressionGrammarDocumentation, \
-    TypeDocumentation
+from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
 from exactly_lib.type_val_prims.matcher import line_matcher
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -40,34 +39,50 @@ The line separator is not included in the text contents.
 {Line_separator_description}
 """
 
-INTEGER_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
+INTEGER_MATCHER_DOCUMENTATION = TypeDocumentation(
     types.INTEGER_MATCHER_TYPE_INFO,
-    syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT)
+    syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT,
+)
 
-LINE_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
+LINE_MATCHER_DOCUMENTATION = TypeDocumentation(
     types.LINE_MATCHER_TYPE_INFO,
     syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
-    _TP.section_contents(_LINE_MATCHER_DESCRIPTION))
+    _TP.section_contents(_LINE_MATCHER_DESCRIPTION),
+)
 
-FILE_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
+FILE_MATCHER_DOCUMENTATION = TypeDocumentation(
     types.FILE_MATCHER_TYPE_INFO,
-    syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT)
+    syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
+)
 
-STRING_TRANSFORMER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
+STRING_TRANSFORMER_DOCUMENTATION = TypeDocumentation(
     types.STRING_TRANSFORMER_TYPE_INFO,
     syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
     SectionContents.empty(),
-    ())
+    (),
+)
 
-STRING_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
+STRING_MATCHER_DOCUMENTATION = TypeDocumentation(
     types.STRING_MATCHER_TYPE_INFO,
     syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
     SectionContents.empty(),
-    ())
+    (),
+)
 
-FILES_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(
+FILES_MATCHER_DOCUMENTATION = TypeDocumentation(
     types.FILES_MATCHER_TYPE_INFO,
-    syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT)
+    syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT,
+)
+
+FILES_CONDITION_DOCUMENTATION = TypeDocumentation(
+    types.FILES_CONDITION_TYPE_INFO,
+    syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT,
+)
+
+FILES_SOURCE_DOCUMENTATION = TypeDocumentation(
+    types.FILES_SOURCE_TYPE_INFO,
+    syntax_elements.FILES_SOURCE_SYNTAX_ELEMENT,
+)
 
 _PROGRAM_DESCRIPTION_REST = """\
 {program_type:a/uq} is executed as an {os_process}.

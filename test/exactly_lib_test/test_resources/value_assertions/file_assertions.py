@@ -3,6 +3,7 @@ import unittest
 
 from exactly_lib_test.test_resources.files import file_structure
 from exactly_lib_test.test_resources.files.file_checks import FileChecker
+from exactly_lib_test.test_resources.files.file_structure import FileSystemElements
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 
@@ -49,6 +50,13 @@ def dir_contains_exactly(expected_contents: file_structure.DirContents) -> Asser
     Assumes that the actual value is a pathlib.Path
     """
     return DirContainsExactly(expected_contents)
+
+
+def dir_contains_exactly_2(expected_contents: FileSystemElements) -> Assertion[pathlib.Path]:
+    """
+    Assumes that the actual value is a pathlib.Path
+    """
+    return DirContainsExactly(file_structure.DirContents(list(expected_contents)))
 
 
 def dir_is_empty() -> Assertion[pathlib.Path]:

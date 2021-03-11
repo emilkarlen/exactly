@@ -130,6 +130,13 @@ FILES_CONDITION_TYPE_INFO = name_and_ref_target(
     'A condition of existence of a set of named files',
 )
 
+FILES_SOURCE_TYPE_INFO = name_and_ref_target(
+    ValueType.FILES_SOURCE,
+    TypeCategory.LOGIC,
+    a_name_with_plural_s('files-source'),
+    'Produces a set of files (for populating a directory)',
+)
+
 ALL_TYPES_INFO_TUPLE = (
     STRING_TYPE_INFO,
     LIST_TYPE_INFO,
@@ -139,6 +146,7 @@ ALL_TYPES_INFO_TUPLE = (
     FILE_MATCHER_TYPE_INFO,
     FILES_MATCHER_TYPE_INFO,
     FILES_CONDITION_TYPE_INFO,
+    FILES_SOURCE_TYPE_INFO,
     STRING_SOURCE_TYPE_INFO,
     STRING_MATCHER_TYPE_INFO,
     STRING_TRANSFORMER_TYPE_INFO,
