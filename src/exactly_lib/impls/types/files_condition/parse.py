@@ -15,7 +15,7 @@ from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_deps.types.files_condition.sdv import FilesConditionSdv
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.parse.token import Token
+from exactly_lib.util.parse import token_matchers
 from exactly_lib.util.str_ import str_constructor
 from . import documentation
 from ..expression.parser import GrammarParsers
@@ -60,19 +60,13 @@ def _parse_elements(tokens: TokenParser) -> Sequence[Tuple[StringSdv, Optional[F
             return file_name, None
 
     ret_val = []
-    while tokens.has_valid_head_token() and not _token_is_set_end(tokens.head):
+    while not tokens.has_valid_head_matching(_TOKEN_IS_SET_END):
         ret_val.append(parse_element())
 
     return ret_val
 
 
-def _token_is_set_end(token: Token) -> bool:
-    return token.is_plain and token.string == syntax.END_BRACE
-
-
-def _token_is_matcher_separator(token: Token) -> bool:
-    return token.is_plain and token.string == syntax.FILE_MATCHER_SEPARATOR
-
+_TOKEN_IS_SET_END = token_matchers.is_unquoted_and_equals(syntax.END_BRACE)
 
 _FILE_NAME_STRING_REFERENCES_RESTRICTION = is_string__all_indirect_refs_are_strings(
     text_docs.single_pre_formatted_line_object(

@@ -126,6 +126,9 @@ ANY_TYPE_INFO_DICT = {
     ValueType.FILES_MATCHER:
         _logic_type_info(types.FILES_MATCHER_TYPE_INFO),
 
+    ValueType.FILES_SOURCE:
+        _logic_type_info(types.FILES_SOURCE_TYPE_INFO),
+
     ValueType.STRING_SOURCE:
         _logic_type_info(types.STRING_SOURCE_TYPE_INFO),
 

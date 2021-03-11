@@ -8,6 +8,8 @@ string-matcher
 
 string-source
 
+files-source
+
 integer-matcher
 
 line-matcher

@@ -10,10 +10,11 @@ from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.impls import file_creation
 from exactly_lib.impls.instructions.multi_phase.utils import instruction_embryo as embryo
 from exactly_lib.impls.instructions.multi_phase.utils import instruction_part_utils
 from exactly_lib.impls.instructions.multi_phase.utils.assert_phase_info import IsAHelperIfInAssertPhase
-from exactly_lib.impls.types.path import path_err_msgs, parse_path, relative_path_options_documentation as rel_path_doc
+from exactly_lib.impls.types.path import parse_path, relative_path_options_documentation as rel_path_doc
 from exactly_lib.impls.types.path.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.sdv_structure import SymbolUsage
@@ -82,25 +83,7 @@ class TheInstructionEmbryo(embryo.PhaseAgnosticInstructionEmbryo[Optional[TextRe
                 .value_post_sds__d(environment.sds)
         )
 
-        def error(header: str) -> TextRenderer:
-            return path_err_msgs.line_header__primitive(
-                header,
-                described_path.describer,
-            )
-
-        path = described_path.primitive
-        try:
-            if path.is_dir():
-                return None
-        except NotADirectoryError:
-            return error('Part of PATH exists, but is not a directory')
-        try:
-            path.mkdir(parents=True)
-        except FileExistsError:
-            return error('PATH exists, but is not a directory')
-        except NotADirectoryError:
-            return error('Clash with existing file')
-        return None
+        return file_creation.ensure_dir_exists__mb_make(described_path)
 
 
 class EmbryoParser(embryo.InstructionEmbryoParserFromTokensWoFileSystemLocationInfo[Optional[TextRenderer]]):

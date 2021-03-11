@@ -104,6 +104,10 @@ class TokenParser:
     def has_current_line(self) -> bool:
         return not self.token_stream.is_at_end
 
+    def require_is_at_eol(self, error_message: ErrorMessageGenerator):
+        if not self.is_at_eol:
+            self.error_from('Not at end of line', error_message)
+
     def require_is_not_at_eol(self, error_message_format_string: str,
                               extra_format_map: dict = None):
         if self.is_at_eol:
@@ -337,7 +341,7 @@ class TokenParser:
     def consume_optional_constant_string_that_must_be_unquoted_and_equal(
             self,
             expected_constants: Union[Sequence[str], AbstractSet[str]],
-            must_be_on_current_line: bool = True) -> str:
+            must_be_on_current_line: bool = True) -> Optional[str]:
         """
         Consumes the first token if it is an unquoted string that is equal to one of the expected string constants.
         :param expected_constants: collection of names=strings. Must support the Python 'in' operator

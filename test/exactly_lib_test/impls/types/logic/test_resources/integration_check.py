@@ -15,7 +15,6 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.types.logic.test_resources.execution_check import ExecutionChecker
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
     PrimAndExeExpectation, Expectation, MultiSourceExpectation
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
@@ -35,6 +34,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
     CommonPropertiesConfiguration, OUTPUT, INPUT, PRIMITIVE
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.execution_check import ExecutionChecker
 
 
 class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):

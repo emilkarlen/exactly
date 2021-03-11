@@ -6,6 +6,7 @@ from exactly_lib.help.entities.syntax_elements.objects import here_document, reg
 from exactly_lib.impls.types.file_matcher import parse_file_matcher
 from exactly_lib.impls.types.files_condition import parse as parse_files_condition
 from exactly_lib.impls.types.files_matcher import parse_files_matcher
+from exactly_lib.impls.types.files_source import parse as parse_files_source
 from exactly_lib.impls.types.integer_matcher import parse_integer_matcher
 from exactly_lib.impls.types.line_matcher import parse_line_matcher
 from exactly_lib.impls.types.string_matcher import parse_string_matcher
@@ -46,6 +47,9 @@ ALL_SYNTAX_ELEMENT_DOCS = (
 
     for_type_with_grammar(syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT,
                           parse_files_condition.GRAMMAR),
+
+    for_type_with_grammar(syntax_elements.FILES_SOURCE_SYNTAX_ELEMENT,
+                          parse_files_source.grammar()),
 
     type_program.DOCUMENTATION,
 

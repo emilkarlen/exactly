@@ -12,7 +12,7 @@ from exactly_lib.section_document.element_parsers import token_stream_parsing
 from exactly_lib.section_document.element_parsers.ps_or_tp import parser_opt_parens
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import ParserFromTokenParserBase
-from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_val_deps.types.string_ import string_sdv_impls
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
@@ -30,6 +30,23 @@ def default_parser_for(phase_is_after_act: bool,
     return string_source_parser(
         defs.src_rel_opt_arg_conf_for_phase(phase_is_after_act, default_relativity).options
     )
+
+
+def default_parser_for__tokens(phase_is_after_act: bool,
+                               default_relativity: RelOptionType = RelOptionType.REL_HDS_CASE,
+                               ) -> ParserFromTokens[StringSourceSdv]:
+    return _ParserFromTokens(phase_is_after_act, default_relativity)
+
+
+class _ParserFromTokens(ParserFromTokens[StringSourceSdv]):
+    def __init__(self,
+                 phase_is_after_act: bool,
+                 default_relativity: RelOptionType,
+                 ):
+        self._parser = default_parser_for(phase_is_after_act, default_relativity)
+
+    def parse(self, token_parser: TokenParser) -> StringSourceSdv:
+        return self._parser.parse_from_token_parser(token_parser)
 
 
 def string_source_parser(accepted_file_relativities: RelOptionsConfiguration) -> Parser[StringSourceSdv]:

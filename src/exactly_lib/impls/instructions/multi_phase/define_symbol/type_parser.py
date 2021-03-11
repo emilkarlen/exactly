@@ -3,6 +3,7 @@ from exactly_lib.definitions.test_case.instructions import define_symbol as synt
 from exactly_lib.impls.types.file_matcher import parse_file_matcher
 from exactly_lib.impls.types.files_condition import parse as parse_files_condition
 from exactly_lib.impls.types.files_matcher import parse_files_matcher
+from exactly_lib.impls.types.files_source import parse as parse_files_source
 from exactly_lib.impls.types.integer_matcher import parse_integer_matcher
 from exactly_lib.impls.types.line_matcher import parse_line_matcher
 from exactly_lib.impls.types.parse import parse_list
@@ -99,6 +100,14 @@ class FilesConditionParser(TypeValueParser):
               token_parser: TokenParser,
               ) -> SymbolDependentValue:
         return parse_files_condition.parsers().full.parse_from_token_parser(token_parser)
+
+
+class FilesSourceParser(TypeValueParser):
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              token_parser: TokenParser,
+              ) -> SymbolDependentValue:
+        return parse_files_source.parsers().full.parse_from_token_parser(token_parser)
 
 
 class StringSourceParser(TypeValueParser):

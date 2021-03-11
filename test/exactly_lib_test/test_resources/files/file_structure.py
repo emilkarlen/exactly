@@ -28,6 +28,9 @@ class FileSystemElement(ABC):
         return pathlib.Path(self.name)
 
 
+FileSystemElements = Sequence[FileSystemElement]
+
+
 class File(FileSystemElement):
     def __init__(self,
                  file_name: str,
@@ -94,7 +97,7 @@ def file_with_lines(name: str, contents: Sequence[str]) -> File:
 class Dir(FileSystemElement):
     def __init__(self,
                  file_name: str,
-                 file_system_element_contents: List[FileSystemElement]):
+                 file_system_element_contents: Sequence[FileSystemElement]):
         self.file_name = file_name
         self.file_system_element_contents = file_system_element_contents
 
@@ -155,8 +158,7 @@ class DirContents:
     def empty() -> 'DirContents':
         return DirContents([])
 
-    def write_to(self,
-                 dir_path: pathlib.Path):
+    def write_to(self, dir_path: pathlib.Path):
         for file_element in self._file_system_element_contents:
             assert isinstance(file_element, FileSystemElement)
             file_element.write_to(dir_path)

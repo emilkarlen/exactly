@@ -17,6 +17,16 @@ class TokenSequence(ABC):
         return _Sequence((token,))
 
     @staticmethod
+    def preceded_by_optional_new_line_if_non_empty(sequence: 'TokenSequence') -> 'TokenSequence':
+        tokens = sequence.tokens
+        return (
+            TokenSequence.sequence([layout.OPTIONAL_NEW_LINE] + list(tokens))
+            if tokens
+            else
+            TokenSequence.empty()
+        )
+
+    @staticmethod
     def sequence(tokens: Sequence[Token]) -> 'TokenSequence':
         return _Sequence(tokens)
 

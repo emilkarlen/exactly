@@ -3,9 +3,7 @@ from typing import Generic, TypeVar
 
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue
-from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
-from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
-from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependentValue
+from exactly_lib.type_val_deps.dep_variants.ddv.w_validation import ValidatableDdv
 from exactly_lib.type_val_prims.description.details_structured import WithDetailsDescription
 from exactly_lib.type_val_prims.description.logic_description import LogicValueDescription, NodeDescription, \
     DetailsDescription
@@ -17,12 +15,8 @@ PRIMITIVE = TypeVar('PRIMITIVE')
 
 
 class FullDepsDdv(Generic[PRIMITIVE],
-                  DirDependentValue[ApplicationEnvironmentDependentValue[PRIMITIVE]],
+                  ValidatableDdv[ApplicationEnvironmentDependentValue[PRIMITIVE]],
                   ABC):
-    @property
-    def validator(self) -> DdvValidator:
-        return ddv_validation.ConstantDdvValidator.new_success()
-
     @abstractmethod
     def description(self) -> LogicValueDescription:
         pass

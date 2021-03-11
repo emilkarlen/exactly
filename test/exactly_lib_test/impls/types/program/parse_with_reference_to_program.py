@@ -14,7 +14,6 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Mult
     arrangement_w_tcds, ExecutionExpectation
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__for_consume_until_end_of_last_line__s__nsc
-from exactly_lib_test.impls.types.program.test_resources import integration_check_applier
 from exactly_lib_test.impls.types.program.test_resources import integration_check_config
 from exactly_lib_test.impls.types.program.test_resources import invalid_syntax
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
@@ -28,6 +27,7 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps import common_properties_checker
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes__raw import \
     RawProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
@@ -175,7 +175,7 @@ class _ValidationOfSdvArgumentsExecutorImpl(ValidationOfSdvArgumentsExecutor, _T
 CHECKER_WO_EXECUTION = integration_check.IntegrationChecker(
     sut.program_parser(),
     integration_check_config.ProgramPropertiesConfiguration(
-        integration_check_applier.NullApplier(),
+        common_properties_checker.ApplierThatDoesNothing(),
     ),
     True,
 )

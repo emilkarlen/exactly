@@ -5,11 +5,12 @@ from exactly_lib.impls.types.string_source import parse
 from exactly_lib.type_val_deps.types.string_source.ddv import StringSourceAdv
 from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
-from exactly_lib_test.impls.types.logic.test_resources import integration_check, execution_check
+from exactly_lib_test.impls.types.logic.test_resources import integration_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, AssertionResolvingEnvironment, \
     ExecutionExpectation, adv_asrt__any, prim_asrt__any
 from exactly_lib_test.impls.types.string_source.test_resources import parse_check
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps import execution_check
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.properties_checker import \
     StringSourcePropertiesConfiguration
 
