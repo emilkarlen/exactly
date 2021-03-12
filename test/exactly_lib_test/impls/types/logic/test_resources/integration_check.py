@@ -125,8 +125,8 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         for layout_case in layouts:
             source_str = tokens.layout(layout_case.value)
             for source_case in mk_source_variants(source_str):
-                with put.subTest(_layout=layout_case.name,
-                                 _source_variant=source_case.name,
+                with put.subTest(zz_layout=layout_case.name,
+                                 zz_source_variant=source_case.name,
                                  **sub_test_identifiers):
                     self._check__parse_source(
                         put,

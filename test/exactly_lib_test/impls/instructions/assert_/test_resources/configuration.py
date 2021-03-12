@@ -107,7 +107,7 @@ class AssertConfigurationBase(ConfigurationBase, ABC):
                                              symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                                              ):
         return Expectation(
-            validation_post_sds=svh_assertions.is_validation_error(error_message),
+            main_result=pfh_assertions.is_hard_error(error_message),
             symbol_usages=symbol_usages,
         )
 

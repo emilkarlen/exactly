@@ -250,6 +250,23 @@ class TestSinglePrimitiveExpression(_TextCaseWithParserVariantsBase, ABC):
             cases,
         )
 
+    def test_detection_of_reserved_words(self):
+        # ARRANGE #
+        source_cases = [
+            NameAndValue(reserved_word, reserved_word)
+            for reserved_word in ast.GRAMMAR_WITH_RESERVED_WORDS.custom_reserved_words
+        ]
+        # ACT & ASSERT #
+        for case in source_cases:
+            for must_be_on_current_line in [False, True]:
+                parser = self.parser_maker.make(ast.GRAMMAR_WITH_RESERVED_WORDS, must_be_on_current_line)
+                with self.subTest(soure=case.name,
+                                  must_be_on_current_line=must_be_on_current_line):
+                    source = remaining_source(case.value)
+                    # ACT & ASSERT #
+                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                        parser.parse(source)
+
 
 class TestSinglePrefixOpExpression(_TextCaseWithParserVariantsBase, ABC):
     PREFIX_OPERATORS = [

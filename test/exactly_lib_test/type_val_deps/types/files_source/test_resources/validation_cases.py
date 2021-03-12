@@ -13,6 +13,7 @@ class ValidationCase(ValidationCaseWSymbolContextAndAssertion):
                  symbol_name: str,
                  actual: ValidationActual,
                  ):
+        self.actual = actual
         self._symbol_context = FilesSourceSymbolContext.of_sdv(
             symbol_name,
             sdvs.FilesSourceSdvConstantDdvTestImpl(

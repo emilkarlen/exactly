@@ -18,10 +18,10 @@ def parsers(must_be_on_current_line: bool = False) -> GrammarParsers[FilesSource
 
 
 def grammar() -> _expr_grammar.Grammar[FilesSourceSdv]:
-    return _grammar(_FilesSourceParserForDirFileSpec())
+    return _grammar(FullFilesSourceParser())
 
 
-class _FilesSourceParserForDirFileSpec(ParserFromTokens[FilesSourceSdv]):
+class FullFilesSourceParser(ParserFromTokens[FilesSourceSdv]):
     def __init__(self):
         self._parser: Optional[Callable[[TokenParser], FilesSourceSdv]] = None
 
@@ -59,4 +59,5 @@ def _grammar(parser_of_nested: ParserFromTokens[FilesSourceSdv]) -> _expr_gramma
         ),
         infix_operators_in_order_of_increasing_precedence=(),
         prefix_operators=(),
+        custom_reserved_words=tuple(syntax.FILE_TYPE_TOKENS.values())
     )

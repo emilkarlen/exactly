@@ -57,14 +57,14 @@ def cwd_contains_exactly(expected_contents: file_structure.DirContents
 
 def sub_dir_of_sds_contains_exactly(sds__2__root_dir_path: Callable[[SandboxDs], pathlib.Path],
                                     expected_contents: file_structure.DirContents,
-                                    description: str = 'custom sub dir of sds') -> Assertion:
+                                    description: str = 'custom sub dir of sds') -> Assertion[SandboxDs]:
     return asrt.sub_component(description,
                               sds__2__root_dir_path,
                               DirContainsExactly(expected_contents))
 
 
 def non_hds_dir_contains_exactly(sds__2__root_dir_path: Callable[[SandboxDs], pathlib.Path],
-                                 expected_contents: file_structure.DirContents) -> AssertionBase[SandboxDs]:
+                                 expected_contents: file_structure.DirContents) -> Assertion[SandboxDs]:
     return NonHdsDirContainsExactly(sds__2__root_dir_path, expected_contents)
 
 

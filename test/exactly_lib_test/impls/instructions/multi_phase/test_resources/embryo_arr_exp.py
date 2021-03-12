@@ -28,6 +28,17 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 
+class TcdsExpectation:
+    def __init__(self,
+                 sds: Assertion[SandboxDs] = asrt.anything_goes(),
+                 tcds: Assertion[TestCaseDs] = asrt.anything_goes(),
+                 case_home: Assertion[pathlib.Path] = asrt.anything_goes(),
+                 ):
+        self.sds = sds
+        self.tcds = tcds
+        self.case_home = case_home
+
+
 class InstructionApplicationEnvironment:
     def __init__(self,
                  os_service: OsServices,
@@ -299,6 +310,37 @@ class MultiSourceExpectation(Generic[T], ExecutionExpectation[T]):
         )
 
     @staticmethod
+    def phase_agnostic_2(
+            validation: ValidationAssertions = ValidationAssertions.all_passes(),
+            main_result: Assertion[T] = asrt.anything_goes(),
+            main_raises_hard_error: bool = False,
+            symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+            symbols_after_main: Assertion[SymbolTable] = asrt.anything_goes(),
+            main_side_effects_on_files: TcdsExpectation = TcdsExpectation(),
+            main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
+            proc_exe_settings: Assertion[ProcessExecutionSettings]
+            = asrt.is_instance(ProcessExecutionSettings),
+            instruction_settings: Assertion[InstructionSettings]
+            = asrt.is_instance(InstructionSettings),
+            instruction_environment:
+            Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
+    ) -> 'MultiSourceExpectation[T]':
+        return MultiSourceExpectation.phase_agnostic(
+            validation,
+            main_result,
+            main_raises_hard_error,
+            symbol_usages,
+            symbols_after_main,
+            main_side_effects_on_files.sds,
+            main_side_effects_on_files.tcds,
+            main_side_effects_on_files.case_home,
+            main_side_effect_on_environment_variables,
+            proc_exe_settings,
+            instruction_settings,
+            instruction_environment,
+        )
+
+    @staticmethod
     def setup_phase_aware(
             validation: ValidationAssertions = ValidationAssertions.all_passes(),
             main_result: Assertion[T] = asrt.anything_goes(),
@@ -467,6 +509,42 @@ class Expectation(Generic[T], MultiSourceExpectation[T]):
             main_side_effects_on_sds=main_side_effects_on_sds,
             side_effects_on_tcds=side_effects_on_tcds,
             side_effects_on_hds=side_effects_on_home,
+            source=source,
+            proc_exe_settings=proc_exe_settings,
+            instruction_settings=instruction_settings,
+            main_side_effect_on_environment_variables=main_side_effect_on_environment_variables,
+            assertion_on_instruction_environment=assertion_on_instruction_environment,
+            setup_settings=asrt.is_none,
+        )
+
+    @staticmethod
+    def phase_agnostic_3(
+            validation: ValidationAssertions = validation_utils.ValidationAssertions.all_passes(),
+            main_result: Assertion[T] = asrt.anything_goes(),
+            main_raises_hard_error: bool = False,
+            symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+            symbols_after_main: Assertion[SymbolTable] = asrt.anything_goes(),
+            main_side_effects_on_files: TcdsExpectation = TcdsExpectation(),
+            source: Assertion[ParseSource] = asrt.anything_goes(),
+            main_side_effect_on_environment_variables: Assertion[Dict[str, str]] = asrt.anything_goes(),
+            proc_exe_settings: Assertion[ProcessExecutionSettings]
+            = asrt.is_instance(ProcessExecutionSettings),
+            instruction_settings: Assertion[InstructionSettings]
+            = asrt.is_instance(InstructionSettings),
+            assertion_on_instruction_environment:
+            Assertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
+    ) -> 'Expectation[T]':
+        return Expectation(
+            MainMethodType.PHASE_AGNOSTIC,
+            validation_pre_sds=validation.pre_sds,
+            validation_post_sds=validation.post_sds,
+            main_result=main_result,
+            main_raises_hard_error=main_raises_hard_error,
+            symbol_usages=symbol_usages,
+            symbols_after_main=symbols_after_main,
+            main_side_effects_on_sds=main_side_effects_on_files.sds,
+            side_effects_on_tcds=main_side_effects_on_files.tcds,
+            side_effects_on_hds=main_side_effects_on_files.case_home,
             source=source,
             proc_exe_settings=proc_exe_settings,
             instruction_settings=instruction_settings,

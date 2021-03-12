@@ -115,6 +115,10 @@ class CustomAbsStx(AbstractSyntax):
         return CustomAbsStx(TokenSequence.empty())
 
     @staticmethod
+    def singleton(token: str) -> AbstractSyntax:
+        return CustomAbsStx(TokenSequence.singleton(token))
+
+    @staticmethod
     def of_str(s: str) -> AbstractSyntax:
         return CustomAbsStx(TokenSequence.singleton(s))
 

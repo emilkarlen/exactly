@@ -11,9 +11,9 @@ from exactly_lib.util import functional
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentUsageOnCommandLineRenderer
 from exactly_lib.util.parse import token_matchers
 from . import literal
-from .file_maker import regular as _fm_regular, dir_ as _fm_dir
-from .file_maker.interface import FileMakerSdv
+from .file_makers import regular as _fm_regular, dir_ as _fm_dir
 from .. import syntax
+from ..file_maker import FileMakerSdv
 from ...string_ import parse_string
 
 

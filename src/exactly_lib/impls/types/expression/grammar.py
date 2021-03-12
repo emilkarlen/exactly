@@ -128,7 +128,8 @@ class Grammar(Generic[EXPR]):
                  prefix_operators: Sequence[NameAndValue[PrefixOperator[EXPR]]],
                  infix_operators_in_order_of_increasing_precedence:
                  Sequence[Sequence[NameAndValue[InfixOperator[EXPR]]]],
-                 description: Callable[[], SectionContents] = SectionContents.empty
+                 description: Callable[[], SectionContents] = SectionContents.empty,
+                 custom_reserved_words: Sequence[str] = (),
                  ):
         self.concept = concept
         self.description = description
@@ -142,3 +143,4 @@ class Grammar(Generic[EXPR]):
             name_and_value.to_dict(infix_ops_of_precedence)
             for infix_ops_of_precedence in infix_operators_in_order_of_increasing_precedence
         ]
+        self.custom_reserved_words = custom_reserved_words

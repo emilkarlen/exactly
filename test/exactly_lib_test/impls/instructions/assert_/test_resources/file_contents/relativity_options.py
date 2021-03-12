@@ -85,7 +85,7 @@ class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfig
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
         return SdsPopulatorForSubDir(SUB_DIR_RESOLVER, contents)
 
-    def assert_root_dir_contains_exactly(self, contents: DirContents) -> Assertion:
+    def assert_root_dir_contains_exactly(self, contents: DirContents) -> Assertion[SandboxDs]:
         return sub_dir_of_sds_contains_exactly(SUB_DIR_RESOLVER.population_dir,
                                                contents)
 

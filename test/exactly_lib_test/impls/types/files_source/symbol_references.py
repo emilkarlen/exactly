@@ -102,7 +102,7 @@ class TestAllSymbolReferencesAreReported(unittest.TestCase):
 
 def _spec_regular(name: StringConstantSymbolContext,
                   contents: abs_stx.FileContentsAbsStx) -> FileSpecAbsStx:
-    return FileSpecAbsStx(
+    return FileSpecAbsStx.of_file_type(
         FileType.REGULAR,
         name.abstract_syntax,
         contents,
@@ -111,7 +111,7 @@ def _spec_regular(name: StringConstantSymbolContext,
 
 def _spec_dir(name: StringConstantSymbolContext,
               contents: abs_stx.DirContentsAbsStx) -> FileSpecAbsStx:
-    return FileSpecAbsStx(
+    return FileSpecAbsStx.of_file_type(
         FileType.DIR,
         name.abstract_syntax,
         contents,

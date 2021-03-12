@@ -1,6 +1,7 @@
 from pathlib import PurePosixPath
 from typing import Sequence, Optional, TypeVar, Generic
 
+from exactly_lib.common.report_rendering import header_blocks
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
@@ -22,10 +23,11 @@ from exactly_lib.type_val_prims.files_source.files_source import FilesSource
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail
+from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable
-from .file_maker.interface import FileMakerAdv, FileMakerDdv, FileMakerSdv, FileMaker
 from .. import syntax
+from ..file_maker import FileMakerAdv, FileMakerDdv, FileMakerSdv, FileMaker
 
 FILE_NAME_STRING_REFERENCES_RESTRICTION = reference_restrictions.is_string__all_indirect_refs_are_strings(
     text_docs.single_pre_formatted_line_object(
@@ -143,10 +145,6 @@ class LiteralDdv(FilesSourceDdv):
             file.validator()
             for file in files
         ]
-        validators.append(_FileNameUniquenessValidator([
-            file.name
-            for file in files
-        ]))
         self._validator = ddv_validators.all_of(validators)
 
     @property
@@ -181,21 +179,24 @@ class LiteralSdv(FilesSourceSdv):
 
 
 class _IsValidPosixPath(DdvValidator):
-    _ERR__ABSOLUTE = '{FILE_NAME} must not be absolute:'
-    _ERR__RELATIVE_COMPONENTS = '{FILE_NAME} must not contain relative components (..):'
 
     def __init__(self, path: str):
         self.path_str = path
 
     def validate_pre_sds_if_applicable(self, hds: HomeDs) -> Optional[TextRenderer]:
-        if self.path_str == '':
-            return text_docs.single_line(_EMPTY_FILE_NAME)
+        path_str = self.path_str
+        if path_str == '':
+            return text_docs.single_line(_ERR__FILE_NAME__EMPTY)
 
-        path = PurePosixPath(self.path_str)
+        for path_separator in _PATH_SEPARATORS:
+            if path_separator in path_str:
+                return self._err_msg(path_str, _ERR__FILE_NAME__PATH_SEPARATOR_IN_FILE_NAME)
+
+        path = PurePosixPath(path_str)
         if path.is_absolute():
-            return self._err_msg(path, self._ERR__ABSOLUTE)
+            return self._err_msg(path_str, _ERR__FILE_NAME__ABSOLUTE)
         if '..' in path.parts:
-            return self._err_msg(path, self._ERR__RELATIVE_COMPONENTS)
+            return self._err_msg(path_str, _ERR__FILE_NAME__RELATIVE_COMPONENTS)
 
         return None
 
@@ -203,38 +204,44 @@ class _IsValidPosixPath(DdvValidator):
         return None
 
     @staticmethod
-    def _err_msg(path: PurePosixPath,
-                 msg_tmpl: str) -> TextRenderer:
-        return text_docs.single_pre_formatted_line_object(
-            str_constructor.FormatMap(
-                msg_tmpl + '\n{path}',
-                {
-                    'FILE_NAME': syntax.FILE_NAME,
-                    'path': repr(path),
-                }
+    def _err_msg(path: str,
+                 header_tmpl: str) -> TextRenderer:
+        header = str_constructor.FormatMap(header_tmpl, _FORMAT_MAP)
+        return rend_comb.SingletonSequenceR(
+            header_blocks.w_details(
+                header,
+                text_docs.minor_blocks_of_string_lines([path])
             )
         )
 
 
-class _FileNameUniquenessValidator(DdvValidator):
-    def __init__(self, file_names: Sequence[str]):
-        self._file_names = file_names
+_PATH_SEPARATORS = (':', ';')
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDs) -> Optional[TextRenderer]:
-        return None
 
-    def validate_post_sds_if_applicable(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
-        return None
+def _string_constant(s: str) -> str:
+    return ''.join(('\'', s, '\''))
 
+
+_PATH_SEPARATORS_LIST = ','.join([
+    _string_constant(sep)
+    for sep in _PATH_SEPARATORS
+])
 
 _FORMAT_MAP = {
-    'FILE_NAME': syntax.FILE_NAME,
+    'FILE_NAME': syntax.FILE_NAME.name,
+    'PATH_SEPARATORS': _PATH_SEPARATORS_LIST,
+    'RELATIVE_COMPONENT': _string_constant('..'),
 }
 
-_EMPTY_FILE_NAME = str_constructor.FormatMap(
-    'A {FILE_NAME} must not be the empty string',
+_ERR__FILE_NAME__EMPTY = str_constructor.FormatMap(
+    '{FILE_NAME} must not be the empty string',
     _FORMAT_MAP,
 )
+
+_ERR__FILE_NAME__PATH_SEPARATOR_IN_FILE_NAME = '{FILE_NAME} must not contain path separators ({PATH_SEPARATORS})'
+
+_ERR__FILE_NAME__ABSOLUTE = '{FILE_NAME} must not be absolute'
+_ERR__FILE_NAME__RELATIVE_COMPONENTS = '{FILE_NAME} must not contain relative components ({RELATIVE_COMPONENT}):'
 
 
 def _child_dp(root: DescribedPath, relative_path: PurePosixPath) -> DescribedPath:

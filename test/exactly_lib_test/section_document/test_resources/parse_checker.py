@@ -1,6 +1,7 @@
 import unittest
 from contextlib import contextmanager
-from typing import Callable, Sequence, Generic, TypeVar
+from types import MappingProxyType
+from typing import Callable, Sequence, Generic, TypeVar, Mapping, Any
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -40,11 +41,11 @@ class Checker(Generic[T]):
     def check_invalid_syntax__abs_stx(self,
                                       put: unittest.TestCase,
                                       invalid_source: AbstractSyntax,
-                                      **sub_test_identifiers
+                                      sub_test_identifiers: Mapping[str, Any] = MappingProxyType({}),
                                       ):
         for layout_case in STANDARD_LAYOUT_SPECS:
             parse_source = ParseSource(invalid_source.tokenization().layout(layout_case.value))
-            with put.subTest(layout=layout_case.name, **sub_test_identifiers):
+            with put.subTest(zz_layout=layout_case.name, **sub_test_identifiers):
                 self.check_invalid_arguments(put, parse_source)
 
     def check_invalid_syntax__src_var_consume_last_line_abs_stx(self,

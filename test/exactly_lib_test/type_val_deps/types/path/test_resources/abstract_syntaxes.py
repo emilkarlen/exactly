@@ -14,6 +14,8 @@ from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx
 
+FileNameComponents = Sequence[str]
+
 
 class RelativityAbsStx(AbstractSyntax, ABC):
     pass
@@ -88,11 +90,11 @@ class PathWRelativityAbsStx(PathAbsStx, ABC):
         ])
 
 
-def file_name_from_components__str(components: Sequence[str]) -> str:
+def file_name_from_components__str(components: FileNameComponents) -> str:
     return '/'.join(components)
 
 
-def file_name_from_components(components: Sequence[str],
+def file_name_from_components(components: FileNameComponents,
                               quoting: Optional[QuoteType] = None,
                               ) -> StringAbsStx:
     return StringLiteralAbsStx(file_name_from_components__str(components),

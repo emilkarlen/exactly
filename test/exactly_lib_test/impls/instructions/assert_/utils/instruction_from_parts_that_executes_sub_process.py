@@ -1,10 +1,12 @@
 import unittest
+from typing import Sequence
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.impls.instructions.assert_.utils import instruction_from_parts
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case import phase_identifier
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.instructions.assert_.test_resources.configuration import AssertConfigurationBase
@@ -37,11 +39,14 @@ class ConfigurationForTheAssertPhase(AssertConfigurationBase, test_impl.Configur
         return Expectation(main_result=pfh_assertions.is_pass())
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: Assertion[str] = asrt.anything_goes()):
+                                             assertion_on_error_message: Assertion[str] = asrt.anything_goes(),
+                                             symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                                             ):
         return Expectation(
-            validation_post_sds=svh_assertions.is_validation_error(
+            main_result=pfh_assertions.is_hard_error(
                 asrt_text_doc.is_string_for_test(assertion_on_error_message)
-            )
+            ),
+            symbol_usages=symbol_usages,
         )
 
     def expect_hard_error_in_main(self) -> Expectation:

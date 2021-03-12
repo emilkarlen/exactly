@@ -1,8 +1,9 @@
 from typing import Callable
 
 from exactly_lib.common.report_rendering.parts import failure_details as _fd_rendering
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.impls import file_properties
-from exactly_lib.impls.file_properties import FileType
+from exactly_lib.impls.file_properties import FileType, PropertiesWithNegation
 from exactly_lib.impls.types.path import top_lvl_error_msg_rendering
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.result import failure_details
@@ -36,7 +37,7 @@ class NewFileCreator:
         result = self._FILE_CHECK.apply(path.primitive)
         if not result.is_success:
             raise HardErrorException(
-                file_properties.render_failure(result.cause, path.primitive)
+                file_properties.render_failure__d(result.cause, path)
             )
 
 
@@ -56,5 +57,5 @@ class ExistingFileModifier:
         result = self._file_check.apply(path.primitive)
         if not result.is_success:
             raise HardErrorException(
-                file_properties.render_failure(result.cause, path.primitive)
+                file_properties.render_failure__d(result.cause, path)
             )

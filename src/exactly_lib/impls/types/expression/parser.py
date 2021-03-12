@@ -1,6 +1,6 @@
 from typing import Generic, Optional, Callable, Mapping, Sequence, AbstractSet, List
 
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -10,6 +10,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.util import collection
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib.util.str_.formatter import StringFormatter
 from .grammar import Grammar, EXPR, InfixOperator
 
 
@@ -203,6 +204,9 @@ class _Parser(Generic[EXPR]):
         elif not symbol_syntax.is_symbol_name(primitive_name):
             err_msg = self._err_msg_renderer.unknown_primitive(primitive_name)
             raise SingleInstructionInvalidArgumentException(err_msg)
+        elif primitive_name in self.grammar.custom_reserved_words:
+            err_msg = self._err_msg_renderer.plain_symbol_name_is_reserved_word(primitive_name)
+            raise SingleInstructionInvalidArgumentException(err_msg)
         else:
             return self.grammar.mk_reference(primitive_name)
 
@@ -238,6 +242,12 @@ class _Parser(Generic[EXPR]):
 
 
 class _ErrorMessageRenderer:
+    _INDENT = '  '
+    _RESERVED_WORD__HEADER = 'Found {reserved_word}: {actual}'
+    _RESERVED_WORD__LIST_HEADER = (
+        'The following are additional {reserved_word:s} (within the context of {syntax_element}):'
+    )
+
     def __init__(self, grammar: Grammar):
         self._grammar = grammar
 
@@ -252,12 +262,28 @@ class _ErrorMessageRenderer:
             'Expecting one of',
         ]
         lines += [
-            '  ' + primitive
+            self._INDENT + primitive
             for primitive in self._known_primitives_and_prefix_operators()
         ]
         lines += [
             '',
             symbol_syntax.SYMBOL_SYNTAX_DESCRIPTION_LINE,
+        ]
+        return '\n'.join(lines)
+
+    def plain_symbol_name_is_reserved_word(self, primitive_name: str) -> str:
+        formatter = StringFormatter({
+            'reserved_word': formatting.misc_name_with_formatting(misc_texts.RESERVED_WORD_NAME),
+            'syntax_element': self._grammar.concept.syntax_element.name,
+            'actual': formatting.keyword(primitive_name),
+        })
+        lines = [formatter.format(self._RESERVED_WORD__HEADER),
+                 '',
+                 formatter.format(self._RESERVED_WORD__LIST_HEADER),
+                 '']
+        lines += [
+            self._INDENT + formatting.keyword(reserved_word)
+            for reserved_word in sorted(self._grammar.custom_reserved_words)
         ]
         return '\n'.join(lines)
 

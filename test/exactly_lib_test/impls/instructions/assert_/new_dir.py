@@ -4,7 +4,7 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.impls.instructions.assert_ import new_dir as sut
 from exactly_lib_test.impls.instructions.assert_.test_resources.configuration import AssertConfigurationBase
 from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.new_dir_instruction_test import \
+from exactly_lib_test.impls.instructions.multi_phase.new_dir.test_resources.phase_integration import \
     Configuration, suite_for
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
