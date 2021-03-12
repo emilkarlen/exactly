@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html),
 with exception of a "0." prefix until version 1 is released.
 
+## [next] - YYYY-MM-DD
+
+### Added
+
+ - Type `files-source` - Produces a set of files (for populating a directory)   
+ - Instruction `dir` - Populate a dir with contents given by a `files-source`
+
+### Changed
+
+ - Instruction `dir` - Fails if the directory already exists (breaking)
+
 ## [0.14.0] - 2021-03-01
 
 ### Added
