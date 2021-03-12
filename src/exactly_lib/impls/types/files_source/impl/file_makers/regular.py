@@ -19,7 +19,7 @@ from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 from . import description
 from . import utils
-from .interface import FileMakerDdv, FileMakerSdv, FileMaker
+from ...file_maker import FileMakerDdv, FileMakerSdv, FileMaker
 from ... import defs
 
 

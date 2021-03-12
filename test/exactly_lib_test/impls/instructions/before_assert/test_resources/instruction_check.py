@@ -86,7 +86,7 @@ class Expectation(MultiSourceExpectation):
     def __init__(self,
                  validation_pre_sds: Assertion = svh_assertions.is_success(),
                  validation_post_setup: Assertion = svh_assertions.is_success(),
-                 main_result: Assertion = sh_assertions.is_success(),
+                 main_result: Assertion[sh.SuccessOrHardError] = sh_assertions.is_success(),
                  symbol_usages: Assertion = asrt.is_empty_sequence,
                  main_side_effects_on_sds: Assertion = asrt.anything_goes(),
                  main_side_effects_on_tcds: Assertion = asrt.anything_goes(),

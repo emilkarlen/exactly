@@ -34,6 +34,7 @@ class Syntax:
             'string_type': types.STRING_TYPE_INFO.name,
             'BIN_OP_PRECEDENCE': _BIN_OP_PRECEDENCE,
             'whitespace': misc_texts.WHITESPACE,
+            'reserved_word': formatting.misc_name_with_formatting(misc_texts.RESERVED_WORD_NAME),
         })
 
     def syntax_element_description(self) -> SyntaxElementDescription:
@@ -52,12 +53,31 @@ class Syntax:
                 )
 
     def syntax_description(self) -> List[ParagraphItem]:
+        ret_val = self._syntax__whitespace()
+        ret_val += self._syntax__reserved_words()
+        return ret_val
+
+    def _syntax__whitespace(self) -> List[ParagraphItem]:
         return (
             self._tp.fnap(_DESCRIPTION__SYNTAX__W_OPERATORS)
             if self.infix_operators__list
             else
             self._tp.fnap(_DESCRIPTION__SYNTAX__WO_OPERATORS)
         )
+
+    def _syntax__reserved_words(self) -> List[ParagraphItem]:
+        if not self.grammar.custom_reserved_words:
+            return []
+
+        reserved_words_list = docs.simple_header_only_list(
+            sorted(self.grammar.custom_reserved_words),
+            lists.ListType.ITEMIZED_LIST,
+        )
+
+        ret_val = self._tp.fnap(_ADDITIONAL_RESERVED_WORDS__HEADER)
+        ret_val.append(reserved_words_list)
+
+        return ret_val
 
     def precedence_description(self) -> List[ParagraphItem]:
         num_infix_op_levels = len(self.grammar.infix_ops_inc_precedence)
@@ -239,11 +259,15 @@ that must have been defined as {concept_name:a}.
 """
 
 _SYMBOL_NAME_ADDITIONAL_DESCRIPTION = """\
-An unquoted {string_type} that is not a reserved word
+An unquoted {string_type} that is not {reserved_word:a}
 is interpreted as the name of {symbol_concept:a}.
 """
 
 _BIN_OP_PRECEDENCE = 'All binary operators have the same precedence.'
+
+_ADDITIONAL_RESERVED_WORDS__HEADER = """\
+Additional {reserved_word:s}:
+"""
 
 _DESCRIPTION__PRECEDENCE__ONLY_BINARY = """\
 {BIN_OP_PRECEDENCE}

@@ -169,6 +169,8 @@ INVALID_FILE_NAMES: Sequence[NameAndValue[str]] = [
     NameAndValue('empty', ''),
     NameAndValue('absolute', '/a/b/c'),
     NameAndValue('relative component (double dot)', 'b/../c'),
+    NameAndValue('os path separator (posix)', 'a/:b/c'),
+    NameAndValue('os path separator (windows)', 'a/b;/c'),
 ]
 
 OTHER_VALID_FILE_SPECS: Sequence[NameAndValue[List[FileSpecAbsStx]]] = [
@@ -188,9 +190,9 @@ def file_type_and_contents_variants(file_name: StringAbsStx) -> Sequence[NameAnd
     return [
         NameAndValue(
             'file_type={}, contents={}'.format(file_type, contents_variant.name),
-            abs_stx.FileSpecAbsStx(file_type,
-                                   file_name,
-                                   contents_variant.value)
+            abs_stx.FileSpecAbsStx.of_file_type(file_type,
+                                                file_name,
+                                                contents_variant.value)
         )
         for file_type in defs.FileType
         for contents_variant in _CONTENTS_CASES[file_type]

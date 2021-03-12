@@ -34,30 +34,30 @@ class TestCreate(unittest.TestCase):
                     leaf_file_name,
                     create_path_case.expected_created_file):
                 syntax = LiteralFilesSourceAbsStx([
-                    abs_stx.FileSpecAbsStx(
+                    abs_stx.FileSpecAbsStx.of_file_type(
                         create_path_case.file_type,
                         file_name_arg(str(rel_file_name_case.file_spec_file_name)),
                         create_path_case.contents__syntax,
                     )
                 ])
-                with self.subTest(
-                        create_case=create_path_case.name,
-                        rel_file_name_case=rel_file_name_case.name,
-                ):
-                    # ACT & ASSERT #
-                    integration_check.CHECKER.check__abs_stx__layout__std_source_variants(
-                        self,
-                        syntax,
-                        rel_file_name_case.arrangement,
-                        arrangement_w_tcds(),
-                        MultiSourceExpectation(
-                            execution=ExecutionExpectation(
-                                main_result=asrt_fs.dir_contains_exactly_2(
-                                    rel_file_name_case.expected_root_dir_contents
-                                )
+                # ACT & ASSERT #
+                integration_check.CHECKER.check__abs_stx__layout__std_source_variants(
+                    self,
+                    syntax,
+                    rel_file_name_case.arrangement,
+                    arrangement_w_tcds(),
+                    MultiSourceExpectation(
+                        execution=ExecutionExpectation(
+                            main_result=asrt_fs.dir_contains_exactly_2(
+                                rel_file_name_case.expected_root_dir_contents
                             )
                         )
-                    )
+                    ),
+                    sub_test_identifiers={
+                        'create_case': create_path_case.name,
+                        'rel_file_name_case': rel_file_name_case.name,
+                    }
+                )
 
 
 class TestAppend(unittest.TestCase):
@@ -94,29 +94,31 @@ class TestAppend(unittest.TestCase):
                 )
             ])
             for contents_case in contents_cases:
-                with self.subTest(contents=contents_case.name,
-                                  target_location=target_location_case.name):
-                    # ACT & ASSERT #
-                    integration_check.CHECKER.check__abs_stx__layout__std_source_variants(
-                        self,
-                        syntax,
-                        [
-                            target_location_case.file_for_leaf(
-                                contents_case.original(name_of_modified_file)
-                            )
-                        ],
-                        arrangement_w_tcds(),
-                        MultiSourceExpectation(
-                            execution=ExecutionExpectation(
-                                main_result=asrt_fs.dir_contains_exactly_2([
-                                    target_location_case.file_for_leaf(
-                                        fs.File(name_of_modified_file,
-                                                contents_case.expected_contents_after_modification)
-                                    )
-                                ])
-                            )
+                # ACT & ASSERT #
+                integration_check.CHECKER.check__abs_stx__layout__std_source_variants(
+                    self,
+                    syntax,
+                    [
+                        target_location_case.file_for_leaf(
+                            contents_case.original(name_of_modified_file)
                         )
-                    )
+                    ],
+                    arrangement_w_tcds(),
+                    MultiSourceExpectation(
+                        execution=ExecutionExpectation(
+                            main_result=asrt_fs.dir_contains_exactly_2([
+                                target_location_case.file_for_leaf(
+                                    fs.File(name_of_modified_file,
+                                            contents_case.expected_contents_after_modification)
+                                )
+                            ])
+                        )
+                    ),
+                    sub_test_identifiers={
+                        'contents': contents_case.name,
+                        'target_location': target_location_case.name
+                    }
+                )
 
     def test_dir(self):
         # ARRANGE #
@@ -158,29 +160,31 @@ class TestAppend(unittest.TestCase):
                 )
             ])
             for contents_case in contents_cases:
-                with self.subTest(contents=contents_case.name,
-                                  target_location=target_location_case.name):
-                    # ACT & ASSERT #
-                    integration_check.CHECKER.check__abs_stx__layout__std_source_variants(
-                        self,
-                        syntax,
-                        [
-                            target_location_case.file_for_leaf(
-                                contents_case.original(target_dir_name)
-                            )
-                        ],
-                        arrangement_w_tcds(),
-                        MultiSourceExpectation(
-                            execution=ExecutionExpectation(
-                                main_result=asrt_fs.dir_contains_exactly_2([
-                                    target_location_case.file_for_leaf(
-                                        fs.Dir(target_dir_name,
-                                               contents_case.expected_contents_after_modification)
-                                    )
-                                ])
-                            )
+                # ACT & ASSERT #
+                integration_check.CHECKER.check__abs_stx__layout__std_source_variants(
+                    self,
+                    syntax,
+                    [
+                        target_location_case.file_for_leaf(
+                            contents_case.original(target_dir_name)
                         )
-                    )
+                    ],
+                    arrangement_w_tcds(),
+                    MultiSourceExpectation(
+                        execution=ExecutionExpectation(
+                            main_result=asrt_fs.dir_contains_exactly_2([
+                                target_location_case.file_for_leaf(
+                                    fs.Dir(target_dir_name,
+                                           contents_case.expected_contents_after_modification)
+                                )
+                            ])
+                        )
+                    ),
+                    sub_test_identifiers={
+                        'contents': contents_case.name,
+                        'target_location': target_location_case.name
+                    }
+                )
 
 
 class TargetLocationCase:

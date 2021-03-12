@@ -1,10 +1,12 @@
 import unittest
+from typing import Sequence
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.impls.instructions.before_assert.utils import instruction_from_parts
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case import phase_identifier
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.instructions.before_assert.test_resources.configuration import BeforeAssertConfigurationBase
@@ -12,7 +14,6 @@ from exactly_lib_test.impls.instructions.before_assert.test_resources.instructio
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources import \
     instruction_from_parts_that_executes_sub_process as test_impl
 from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh
-from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 
@@ -41,11 +42,14 @@ class ConfigurationForTheBeforeAssertPhase(BeforeAssertConfigurationBase, test_i
         return Expectation(main_result=asrt_sh.is_success())
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: Assertion[str] = asrt.anything_goes()):
+                                             assertion_on_error_message: Assertion[str] = asrt.anything_goes(),
+                                             symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                                             ):
         return Expectation(
-            validation_post_setup=svh_assertions.is_validation_error(
+            main_result=asrt_sh.is_hard_error(
                 asrt_text_doc.is_string_for_test(assertion_on_error_message)
-            )
+            ),
+            symbol_usages=symbol_usages
         )
 
 

@@ -10,3 +10,4 @@ files-matcher
 string-transformer
 program
 string-source
+files-source

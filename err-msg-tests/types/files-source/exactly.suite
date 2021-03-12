@@ -1,0 +1,5 @@
+[suites]
+
+invalid
+fail
+syntax-error

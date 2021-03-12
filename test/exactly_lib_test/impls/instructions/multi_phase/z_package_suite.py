@@ -1,8 +1,9 @@
 import unittest
 
 from exactly_lib_test.impls.instructions.multi_phase import \
-    new_dir, change_dir, \
+    change_dir, \
     shell, sys_cmd
+from exactly_lib_test.impls.instructions.multi_phase.new_dir import z_package_suite as new_dir
 from exactly_lib_test.impls.instructions.multi_phase.copy_ import z_package_suite as copy_
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol import z_package_suite as define_symbol
 from exactly_lib_test.impls.instructions.multi_phase.environ import z_package_suite as env

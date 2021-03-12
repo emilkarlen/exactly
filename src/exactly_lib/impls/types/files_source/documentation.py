@@ -65,10 +65,21 @@ def _file_spec_sed() -> SyntaxElementDescription:
         syntax.FILE_SPEC__SE_STR,
         _TP.fnap(_FILE_SPEC_DESCRIPTION_REST),
         [
-            file_spec.invokation_variant()
+            file_spec.invokation_variant__(_FILE_SPEC_RENDERING_ENV)
             for file_spec in _file_spec_forms()
         ]
     )
+
+
+class FileSpecRenderingEnvironment:
+    def __init__(self,
+                 file_name_arg: a.ArgumentUsage,
+                 include_file_type: bool,
+                 tp: TextParser,
+                 ):
+        self.file_name_arg = file_name_arg
+        self.include_file_type = include_file_type
+        self.tp = tp
 
 
 class FileSpecForm:
@@ -84,6 +95,22 @@ class FileSpecForm:
         self.contents_arguments = contents_arguments
         self.description_tmpl = description_tmpl
         self.path_existence_tmpl = path_existence_tmpl
+
+    def invokation_variant__(self, environment: FileSpecRenderingEnvironment) -> InvokationVariant:
+        arguments = []
+        if environment.include_file_type:
+            arguments += [self._file_type_arg()]
+
+        arguments += [environment.file_name_arg]
+        arguments += self._modification_args()
+        arguments += self._contents_args()
+        description = environment.tp.fnap(self.description_tmpl)
+        description += environment.tp.fnap(self.path_existence_tmpl)
+
+        return invokation_variant_from_args(
+            arguments,
+            description,
+        )
 
     def invokation_variant(self) -> InvokationVariant:
         arguments = [self._file_type_arg(),
@@ -121,6 +148,10 @@ class FileSpecForm:
 
 
 def _file_spec_forms() -> Sequence[FileSpecForm]:
+    return file_spec_forms__regular() + file_spec_forms__dir()
+
+
+def file_spec_forms__regular() -> List[FileSpecForm]:
     return [
         FileSpecForm(
             FileType.REGULAR,
@@ -143,6 +174,11 @@ def _file_spec_forms() -> Sequence[FileSpecForm]:
             _FILE_SPEC__REGULAR__APPEND,
             _PATH__MUST_EXIST__REGULAR,
         ),
+    ]
+
+
+def file_spec_forms__dir() -> List[FileSpecForm]:
+    return [
         FileSpecForm(
             FileType.DIR,
             None,
@@ -172,8 +208,14 @@ def _file_name_sed() -> SyntaxElementDescription:
         syntax.FILE_NAME.name,
         (),
         [invokation_variant_from_args([syntax_elements.STRING_SYNTAX_ELEMENT.single_mandatory])],
-        _TP.fnap(_FILE_NAME_DESCRIPTION_REST),
+        _file_name_description(),
     )
+
+
+def _file_name_description() -> Sequence[ParagraphItem]:
+    ret_val = _TP.fnap(_FILE_NAME_DESCRIPTION_REST)
+    ret_val += _TP.fnap(INTERMEDIATE_DIRS_ARE_CREATED)
+    return ret_val
 
 
 _FILE_SPEC__REGULAR__IMPLICIT_EMPTY = """\
@@ -251,6 +293,10 @@ The path is relative the populated {dir_file_type}.
 Must not contain {parent_dir}.
 """
 
+INTERMEDIATE_DIRS_ARE_CREATED = """\
+Intermediate {dir_file_type:s} as created, if required.
+"""
+
 _SPACE_SEPARATION_PARAGRAPH = 'All parts must be separated by {whitespace}.'
 
 _TP = TextParser({
@@ -268,3 +314,9 @@ _TP = TextParser({
     'regular_contents_type': syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.singular_name,
     'dir_contents_type': syntax_elements.FILES_SOURCE_SYNTAX_ELEMENT.singular_name,
 })
+
+_FILE_SPEC_RENDERING_ENV = FileSpecRenderingEnvironment(
+    syntax.FILE_NAME__ARG,
+    True,
+    _TP,
+)

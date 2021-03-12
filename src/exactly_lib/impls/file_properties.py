@@ -9,7 +9,10 @@ from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import actual_file_attributes, file_types
 from exactly_lib.impls.types.path import path_rendering
+from exactly_lib.impls.types.path import top_lvl_error_msg_rendering as path_top_lvl_rendering
+from exactly_lib.type_val_prims.described_path import DescribedPath
 from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive
+from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, MajorBlock
@@ -28,9 +31,9 @@ class FileTypeInfo:
                  type_argument: str,
                  name: NameWithGenderWithFormatting,
                  stat_mode_predicate: types.FunctionType,
-                 pathlib_path_predicate: Callable[[pathlib.Path], bool]):
+                 path_predicate: Callable[[pathlib.Path], bool]):
         self.type_argument = type_argument
-        self.pathlib_path_predicate = pathlib_path_predicate
+        self.path_predicate = path_predicate
         self.stat_mode_predicate = stat_mode_predicate
         self.description = name.singular
         self.name = name
@@ -180,6 +183,16 @@ def render_failure(properties_with_neg: PropertiesWithNegation,
             ': ',
             file_path,
         ])
+    )
+
+
+def render_failure__d(properties_with_neg: PropertiesWithNegation,
+                      file_path: DescribedPath) -> TextRenderer:
+    return rend_comb.SingletonSequenceR(
+        path_top_lvl_rendering.header_and_path_block(
+            render_failing_property(properties_with_neg),
+            file_path,
+        )
     )
 
 

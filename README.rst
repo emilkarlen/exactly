@@ -123,12 +123,15 @@ appropriate directory::
 
     [setup]
 
-    file input/a.txt     = 'GOOD contents'
-    file input/b.txt     = 'bad contents'
-    file input/sub/c.txt = 'more bad contents'
-
     dir output/good
     dir output/bad
+
+    dir input =
+    {
+        file a.txt = 'GOOD contents'
+        file b.txt = 'bad contents'
+        dir  sub   = { file c.txt = 'more bad contents' }
+    }
 
     [act]
 
@@ -151,7 +154,7 @@ appropriate directory::
         }
 
 
-``file`` and ``dir`` makes files in the current directory (by default).
+``dir`` creates a directory in the current directory (by default).
 
 
 Testing and transforming the contents of files

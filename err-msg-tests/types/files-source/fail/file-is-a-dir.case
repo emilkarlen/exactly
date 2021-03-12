@@ -1,0 +1,7 @@
+[setup]
+
+dir d/d
+
+dir d += {
+  file d += ''
+}

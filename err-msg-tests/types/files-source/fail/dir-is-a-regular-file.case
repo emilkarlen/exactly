@@ -1,0 +1,5 @@
+[setup]
+
+file f.txt
+
+dir f.txt += { }

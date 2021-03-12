@@ -191,6 +191,7 @@ def grammar_of(
         prefix_operators: Sequence[NameAndValue[grammar.PrefixOperator[Expr]]],
         infix_operators_in_order_of_increasing_precedence:
         Sequence[Sequence[NameAndValue[grammar.InfixOperator[Expr]]]],
+        custom_reserved_words: Sequence[str] = (),
 ) -> grammar.Grammar[Expr]:
     return grammar.Grammar(
         concept=CONCEPT,
@@ -198,6 +199,7 @@ def grammar_of(
         primitives=primitives,
         prefix_operators=prefix_operators,
         infix_operators_in_order_of_increasing_precedence=infix_operators_in_order_of_increasing_precedence,
+        custom_reserved_words=custom_reserved_words,
     )
 
 
@@ -216,10 +218,21 @@ GRAMMAR_SANS_INFIX_OP_EXPRESSIONS = grammar_of(
     infix_operators_in_order_of_increasing_precedence=(),
 )
 
+GRAMMAR_WITH_RESERVED_WORDS = grammar_of(
+    primitives=PRIMITIVE_EXPRESSIONS__EXCEPT_RECURSIVE,
+    prefix_operators=PREFIX_OP_EXPRESSIONS,
+    infix_operators_in_order_of_increasing_precedence=(),
+    custom_reserved_words=('reserved_word_1', 'reserved_word_2')
+)
+
 GRAMMARS = [
     NameAndValue(
         'sans infix-op expressions',
         GRAMMAR_SANS_INFIX_OP_EXPRESSIONS,
+    ),
+    NameAndValue(
+        'sans infix-op expressions / w reserved words',
+        GRAMMAR_WITH_RESERVED_WORDS,
     ),
     NameAndValue(
         'with infix-op expressions',

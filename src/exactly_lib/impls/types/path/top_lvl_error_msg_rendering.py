@@ -4,9 +4,10 @@ from exactly_lib.type_val_prims.described_path import DescribedPath
 from exactly_lib.util.render import combinators
 from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
+from exactly_lib.util.str_.str_constructor import ToStringObject
 
 
-def header_and_path_block(header: str, described_path: DescribedPath) -> Renderer[MajorBlock]:
+def header_and_path_block(header: ToStringObject, described_path: DescribedPath) -> Renderer[MajorBlock]:
     return header_blocks.w_details(
         header,
         combinators.SingletonSequenceR(

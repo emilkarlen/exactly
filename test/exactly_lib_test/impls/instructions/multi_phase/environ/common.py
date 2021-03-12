@@ -63,9 +63,14 @@ class TestInvalidSyntaxOfSetShouldBeDetected(unittest.TestCase):
             ]
             for case in cases:
                 # ACT & ASSERT #
-                PARSE_CHECKER.check_invalid_syntax__abs_stx(self, case.value,
-                                                            phase_spec=phase_spec,
-                                                            variant=case.name)
+                PARSE_CHECKER.check_invalid_syntax__abs_stx(
+                    self,
+                    case.value,
+                    {
+                        'phase_spec': phase_spec,
+                        'variant': case.name,
+                    },
+                )
 
 
 class TestInvalidSyntaxOfUnsetShouldBeDetected(unittest.TestCase):
@@ -99,9 +104,14 @@ class TestInvalidSyntaxOfUnsetShouldBeDetected(unittest.TestCase):
             ]
             for case in cases:
                 # ACT & ASSERT #
-                PARSE_CHECKER.check_invalid_syntax__abs_stx(self, case.value,
-                                                            phase_spec=phase_spec,
-                                                            variant=case.name)
+                PARSE_CHECKER.check_invalid_syntax__abs_stx(
+                    self,
+                    case.value,
+                    {
+                        'phase_spec': phase_spec,
+                        'variant': case.name,
+                    },
+                )
 
 
 class TestSetValidationOfValue(unittest.TestCase):
@@ -123,8 +133,10 @@ class TestSetValidationOfValue(unittest.TestCase):
                         symbol_usages=validation_case.value.symbol_context.usages_assertion,
                         validation=validation_case.value.assertion,
                     ),
-                    phase_spec=phase_spec,
-                    validation_case=validation_case.name,
+                    sub_test_identifiers={
+                        'phase_spec': phase_spec,
+                        'validation_case': validation_case.name,
+                    }
                 )
 
 

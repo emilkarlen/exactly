@@ -1,5 +1,6 @@
 import unittest
-from typing import Optional
+from types import MappingProxyType
+from typing import Optional, Mapping, Any
 from typing import Sequence, Dict, Generic
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -92,7 +93,7 @@ class Checker(Generic[T]):
             source: AbstractSyntax,
             arrangement: Arrangement,
             expectation: MultiSourceExpectation[T],
-            **sub_test_identifiers
+            sub_test_identifiers: Mapping[str, Any] = MappingProxyType({}),
     ):
         self.check__abs_stx__layout_and_source_variants(
             put,
@@ -100,7 +101,7 @@ class Checker(Generic[T]):
             arrangement,
             expectation,
             layout.STANDARD_LAYOUT_SPECS,
-            **sub_test_identifiers
+            sub_test_identifiers
         )
 
     def check__abs_stx__multi__std_layouts_and_source_variants(
@@ -149,10 +150,10 @@ class Checker(Generic[T]):
             arrangement: Arrangement,
             expectation: MultiSourceExpectation[T],
             layouts: Sequence[NameAndValue[LayoutSpec]] = layout.STANDARD_LAYOUT_SPECS,
-            **sub_test_identifiers
+            sub_test_identifiers: Mapping[str, Any] = MappingProxyType({}),
     ):
         for source_formatting_case in abs_stx_utils.formatting_cases(source, layouts):
-            with put.subTest(layout=source_formatting_case.name,
+            with put.subTest(zz_layout=source_formatting_case.name,
                              **sub_test_identifiers):
                 self.check__w_source_variants(put, source_formatting_case.value, arrangement, expectation)
 
@@ -163,7 +164,7 @@ class Checker(Generic[T]):
                                  expectation: MultiSourceExpectation[T],
                                  ):
         for parse_source, source_asrt in equivalent_source_variants__with_source_check__consume_last_line_2(source):
-            with put.subTest(remaining_source=parse_source.remaining_source):
+            with put.subTest(zz_remaining_source=parse_source.remaining_source):
                 executor = _ParseAndExecutionChecker(put, arrangement, expectation.as_w_source(source_asrt),
                                                      source_asrt)
                 executor.execute(self.parser, parse_source)

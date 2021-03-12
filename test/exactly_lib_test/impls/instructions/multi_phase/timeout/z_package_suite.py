@@ -51,7 +51,7 @@ class TestInvalidValue(unittest.TestCase):
                 MultiSourceExpectation.phase_agnostic(
                     validation=ValidationAssertions.pre_sds_fails__w_any_msg()
                 ),
-                value_case=value_case,
+                sub_test_identifiers={'value_case': value_case},
             )
 
 

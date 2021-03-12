@@ -151,7 +151,7 @@ def sym_link(file_name: str,
 
 class DirContents:
     def __init__(self,
-                 file_system_element_contents: List[FileSystemElement]):
+                 file_system_element_contents: FileSystemElements):
         self._file_system_element_contents = file_system_element_contents
 
     @staticmethod
@@ -165,7 +165,7 @@ class DirContents:
 
     @property
     def file_system_elements(self) -> List[FileSystemElement]:
-        return self._file_system_element_contents
+        return list(self._file_system_element_contents)
 
     def in_dir(self, parent_dir: str):
         return DirContents([

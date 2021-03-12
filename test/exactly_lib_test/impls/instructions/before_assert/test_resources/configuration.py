@@ -85,8 +85,8 @@ class BeforeAssertConfigurationBase(ConfigurationBase):
                                              symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                                              ):
         return ic.Expectation(
+            main_result=asrt_sh.is_hard_error(error_message),
             symbol_usages=symbol_usages,
-            validation_post_setup=svh_assertions.is_validation_error(error_message)
         )
 
     def arrangement(self,

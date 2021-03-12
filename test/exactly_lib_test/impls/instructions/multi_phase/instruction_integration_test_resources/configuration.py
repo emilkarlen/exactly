@@ -20,6 +20,7 @@ from exactly_lib_test.common.help.test_resources.check_documentation import suit
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ
 from exactly_lib_test.impls.instructions.test_resources.instruction_checker import InstructionChecker
+from exactly_lib_test.impls.test_resources.validation.validation import ValidationActual
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.section_document.test_resources import parse_checker
@@ -143,6 +144,21 @@ class ConfigurationBase(ABC):
                                              symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                                              ):
         raise NotImplementedError()
+
+    def expect_failing_validation(self,
+                                  actual: ValidationActual,
+                                  symbol_usages: Assertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                                  ):
+        if actual.pre_sds is not None:
+            return self.expect_failing_validation_pre_sds(
+                asrt_text_doc.is_string_for_test_that_equals(actual.pre_sds),
+                symbol_usages=symbol_usages,
+            )
+        else:
+            return self.expect_failing_validation_post_setup(
+                asrt_text_doc.is_string_for_test_that_equals(actual.post_sds),
+                symbol_usages=symbol_usages,
+            )
 
 
 class TestCaseWithConfiguration(unittest.TestCase, ABC):
