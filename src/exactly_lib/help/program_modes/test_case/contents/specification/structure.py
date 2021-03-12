@@ -189,7 +189,7 @@ An {ATC} that is a Python source file, executed with arguments:
 ```
 [conf]
 
-actor = file % python
+actor = file % python3
 
 [act]
 

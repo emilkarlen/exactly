@@ -187,7 +187,7 @@ For example:
 ```
 file my-file.txt = "contents of my file"
 
-run % python -c :> import sys; sys.stdout.write("Hello world")
+run % python3 -c :> import sys; sys.stdout.write("Hello world")
 ```
 
 """

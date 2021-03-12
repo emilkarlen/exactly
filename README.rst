@@ -430,7 +430,7 @@ The ``actor`` instruction can specify an interpreter to test a source code file:
 
     [conf]
 
-    actor = file % python
+    actor = file % python3
 
     [act]
 
@@ -453,7 +453,7 @@ The ``actor`` instruction can specify an interpreter to test source code in ``[a
 
     [conf]
 
-    actor = source % python
+    actor = source % python3
 
     [act]
 
