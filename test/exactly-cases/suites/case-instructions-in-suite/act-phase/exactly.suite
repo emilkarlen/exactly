@@ -7,7 +7,7 @@ the.case
 [conf]
 
 
-actor = file % python
+actor = file % python3
 
 
 [act]
