@@ -1,5 +1,11 @@
 Describes how to upgrade test cases to one version from the preceding version.
 
+# [next]
+
+## Instruction `dir` - Fails if the directory already exists
+
+Make sure the directory do not already exist.
+
 # [0.14.0]
 
 ## Renaming of types
