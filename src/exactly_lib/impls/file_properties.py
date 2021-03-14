@@ -2,17 +2,14 @@ import enum
 import os
 import pathlib
 import stat
-import types
 from typing import Callable, Optional, Sequence
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.definitions import actual_file_attributes, file_types
-from exactly_lib.impls.types.path import path_rendering
-from exactly_lib.impls.types.path import top_lvl_error_msg_rendering as path_top_lvl_rendering
+from exactly_lib.definitions import file_types
+from exactly_lib.impls.types.path import path_rendering, path_err_msgs
 from exactly_lib.type_val_prims.described_path import DescribedPath
 from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive
-from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, MajorBlock
@@ -30,8 +27,9 @@ class FileTypeInfo:
     def __init__(self,
                  type_argument: str,
                  name: NameWithGenderWithFormatting,
-                 stat_mode_predicate: types.FunctionType,
-                 path_predicate: Callable[[pathlib.Path], bool]):
+                 stat_mode_predicate: Callable[[int], bool],
+                 path_predicate: Callable[[pathlib.Path], bool],
+                 ):
         self.type_argument = type_argument
         self.path_predicate = path_predicate
         self.stat_mode_predicate = stat_mode_predicate
@@ -75,8 +73,9 @@ def stat_results_is_of(file_type: FileType,
 class Properties(tuple):
     def __new__(cls,
                 follow_symlinks: bool,
-                file_exists: bool,
-                type_of_existing_file: FileType):
+                file_exists: Optional[bool],
+                type_of_existing_file: Optional[FileType],
+                ):
         return tuple.__new__(cls, (follow_symlinks, file_exists, type_of_existing_file))
 
     @property
@@ -96,7 +95,7 @@ class Properties(tuple):
         return self[1]
 
     @property
-    def type_of_existing_file(self) -> FileType:
+    def type_of_existing_file(self) -> Optional[FileType]:
         """
         If is_type_of_existing_file gives True,
         then this method gives the related type of file,
@@ -188,11 +187,9 @@ def render_failure(properties_with_neg: PropertiesWithNegation,
 
 def render_failure__d(properties_with_neg: PropertiesWithNegation,
                       file_path: DescribedPath) -> TextRenderer:
-    return rend_comb.SingletonSequenceR(
-        path_top_lvl_rendering.header_and_path_block(
-            render_failing_property(properties_with_neg),
-            file_path,
-        )
+    return path_err_msgs.line_header__primitive__path(
+        render_failing_property(properties_with_neg),
+        file_path,
     )
 
 
@@ -251,22 +248,6 @@ def render_failing_property(properties_with_neg: PropertiesWithNegation) -> str:
             sym_links=sym_links)
 
 
-def render_property(properties: Properties) -> str:
-    is_follow_symlinks = properties.is_follow_symlinks
-    symlink_info = 'symlinks followed' if is_follow_symlinks else 'symlinks not followed'
-    if properties.is_existence:
-        return 'file does not exist ({symlink_info})'.format(
-            symlink_info=symlink_info
-        )
-    else:
-        file_type = properties.type_of_existing_file
-        return 'file {type} is {file_type} ({symlink_info})'.format(
-            type=actual_file_attributes.TYPE_ATTRIBUTE,
-            file_type=file_type.name if file_type else 'unknown',
-            symlink_info=symlink_info
-        )
-
-
 class _NegationOf(FilePropertiesCheck):
     def __init__(self, check: FilePropertiesCheck):
         self.__check = check
@@ -286,10 +267,16 @@ class _MustExistBase(FilePropertiesCheck):
                                    follow_symlinks=self._follow_symlinks)
             return self._for_existing_file(stat_results)
         except OSError:
-            return CheckResult(False,
-                               PropertiesWithNegation(False,
-                                                      new_properties_for_existence(self._follow_symlinks,
-                                                                                   False)))
+            return CheckResult(
+                False,
+                PropertiesWithNegation(
+                    False,
+                    new_properties_for_existence(
+                        self._follow_symlinks,
+                        False,
+                    )
+                )
+            )
 
     def _for_existing_file(self, stat_results) -> CheckResult:
         raise NotImplementedError()
@@ -300,10 +287,16 @@ class _MustExist(_MustExistBase):
         super().__init__(follow_symlinks)
 
     def _for_existing_file(self, stat_results) -> CheckResult:
-        return CheckResult(True,
-                           PropertiesWithNegation(False,
-                                                  new_properties_for_existence(self._follow_symlinks,
-                                                                               True)))
+        return CheckResult(
+            True,
+            PropertiesWithNegation(
+                False,
+                new_properties_for_existence(
+                    self._follow_symlinks,
+                    True,
+                )
+            )
+        )
 
 
 class _MustExistAs(_MustExistBase):
@@ -315,7 +308,13 @@ class _MustExistAs(_MustExistBase):
 
     def _for_existing_file(self, stat_results) -> CheckResult:
         result = stat_results_is_of(self._expected_file_type, stat_results)
-        return CheckResult(result,
-                           PropertiesWithNegation(False,
-                                                  new_properties_for_type_of_existing_file(self._follow_symlinks,
-                                                                                           self._expected_file_type)))
+        return CheckResult(
+            result,
+            PropertiesWithNegation(
+                False,
+                new_properties_for_type_of_existing_file(
+                    self._follow_symlinks,
+                    self._expected_file_type,
+                )
+            )
+        )

@@ -41,7 +41,7 @@ class _IsSequenceRenderer(Generic[RENDERED_TYPE], asrt.AssertionBase[SequenceRen
                put: unittest.TestCase,
                value,
                message_builder: MessageBuilder):
-        put.assertIsInstance(value, SequenceRenderer, 'object type')
+        put.assertIsInstance(value, SequenceRenderer, message_builder.apply('object type'))
         assert isinstance(value, SequenceRenderer)
 
         rendered_objects = value.render_sequence()

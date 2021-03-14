@@ -7,8 +7,6 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import abstract_syntax as abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import common_test_cases
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import integration_check
-from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abstract_syntax import \
-    ImplicitlyEmptyContentsVariantAbsStx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.common_test_cases import \
     InvalidDestinationFileTestCasesData
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.defs import DISALLOWED_DST_RELATIVITIES, \
@@ -19,6 +17,7 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.uti
     IS_SUCCESS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
     MultiSourceExpectation
+from exactly_lib_test.impls.types.files_source.test_resources import abstract_syntaxes as fs_abs_stx
 from exactly_lib_test.impls.types.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
@@ -173,10 +172,14 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(
         file_contents_cases = [
             NameAndValue(
                 'empty file',
-                ImplicitlyEmptyContentsVariantAbsStx()
+                fs_abs_stx.FileContentsEmptyAbsStx()
             ),
         ]
 
         return InvalidDestinationFileTestCasesData(
             file_contents_cases,
             SymbolTable({}))
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

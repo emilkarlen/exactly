@@ -7,7 +7,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 class Step(Enum):
     VALIDATE_PRE_SDS = 1
-    MAIN = 2
+    VALIDATE_POST_SDS = 2
+    MAIN = 3
 
 
 IS_FAILURE_OF_VALIDATION = validation.is_arbitrary_validation_failure()

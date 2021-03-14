@@ -14,14 +14,13 @@ from exactly_lib.impls.instructions.multi_phase.utils import instruction_part_ut
 from exactly_lib.impls.instructions.multi_phase.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.impls.types.files_source import documentation as _fs_doc
 from exactly_lib.impls.types.files_source import parse as _parse_fs
-from exactly_lib.impls.types.files_source.file_maker import FileMakerSdv, FileMaker
+from exactly_lib.impls.types.files_source.file_maker import FileMakerSdv
 from exactly_lib.impls.types.files_source.impl import parse_literal
 from exactly_lib.impls.types.path import parse_path, relative_path_options_documentation as rel_path_doc
 from exactly_lib.impls.types.path.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.sdv_structure import SymbolUsage, references_from_objects_with_symbol_references
 from exactly_lib.test_case.app_env import ApplicationEnvironment
-from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
@@ -29,7 +28,6 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidat
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
-from exactly_lib.type_val_prims.described_path import DescribedPath
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -48,7 +46,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             self._tp,
         )
         return [
-            file_spec_form.invokation_variant__(rendering_env)
+            file_spec_form.invokation_variant(rendering_env)
             for file_spec_form in _fs_doc.file_spec_forms__dir()
         ]
 
@@ -103,20 +101,7 @@ class TheInstructionEmbryo(embryo.PhaseAgnosticInstructionEmbryo[Optional[TextRe
                 .value_of_any_dependency(environment.tcds)
                 .primitive(app_env)
         )
-        return self._with_exception_handling(destination_path, file_maker)
-
-    @staticmethod
-    def _with_exception_handling(destination: DescribedPath,
-                                 file_maker: FileMaker,
-                                 ) -> Optional[TextRenderer]:
-        """
-        :return: None iff success. Otherwise an error message.
-        """
-        try:
-            file_maker.make(destination)
-        except HardErrorException as ex:
-            return ex.error
-        return None
+        return file_maker.make__translate_hard_error(destination_path)
 
     def _get_ddv_validator(self, symbols: SymbolTable) -> DdvValidator:
         return self._file_maker.resolve(symbols).validator

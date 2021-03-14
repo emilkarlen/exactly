@@ -74,6 +74,26 @@ class TestFileMustNotExist(unittest.TestCase):
                     ),
                 )
 
+    def test_broken_symlink(self):
+        # ARRANGE #
+        broken_sym_link = fs.sym_link('broken-symlink', 'non-existing-target')
+        file_name = str(PurePosixPath(broken_sym_link.name))
+        for file_spec_case in file_must_not_exist_source_cases(file_name):
+            with self.subTest(file_spec=file_spec_case.name):
+                # ACT & ASSERT #
+                integration_check.CHECKER.check__abs_stx(
+                    self,
+                    LiteralFilesSourceAbsStx([file_spec_case.value]),
+                    [broken_sym_link],
+                    arrangement_w_tcds(),
+                    Expectation(
+                        parse=IS_AT_END_OF_1ST_LNE,
+                        execution=ExecutionExpectation(
+                            is_hard_error=asrt_text_doc.is_any_text(),
+                        )
+                    ),
+                )
+
 
 class TestFileMustExist(unittest.TestCase):
     def test_regular_file(self):

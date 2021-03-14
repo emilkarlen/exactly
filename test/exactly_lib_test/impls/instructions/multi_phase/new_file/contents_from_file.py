@@ -1,15 +1,14 @@
 import unittest
 from typing import Sequence, Callable
 
-from exactly_lib.impls.instructions.multi_phase.new_file import parse as sut, defs
+from exactly_lib.impls.instructions.multi_phase import new_file as sut
+from exactly_lib.impls.types.string_source.defs import src_rel_opt_arg_conf_for_phase
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelOptionType, RelSdsOptionType, RelNonHdsOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import abstract_syntax as instr_abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import common_test_cases
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import integration_check
-from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abstract_syntax import \
-    ExplicitContentsVariantAbsStx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.common_test_cases import \
     InvalidDestinationFileTestCasesData
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.defs import \
@@ -22,6 +21,7 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.uti
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
     MultiSourceExpectation
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.impls.types.files_source.test_resources import abstract_syntaxes as fs_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_transformer.test_resources import abstract_syntaxes as str_trans_abs_stx
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_hds, every_conf_rel_hds, \
@@ -88,19 +88,19 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
 
         for phase_is_after_act in [False, True]:
             checker = integration_check.checker(phase_is_after_act)
-            src_file_rel_opt_conf = defs.src_rel_opt_arg_conf_for_phase(phase_is_after_act)
+            src_file_rel_opt_conf = src_rel_opt_arg_conf_for_phase(phase_is_after_act)
 
             src_file_symbol = ConstantSuffixPathDdvSymbolContext(
                 'SRC_FILE_SYMBOL',
                 src_file_rel_conf.relativity_option,
                 src_file.name,
-                src_file_rel_opt_conf.accepted_relativity_variants,
+                src_file_rel_opt_conf.options.accepted_relativity_variants,
             )
             transformed_file_contents = string_source_abs_stx.TransformedStringSourceAbsStx(
                 string_source_abs_stx.StringSourceOfFileAbsStx(src_file_symbol.abstract_syntax),
                 StringTransformerSymbolReferenceAbsStx(to_upper_transformer.name)
             )
-            instruction_syntax = instr_abs_stx.with_explicit_contents(
+            instruction_syntax = instr_abs_stx.create_w_explicit_contents(
                 dst_file_symbol.abstract_syntax,
                 transformed_file_contents,
             )
@@ -156,7 +156,7 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
         ]
 
         for file_contents_case in file_contents_cases:
-            valid_instruction_syntax = instr_abs_stx.with_explicit_contents(
+            valid_instruction_syntax = instr_abs_stx.create_w_explicit_contents(
                 path_abs_stx.DefaultRelPathAbsStx('dst-file.txt'),
                 file_contents_case.value,
             )
@@ -172,14 +172,14 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
         self._check_of_invalid_src_file(lambda x: every_conf_rel_hds(),
                                         Step.VALIDATE_PRE_SDS)
 
-    def test_main_SHOULD_fail_WHEN_source_is_not_an_existing_file_rel_non_hds(self):
+    def test_validation_post_sds_SHOULD_fail_WHEN_source_is_not_an_existing_file_rel_non_hds(self):
         def every_src_file_rel_conf(is_before_act: bool) -> Sequence[RelativityOptionConfiguration]:
             return [
                 conf_rel_non_hds(relativity)
                 for relativity in accepted_non_hds_source_relativities(is_before_act)
             ]
 
-        self._check_of_invalid_src_file(every_src_file_rel_conf, Step.MAIN)
+        self._check_of_invalid_src_file(every_src_file_rel_conf, Step.VALIDATE_POST_SDS)
 
     def test_all_relativities__without_transformer(self):
         # ARRANGE #
@@ -194,7 +194,7 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                     file_contents_abs_stx = string_source_abs_stx.StringSourceOfFileAbsStx(
                         src_rel_opt_conf.path_abs_stx_of_name(src_file.name)
                     )
-                    instruction_syntax = instr_abs_stx.with_explicit_contents(
+                    instruction_syntax = instr_abs_stx.create_w_explicit_contents(
                         dst_rel_opt_conf.path_abs_stx_of_name(expected_file.file_name),
                         file_contents_abs_stx,
                     )
@@ -251,7 +251,7 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
             ),
             to_upper_transformer.abstract_syntax,
         )
-        instruction_syntax = instr_abs_stx.with_explicit_contents(
+        instruction_syntax = instr_abs_stx.create_w_explicit_contents(
             dst_rel_opt_conf.path_abs_stx_of_name(expected_file.file_name),
             transformed_file_contents_abs_stx,
         )
@@ -297,7 +297,7 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
             ),
             transformation_w_infix_op
         )
-        instruction_syntax = instr_abs_stx.with_explicit_contents(
+        instruction_syntax = instr_abs_stx.create_w_explicit_contents(
             path_abs_stx.DefaultRelPathAbsStx('dst-file'),
             file_contents_arg,
         )
@@ -313,11 +313,18 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                 validation=ValidationAssertions.pre_sds_fails__w_any_msg(),
                 symbol_usages=symbol_usages_expectation,
             )
-        else:
+        elif step_of_expected_failure is Step.VALIDATE_POST_SDS:
+            return MultiSourceExpectation.phase_agnostic(
+                validation=ValidationAssertions.post_sds_fails__w_any_msg(),
+                symbol_usages=symbol_usages_expectation,
+            )
+        elif step_of_expected_failure is Step.MAIN:
             return MultiSourceExpectation.phase_agnostic(
                 main_result=IS_FAILURE,
                 symbol_usages=symbol_usages_expectation,
             )
+        else:
+            raise ValueError('Unknown {}: {}'.format(Step, step_of_expected_failure))
 
     def _check_of_invalid_src_file(
             self,
@@ -345,27 +352,29 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                 for actual_src_file_variant in self.src_file_variants:
                     for contents_arguments in contents_builder.with_and_without_transformer_cases(
                             transformer.abstract_syntax):
-                        instruction_syntax = instr_abs_stx.with_explicit_contents(
+                        instruction_syntax = instr_abs_stx.create_w_explicit_contents(
                             dst_file_rel_conf.path_abs_stx_of_name('dst-file.txt'),
                             contents_arguments.value,
                         )
-                        with self.subTest(phase_is_after_act=phase_is_after_act,
-                                          contents=contents_arguments.name,
-                                          relativity_of_src_path=src_file_rel_conf.option_argument):
-                            # ACT & ASSERT #
-                            checker.check__abs_stx__std_layouts_and_source_variants(
-                                self,
-                                instruction_syntax,
-                                Arrangement.phase_agnostic(
-                                    tcds=TcdsArrangement(
-                                        pre_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN,
-                                        tcds_contents=src_file_rel_conf.populator_for_relativity_option_root(
-                                            actual_src_file_variant.value),
-                                    ),
-                                    symbols=symbols,
+                        # ACT & ASSERT #
+                        checker.check__abs_stx__std_layouts_and_source_variants(
+                            self,
+                            instruction_syntax,
+                            Arrangement.phase_agnostic(
+                                tcds=TcdsArrangement(
+                                    pre_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN,
+                                    tcds_contents=src_file_rel_conf.populator_for_relativity_option_root(
+                                        actual_src_file_variant.value),
                                 ),
-                                expectation_,
-                            )
+                                symbols=symbols,
+                            ),
+                            expectation_,
+                            sub_test_identifiers={
+                                'phase_is_after_act': phase_is_after_act,
+                                'contents': contents_arguments.name,
+                                'relativity_of_src_path': src_file_rel_conf.name,
+                            }
+                        )
 
     @staticmethod
     def _expected_non_hds_contents(dst_file_rel_opt_conf: RelativityOptionConfigurationForRelNonHds,
@@ -407,13 +416,15 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(
         file_contents_cases = [
             NameAndValue(
                 'contents of existing file / without transformation',
-                ExplicitContentsVariantAbsStx(
+                fs_abs_stx.FileContentsExplicitAbsStx(
+                    fs_abs_stx.ModificationType.CREATE,
                     contents_abs_stx_builder.without_transformation()
                 )
             ),
             NameAndValue(
                 'contents of existing file / with transformation',
-                ExplicitContentsVariantAbsStx(
+                fs_abs_stx.FileContentsExplicitAbsStx(
+                    fs_abs_stx.ModificationType.CREATE,
                     contents_abs_stx_builder.with_transformation(arbitrary_transformer.abstract_syntax)
                 )
             ),
@@ -423,3 +434,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(
             file_contents_cases,
             symbols,
             src_file_in_hds_contents)
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

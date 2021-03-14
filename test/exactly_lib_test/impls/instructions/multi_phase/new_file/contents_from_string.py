@@ -9,8 +9,6 @@ from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import abstract_syntax as instr_abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import common_test_cases
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import integration_check
-from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abstract_syntax import \
-    ExplicitContentsVariantAbsStx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.defs import DISALLOWED_DST_RELATIVITIES, \
     ARBITRARY_ALLOWED_DST_FILE_RELATIVITY, ALLOWED_DST_FILE_RELATIVITIES, ACCEPTED_DST_RELATIVITY_VARIANTS
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.parse_check import \
@@ -19,6 +17,7 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.uti
     IS_SUCCESS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
     MultiSourceExpectation, Expectation
+from exactly_lib_test.impls.types.files_source.test_resources import abstract_syntaxes as fs_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
@@ -57,7 +56,7 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
             checker = integration_check.checker(phase_is_after_act)
             for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
                 dst_path = rel_opt_conf.path_abs_stx_of_name(expected_file.name)
-                instruction_syntax = instr_abs_stx.with_explicit_contents(
+                instruction_syntax = instr_abs_stx.create_w_explicit_contents(
                     dst_path,
                     string_source_abs_stx.StringSourceOfStringAbsStx(string_value),
                 )
@@ -87,7 +86,7 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
         expected_file = fs.File('a-file-name.txt', string_value.value)
         rel_opt_conf = ARBITRARY_ALLOWED_DST_FILE_RELATIVITY
         dst_path = rel_opt_conf.path_abs_stx_of_name(expected_file.name)
-        instruction_syntax = instr_abs_stx.with_explicit_contents(
+        instruction_syntax = instr_abs_stx.create_w_explicit_contents(
             dst_path,
             string_source_abs_stx.StringSourceOfHereDocAbsStx(string_value),
         )
@@ -122,7 +121,7 @@ class TestSymbolReferences(unittest.TestCase):
                                                              'dst-file.txt',
                                                              ACCEPTED_DST_RELATIVITY_VARIANTS)
         string_value = str_abs_stx.StringHereDocAbsStx('single line in here doc\n')
-        instruction_syntax = instr_abs_stx.with_explicit_contents(
+        instruction_syntax = instr_abs_stx.create_w_explicit_contents(
             dst_path_symbol.abstract_syntax,
             string_source_abs_stx.StringSourceOfHereDocAbsStx(string_value),
         )
@@ -206,7 +205,7 @@ class TestSymbolReferences(unittest.TestCase):
         contents_arguments = symbol_ref_syntax_2_contents_arguments(
             symbol_reference_syntax_for_name(contents_symbol.name))
 
-        instruction_syntax = instr_abs_stx.with_explicit_contents(
+        instruction_syntax = instr_abs_stx.create_w_explicit_contents(
             path_abs_stx.PathStringAbsStx.of_plain_components(
                 [sub_dir_symbol.name__sym_ref_syntax, expected_file.name]
             ),
@@ -255,7 +254,7 @@ class TestFailingParse(unittest.TestCase):
         for relativity in DISALLOWED_DST_RELATIVITIES:
             relativity_conf = conf_rel_any(relativity)
             for contents_case in arguments_cases:
-                instruction_syntax = instr_abs_stx.with_explicit_contents(
+                instruction_syntax = instr_abs_stx.create_w_explicit_contents(
                     relativity_conf.path_abs_stx_of_name('file-name'),
                     contents_case.value,
                 )
@@ -266,7 +265,9 @@ class TestFailingParse(unittest.TestCase):
 
     def test_fail_when_contents_is_missing(self):
         # ARRANGE #
-        missing_contents = instr_abs_stx.CustomExplicitContentsVariantAbsStx(TokenSequence.empty())
+        missing_contents = fs_abs_stx.FileContentsExplicitAbsStx(
+            fs_abs_stx.ModificationType.CREATE,
+            string_source_abs_stx.CustomStringSourceAbsStx.missing_value())
         instruction_syntax = instr_abs_stx.InstructionAbsStx(
             path_abs_stx.DefaultRelPathAbsStx('file-name'),
             missing_contents,
@@ -276,7 +277,7 @@ class TestFailingParse(unittest.TestCase):
 
     def test_fail_when_superfluous_arguments(self):
         # ARRANGE #
-        valid_instruction_syntax = instr_abs_stx.with_explicit_contents(
+        valid_instruction_syntax = instr_abs_stx.create_w_explicit_contents(
             path_abs_stx.DefaultRelPathAbsStx('file-name'),
             string_source_abs_stx.StringSourceOfStringAbsStx(str_abs_stx.StringLiteralAbsStx('string')),
         )
@@ -294,7 +295,8 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(
         file_contents_cases = [
             NameAndValue(
                 'contents of here doc',
-                ExplicitContentsVariantAbsStx(
+                fs_abs_stx.FileContentsExplicitAbsStx(
+                    fs_abs_stx.ModificationType.CREATE,
                     string_source_abs_stx.StringSourceOfHereDocAbsStx(
                         str_abs_stx.StringHereDocAbsStx('contents\n')
                     )
@@ -302,7 +304,8 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(
             ),
             NameAndValue(
                 'contents of string',
-                ExplicitContentsVariantAbsStx(
+                fs_abs_stx.FileContentsExplicitAbsStx(
+                    fs_abs_stx.ModificationType.CREATE,
                     string_source_abs_stx.StringSourceOfStringAbsStx(
                         str_abs_stx.StringLiteralAbsStx('contents')
                     )
@@ -313,3 +316,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(
         return common_test_cases.InvalidDestinationFileTestCasesData(
             file_contents_cases,
             empty_symbol_table())
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
