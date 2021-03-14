@@ -79,9 +79,9 @@ class ParserOfFileMaker(Generic[CONTENTS], ParserFromTokens[FileMakerSdv]):
         )
 
     @staticmethod
-    def of_regular_file_maker() -> ParserFromTokens[FileMakerSdv]:
+    def of_regular_file_maker(phase_is_after_act: bool = False) -> ParserFromTokens[FileMakerSdv]:
         return ParserOfFileMaker(
-            _parser_str_src.default_parser_for__tokens(False),
+            _parser_str_src.default_parser_for__tokens(phase_is_after_act),
             _mk_file_maker__regular_file,
         )
 

@@ -65,7 +65,7 @@ def _file_spec_sed() -> SyntaxElementDescription:
         syntax.FILE_SPEC__SE_STR,
         _TP.fnap(_FILE_SPEC_DESCRIPTION_REST),
         [
-            file_spec.invokation_variant__(_FILE_SPEC_RENDERING_ENV)
+            file_spec.invokation_variant(_FILE_SPEC_RENDERING_ENV)
             for file_spec in _file_spec_forms()
         ]
     )
@@ -96,7 +96,7 @@ class FileSpecForm:
         self.description_tmpl = description_tmpl
         self.path_existence_tmpl = path_existence_tmpl
 
-    def invokation_variant__(self, environment: FileSpecRenderingEnvironment) -> InvokationVariant:
+    def invokation_variant(self, environment: FileSpecRenderingEnvironment) -> InvokationVariant:
         arguments = []
         if environment.include_file_type:
             arguments += [self._file_type_arg()]
@@ -106,19 +106,6 @@ class FileSpecForm:
         arguments += self._contents_args()
         description = environment.tp.fnap(self.description_tmpl)
         description += environment.tp.fnap(self.path_existence_tmpl)
-
-        return invokation_variant_from_args(
-            arguments,
-            description,
-        )
-
-    def invokation_variant(self) -> InvokationVariant:
-        arguments = [self._file_type_arg(),
-                     syntax.FILE_NAME__ARG]
-        arguments += self._modification_args()
-        arguments += self._contents_args()
-        description = _TP.fnap(self.description_tmpl)
-        description += _TP.fnap(self.path_existence_tmpl)
 
         return invokation_variant_from_args(
             arguments,

@@ -395,9 +395,10 @@ def dir_with_symlink_to_existing_dir() -> pathlib.Path:
 
 @contextmanager
 def dir_with_symlink_to_non_existing_file() -> pathlib.Path:
-    with tmp_dir_with(sym_link('symlink-to-non-existing-file',
+    target_name = 'symlink-to-non-existing-file'
+    with tmp_dir_with(sym_link(target_name,
                                'non-existing-file')) as dir_path:
-        yield dir_path / 'symlink-to-non-existing-file'
+        yield dir_path / target_name
 
 
 if __name__ == '__main__':

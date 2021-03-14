@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib.impls.instructions.multi_phase.new_file import parse, defs
+from exactly_lib.impls.instructions.multi_phase import new_file
+from exactly_lib.impls.types.string_source.defs import src_rel_opt_arg_conf_for_phase
 from exactly_lib.tcfs.path_relativity import RelOptionType, RelHdsOptionType, RelNonHdsOptionType
 from exactly_lib.test_case.phases.common import TestCaseInstructionWithSymbols
 from exactly_lib.util.name_and_value import NameAndValue
@@ -82,7 +83,7 @@ class TestSymbolUsages(TestCaseWithConfiguration):
                 PathSymbolReferenceAbsStx(src_file_symbol.name)),
             str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx(to_upper_transformer.name)
         )
-        instruction_syntax = instr_abs_stx.with_explicit_contents(
+        instruction_syntax = instr_abs_stx.create_w_explicit_contents(
             PathSymbolReferenceAbsStx(dst_file_symbol.name),
             transformed_file_syntax,
         )
@@ -103,7 +104,7 @@ class TestSymbolUsages(TestCaseWithConfiguration):
                         dst_file_symbol.name,
                         asrt_w_str_rend_rest.equals__w_str_rendering(
                             path_or_string_reference_restrictions(
-                                parse.REL_OPT_ARG_CONF.options.accepted_relativity_variants)
+                                new_file.REL_OPT_ARG_CONF.options.accepted_relativity_variants)
                         )
                     ),
 
@@ -111,8 +112,9 @@ class TestSymbolUsages(TestCaseWithConfiguration):
                         src_file_symbol.name,
                         asrt_w_str_rend_rest.equals__w_str_rendering(
                             path_or_string_reference_restrictions(
-                                defs.src_rel_opt_arg_conf_for_phase(
-                                    self.conf.phase_is_after_act()).accepted_relativity_variants))
+                                src_rel_opt_arg_conf_for_phase(
+                                    self.conf.phase_is_after_act()
+                                ).options.accepted_relativity_variants))
                     ),
 
                     is_reference_to_string_transformer__usage(to_upper_transformer.name),
@@ -166,7 +168,7 @@ class TestContentsFromExistingFile_Successfully(TestCaseWithConfiguration):
                 src_rel_opt_conf.path_abs_stx_of_name(src_file.name)),
             to_upper_transformer.abstract_syntax,
         )
-        instruction_syntax = instr_abs_stx.with_explicit_contents(
+        instruction_syntax = instr_abs_stx.create_w_explicit_contents(
             dst_rel_opt_conf.path_abs_stx_of_name(expected_file.name),
             transformed_file_syntax,
         )
@@ -229,7 +231,7 @@ class TestContentsFromOutputOfProgram_Successfully(TestCaseWithConfiguration):
                 transformation=to_upper_transformer.abstract_syntax,
             )
         )
-        instruction_syntax = instr_abs_stx.with_explicit_contents(
+        instruction_syntax = instr_abs_stx.create_w_explicit_contents(
             dst_rel_opt_conf.path_abs_stx_of_name(expected_file.name),
             program_syntax,
         )
@@ -299,7 +301,7 @@ class TestContentsFromOutputOfProgram_SuccessfullyWithIgnoredNonZeroExitCode(Tes
             ),
             ignore_exit_code=True,
         )
-        instruction_syntax = instr_abs_stx.with_explicit_contents(
+        instruction_syntax = instr_abs_stx.create_w_explicit_contents(
             dst_file_rel_opt_conf.path_abs_stx_of_name(expected_file.name),
             program_string_source_syntax,
         )
@@ -345,7 +347,7 @@ class TestHardError_DueTo_NonZeroExitCodeFromProgram(TestCaseWithConfiguration):
             ),
             ignore_exit_code=False,
         )
-        instruction_syntax = instr_abs_stx.with_explicit_contents(
+        instruction_syntax = instr_abs_stx.create_w_explicit_contents(
             conf_rel_non_hds(RelNonHdsOptionType.REL_TMP).path_abs_stx_of_name('dst.txt'),
             program_string_source_syntax,
         )
@@ -381,7 +383,7 @@ class TestValidation(TestCaseWithConfiguration):
         ]
         for case in cases:
             src_file_rel_conf = conf_rel_any(case.arrangement)
-            instruction_syntax = instr_abs_stx.with_explicit_contents(
+            instruction_syntax = instr_abs_stx.create_w_explicit_contents(
                 dst_file.argument_abs_stx,
                 string_source_abs_stx.StringSourceOfFileAbsStx(
                     src_file_rel_conf.path_abs_stx_of_name('non-existing-source-file.txt')
@@ -407,7 +409,7 @@ def instruction_syntax_for_src_file_rel_result() -> AbstractSyntax:
     src_file_arg = path_abs_stx.PathWConstNameAbsStx.of_rel_opt(RelOptionType.REL_RESULT, 'src-file.txt')
     dst_file_arg = path_abs_stx.PathWConstNameAbsStx.of_rel_opt(RelOptionType.REL_ACT, 'dst-file.txt')
 
-    return instr_abs_stx.with_explicit_contents(
+    return instr_abs_stx.create_w_explicit_contents(
         dst_file_arg,
         string_source_abs_stx.StringSourceOfFileAbsStx(src_file_arg),
     )

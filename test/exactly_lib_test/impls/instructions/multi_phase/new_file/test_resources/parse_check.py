@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.impls.instructions.multi_phase.new_file import parse as sut
+from exactly_lib.impls.instructions.multi_phase import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO

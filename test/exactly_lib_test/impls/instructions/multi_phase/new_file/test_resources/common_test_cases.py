@@ -7,11 +7,10 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import abstract_syntax as instr_abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import integration_check
-from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abstract_syntax import \
-    ContentsVariantAbsStx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import IS_FAILURE
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, Expectation
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.impls.types.files_source.test_resources.abstract_syntaxes import FileContentsAbsStx
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_non_hds
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.tcfs.test_resources.dir_populator import TcdsPopulator
@@ -27,7 +26,7 @@ from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDd
 
 class InvalidDestinationFileTestCasesData:
     def __init__(self,
-                 file_contents_cases: Sequence[NameAndValue[ContentsVariantAbsStx]],
+                 file_contents_cases: Sequence[NameAndValue[FileContentsAbsStx]],
                  symbols: SymbolTable,
                  pre_existing_files: TcdsPopulator = tcds_populators.empty(),
                  ):
@@ -66,7 +65,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(unittest.TestCas
                     checker = integration_check.checker(phase_is_after_act)
 
                     with self.subTest(file_contents_variant=file_contents_case.name,
-                                      dst_file_variant=rel_opt_conf.option_argument,
+                                      dst_file_variant=rel_opt_conf.name,
                                       phase_is_after_act=phase_is_after_act):
                         # ACT & ASSERT #
                         checker.check__abs_stx(

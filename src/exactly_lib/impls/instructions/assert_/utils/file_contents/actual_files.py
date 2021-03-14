@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence
 
 from exactly_lib.impls.text_render import file_or_dir_contents_headers
-from exactly_lib.impls.types.path import top_lvl_error_msg_rendering as path_top_lvl_rendering
+from exactly_lib.impls.types.path import path_err_msgs
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import instruction_environment as i
@@ -93,7 +93,7 @@ class ConstructorForPath(ComparisonActualFileConstructor):
                 .value_of_any_dependency__d(environment.tcds)
         )
 
-        return path_top_lvl_rendering.header_and_path_block(
+        return path_err_msgs.line_header_block__primitive__path(
             str(file_or_dir_contents_headers.unexpected(self._object_name)),
             described_path,
         )

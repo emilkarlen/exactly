@@ -2,7 +2,7 @@ import unittest
 from typing import List, Callable, Dict, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.impls.instructions.multi_phase.new_file import parse as sut
+from exactly_lib.impls.instructions.multi_phase import new_file as sut
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
@@ -11,8 +11,6 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import abstract_syntax as instr_abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import common_test_cases
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import integration_check, parse_check
-from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abstract_syntax import \
-    ExplicitContentsVariantAbsStx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.common_test_cases import \
     InvalidDestinationFileTestCasesData
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.defs import \
@@ -22,6 +20,7 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.uti
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
     MultiSourceExpectation
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.impls.types.files_source.test_resources import abstract_syntaxes as fs_abs_stx
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_transformer.test_resources import abstract_syntaxes as str_trans_abs_stx
@@ -92,7 +91,7 @@ class TestSymbolUsages(unittest.TestCase):
                 transformation=to_upper_transformer.abstract_syntax,
             )
         )
-        instruction_syntax = instr_abs_stx.with_explicit_contents(
+        instruction_syntax = instr_abs_stx.create_w_explicit_contents(
             dst_file_symbol.abstract_syntax,
             transformed_program_output_contents_syntax
         )
@@ -213,7 +212,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(unittest.TestCase)
 
                 expected_symbol_references = program_case.expected_references + additional_symbol_references
 
-                instruction_syntax = instr_abs_stx.with_explicit_contents(
+                instruction_syntax = instr_abs_stx.create_w_explicit_contents(
                     rel_opt_conf.path_abs_stx_of_name(expected_file.name),
                     string_source_abs_stx.StringSourceOfProgramAbsStx(proc_output_file, program_syntax,
                                                                       ignore_exit_code=False)
@@ -254,7 +253,7 @@ class TestFailingValidation(unittest.TestCase):
                 'post SDS validation failure SHOULD cause main error',
                 RelOptionType.REL_ACT,
                 MultiSourceExpectation.phase_agnostic(
-                    main_result=IS_FAILURE
+                    validation=ValidationAssertions.post_sds_fails__w_any_msg()
                 ),
             ),
         ]
@@ -262,7 +261,7 @@ class TestFailingValidation(unittest.TestCase):
             program_with_ref_to_non_existing_file = program_abs_stx.ProgramOfExecutableFileCommandLineAbsStx(
                 path_abs_stx.RelOptPathAbsStx(case.arrangement, 'non-existing-file')
             )
-            instruction_syntax = instr_abs_stx.with_explicit_contents(
+            instruction_syntax = instr_abs_stx.create_w_explicit_contents(
                 path_abs_stx.DefaultRelPathAbsStx('dst-file'),
                 string_source_abs_stx.StringSourceOfProgramAbsStx(ProcOutputFile.STDOUT,
                                                                   program_with_ref_to_non_existing_file,
@@ -292,7 +291,7 @@ class TestUnableToExecute(unittest.TestCase):
         cases = failing_program_builder.with_and_without_transformer_cases(transformer.abstract_syntax)
 
         for transformation_case in cases:
-            instruction_syntax = instr_abs_stx.with_explicit_contents(
+            instruction_syntax = instr_abs_stx.create_w_explicit_contents(
                 path_abs_stx.DefaultRelPathAbsStx('dst-file'),
                 string_source_abs_stx.StringSourceOfProgramAbsStx(
                     ProcOutputFile.STDOUT,
@@ -323,7 +322,7 @@ class TestNonZeroExitCode(unittest.TestCase):
             exit_code_cases=[1, 69],
             ignore_exit_code=False,
             main_result=IS_FAILURE,
-            expected_output_dir_contents=self._dir_is_empty
+            expected_output_dir_contents=None,
         )
 
     def test_result_SHOULD_be_success_WHEN_any_zero_exit_code_and_exit_code_is_ignored(self):
@@ -338,7 +337,7 @@ class TestNonZeroExitCode(unittest.TestCase):
                           exit_code_cases: List[int],
                           ignore_exit_code: bool,
                           main_result: Assertion[Optional[TextRenderer]],
-                          expected_output_dir_contents: Callable[[str, str], DirContents],
+                          expected_output_dir_contents: Optional[Callable[[str, str], DirContents]],
                           ):
         # ARRANGE #
         destination_file_name = 'dst-file.txt'
@@ -391,7 +390,7 @@ class TestNonZeroExitCode(unittest.TestCase):
                 )
 
                 for program_case in program_cases:
-                    instruction_syntax = instr_abs_stx.with_explicit_contents(
+                    instruction_syntax = instr_abs_stx.create_w_explicit_contents(
                         dst_file_conf.abstract_syntax,
                         string_source_abs_stx.StringSourceOfProgramAbsStx(
                             output_file,
@@ -399,35 +398,41 @@ class TestNonZeroExitCode(unittest.TestCase):
                             ignore_exit_code=ignore_exit_code)
                     )
                     expected_program_output = program_case.adapt_expected_program_output(program_output[output_file])
+                    main_side_effects_on_sds = (
+                        dst_file_rel_conf.assert_root_dir_contains_exactly(
+                            expected_output_dir_contents(dst_file_conf.name, expected_program_output)
+                        )
+                        if expected_output_dir_contents is not None
+                        else
+                        asrt.anything_goes()
+                    )
                     symbol_contexts = [program_symbol] + program_case.additional_symbols
                     # ACT && ASSERT #
                     for phase_is_after_act in [False, True]:
                         checker = integration_check.checker(phase_is_after_act)
-                        with self.subTest(exit_code=exit_code,
-                                          output_file=output_file,
-                                          program=program_case.name,
-                                          phase_is_after_act=phase_is_after_act):
-                            checker.check__abs_stx__std_layouts_and_source_variants(
-                                self,
-                                instruction_syntax,
-                                Arrangement.phase_agnostic(
-                                    symbols=SymbolContext.symbol_table_of_contexts(symbol_contexts),
-                                    tcds=TcdsArrangement(
-                                        tcds_contents=py_file_rel_conf.populator_for_relativity_option_root(
-                                            DirContents([py_file])
-                                        )
-                                    ),
+                        checker.check__abs_stx__std_layouts_and_source_variants(
+                            self,
+                            instruction_syntax,
+                            Arrangement.phase_agnostic(
+                                symbols=SymbolContext.symbol_table_of_contexts(symbol_contexts),
+                                tcds=TcdsArrangement(
+                                    tcds_contents=py_file_rel_conf.populator_for_relativity_option_root(
+                                        DirContents([py_file])
+                                    )
                                 ),
-                                MultiSourceExpectation.phase_agnostic(
-                                    symbol_usages=SymbolContext.usages_assertion_of_contexts(symbol_contexts),
-                                    main_result=main_result,
-                                    main_side_effects_on_sds=dst_file_rel_conf.assert_root_dir_contains_exactly(
-                                        expected_output_dir_contents(
-                                            dst_file_conf.name,
-                                            expected_program_output)
-                                    ),
-                                ),
-                            )
+                            ),
+                            MultiSourceExpectation.phase_agnostic(
+                                symbol_usages=SymbolContext.usages_assertion_of_contexts(symbol_contexts),
+                                main_result=main_result,
+                                main_side_effects_on_sds=main_side_effects_on_sds,
+                            ),
+                            sub_test_identifiers={
+                                'exit_code': exit_code,
+                                'output_file': output_file,
+                                'program': program_case.name,
+                                'phase_is_after_act': phase_is_after_act,
+                            },
+                        )
 
     @staticmethod
     def _dir_is_empty(file_name: str, contents_on_output_channel: str) -> DirContents:
@@ -488,7 +493,7 @@ class TestFailDueInvalidSyntax(unittest.TestCase):
         for phase_is_after_act in [False, True]:
             for output_file in ProcOutputFile:
                 for ignore_exit_code in [False, True]:
-                    instruction_syntax = instr_abs_stx.with_explicit_contents(
+                    instruction_syntax = instr_abs_stx.create_w_explicit_contents(
                         ARBITRARY_ALLOWED_DST_FILE_RELATIVITY.path_abs_stx_of_name('dst-file'),
                         string_source_abs_stx.StringSourceOfProgramAbsStx(
                             output_file,
@@ -510,10 +515,15 @@ TO_UPPER_TRANSFORMER_SYMBOL = StringTransformerSymbolContext.of_primitive(
 )
 
 
-def _mk_explicit_contents(program: ProgramAbsStx) -> ExplicitContentsVariantAbsStx:
-    return ExplicitContentsVariantAbsStx(
+def _mk_explicit_contents(program: ProgramAbsStx) -> fs_abs_stx.FileContentsExplicitAbsStx:
+    return fs_abs_stx.FileContentsExplicitAbsStx(
+        fs_abs_stx.ModificationType.CREATE,
         string_source_abs_stx.StringSourceOfProgramAbsStx(
             ProcOutputFile.STDOUT,
             program,
         )
     )
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

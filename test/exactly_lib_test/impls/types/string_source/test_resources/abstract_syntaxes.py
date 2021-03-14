@@ -68,6 +68,12 @@ class StringSourceOfStringAbsStx(TransformableStringSourceAbsStx):
             str_abs_stx.StringLiteralAbsStx(s, quoting)
         )
 
+    @staticmethod
+    def of_str__hard(s: str) -> StringSourceAbsStx:
+        return StringSourceOfStringAbsStx(
+            str_abs_stx.StringLiteralAbsStx(s, QuoteType.HARD)
+        )
+
     def tokenization(self) -> TokenSequence:
         return self.string.tokenization()
 

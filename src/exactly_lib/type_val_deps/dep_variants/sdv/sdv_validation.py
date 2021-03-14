@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from enum import Enum
 from typing import Iterable, Sequence, Optional, Callable
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -7,12 +6,8 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
+from exactly_lib.type_val_deps.validation_step import ValidationStep
 from exactly_lib.util.symbol_table import SymbolTable
-
-
-class ValidationStep(Enum):
-    PRE_SDS = 1
-    POST_SDS = 2
 
 
 class SdvValidator:

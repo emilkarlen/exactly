@@ -1,0 +1,11 @@
+[setup]
+
+def string original_contents = 'the original contents'
+def string appended_contents = 'the appended contents'
+
+file f.txt  = @[original_contents]@
+file f.txt += @[appended_contents]@
+
+[assert]
+
+contents f.txt : equals @[original_contents]@@[appended_contents]@

@@ -51,6 +51,14 @@ class FileContentsAbsStx(ContentsAbsStx, ABC):
     pass
 
 
+class FileCustomContentsAbsStx(FileContentsAbsStx):
+    def __init__(self, tokens: TokenSequence):
+        self._tokens = tokens
+
+    def tokenization(self) -> TokenSequence:
+        return self._tokens
+
+
 class FileContentsEmptyAbsStx(FileContentsAbsStx):
     def tokenization(self) -> TokenSequence:
         return TokenSequence.empty()
