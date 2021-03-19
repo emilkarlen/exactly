@@ -35,8 +35,9 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.type_sdv_assertions import \
     matches_sdv_of_string_matcher
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container
-from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
-    StringMatcherSymbolContext
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.string_matchers import \
+    string_matcher_sdv_constant_test_impl
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.symbol_context import StringMatcherSymbolContext
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 

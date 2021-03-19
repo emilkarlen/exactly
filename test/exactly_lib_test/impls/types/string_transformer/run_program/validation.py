@@ -8,7 +8,7 @@ from exactly_lib_test.impls.types.string_transformer.test_resources import argum
 from exactly_lib_test.impls.types.string_transformer.test_resources import integration_check
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.test_resources.program import is_reference_to_program
+from exactly_lib_test.type_val_deps.types.program.test_resources.references import is_reference_to_program
 
 
 def suite() -> unittest.TestSuite:

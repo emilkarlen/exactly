@@ -2,38 +2,20 @@ from typing import Optional
 
 from exactly_lib.impls.types.matcher.impls import constant
 from exactly_lib.section_document.source_location import SourceLocationInfo
-from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib_test.impls.types.file_matcher.test_resources import argument_building as args
 from exactly_lib_test.impls.types.file_matcher.test_resources.argument_building import FileMatcherArg
 from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.any_.restrictions_assertions import \
-    is_reference_restrictions__value_type
 from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.abstract_syntax import \
     FileMatcherSymbolReferenceAbsStx
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.references import is_reference_to_file_matcher
 from exactly_lib_test.type_val_deps.types.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
-
-IS_FILE_REFERENCE_RESTRICTION = is_reference_restrictions__value_type((ValueType.FILE_MATCHER,))
-
-
-def is_reference_to_file_matcher__usage(symbol_name: str) -> Assertion[SymbolUsage]:
-    return asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
-                                            IS_FILE_REFERENCE_RESTRICTION)
-
-
-def is_reference_to_file_matcher(symbol_name: str) -> Assertion[SymbolReference]:
-    return asrt.is_instance_with(
-        SymbolReference,
-        asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
-                                         IS_FILE_REFERENCE_RESTRICTION)
-    )
 
 
 class FileMatcherSymbolValueContext(MatcherSymbolValueContext[FileMatcherModel]):

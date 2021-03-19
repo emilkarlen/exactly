@@ -14,7 +14,8 @@ from exactly_lib_test.impls.types.matcher.test_resources.std_expr import test_ca
 from exactly_lib_test.impls.types.matcher.test_resources.std_expr.configuration import MatcherConfiguration
 from exactly_lib_test.impls.types.string_matcher.test_resources import integration_check
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
-from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import StringMatcherSymbolValueContext, \
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.symbol_context import \
+    StringMatcherSymbolValueContext, \
     StringMatcherSymbolContext
 
 

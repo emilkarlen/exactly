@@ -23,7 +23,7 @@ from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import \
     ProgramOfPythonInterpreterAbsStx, FullProgramAbsStx
-from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import StringMatcherSymbolContext
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.symbol_context import StringMatcherSymbolContext
 
 
 def suite_for(conf: configuration.ProgramOutputInstructionConfiguration) -> unittest.TestSuite:

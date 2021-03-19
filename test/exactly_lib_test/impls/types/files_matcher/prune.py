@@ -26,7 +26,6 @@ from exactly_lib_test.impls.types.files_matcher.test_resources.arguments_buildin
 from exactly_lib_test.impls.types.files_matcher.test_resources.integration_check_helper import \
     IntegrationCheckHelper
 from exactly_lib_test.impls.types.files_matcher.test_resources.parsers import TOP_LEVEL_PARSER_CASES
-from exactly_lib_test.impls.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.impls.types.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
     PrimAndExeExpectation, Expectation, arrangement_w_tcds, ExecutionExpectation
@@ -42,9 +41,10 @@ from exactly_lib_test.test_resources.matcher_argument import conjunction, Parent
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr, NIE, EA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.test_resources import files_matcher as files_matcher_test_impl
-from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext, \
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.symbol_context import FileMatcherSymbolContext, \
     FileMatcherSymbolContextOfPrimitiveConstant
+from exactly_lib_test.type_val_deps.types.files_matcher.test_resources import files_matchers as files_matcher_test_impl
+from exactly_lib_test.type_val_deps.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.type_val_prims.matcher.test_resources import matching_result
 
 

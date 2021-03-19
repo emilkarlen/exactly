@@ -29,7 +29,7 @@ from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import FullProgramAbsStx, \
     ProgramOfPythonInterpreterAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx
-from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
 from exactly_lib_test.util.file_utils.test_resources.assertions import IsProcessExecutionFileWIthContents
 
 

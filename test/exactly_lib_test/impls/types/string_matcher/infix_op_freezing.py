@@ -12,7 +12,7 @@ from exactly_lib_test.impls.types.string_matcher.test_resources import integrati
     arguments_building2 as args2
 from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_building2 import StringMatcherArg
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import StringMatcherSymbolContext
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.symbol_context import StringMatcherSymbolContext
 from exactly_lib_test.type_val_prims.matcher.test_resources import matching_result
 from exactly_lib_test.type_val_prims.string_source.test_resources import properties_access
 from exactly_lib_test.type_val_prims.string_source.test_resources.string_source_base import StringSourceTestImplBase

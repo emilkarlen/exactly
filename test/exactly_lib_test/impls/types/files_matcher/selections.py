@@ -12,7 +12,6 @@ from exactly_lib_test.impls.types.files_matcher.test_resources import arguments_
     integration_check
 from exactly_lib_test.impls.types.files_matcher.test_resources import arguments_building as fsm_args, model
 from exactly_lib_test.impls.types.files_matcher.test_resources.parsers import TOP_LEVEL_PARSER_CASES
-from exactly_lib_test.impls.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.impls.types.integer.test_resources import arguments_building as int_args
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
@@ -24,10 +23,12 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.test_resources import files_matcher as files_matcher_test_impl
-from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import is_reference_to_file_matcher, \
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.references import is_reference_to_file_matcher
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.symbol_context import \
     FileMatcherSymbolContextOfPrimitiveConstant
-from exactly_lib_test.type_val_deps.types.test_resources.files_matcher import is_reference_to_files_matcher
+from exactly_lib_test.type_val_deps.types.files_matcher.test_resources import files_matchers as files_matcher_test_impl
+from exactly_lib_test.type_val_deps.types.files_matcher.test_resources.references import is_reference_to_files_matcher
+from exactly_lib_test.type_val_deps.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 
 
 def suite() -> unittest.TestSuite:

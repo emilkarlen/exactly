@@ -31,7 +31,7 @@ from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps import
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes__raw import \
     RawProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
-from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
 
 
 def suite() -> unittest.TestSuite:

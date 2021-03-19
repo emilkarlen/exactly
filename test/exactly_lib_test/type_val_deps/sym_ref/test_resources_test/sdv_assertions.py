@@ -23,12 +23,13 @@ from exactly_lib_test.test_resources import test_of_test_resources_util
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.sym_ref.test_resources import sdv_assertions as sut
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import references as data_references
-from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.symbol_context import \
+    LineMatcherSymbolValueContext
 from exactly_lib_test.type_val_deps.types.path.test_resources.path_sdvs import \
     PathSdvTestImplWithConstantPathAndSymbolReferences
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext, \
     StringSymbolValueContext
-from exactly_lib_test.type_val_deps.types.test_resources.line_matcher import LineMatcherSymbolValueContext
 
 
 def suite() -> unittest.TestSuite:

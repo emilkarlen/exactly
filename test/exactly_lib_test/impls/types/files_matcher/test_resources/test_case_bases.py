@@ -21,7 +21,7 @@ from exactly_lib_test.tcfs.test_resources.ds_action import MkSubDirAndMakeItCurr
 from exactly_lib_test.tcfs.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import TcdsActionFromPlainTcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import is_reference_to_file_matcher
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.references import is_reference_to_file_matcher
 
 
 class TestCaseBaseForParser(unittest.TestCase):

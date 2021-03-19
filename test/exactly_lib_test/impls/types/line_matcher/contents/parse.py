@@ -20,7 +20,7 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.test_resources import argument_renderer
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import \
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.symbol_context import \
     StringMatcherSymbolContextOfPrimitiveConstant, \
     StringMatcherSymbolContext
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result

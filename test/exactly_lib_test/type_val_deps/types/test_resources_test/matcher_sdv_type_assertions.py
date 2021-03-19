@@ -14,9 +14,10 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions as sut
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import references as data_references
-from exactly_lib_test.type_val_deps.types.test_resources import string_matcher
-from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
-    StringMatcherSymbolContext
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources import symbol_context as string_matcher
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.string_matchers import \
+    string_matcher_sdv_constant_test_impl
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.symbol_context import StringMatcherSymbolContext
 
 
 def suite() -> unittest.TestSuite:

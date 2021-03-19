@@ -23,10 +23,10 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.symbol_context import \
+    IntegerMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolContext, \
     StringIntConstantSymbolContext
-from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import \
-    IntegerMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 

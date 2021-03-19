@@ -5,8 +5,8 @@ from exactly_lib_test.impls.test_resources.validation import ddv_validators, val
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions, ValidationActual
 from exactly_lib_test.impls.types.string_transformer.test_resources import argument_syntax
 from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.abstract_syntax import LineMatcherAbsStx
-from exactly_lib_test.type_val_deps.types.test_resources.line_matcher import LineMatcherSymbolContext, \
-    sdv_from_primitive_value
+from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.line_matchers import sdv_from_primitive_value
+from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.symbol_context import LineMatcherSymbolContext
 
 
 class ValidationCase:

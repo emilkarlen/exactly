@@ -8,7 +8,7 @@ from exactly_lib_test.symbol.test_resources.symbol_syntax import \
     NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME
 from exactly_lib_test.test_resources.source.abstract_syntax_impls import CustomAbsStx
 from exactly_lib_test.test_resources.source.custom_abstract_syntax import SequenceAbsStx
-from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import \
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.symbol_context import \
     StringMatcherSymbolContext
 
 

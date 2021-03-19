@@ -31,3 +31,6 @@ class ProgramOfSymbolReferenceAbsStx(PgmAndArgsAbsStx):
             TokenSequence.singleton(self.symbol_name),
             self._arguments.tokenization(),
         ])
+
+
+NON_EXISTING_SYSTEM_PROGRAM = 'a-non-existing-system-program'

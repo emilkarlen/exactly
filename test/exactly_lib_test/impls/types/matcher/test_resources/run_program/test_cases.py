@@ -15,9 +15,9 @@ from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecut
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.test_utils import NExArr
-from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListSymbolContext
+from exactly_lib_test.type_val_deps.types.list_.test_resources.symbol_context import ListSymbolContext
+from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringIntConstantSymbolContext
-from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 
 
 def argument_list_exe_case(command_line_arguments: List[str],

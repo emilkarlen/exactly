@@ -19,7 +19,7 @@ from exactly_lib_test.test_resources.files.file_structure import FileSystemEleme
 from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.test_resources.files_matcher import is_reference_to_files_matcher
+from exactly_lib_test.type_val_deps.types.files_matcher.test_resources.references import is_reference_to_files_matcher
 
 
 class ModelFile:

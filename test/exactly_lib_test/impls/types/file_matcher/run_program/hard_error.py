@@ -7,7 +7,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arra
     ExecutionExpectation, Expectation
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as program_args
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.type_val_deps.types.test_resources.program import NON_EXISTING_SYSTEM_PROGRAM
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import NON_EXISTING_SYSTEM_PROGRAM
 
 
 def suite() -> unittest.TestSuite:

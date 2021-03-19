@@ -1,68 +1,21 @@
-from typing import Sequence, Optional
+from typing import Optional
 
-from exactly_lib.impls.types.matcher.impls import constant, ddv_components
+from exactly_lib.impls.types.matcher.impls import constant
 from exactly_lib.section_document.source_location import SourceLocationInfo
-from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.value_type import ValueType
-from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator, \
-    ConstantDdvValidator
-from exactly_lib.type_val_deps.types.line_matcher import LineMatcherDdv, LineMatcherSdv
+from exactly_lib.type_val_deps.types.line_matcher import LineMatcherSdv
 from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine, LineMatcher
-from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib_test.impls.types.line_matcher.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.line_matcher.test_resources.arguments_building import LineMatcherArg
 from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.any_.restrictions_assertions import \
-    is_reference_restrictions__value_type
 from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.abstract_syntax import \
     LineMatcherSymbolReferenceAbsStx
+from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.references import is_reference_to_line_matcher
 from exactly_lib_test.type_val_deps.types.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
-
-IS_LINE_MATCHER_REFERENCE_RESTRICTION = is_reference_restrictions__value_type((ValueType.LINE_MATCHER,))
-
-
-def is_reference_to_line_matcher__usage(symbol_name: str) -> Assertion[SymbolUsage]:
-    return asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
-                                            IS_LINE_MATCHER_REFERENCE_RESTRICTION)
-
-
-def is_reference_to_line_matcher(symbol_name: str) -> Assertion[SymbolReference]:
-    return asrt.is_instance_with(
-        SymbolReference,
-        asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
-                                         IS_LINE_MATCHER_REFERENCE_RESTRICTION)
-    )
-
-
-def successful_matcher_with_validation(validator: DdvValidator) -> LineMatcherSdv:
-    return sdv_ddv.sdv_from_primitive_value(
-        constant.MatcherWithConstantResult(True),
-        (),
-        validator,
-    )
-
-
-def sdv_from_primitive_value(
-        primitive_value: MatcherWTrace[LineMatcherLine] = constant.MatcherWithConstantResult(True),
-        references: Sequence[SymbolReference] = (),
-        validator: DdvValidator = ConstantDdvValidator.new_success(),
-) -> LineMatcherSdv:
-    return sdv_ddv.sdv_from_primitive_value(
-        primitive_value,
-        references,
-        validator,
-    )
-
-
-def ddv_of_unconditionally_matching_matcher() -> LineMatcherDdv:
-    return ddv_components.MatcherDdvFromConstantPrimitive(
-        constant.MatcherWithConstantResult(False)
-    )
 
 
 class LineMatcherSymbolValueContext(MatcherSymbolValueContext[LineMatcherLine]):

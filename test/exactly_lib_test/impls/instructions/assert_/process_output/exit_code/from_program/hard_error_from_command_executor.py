@@ -13,9 +13,9 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2, ProcessExecutionArrangement
 from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRaisesHardError
-from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import \
+from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.symbol_context import \
     IntegerMatcherSymbolContext
-from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
 
 
 def suite() -> unittest.TestSuite:

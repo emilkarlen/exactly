@@ -11,7 +11,7 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
     is_reference_to__w_str_rendering
-from exactly_lib_test.type_val_deps.types.test_resources.program import is_reference_to_program
+from exactly_lib_test.type_val_deps.types.program.test_resources.references import is_reference_to_program
 
 
 def suite() -> unittest.TestSuite:

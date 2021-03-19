@@ -10,8 +10,9 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arra
     PrimAndExeExpectation
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.test_utils import NExArr
-from exactly_lib_test.type_val_deps.types.test_resources import file_matchers as fm_sdvs
-from exactly_lib_test.type_val_deps.types.test_resources.files_condition import FilesConditionSymbolContext
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources import file_matchers as fm_sdvs
+from exactly_lib_test.type_val_deps.types.files_condition.test_resources.symbol_context import \
+    FilesConditionSymbolContext
 
 
 class ValidationCase:

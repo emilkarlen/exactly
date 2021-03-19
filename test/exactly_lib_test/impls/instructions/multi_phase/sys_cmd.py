@@ -39,7 +39,7 @@ from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_rest
-from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.list_.test_resources.symbol_context import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test

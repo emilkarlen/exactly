@@ -14,8 +14,9 @@ from exactly_lib_test.test_case.test_resources.command_executors import CommandE
 from exactly_lib_test.test_case.test_resources.os_services import os_services_w_cmd_exe_counting__w_wrapped
 from exactly_lib_test.test_resources import recording
 from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.abstract_syntax import IntegerMatcherAbsStx
-from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import IntegerMatcherSymbolContext
-from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.symbol_context import \
+    IntegerMatcherSymbolContext
+from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
 
 
 def suite() -> unittest.TestSuite:

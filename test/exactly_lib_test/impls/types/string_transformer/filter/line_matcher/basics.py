@@ -29,8 +29,8 @@ from exactly_lib_test.symbol.test_resources import symbol_syntax
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.test_resources import line_matcher
-from exactly_lib_test.type_val_deps.types.test_resources.line_matcher import LineMatcherSymbolContext, \
+from exactly_lib_test.type_val_deps.types.line_matcher.test_resources import references
+from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.symbol_context import LineMatcherSymbolContext, \
     LineMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.type_val_prims.test_resources.primitives import is_identical_to, \
     line_matcher_from_predicates
@@ -217,7 +217,7 @@ class TestFiltering(unittest.TestCase):
                     expectation_of_successful_filter_execution(
                         output_lines=case.expected,
                         symbol_references=asrt.matches_singleton_sequence(
-                            line_matcher.is_reference_to_line_matcher(matcher.name)
+                            references.is_reference_to_line_matcher(matcher.name)
                         ),
                     )
                 )
@@ -288,7 +288,7 @@ class TestFiltering(unittest.TestCase):
                     expectation_of_successful_filter_execution(
                         output_lines=expected_output_lines,
                         symbol_references=asrt.matches_singleton_sequence(
-                            line_matcher.is_reference_to_line_matcher(line_matcher_name)
+                            references.is_reference_to_line_matcher(line_matcher_name)
                         )
                     )
                 )

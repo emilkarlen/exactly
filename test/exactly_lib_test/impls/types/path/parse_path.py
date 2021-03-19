@@ -44,7 +44,8 @@ from exactly_lib_test.type_val_deps.test_resources.w_str_rend import \
     data_restrictions_assertions as asrt_w_str_rend_rest
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
     is_reference_to_string__w_all_indirect_refs_are_strings
-from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources import symbol_context as file_matcher
+from exactly_lib_test.type_val_deps.types.list_.test_resources import symbol_context as list_
 from exactly_lib_test.type_val_deps.types.path.test_resources import sdv_assertions as asrt_path_sdv
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import RelSymbolPathAbsStx, \
     RelOptPathAbsStx, DefaultRelPathAbsStx
@@ -53,9 +54,9 @@ from exactly_lib_test.type_val_deps.types.path.test_resources.references import 
 from exactly_lib_test.type_val_deps.types.path.test_resources.sdv_assertions import equals_path_sdv, matches_path_sdv
 from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathDdvSymbolContext, \
     ConstantSuffixPathDdvSymbolContext, PathSymbolContext
+from exactly_lib_test.type_val_deps.types.program.test_resources import symbol_context as program
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import symbol_context as st_symbol_context
-from exactly_lib_test.type_val_deps.types.test_resources import file_matcher, program
 
 
 def suite() -> unittest.TestSuite:

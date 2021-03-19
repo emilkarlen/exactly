@@ -10,7 +10,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import references as data_references
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
     TypeWithStrRenderingSymbolReference
-from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.list_.test_resources.symbol_context import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources.ddv_assertions import equals_string_fragment_ddv, \
     equals_string_ddv

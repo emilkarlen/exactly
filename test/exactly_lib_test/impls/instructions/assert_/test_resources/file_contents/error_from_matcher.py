@@ -10,7 +10,7 @@ from exactly_lib_test.impls.types.string_matcher.test_resources import validatio
 from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
-from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import StringMatcherSymbolContext
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.symbol_context import StringMatcherSymbolContext
 
 
 def suite_for(configuration: InstructionTestConfiguration) -> unittest.TestSuite:

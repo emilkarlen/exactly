@@ -1,6 +1,4 @@
 from exactly_lib.impls.types.files_matcher.impl.base_class import FilesMatcherDdvImplBase, FilesMatcherImplBase
-from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
-from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
@@ -8,11 +6,6 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidat
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherAdv, FilesMatcherDdv
 from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel, FilesMatcher
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.any_.restrictions_assertions import \
-    is_reference_restrictions__value_type
 
 
 class FilesMatcherTestImpl(FilesMatcherImplBase):
@@ -77,17 +70,3 @@ def value_with_result(result: bool,
         advs.ConstantMatcherAdv(FilesMatcherTestImpl(result)),
         validator,
     )
-
-
-IS_FILES_MATCHER_REFERENCE_RESTRICTION = is_reference_restrictions__value_type((ValueType.FILES_MATCHER,))
-
-
-def is_reference_to_files_matcher__usage(name_of_matcher: str) -> Assertion[SymbolUsage]:
-    return asrt_sym_usage.matches_reference(asrt.equals(name_of_matcher),
-                                            IS_FILES_MATCHER_REFERENCE_RESTRICTION)
-
-
-def is_reference_to_files_matcher(name_of_matcher: str
-                                  ) -> Assertion[SymbolReference]:
-    return asrt_sym_usage.matches_reference__ref(asrt.equals(name_of_matcher),
-                                                 IS_FILES_MATCHER_REFERENCE_RESTRICTION)

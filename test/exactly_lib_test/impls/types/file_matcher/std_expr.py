@@ -15,7 +15,8 @@ from exactly_lib_test.impls.types.file_matcher.test_resources import integration
 from exactly_lib_test.impls.types.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.impls.types.matcher.test_resources.std_expr import test_cases
 from exactly_lib_test.impls.types.matcher.test_resources.std_expr.configuration import MatcherConfiguration
-from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolValueContext, \
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.symbol_context import \
+    FileMatcherSymbolValueContext, \
     FileMatcherSymbolContext
 
 

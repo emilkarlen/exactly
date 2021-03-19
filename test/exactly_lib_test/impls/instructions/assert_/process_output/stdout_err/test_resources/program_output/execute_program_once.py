@@ -15,7 +15,7 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorWInitialAction
 from exactly_lib_test.test_resources import recording
-from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import StringMatcherSymbolContext
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.symbol_context import StringMatcherSymbolContext
 from exactly_lib_test.type_val_prims.matcher.test_resources import matching_result
 
 

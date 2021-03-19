@@ -14,7 +14,7 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangementPostAct
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
-from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import \
+from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.symbol_context import \
     IntegerMatcherSymbolContext
 
 

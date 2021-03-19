@@ -11,9 +11,9 @@ from exactly_lib_test.impls.types.integer_matcher.test_resources import validati
 from exactly_lib_test.impls.types.program.test_resources import validation_cases as pgm_validation_cases
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
-from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import \
+from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.symbol_context import \
     IntegerMatcherSymbolContext
-from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
 
 
 def suite() -> unittest.TestSuite:

@@ -18,8 +18,10 @@ from exactly_lib_test.impls.types.parse.test_resources.arguments_building import
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_syntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.test_resources.files_condition import FilesConditionSymbolContext, \
+from exactly_lib_test.type_val_deps.types.files_condition.test_resources.references import \
     is_reference_to_files_condition
+from exactly_lib_test.type_val_deps.types.files_condition.test_resources.symbol_context import \
+    FilesConditionSymbolContext
 
 
 def suite() -> unittest.TestSuite:

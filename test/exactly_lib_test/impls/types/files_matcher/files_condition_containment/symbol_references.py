@@ -5,7 +5,7 @@ from exactly_lib_test.impls.types.file_matcher.test_resources import argument_bu
 from exactly_lib_test.impls.types.files_condition.test_resources import arguments_building as fc_args
 from exactly_lib_test.impls.types.files_matcher.test_resources.files_condition import FULL_AND_NON_FULL_CASES
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import is_reference_to_file_matcher
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.references import is_reference_to_file_matcher
 
 
 def suite() -> unittest.TestSuite:

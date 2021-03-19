@@ -35,11 +35,11 @@ from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.abstract_syntax import IntegerMatcherAbsStx
+from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.symbol_context import \
+    IntegerMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringSymbolAbsStx, \
     StringConcatAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
-from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import \
-    IntegerMatcherSymbolContextOfPrimitiveConstant
 
 
 def suite() -> unittest.TestSuite:

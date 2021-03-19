@@ -20,12 +20,12 @@ from exactly_lib_test.test_resources.source.abstract_syntax_impls import Optiona
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as program_abs_stx
-from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramAbsStx, \
+    NON_EXISTING_SYSTEM_PROGRAM
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
-from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext, \
-    NON_EXISTING_SYSTEM_PROGRAM
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 from exactly_lib_test.type_val_prims.string_source.test_resources import contents_assertions as asrt_str_src_contents
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers

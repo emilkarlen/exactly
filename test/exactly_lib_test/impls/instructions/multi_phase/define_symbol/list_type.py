@@ -16,7 +16,7 @@ from exactly_lib_test.type_val_deps.types.list_.test_resources.abstract_syntax i
     ListSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.list_.test_resources.abstract_syntaxes import EmptyListAbsStx, \
     NonEmptyListAbsStx, ListElementStringAbsStx
-from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListSymbolContext
+from exactly_lib_test.type_val_deps.types.list_.test_resources.symbol_context import ListSymbolContext
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
 

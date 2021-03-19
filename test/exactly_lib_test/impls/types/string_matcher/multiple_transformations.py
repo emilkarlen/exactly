@@ -17,12 +17,12 @@ from exactly_lib_test.impls.types.test_resources.negation_argument_handling impo
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.references import is_reference_to_string_matcher
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.symbol_context import StringMatcherSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
-from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import is_reference_to_string_matcher, \
-    StringMatcherSymbolContext
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers
 
 

@@ -5,7 +5,6 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidat
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import ExecutionExpectation
 from exactly_lib_test.impls.test_resources.validation.ddv_validators import DdvValidatorThat
-from exactly_lib_test.impls.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
 from exactly_lib_test.tcfs.test_resources import path_arguments as args
@@ -16,7 +15,9 @@ from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRe
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.test_resources.files_matcher import is_reference_to_files_matcher__usage
+from exactly_lib_test.type_val_deps.types.files_matcher.test_resources.references import \
+    is_reference_to_files_matcher__usage
+from exactly_lib_test.type_val_deps.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 
 
 class ValidationHelper:

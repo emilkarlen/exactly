@@ -29,8 +29,10 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.test_resources.line_matcher import successful_matcher_with_validation, \
-    LineMatcherSymbolContext, is_reference_to_line_matcher, \
+from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.line_matchers import \
+    successful_matcher_with_validation
+from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.references import is_reference_to_line_matcher
+from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.symbol_context import LineMatcherSymbolContext, \
     LineMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 

@@ -20,7 +20,7 @@ from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions 
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import \
     FullProgramAbsStx, CustomPgmAndArgsAbsStx
-from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources.program_assertions import \
     matches_py_source_on_cmd_line_program
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton

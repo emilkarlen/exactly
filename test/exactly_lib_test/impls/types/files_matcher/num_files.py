@@ -23,9 +23,9 @@ from exactly_lib_test.impls.types.test_resources.negation_argument_handling impo
     PassOrFail
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, File
-from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringIntConstantSymbolContext
-from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import \
+from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.symbol_context import \
     IntegerMatcherSymbolContextOfPrimitiveConstant
+from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringIntConstantSymbolContext
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 

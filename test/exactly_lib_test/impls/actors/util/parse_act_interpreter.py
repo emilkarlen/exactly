@@ -26,7 +26,7 @@ from exactly_lib_test.type_val_deps.dep_variants.test_resources.ddv_w_deps_asser
     matches_dir_dependent_value
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.sdv_assertions import matches_sdv
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_rest
-from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.list_.test_resources.symbol_context import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources import reference_assertions
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command

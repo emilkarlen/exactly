@@ -3,16 +3,21 @@ import unittest
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.type_val_deps.sym_ref import restrictions as sut
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.impls.types.files_matcher.test_resources import symbol_context as files_matcher_symbol_context
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources import symbol_context as file_matcher
+from exactly_lib_test.type_val_deps.types.files_condition.test_resources import symbol_context as files_condition
+from exactly_lib_test.type_val_deps.types.files_matcher.test_resources import \
+    symbol_context as files_matcher_symbol_context
 from exactly_lib_test.type_val_deps.types.files_source.test_resources import \
     symbol_context as files_source_symbol_context
-from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
+from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources import symbol_context as integer_matcher
+from exactly_lib_test.type_val_deps.types.line_matcher.test_resources import symbol_context as line_matcher
+from exactly_lib_test.type_val_deps.types.list_.test_resources import symbol_context as list_
 from exactly_lib_test.type_val_deps.types.path.test_resources import symbol_context as path
+from exactly_lib_test.type_val_deps.types.program.test_resources import symbol_context as program
 from exactly_lib_test.type_val_deps.types.string_.test_resources import symbol_context as string
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources import symbol_context as string_matcher
 from exactly_lib_test.type_val_deps.types.string_source.test_resources import symbol_context as string_source
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import symbol_context as st_symbol_context
-from exactly_lib_test.type_val_deps.types.test_resources import file_matcher, files_condition, integer_matcher, \
-    line_matcher, program, string_matcher
 
 
 def suite() -> unittest.TestSuite:

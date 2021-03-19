@@ -11,10 +11,11 @@ from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.types.files_matcher.models.test_resources.assertion import \
     FilesMatcherModelContentsAssertion
-from exactly_lib_test.impls.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolValueContext
 from exactly_lib_test.impls.types.matcher.test_resources import assertion_applier
 from exactly_lib_test.impls.types.matcher.test_resources.assertion_applier import ApplicationAssertionSetup
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.types.files_matcher.test_resources.symbol_context import \
+    FilesMatcherSymbolValueContext
 
 
 def matcher(put: unittest.TestCase,

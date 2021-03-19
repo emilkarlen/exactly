@@ -12,11 +12,12 @@ from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib_test.impls.types.files_matcher.test_resources import integration_check
 from exactly_lib_test.impls.types.files_matcher.test_resources import model
-from exactly_lib_test.impls.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolValueContext, \
-    FilesMatcherSymbolContext
 from exactly_lib_test.impls.types.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.impls.types.matcher.test_resources.std_expr import test_cases
 from exactly_lib_test.impls.types.matcher.test_resources.std_expr.configuration import MatcherConfiguration
+from exactly_lib_test.type_val_deps.types.files_matcher.test_resources.symbol_context import \
+    FilesMatcherSymbolValueContext, \
+    FilesMatcherSymbolContext
 
 
 def suite() -> unittest.TestSuite:

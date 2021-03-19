@@ -32,13 +32,13 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.list_.test_resources.symbol_context import ListConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.program.test_resources import references
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
     ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
-from exactly_lib_test.type_val_deps.types.test_resources import program as asrt_pgm
-from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import program_assertions as asrt_pgm_val, \
     command_assertions as asrt_command
 
@@ -193,7 +193,7 @@ class SymbolReferencesTestExecutor(TestExecutorBase, ABC):
                 self.source_to_parse(program_symbol.name, ()),
                 references_expectation=
                 asrt.matches_sequence([
-                    asrt_pgm.is_reference_to_program(program_symbol.name),
+                    references.is_reference_to_program(program_symbol.name),
                 ]),
                 expected_additional_arguments=[],
             ),
@@ -206,7 +206,7 @@ class SymbolReferencesTestExecutor(TestExecutorBase, ABC):
                 ),
                 references_expectation=
                 asrt.matches_sequence([
-                    asrt_pgm.is_reference_to_program(program_symbol.name),
+                    references.is_reference_to_program(program_symbol.name),
                     string_argument_symbol.reference_assertion__w_str_rendering,
                     list_argument_symbol.reference_assertion__w_str_rendering,
                 ]),

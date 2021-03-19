@@ -6,7 +6,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.test_resources.validation import ddv_validators, validation
 from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions, ValidationActual
 from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
-from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import StringMatcherSymbolContext
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.symbol_context import StringMatcherSymbolContext
 
 
 class ValidationCase:

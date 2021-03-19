@@ -22,7 +22,6 @@ from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_e
 from exactly_lib_test.impls.types.file_matcher.test_resources import argument_syntax as fm_args
 from exactly_lib_test.impls.types.files_matcher.test_resources import arguments_building as arg_syntax
 from exactly_lib_test.impls.types.files_matcher.test_resources import arguments_building as fsm_args
-from exactly_lib_test.impls.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.impls.types.integer.test_resources import arguments_building as int_args
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_confs, matcher_assertions
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \
@@ -38,6 +37,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container
+from exactly_lib_test.type_val_deps.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 

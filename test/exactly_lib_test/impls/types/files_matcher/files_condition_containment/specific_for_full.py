@@ -18,7 +18,7 @@ from exactly_lib_test.impls.types.test_resources.dir_arg_helper import DirArgume
 from exactly_lib_test.test_resources.files.file_structure import File, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import is_reference_to_file_matcher
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.references import is_reference_to_file_matcher
 
 
 def suite() -> unittest.TestSuite:

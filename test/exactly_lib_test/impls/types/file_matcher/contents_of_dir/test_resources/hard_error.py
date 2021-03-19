@@ -1,7 +1,6 @@
 from exactly_lib.tcfs.path_relativity import RelSdsOptionType
 from exactly_lib_test.impls.types.file_matcher.test_resources import integration_check
 from exactly_lib_test.impls.types.file_matcher.test_resources.integration_check import ModelConstructor
-from exactly_lib_test.impls.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
     ParseExpectation, ExecutionExpectation, Expectation
 from exactly_lib_test.impls.types.matcher.test_resources import matchers
@@ -9,7 +8,8 @@ from exactly_lib_test.impls.types.test_resources import matcher_assertions as as
 from exactly_lib_test.tcfs.test_resources import sds_populator
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.test_resources.files_matcher import is_reference_to_files_matcher
+from exactly_lib_test.type_val_deps.types.files_matcher.test_resources.references import is_reference_to_files_matcher
+from exactly_lib_test.type_val_deps.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 
 
 class HardErrorDueToHardErrorFromFilesMatcherHelper:

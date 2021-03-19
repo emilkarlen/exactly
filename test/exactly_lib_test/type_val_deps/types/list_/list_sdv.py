@@ -17,7 +17,7 @@ from exactly_lib_test.type_val_deps.dep_variants.test_resources_test.dir_depende
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import references as data_references
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
     TypeWithStrRenderingSymbolReference
-from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.list_.test_resources.symbol_context import ListDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_assertions import equals_list_sdv_element
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ddv_assertions import equals_list_ddv
 from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import arbitrary_path_symbol_context

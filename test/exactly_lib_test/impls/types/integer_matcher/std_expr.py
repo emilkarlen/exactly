@@ -12,8 +12,8 @@ from exactly_lib_test.impls.types.integer_matcher.test_resources import integrat
 from exactly_lib_test.impls.types.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.impls.types.matcher.test_resources.std_expr import test_cases
 from exactly_lib_test.impls.types.matcher.test_resources.std_expr.configuration import MatcherConfiguration
-from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import IntegerMatcherSymbolContext
-from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import IntegerMatcherSymbolValueContext
+from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.symbol_context import \
+    IntegerMatcherSymbolContext, IntegerMatcherSymbolValueContext
 
 
 def suite() -> unittest.TestSuite:

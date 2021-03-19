@@ -17,7 +17,7 @@ from exactly_lib_test.test_case.result.test_resources import pfh_assertions as a
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
-from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import \
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.symbol_context import \
     StringMatcherSymbolContextOfPrimitiveConstant
 
 

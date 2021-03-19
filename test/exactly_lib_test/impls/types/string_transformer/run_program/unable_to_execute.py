@@ -8,7 +8,7 @@ from exactly_lib_test.impls.types.string_source.test_resources import model_cons
 from exactly_lib_test.impls.types.string_transformer.test_resources import argument_syntax as args
 from exactly_lib_test.impls.types.string_transformer.test_resources import integration_check
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.type_val_deps.types.test_resources.program import NON_EXISTING_SYSTEM_PROGRAM
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import NON_EXISTING_SYSTEM_PROGRAM
 
 
 def suite() -> unittest.TestSuite:

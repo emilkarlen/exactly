@@ -18,9 +18,9 @@ from exactly_lib_test.test_resources.test_of_test_resources_util import assert_t
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import references as data_references
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.file_matchers import file_matcher_constant_sdv
 from exactly_lib_test.type_val_deps.types.string_.test_resources import symbol_context as string
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolContext
-from exactly_lib_test.type_val_deps.types.test_resources.file_matchers import file_matcher_constant_sdv
 from exactly_lib_test.type_val_prims.test_resources.primitives import FileMatcherTestImpl
 
 

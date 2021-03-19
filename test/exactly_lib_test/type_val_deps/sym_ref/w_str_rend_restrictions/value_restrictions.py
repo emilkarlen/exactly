@@ -7,14 +7,14 @@ from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import value_rest
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources import symbol_context as file_matcher
+from exactly_lib_test.type_val_deps.types.list_.test_resources import symbol_context as list_
 from exactly_lib_test.type_val_deps.types.path.test_resources import symbol_context as path
-from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathSymbolValueContext
 from exactly_lib_test.type_val_deps.types.path.test_resources.simple_path import path_test_impl
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathSymbolValueContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources import symbol_context as string
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolValueContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import symbol_context as st_symbol_context
-from exactly_lib_test.type_val_deps.types.test_resources import file_matcher
 
 
 def suite() -> unittest.TestSuite:
