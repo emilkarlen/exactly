@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Any, Sequence, List
 
+from exactly_lib.impls.text_render import header_rendering
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive, PathDescriberForDdv
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, ElementProperties
+from exactly_lib.util.str_.str_constructor import ToStringObject
 
 
 class PathRepresentationsRenderers(ABC):
@@ -135,6 +137,16 @@ class HeaderAndPathMinorBlocks(SequenceRenderer[MinorBlock]):
         self._header = header
         self._path = path
         self._explanation = explanation
+
+    @staticmethod
+    def of_string_header(header: ToStringObject,
+                         path: PathDescriberForPrimitive) -> SequenceRenderer[MinorBlock]:
+        return HeaderAndPathMinorBlocks(
+            header_rendering.SimpleHeaderMinorBlockRenderer(
+                header
+            ),
+            PathRepresentationsRenderersForPrimitive(path),
+        )
 
     def render_sequence(self) -> Sequence[MinorBlock]:
         ret_val = [

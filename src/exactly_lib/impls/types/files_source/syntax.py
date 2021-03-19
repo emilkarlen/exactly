@@ -6,6 +6,8 @@ from exactly_lib.impls.types.files_source.defs import ModificationType, FileType
 from exactly_lib.test_case import reserved_words
 from exactly_lib.util.cli_syntax.elements import argument as a
 
+COPY_CONTENTS_OF_EXISTING_DIR = 'dir-contents-of'
+
 LITERAL_BEGIN = reserved_words.BRACE_BEGIN
 LITERAL_END = reserved_words.BRACE_END
 

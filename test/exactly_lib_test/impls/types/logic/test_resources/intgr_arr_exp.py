@@ -17,6 +17,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import OUTPUT, \
     PRIMITIVE
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 
 
 class Arrangement:
@@ -94,6 +95,11 @@ class ExecutionExpectation(Generic[OUTPUT]):
         self.main_result = main_result
         self.is_hard_error = is_hard_error
 
+    @staticmethod
+    def is_any_hard_error() -> 'ExecutionExpectation[OUTPUT]':
+        return ExecutionExpectation(
+            is_hard_error=asrt_text_doc.is_any_text()
+        )
 
 class AssertionResolvingEnvironment:
     def __init__(self,

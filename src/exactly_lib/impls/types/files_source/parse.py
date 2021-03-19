@@ -8,8 +8,8 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Par
 from exactly_lib.type_val_deps.types.files_source import reference
 from exactly_lib.type_val_deps.types.files_source.sdv import FilesSourceSdv
 from exactly_lib.util.name_and_value import NameAndValue
-from . import documentation
-from .impl import parse_literal
+from . import documentation, defs
+from .impl import parse_literal, parse_copy
 from ..expression.parser import GrammarParsers
 
 
@@ -40,21 +40,32 @@ _GRAMMAR_CONCEPT = _expr_grammar.Concept(
     syntax_element_name=syntax_elements.FILES_SOURCE_SYNTAX_ELEMENT.argument,
 )
 
-_DESCRIPTION_OF_CONSTANT = documentation.LiteralSyntaxDescription()
+_COPY__SRC_PATH_ARG = syntax_elements.PATH_SYNTAX_ELEMENT
+
+_DESCRIPTION_OF_LITERAL = documentation.LiteralSyntaxDescription()
+_DESCRIPTION_OF_COPY = documentation.CopySyntaxDescription(_COPY__SRC_PATH_ARG)
 
 
 def _grammar(parser_of_nested: ParserFromTokens[FilesSourceSdv]) -> _expr_grammar.Grammar[FilesSourceSdv]:
+    copy_src_dir_arg_conf = defs.src_dir_path_argument(_COPY__SRC_PATH_ARG.singular_name)
+
     return _expr_grammar.Grammar(
         concept=_GRAMMAR_CONCEPT,
         mk_reference=reference.ReferenceSdv,
         primitives=(
             NameAndValue(
+                syntax.COPY_CONTENTS_OF_EXISTING_DIR,
+                _expr_grammar.Primitive(
+                    parse_copy.ParserOfCopy(copy_src_dir_arg_conf).parse,
+                    _DESCRIPTION_OF_COPY,
+                )
+            ),
+            NameAndValue(
                 syntax.LITERAL_BEGIN,
                 _expr_grammar.Primitive(
                     parse_literal.ParserOfLiteral(parser_of_nested).parse,
-                    _DESCRIPTION_OF_CONSTANT,
+                    _DESCRIPTION_OF_LITERAL,
                 )
-
             ),
         ),
         infix_operators_in_order_of_increasing_precedence=(),

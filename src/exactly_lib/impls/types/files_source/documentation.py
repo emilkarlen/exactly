@@ -17,6 +17,30 @@ from . import syntax
 from .defs import FileType, ModificationType
 
 
+class CopySyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
+    def __init__(self, path_argument: SyntaxElementInfo):
+        self._path_argument = path_argument
+        self._argument_usage_list = (path_argument.single_mandatory,)
+
+    @property
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        return self._argument_usage_list
+
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        tp = TextParser({
+            'dir_file_type': file_types.DIRECTORY,
+            'SRC_PATH': self._path_argument.singular_name,
+        })
+        return tp.fnap(_DESCRIPTION_OF_COPY)
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return cross_reference_id_list([
+            syntax_elements.PATH_SYNTAX_ELEMENT,
+        ])
+
+
 class LiteralSyntaxDescription(grammar.PrimitiveDescriptionWithSyntaxElementAsInitialSyntaxToken):
     def __init__(self):
         super().__init__(_LITERAL_SYNTAX_ELEMENT_NAME)
@@ -307,3 +331,11 @@ _FILE_SPEC_RENDERING_ENV = FileSpecRenderingEnvironment(
     True,
     _TP,
 )
+
+
+_DESCRIPTION_OF_COPY = """\
+A copy of the contents of {SRC_PATH} (recursive).
+
+
+{SRC_PATH} must be an existing {dir_file_type}.
+"""

@@ -18,5 +18,9 @@ class StringReferenceAbsStx(StringAbsStx):
     def __init__(self, symbol_name: str):
         self._symbol_name = symbol_name
 
+    @property
+    def name(self) -> str:
+        return self._symbol_name
+
     def tokenization(self) -> TokenSequence:
         return token_sequences.SymbolReferenceAsReferenceSyntax(self._symbol_name)

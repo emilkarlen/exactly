@@ -1,0 +1,7 @@
+[setup]
+
+file dst/clash
+
+file src/clash
+
+dir dst += dir-contents-of -rel-act src

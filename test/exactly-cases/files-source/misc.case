@@ -1,0 +1,31 @@
+[setup]
+
+def string some_contents = 'some contents'
+
+dir from-literal =
+{
+  file empty.txt
+  file non-empty.txt = @[some_contents]@
+  dir  empty-dir
+  dir  non-empty-dir = { file empty.txt }
+}
+
+dir copy-of-literal = dir-contents-of -rel-act from-literal
+
+[before-assert]
+
+def files-matcher equals_from_literal = matches -full
+{
+  empty.txt     : type file && contents     is-empty
+  non-empty.txt : type file && contents     equals @[some_contents]@
+  empty-dir     : type dir  && dir-contents is-empty
+  non-empty-dir : type dir  && dir-contents matches -full {
+                    empty.txt : type file && contents is-empty
+                  }
+}
+
+[assert]
+
+exists from-literal    : type dir && dir-contents equals_from_literal
+
+exists copy-of-literal : type dir && dir-contents equals_from_literal

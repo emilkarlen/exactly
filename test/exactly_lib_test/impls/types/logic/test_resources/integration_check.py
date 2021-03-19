@@ -8,7 +8,7 @@ Tools for integration testing of logic values the use the XDV-structure:
 """
 import unittest
 from types import MappingProxyType
-from typing import Sequence, Generic, Any, Mapping
+from typing import Sequence, Generic, Any, Mapping, Callable
 
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -23,9 +23,10 @@ from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instru
     equivalent_source_variants__for_expression_parser_2, \
     equivalent_source_variants__with_source_check__for_full_line_expression_parser, \
     SourceStr2SourceVariants, \
-    equivalent_source_variants__for_expr_parse__s__nsc
+    equivalent_source_variants__for_expr_parse__s__nsc, NSourceCase
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
+from exactly_lib_test.test_resources.source import abs_stx_utils
 from exactly_lib_test.test_resources.source import layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.layout import LayoutSpec
@@ -35,6 +36,23 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
     CommonPropertiesConfiguration, OUTPUT, INPUT, PRIMITIVE
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.execution_check import ExecutionChecker
+
+
+def _abs_stx_source_cases(abstract_syntax: AbstractSyntax,
+                          mk_equivalent_cases: Callable[[str], Sequence[NSourceCase]]
+                          = equivalent_source_variants__for_expr_parse__s__nsc,
+                          ) -> Sequence[NEA[Assertion[ParseSource], ParseSource]]:
+    formatting_cases = abs_stx_utils.formatting_cases(abstract_syntax)
+    return [
+        NEA('zz_formatting={}, zz_following_source={}'.format(
+            formatting_case.name,
+            following_source_case.name),
+            following_source_case.expectation,
+            following_source_case.source,
+        )
+        for formatting_case in formatting_cases
+        for following_source_case in mk_equivalent_cases(formatting_case.value)
+    ]
 
 
 class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
@@ -196,6 +214,22 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
             expectation_,
             layouts,
             sub_test_identifiers,
+        )
+
+    def check_abs_stx__multi__w_source_variants(self,
+                                                put: unittest.TestCase,
+                                                arguments_syntax: AbstractSyntax,
+                                                symbol_references: Assertion[Sequence[SymbolReference]],
+                                                input_: INPUT,
+                                                execution: Sequence[NExArr[PrimAndExeExpectation[PRIMITIVE, OUTPUT],
+                                                                           Arrangement]],
+                                                ):
+        self._check_multi__w_source_variants(
+            put,
+            symbol_references,
+            input_,
+            _abs_stx_source_cases(arguments_syntax),
+            execution,
         )
 
     def _check__parse_source(

@@ -8,6 +8,7 @@ from exactly_lib.util import collection
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.files_source.test_resources.abstract_syntax import FilesSourceAbsStx
+from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
@@ -16,6 +17,18 @@ MODIFICATION_TOKENS = {
     ModificationType.CREATE: TokenSequence.singleton(syntax.EXPLICIT_CREATE),
     ModificationType.APPEND: TokenSequence.singleton(syntax.EXPLICIT_APPEND),
 }
+
+
+class CopyOfDirContentsAbsStx(FilesSourceAbsStx):
+    def __init__(self, dir_to_copy: PathAbsStx):
+        self._dir_to_copy = dir_to_copy
+
+    def tokenization(self) -> TokenSequence:
+        return TokenSequence.concat([
+            TokenSequence.singleton(syntax.COPY_CONTENTS_OF_EXISTING_DIR),
+            TokenSequence.optional_new_line(),
+            self._dir_to_copy.tokenization(),
+        ])
 
 
 class ContentsAbsStx(AbstractSyntax, ABC):

@@ -113,6 +113,10 @@ class DirContainsExactly(PathAssertionBase):
                  expected_contents: file_structure.DirContents):
         self.expected_contents = expected_contents
 
+    @staticmethod
+    def of_elements(expected: FileSystemElements) -> Assertion[pathlib.Path]:
+        return DirContainsExactly(file_structure.DirContents(expected))
+
     def _check_path(self,
                     put: unittest.TestCase,
                     dir_path: pathlib.Path,

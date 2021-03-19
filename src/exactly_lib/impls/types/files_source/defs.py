@@ -1,5 +1,9 @@
 import enum
 
+from exactly_lib.impls.types.path import path_relativities
+from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
+from exactly_lib.tcfs.path_relativity import RelOptionType
+
 
 class ModificationType(enum.Enum):
     CREATE = 1
@@ -9,3 +13,11 @@ class ModificationType(enum.Enum):
 class FileType(enum.Enum):
     REGULAR = 1
     DIR = 2
+
+
+def src_dir_path_argument(argument_syntax_name: str) -> RelOptionArgumentConfiguration:
+    return path_relativities.argument_config__read(
+        argument_syntax_name,
+        phase_is_after_act=False,
+        default=RelOptionType.REL_HDS_CASE,
+    )

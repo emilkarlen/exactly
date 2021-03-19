@@ -15,3 +15,25 @@ class PathSymbolReferenceAbsStx(PathAbsStx):
 
     def tokenization(self) -> TokenSequence:
         return symbol_tok_seq.SymbolReferenceAsReferenceSyntax(self.symbol_name)
+
+
+class CustomPathAbsStx(PathAbsStx):
+    """For expressing invalid syntax."""
+
+    def __init__(self, tokens: TokenSequence):
+        self._tokens = tokens
+
+    @staticmethod
+    def empty() -> PathAbsStx:
+        return CustomPathAbsStx(TokenSequence.empty())
+
+    @staticmethod
+    def singleton(token: str) -> PathAbsStx:
+        return CustomPathAbsStx(TokenSequence.singleton(token))
+
+    @staticmethod
+    def of_str(s: str) -> PathAbsStx:
+        return CustomPathAbsStx(TokenSequence.singleton(s))
+
+    def tokenization(self) -> TokenSequence:
+        return self._tokens

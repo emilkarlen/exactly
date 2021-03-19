@@ -4,6 +4,7 @@ from typing import Optional, Sequence
 from exactly_lib.definitions import path as path_texts
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.util import collection
 from exactly_lib.util.parse.token import QuoteType
 from exactly_lib_test.test_resources.source import token_sequences
 from exactly_lib_test.test_resources.source import tokens
@@ -52,7 +53,7 @@ class OptionRelativityAbsStx(RelativityAbsStx):
 
 
 class PathStringAbsStx(PathAbsStx):
-    def __init__(self, string: StringLiteralAbsStx):
+    def __init__(self, string: StringAbsStx):
         self.string = string
 
     @staticmethod
@@ -66,6 +67,12 @@ class PathStringAbsStx(PathAbsStx):
     @staticmethod
     def of_plain_components(components: Sequence[str]) -> 'PathStringAbsStx':
         return PathStringAbsStx.of_plain_str('/'.join(components))
+
+    @staticmethod
+    def of_components(components: Sequence[StringAbsStx]) -> 'PathStringAbsStx':
+        path_sep: StringAbsStx = StringLiteralAbsStx('/')
+        string_parts = collection.intersperse_list(path_sep, components)
+        return PathStringAbsStx(str_abs_stx.StringConcatAbsStx(string_parts))
 
     def tokenization(self) -> TokenSequence:
         return self.string.tokenization()

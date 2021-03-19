@@ -4,7 +4,7 @@ Test of test-infrastructure: instruction_embryo_check.
 import pathlib
 import unittest
 from types import MappingProxyType
-from typing import Generic, Dict, Optional, Callable
+from typing import Generic, Dict, Optional, Callable, Mapping, Any
 
 from exactly_lib.impls.instructions.multi_phase.utils import instruction_embryo as embryo
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_embryo import T
@@ -84,12 +84,13 @@ class TestCaseBase(unittest.TestCase):
                expectation: Expectation):
         sut.check(self.tc, parser, source, arrangement, expectation)
 
-    def _check_source_and_exe_variants__failing_assertions(self,
-                                                           parser: embryo.InstructionEmbryoParser[T],
-                                                           arrangement: Arrangement,
-                                                           expectation: MultiSourceExpectation[T],
-                                                           **sub_test_identifiers
-                                                           ):
+    def _check_source_and_exe_variants__failing_assertions(
+            self,
+            parser: embryo.InstructionEmbryoParser[T],
+            arrangement: Arrangement,
+            expectation: MultiSourceExpectation[T],
+            sub_test_identifiers: Mapping[str, Any] = MappingProxyType({}),
+    ):
         """Runs check methods for both single and multi-source.
 
         Source consumption is assumed to be correct (and is not tested by this method).
@@ -98,7 +99,7 @@ class TestCaseBase(unittest.TestCase):
         """
         checker = sut.Checker(ParserThatConsumesCurrentLine(parser))
 
-        with self.subTest(_execution='single', **sub_test_identifiers):
+        with self.subTest(zz_execution='single', **sub_test_identifiers):
             with self.assertRaises(utils.TestError):
                 checker.check(self.tc,
                               remaining_source('irrelevant source'),
@@ -106,7 +107,7 @@ class TestCaseBase(unittest.TestCase):
                               expectation.as_w_source(asrt.anything_goes()),
                               )
 
-        with self.subTest(_execution='w source variants', **sub_test_identifiers):
+        with self.subTest(zz_execution='w source variants', **sub_test_identifiers):
             with self.assertRaises(utils.TestError):
                 checker.check__w_source_variants(
                     self.tc,
@@ -115,7 +116,7 @@ class TestCaseBase(unittest.TestCase):
                     expectation,
                 )
 
-        with self.subTest(_execution='multi execution', **sub_test_identifiers):
+        with self.subTest(zz_execution='multi execution', **sub_test_identifiers):
             with self.assertRaises(utils.TestError):
                 checker.check__abs_stx__multi__std_layouts_and_source_variants(
                     self.tc,
@@ -134,7 +135,7 @@ class TestCaseBase(unittest.TestCase):
                                        parser: embryo.InstructionEmbryoParser[T],
                                        arrangement: Arrangement,
                                        expectation: MultiSourceExpectation[T],
-                                       **sub_test_identifiers
+                                       sub_test_identifiers: Mapping[str, Any] = MappingProxyType({}),
                                        ):
         """Runs check methods for both single and multi-source.
 
@@ -144,21 +145,21 @@ class TestCaseBase(unittest.TestCase):
         """
         checker = sut.Checker(ParserThatConsumesCurrentLine(parser))
 
-        with self.subTest(_execution='single', **sub_test_identifiers):
+        with self.subTest(zz_execution='single', **sub_test_identifiers):
             checker.check(self.tc,
                           remaining_source('irrelevant source'),
                           arrangement,
                           expectation.as_w_source(asrt.anything_goes()),
                           )
 
-        with self.subTest(_execution='w source variants', **sub_test_identifiers):
+        with self.subTest(zz_execution='w source variants', **sub_test_identifiers):
             checker.check__w_source_variants(
                 self.tc,
                 'irrelevant source',
                 arrangement,
                 expectation,
             )
-        with self.subTest(_execution='multi execution', **sub_test_identifiers):
+        with self.subTest(zz_execution='multi execution', **sub_test_identifiers):
             checker.check__abs_stx__multi__std_layouts_and_source_variants(
                 self.tc,
                 CustomAbsStx.of_str('irrelevant source'),
@@ -671,7 +672,9 @@ class TestMainMethodTypeOfSetupPhaseAware(TestCaseBase):
                 MultiSourceExpectation.setup_phase_aware(
                     setup_settings=setup_settings_case.expectation,
                 ),
-                setup_settings=setup_settings_case.name,
+                sub_test_identifiers={
+                    'setup_settings': setup_settings_case.name,
+                },
             )
 
 

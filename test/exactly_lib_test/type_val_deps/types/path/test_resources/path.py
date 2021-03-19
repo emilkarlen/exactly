@@ -51,6 +51,16 @@ def path_or_string_reference_restrictions(accepted_relativities: PathRelativityV
     ])
 
 
+def is_reference_to__path_or_string(symbol_name: str,
+                                    accepted_relativities: PathRelativityVariants,
+                                    ) -> Assertion[SymbolReference]:
+    return asrt_sym_ref.matches_reference_2(
+        symbol_name,
+        asrt_data_ref_restriction.equals__w_str_rendering(
+            path_or_string_reference_restrictions(accepted_relativities))
+    )
+
+
 class PathReferenceVariant(enum.IntEnum):
     PATH = 1
     PATH_OR_STRING = 2

@@ -110,7 +110,7 @@ class Checker(Generic[T]):
             source: AbstractSyntax,
             symbol_usages: Assertion[Sequence[SymbolUsage]],
             execution_cases: Sequence[NArrEx[Arrangement, ExecutionExpectation[T]]],
-            **sub_test_identifiers
+            sub_test_identifiers: Mapping[str, Any] = MappingProxyType({}),
     ):
         """This method cannot be used for instructions who's main populate the symbol table
         (ie instructions that define symbols).
@@ -126,9 +126,9 @@ class Checker(Generic[T]):
                     symbol_table_after_main = asrt_sym_tbl.assert_symbol_table_keys_equals(
                         arr_exp_case.arrangement.symbols.names_set
                     )
-                    with put.subTest(_source_variant=source_case.name,
-                                     _source_formatting=source_formatting_case.name,
-                                     _execution_case=arr_exp_case.name,
+                    with put.subTest(zz_source_variant=source_case.name,
+                                     zz_source_formatting=source_formatting_case.name,
+                                     zz_execution_case=arr_exp_case.name,
                                      **sub_test_identifiers):
                         parse_checker.check(instruction, source_case.source)
                         # ^ Checks same source and sym-refs multiple times.

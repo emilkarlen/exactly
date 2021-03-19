@@ -1,5 +1,5 @@
 import enum
-from typing import Set, Optional
+from typing import Set, Optional, FrozenSet
 
 
 class RelOptionType(enum.Enum):
@@ -158,6 +158,15 @@ class PathRelativityVariants(tuple):
         :param absolute: absolute paths are included in the set of variants
         """
         return tuple.__new__(cls, (rel_option_types, absolute))
+
+    @staticmethod
+    def of_frozen_set(rel_option_types: FrozenSet[RelOptionType],
+                      absolute: bool) -> 'PathRelativityVariants':
+        """Constructor from frozen set.
+
+        Would like to only have this constructor."""
+        return PathRelativityVariants(set(rel_option_types),
+                                      absolute)
 
     @property
     def rel_option_types(self) -> Set[RelOptionType]:

@@ -12,4 +12,7 @@ def files-source COMPLEX = {
   file 2nd-name += 'added'
   dir  3rd-name =  { file f.txt }
   dir  3rd-name += { file f.txt = 'contents' }
+  dir  4th-name =  dir-contents-of some-dir
   }
+
+def files-source COPY = dir-contents-of my-dir

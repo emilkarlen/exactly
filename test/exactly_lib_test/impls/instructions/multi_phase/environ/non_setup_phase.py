@@ -78,7 +78,9 @@ class TestSet(unittest.TestCase):
                     for arr_ in _arr_for(environs_setup,
                                          phase_spec__to_check_for_modifications)
                 ],
-                phase_spec__source=phase_spec__source,
+                sub_test_identifiers={
+                    'phase_spec__source': phase_spec__source,
+                },
             )
 
     def test_target_is_act(self):
@@ -124,7 +126,9 @@ class TestSetWithReferencesToEnvVars(unittest.TestCase):
                                                   phase_spec=phase_spec__source),
                 symbol_usages=asrt.is_empty_sequence,
                 execution_cases=execution_cases,
-                phase_spec__source=phase_spec__source,
+                sub_test_identifiers={
+                    'phase_spec__source': phase_spec__source,
+                },
             )
 
 
@@ -151,7 +155,9 @@ class TestSetWithSymbolAndVarReferences(unittest.TestCase):
                                            phase_spec=phase_spec__source),
                 symbol_usages=SymbolContext.usages_assertion_of_contexts(all_symbols),
                 execution_cases=execution_cases,
-                phase_spec__source=phase_spec__source,
+                sub_test_identifiers={
+                    'phase_spec__source': phase_spec__source,
+                },
             )
 
 
@@ -181,7 +187,9 @@ class TestUnset(unittest.TestCase):
                     for arr in _arr_for(environs_setup,
                                         phase_spec__to_check_for_modifications)
                 ],
-                phase_spec__source=phase_spec__source,
+                sub_test_identifiers={
+                    'phase_spec__source': phase_spec__source,
+                },
             )
 
     def test_target_is_act(self):
@@ -223,7 +231,9 @@ class TestUnsetWithSymbolReferences(unittest.TestCase):
                                              phase_spec=phase_spec__source),
                 symbol_usages=SymbolContext.usages_assertion_of_contexts(all_symbols),
                 execution_cases=execution_cases,
-                phase_spec__source=phase_spec__source,
+                sub_test_identifiers={
+                    'phase_spec__source': phase_spec__source,
+                },
             )
 
 
