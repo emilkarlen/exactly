@@ -1,7 +1,7 @@
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionsConfiguration, \
-    RelOptionArgumentConfiguration
 from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionsConfiguration, \
+    RelOptionArgumentConfiguration
 
 RELATIVITIES__READ__BEFORE_ACT = frozenset(set(RelOptionType).difference({RelOptionType.REL_RESULT}))
 RELATIVITIES__READ__AFTER_ACT = frozenset(set(RelOptionType))

@@ -35,7 +35,7 @@ from exactly_lib_test.type_val_deps.test_resources.w_str_rend import \
     data_restrictions_assertions as asrt_w_str_rend_rest
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathSymbolReferenceAbsStx
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import path_or_string_reference_restrictions
+from exactly_lib_test.type_val_deps.types.path.test_resources.references import path_or_string_reference_restrictions
 from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as program_abs_stx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import abstract_syntax as str_trans_abs_stx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \

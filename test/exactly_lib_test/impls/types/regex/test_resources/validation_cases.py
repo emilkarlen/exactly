@@ -8,7 +8,7 @@ from exactly_lib_test.impls.test_resources.validation.validation import Validati
 from exactly_lib_test.impls.types.regex.test_resources.assertions import is_reference_to__regex_string_part
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathDdvSymbolContext
 
 
 class RegexValidationCase:

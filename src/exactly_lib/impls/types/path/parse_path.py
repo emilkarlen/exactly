@@ -2,11 +2,7 @@ import functools
 import pathlib
 from typing import Sequence, Optional, Callable, Union
 
-from exactly_lib.common.report_rendering import text_docs
-from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
 from exactly_lib.impls.types.path.parse_relativity import parse_explicit_relativity_info
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.impls.types.string_.parse_string import parse_string_sdv_from_token, \
     parse_fragments_from_token, string_sdv_from_fragments
 from exactly_lib.section_document.element_parsers import token_stream_parser
@@ -18,22 +14,18 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
     LookAheadState
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.err_msg.error_messages import invalid_type_msg
-from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
-from exactly_lib.symbol.value_type import WithStrRenderingType, ValueType
-from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case import reserved_words, reserved_tokens
-from exactly_lib.type_val_deps.sym_ref.restrictions import WithStrRenderingTypeRestrictions
-from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import OrReferenceRestrictions, \
-    OrRestrictionPart, ReferenceRestrictionsOnDirectAndIndirect, is_string__all_indirect_refs_are_strings
-from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import PathAndRelativityRestriction
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.path import path_part_sdvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv, PathPartSdv
+from exactly_lib.type_val_deps.types.path.references import path_or_string_reference_restrictions, \
+    PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.parse.token import TokenType, Token, TokenMatcher
-from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -253,25 +245,6 @@ class _Parser:
         return path_or_string_symbol, path_part_sdv
 
 
-def path_or_string_reference_restrictions(
-        accepted_relativity_variants: PathRelativityVariants) -> WithStrRenderingTypeRestrictions:
-    return OrReferenceRestrictions([
-        OrRestrictionPart(
-            WithStrRenderingType.PATH,
-            path_relativity_restriction(accepted_relativity_variants)),
-        OrRestrictionPart(
-            WithStrRenderingType.STRING,
-            PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
-    ],
-        type_must_be_either_path_or_string__err_msg_generator
-    )
-
-
-def path_relativity_restriction(accepted_relativity_variants: PathRelativityVariants):
-    return ReferenceRestrictionsOnDirectAndIndirect(
-        PathAndRelativityRestriction(accepted_relativity_variants))
-
-
 class _PathSdvOfRelativityOptionAndSuffixSdv(PathSdv):
     def __init__(self,
                  relativity: RelOptionType,
@@ -327,24 +300,3 @@ def _path_suffix_sdv_from_fragments(fragments: list) -> PathPartSdv:
         return path_part_sdvs.empty()
     string_sdv = string_sdv_from_fragments(fragments, PATH_COMPONENT_STRING_REFERENCES_RESTRICTION)
     return path_part_sdvs.from_string(string_sdv)
-
-
-PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = is_string__all_indirect_refs_are_strings(
-    text_docs.single_pre_formatted_line_object(
-        str_constructor.FormatMap(
-            'Every symbol used as a path component of a {path_type} '
-            'must be defined as a {string_type}.',
-            {
-                'path_type': help_texts.TYPE_W_STR_RENDERING_INFO_DICT[WithStrRenderingType.PATH].identifier,
-                'string_type': help_texts.TYPE_W_STR_RENDERING_INFO_DICT[WithStrRenderingType.STRING].identifier,
-            },
-        )
-    )
-)
-
-
-def type_must_be_either_path_or_string__err_msg_generator(name_of_failing_symbol: str,
-                                                          container_of_illegal_symbol: SymbolContainer) -> TextRenderer:
-    return invalid_type_msg([ValueType.PATH, ValueType.STRING],
-                            name_of_failing_symbol,
-                            container_of_illegal_symbol)

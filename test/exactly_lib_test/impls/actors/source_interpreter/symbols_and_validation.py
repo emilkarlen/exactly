@@ -18,7 +18,7 @@ from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as str_asrt
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext, \
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import ConstantSuffixPathDdvSymbolContext, \
     PathSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 

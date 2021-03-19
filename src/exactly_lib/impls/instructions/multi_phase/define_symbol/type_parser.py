@@ -8,8 +8,6 @@ from exactly_lib.impls.types.integer_matcher import parse_integer_matcher
 from exactly_lib.impls.types.line_matcher import parse_line_matcher
 from exactly_lib.impls.types.parse import parse_list
 from exactly_lib.impls.types.path import parse_path
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionsConfiguration, \
-    RelOptionArgumentConfiguration
 from exactly_lib.impls.types.program.parse import parse_program
 from exactly_lib.impls.types.string_ import parse_string_or_here_doc
 from exactly_lib.impls.types.string_matcher import parse_string_matcher
@@ -19,6 +17,8 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionsConfiguration, \
+    RelOptionArgumentConfiguration
 
 
 class TypeValueParser:

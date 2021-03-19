@@ -11,7 +11,7 @@ from exactly_lib_test.type_val_deps.test_resources.w_str_rend import references 
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
     TypeWithStrRenderingSymbolReference
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources.ddv_assertions import equals_string_fragment_ddv, \
     equals_string_ddv
 from exactly_lib_test.type_val_deps.types.string_.test_resources.sdv_assertions import equals_string_fragments

@@ -135,11 +135,11 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                              actual)
 
     def _expected_str(self, directory_name: str, path_suffix: PathPartDdv) -> str:
-        return str(pathlib.PosixPath(directory_name, path_suffix.value()))
+        return str(pathlib.PurePosixPath(directory_name, path_suffix.value()))
 
 
 def _expected_str(directory_name: str, path_suffix: PathPartDdv) -> str:
-    return str(pathlib.PosixPath(directory_name, path_suffix.value()))
+    return str(pathlib.PurePosixPath(directory_name, path_suffix.value()))
 
 
 if __name__ == '__main__':

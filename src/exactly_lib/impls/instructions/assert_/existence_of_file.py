@@ -16,11 +16,10 @@ from exactly_lib.impls.text_render.header_rendering import SimpleHeaderMinorBloc
 from exactly_lib.impls.types.file_matcher import file_matcher_models
 from exactly_lib.impls.types.file_matcher import parse_file_matcher
 from exactly_lib.impls.types.matcher.impls import combinator_sdvs
-from exactly_lib.impls.types.path import path_check, path_err_msgs, parse_path, path_relativities, \
+from exactly_lib.impls.types.path import path_check, path_err_msgs, parse_path, \
     relative_path_options_documentation as rel_path_doc
 from exactly_lib.impls.types.path.path_rendering import HeaderAndPathMajorBlock, \
     PathRepresentationsRenderersForPrimitive
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
@@ -38,7 +37,9 @@ from exactly_lib.test_case.phases.instruction_settings import InstructionSetting
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
+from exactly_lib.type_val_deps.types.path import path_relativities
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType

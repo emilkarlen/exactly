@@ -1,6 +1,6 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import file_or_dir_contents
-from exactly_lib.impls.types.path import path_relativities, rel_opts_configuration
+from exactly_lib.type_val_deps.types.path import rel_opts_configuration, path_relativities
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 PATH_ARGUMENT = syntax_elements.PATH_SYNTAX_ELEMENT.argument

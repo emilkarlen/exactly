@@ -7,12 +7,12 @@ from exactly_lib.definitions import path
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import concepts as ci, syntax_elements
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionsConfiguration, \
-    RelOptionArgumentConfiguration
 from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants, \
     RelSdsOptionType, RelHdsOptionType
 from exactly_lib.tcfs.relative_path_options import REL_SDS_OPTIONS_MAP, REL_HDS_OPTIONS_MAP, \
     REL_CWD_INFO, REL_OPTIONS_MAP
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionsConfiguration, \
+    RelOptionArgumentConfiguration
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import render_argument

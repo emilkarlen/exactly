@@ -3,8 +3,6 @@ from pathlib import Path
 from typing import Optional, Sequence
 
 from exactly_lib.impls.types.path import parse_path as sut
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration, \
-    RelOptionsConfiguration
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
@@ -14,6 +12,8 @@ from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import PathAndRelativityRestriction
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionArgumentConfiguration, \
+    RelOptionsConfiguration
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.symbol_table import SymbolTable
@@ -21,8 +21,8 @@ from exactly_lib_test.impls.types.parse.test_resources import \
     single_line_source_instruction_utils as equivalent_source_variants
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathSymbolValueContext
 from exactly_lib_test.type_val_deps.types.path.test_resources.sdv_assertions import equals_path_sdv, matches_path_sdv
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathSymbolValueContext
 
 
 class Arrangement:

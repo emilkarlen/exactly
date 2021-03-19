@@ -1,12 +1,12 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.types.parse.shell_syntax import SHELL_KEYWORD
-from exactly_lib.impls.types.path import path_relativities, rel_opts_configuration
 from exactly_lib.impls.types.program import syntax_elements as program_syntax_elements
 from exactly_lib.impls.types.program.parse import parse_executable_file, parse_system_program
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.type_val_deps.types.path import rel_opts_configuration, path_relativities
 from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
 
 SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD = SHELL_KEYWORD

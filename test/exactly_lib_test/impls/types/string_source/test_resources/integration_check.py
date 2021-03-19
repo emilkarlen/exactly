@@ -1,7 +1,7 @@
 from typing import Callable
 
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.impls.types.string_source import parse
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.type_val_deps.types.string_source.ddv import StringSourceAdv
 from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv
 from exactly_lib.type_val_prims.string_source.string_source import StringSource

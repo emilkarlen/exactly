@@ -17,9 +17,10 @@ from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxE
 from exactly_lib.help.entities.utils import programs
 from exactly_lib.help.entities.utils.se_within_parens import OptionallyWithinParens
 from exactly_lib.impls import texts
-from exactly_lib.impls.types.path import path_relativities, relative_path_options_documentation as rel_path_doc
+from exactly_lib.impls.types.path import relative_path_options_documentation as rel_path_doc
 from exactly_lib.impls.types.program import syntax_elements as pgm_syntax_elements
 from exactly_lib.processing import exit_values
+from exactly_lib.type_val_deps.types.path import path_relativities
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser

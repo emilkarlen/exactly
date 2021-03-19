@@ -7,8 +7,8 @@ from exactly_lib.definitions.entity import syntax_elements, concepts, types
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation, \
     SyntaxElementDocumentation
 from exactly_lib.impls.types.path import relative_path_options_documentation as rel_path_doc
-from exactly_lib.impls.types.path.rel_opts_configuration import arg_config_with_name
 from exactly_lib.impls.types.program import syntax_elements as pgm_syntax_elements
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import arg_config_with_name
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

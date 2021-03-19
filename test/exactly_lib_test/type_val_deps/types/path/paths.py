@@ -210,8 +210,10 @@ class TestDescription(unittest.TestCase):
                 ),
             NEA('rel-hds w path suffix',
                 expected=
-                str(pathlib.Path(rpo.REL_HDS_OPTIONS_MAP[
-                                     RelHdsOptionType.REL_HDS_CASE].directory_symbol_reference) / path_part_component),
+                str(pathlib.PurePosixPath(
+                    rpo.REL_HDS_OPTIONS_MAP[RelHdsOptionType.REL_HDS_CASE].directory_symbol_reference) /
+                    path_part_component
+                    ),
                 actual=sut.of_rel_option(sut.RelOptionType.REL_HDS_CASE,
                                          PathPartDdvAsFixedPath(path_part_component)),
                 ),

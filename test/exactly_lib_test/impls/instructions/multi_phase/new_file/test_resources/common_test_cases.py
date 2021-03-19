@@ -21,7 +21,7 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathDdvSymbolContext
 
 
 class InvalidDestinationFileTestCasesData:

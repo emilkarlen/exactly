@@ -55,7 +55,7 @@ from exactly_lib_test.test_resources.test_utils import NEA, NInpArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import path_or_string_reference_restrictions
+from exactly_lib_test.type_val_deps.types.path.test_resources.references import path_or_string_reference_restrictions
 from exactly_lib_test.type_val_deps.types.test_resources import file_matcher as asrt_file_matcher
 from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext, \
     FileMatcherSymbolContextOfPrimitiveConstant

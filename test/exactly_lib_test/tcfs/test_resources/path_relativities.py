@@ -1,5 +1,5 @@
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionsConfiguration
 
 RELATIVITIES__ALL = frozenset(set(RelOptionType))
 RELATIVITIES__EXCEPT_RESULT = frozenset(set(RelOptionType).difference({RelOptionType.REL_RESULT}))

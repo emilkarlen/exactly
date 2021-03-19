@@ -21,9 +21,7 @@ from exactly_lib.impls.instructions.multi_phase.utils.instruction_part_utils imp
     MainStepResultTranslatorForTextRendererAsHardError
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.impls.instructions.utils.documentation import src_dst
-from exactly_lib.impls.types.path import path_check, parse_path, rel_opts_configuration
-from exactly_lib.impls.types.path.rel_opts_configuration import argument_configuration_for_file_creation, \
-    RelOptionArgumentConfiguration
+from exactly_lib.impls.types.path import path_check, parse_path
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
     TokenParser
 from exactly_lib.section_document.model import SectionContents
@@ -39,7 +37,10 @@ from exactly_lib.test_case.result import sh
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
+from exactly_lib.type_val_deps.types.path import rel_opts_configuration
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import argument_configuration_for_file_creation, \
+    RelOptionArgumentConfiguration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable

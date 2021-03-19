@@ -40,7 +40,8 @@ from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_a
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import RelativityAbsStx, \
     PathWConstNameAbsStx
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext, PathReferenceVariant
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.path.test_resources.references import PathReferenceVariant
 
 
 class SymbolsConfiguration:

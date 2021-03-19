@@ -20,7 +20,7 @@ from exactly_lib_test.type_val_deps.test_resources.w_str_rend import \
     data_restrictions_assertions as asrt_w_str_rend_rest
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import value_restriction_assertions as asrt_val_rest, \
     symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources.string_sdvs import \
     string_sdv_of_single_symbol_reference
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext

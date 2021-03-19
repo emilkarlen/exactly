@@ -17,7 +17,6 @@ from exactly_lib.impls.types.files_source import parse as _parse_fs
 from exactly_lib.impls.types.files_source.file_maker import FileMakerSdv
 from exactly_lib.impls.types.files_source.impl import parse_literal
 from exactly_lib.impls.types.path import parse_path, relative_path_options_documentation as rel_path_doc
-from exactly_lib.impls.types.path.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.sdv_structure import SymbolUsage, references_from_objects_with_symbol_references
 from exactly_lib.test_case.app_env import ApplicationEnvironment
@@ -28,6 +27,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidat
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.util.symbol_table import SymbolTable
 
 

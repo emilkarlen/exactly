@@ -2,7 +2,6 @@ import unittest
 from typing import Optional
 
 from exactly_lib.common.err_msg.err_msg_w_fix_tip import ErrorMessageWithFixTip
-from exactly_lib.impls.types.path import parse_path, path_relativities
 from exactly_lib.symbol.sdv_structure import ReferenceRestrictions
 from exactly_lib.symbol.value_type import WithStrRenderingType, ValueType
 from exactly_lib.type_val_deps.sym_ref import restrictions
@@ -10,6 +9,8 @@ from exactly_lib.type_val_deps.sym_ref.restrictions import ValueTypeRestriction
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions, value_restrictions as vr
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions as r
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import FailureOfIndirectReference
+from exactly_lib.type_val_deps.types.path import path_relativities
+from exactly_lib.type_val_deps.types.path import references as path_references
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -358,7 +359,7 @@ class TestIsStringMadeUpOfJustStringsReferenceRestrictions(unittest.TestCase):
             ),
             NameAndValue(
                 'path_or_string_reference_restrictions',
-                parse_path.path_or_string_reference_restrictions(
+                path_references.path_or_string_reference_restrictions(
                     path_relativities.ALL_REL_OPTION_VARIANTS
                 ),
             ),

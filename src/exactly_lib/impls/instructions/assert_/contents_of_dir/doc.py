@@ -12,11 +12,12 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls import common_arguments
 from exactly_lib.impls.file_properties import FileType
 from exactly_lib.impls.types.file_matcher import file_or_dir_contents_doc
-from exactly_lib.impls.types.path import rel_opts_configuration, relative_path_options_documentation as rel_path_doc
+from exactly_lib.impls.types.path import relative_path_options_documentation as rel_path_doc
 from exactly_lib.impls.types.path.relative_path_options_documentation import path_element
 from exactly_lib.processing import exit_values
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
+from exactly_lib.type_val_deps.types.path import rel_opts_configuration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem

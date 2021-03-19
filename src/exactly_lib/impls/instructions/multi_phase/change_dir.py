@@ -15,8 +15,6 @@ from exactly_lib.impls.instructions.multi_phase.utils import instruction_part_ut
 from exactly_lib.impls.instructions.multi_phase.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.impls.types.path import path_err_msgs, parse_path, relative_path_options_documentation
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration, \
-    RelOptionsConfiguration
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType
@@ -25,6 +23,8 @@ from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPos
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionArgumentConfiguration, \
+    RelOptionsConfiguration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 

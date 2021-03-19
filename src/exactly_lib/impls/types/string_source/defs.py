@@ -1,7 +1,7 @@
 from exactly_lib.definitions.primitives import program as program_primitives
 from exactly_lib.impls.instructions import source_file_relativities
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 

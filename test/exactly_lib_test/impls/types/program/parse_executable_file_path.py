@@ -3,7 +3,7 @@ import unittest
 from typing import Sequence, List
 
 from exactly_lib.definitions import path as path_texts
-from exactly_lib.impls.types.path.parse_path import path_relativity_restriction
+from exactly_lib.type_val_deps.types.path.references import path_relativity_restriction
 from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.impls.types.program.command import command_sdvs
 from exactly_lib.impls.types.program.parse import parse_executable_file_path as sut
@@ -45,7 +45,7 @@ from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax im
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import PathStringAbsStx, \
     RelOptPathAbsStx, \
     RelSymbolPathAbsStx
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import \
     ProgramOfExecutableFileCommandLineAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx

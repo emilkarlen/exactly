@@ -1,11 +1,11 @@
 from typing import Optional
 
-from exactly_lib.impls.types.path import parse_path
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, ReferenceRestrictions, SymbolDependentValue
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.tcfs.path_relativity import PathRelativityVariants
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions
+from exactly_lib.type_val_deps.types.path import references as path_references
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
@@ -88,7 +88,7 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
     @staticmethod
     def reference_restriction__path_or_string(accepted_relativities: PathRelativityVariants
                                               ) -> ReferenceRestrictions:
-        return parse_path.path_or_string_reference_restrictions(accepted_relativities)
+        return path_references.path_or_string_reference_restrictions(accepted_relativities)
 
     @staticmethod
     def reference_assertion__path_or_string(symbol_name: str,
@@ -97,7 +97,7 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
         return asrt_sym_ref.matches_reference_2(
             symbol_name,
             asrt_rest.equals__w_str_rendering(
-                parse_path.path_or_string_reference_restrictions(
+                path_references.path_or_string_reference_restrictions(
                     accepted_relativities)
             )
         )
@@ -194,7 +194,7 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
         return asrt_sym_usage.matches_reference__ref(
             asrt.equals(self.name),
             asrt_rest.equals__w_str_rendering(
-                parse_path.PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
+                path_references.PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
         )
 
     @property
@@ -202,7 +202,7 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
         return asrt_sym_usage.matches_reference(
             asrt.equals(self.name),
             asrt_rest.equals__w_str_rendering(
-                parse_path.PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
+                path_references.PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
         )
 
     def reference_assertion__path_or_string(self, accepted_relativities: PathRelativityVariants

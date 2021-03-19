@@ -3,9 +3,7 @@ from pathlib import Path, PurePosixPath
 
 from exactly_lib.definitions.path import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTION, REL_CWD_OPTION, \
     REL_HDS_CASE_OPTION_NAME
-from exactly_lib.impls.types.path import parse_path as sut, path_relativities
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration, \
-    RelOptionsConfiguration
+from exactly_lib.impls.types.path import parse_path as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
@@ -17,8 +15,11 @@ from exactly_lib.test_case import reserved_words
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import PathAndRelativityRestriction
-from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
+from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs, path_relativities
 from exactly_lib.type_val_deps.types.path import path_part_sdvs
+from exactly_lib.type_val_deps.types.path import references
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionArgumentConfiguration, \
+    RelOptionsConfiguration
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR, QuoteType
 from exactly_lib.util.symbol_table import empty_symbol_table
@@ -47,10 +48,11 @@ from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
 from exactly_lib_test.type_val_deps.types.path.test_resources import sdv_assertions as asrt_path_sdv
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import RelSymbolPathAbsStx, \
     RelOptPathAbsStx, DefaultRelPathAbsStx
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext, \
-    ConstantSuffixPathDdvSymbolContext, path_or_string_reference_restrictions, PathSymbolContext
 from exactly_lib_test.type_val_deps.types.path.test_resources.path_part_assertions import equals_path_part_string
+from exactly_lib_test.type_val_deps.types.path.test_resources.references import path_or_string_reference_restrictions
 from exactly_lib_test.type_val_deps.types.path.test_resources.sdv_assertions import equals_path_sdv, matches_path_sdv
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathDdvSymbolContext, \
+    ConstantSuffixPathDdvSymbolContext, PathSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import symbol_context as st_symbol_context
 from exactly_lib_test.type_val_deps.types.test_resources import file_matcher, program
@@ -1387,8 +1389,10 @@ class TestTypeMustBeEitherPathOrStringErrMsgGenerator(unittest.TestCase):
         for symbol_value_context in symbol_value_contexts:
             with self.subTest(invalid_type=str(symbol_value_context.value_type)):
                 # ACT #
-                actual = sut.type_must_be_either_path_or_string__err_msg_generator('failing_symbol',
-                                                                                   symbol_value_context.container)
+                actual = references.type_must_be_either_path_or_string__err_msg_generator(
+                    'failing_symbol',
+                    symbol_value_context.container,
+                )
                 # ASSERT #
                 asrt_text_doc.assert_is_valid_text_renderer(self, actual)
 

@@ -1,6 +1,6 @@
 from exactly_lib.definitions.primitives import program, string_transformer
 from exactly_lib.definitions.test_case.instructions import instruction_names
-from exactly_lib.impls.types.path import path_relativities
+from exactly_lib.type_val_deps.types.path import path_relativities
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax

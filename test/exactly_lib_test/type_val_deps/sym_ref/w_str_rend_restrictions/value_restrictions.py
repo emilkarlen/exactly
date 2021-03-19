@@ -8,8 +8,8 @@ from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
-from exactly_lib_test.type_val_deps.types.path.test_resources import path
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathSymbolValueContext
+from exactly_lib_test.type_val_deps.types.path.test_resources import symbol_context as path
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathSymbolValueContext
 from exactly_lib_test.type_val_deps.types.path.test_resources.simple_path import path_test_impl
 from exactly_lib_test.type_val_deps.types.string_.test_resources import symbol_context as string
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolValueContext

@@ -1,9 +1,9 @@
 import unittest
 
 from exactly_lib.impls.instructions.setup import stdin as sut
-from exactly_lib.impls.types.path import path_relativities
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.type_val_deps.types.path import path_relativities
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.impls.instructions.setup.test_resources import instruction_check
 from exactly_lib_test.impls.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \

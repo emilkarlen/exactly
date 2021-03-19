@@ -1,8 +1,8 @@
 from typing import AbstractSet
 
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration, \
-    RelOptionsConfiguration
 from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionArgumentConfiguration, \
+    RelOptionsConfiguration
 
 _SRC_REL_OPTIONS__AFTER_ACT = set(RelOptionType)
 _SRC_REL_OPTIONS__BEFORE_ACT = _SRC_REL_OPTIONS__AFTER_ACT.difference({RelOptionType.REL_RESULT})

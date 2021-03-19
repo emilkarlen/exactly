@@ -1,7 +1,6 @@
 from exactly_lib.impls.file_properties import FileType
 from exactly_lib.impls.types.parse import parse_list
-from exactly_lib.impls.types.path import parse_path, rel_opts_configuration
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
+from exactly_lib.impls.types.path import parse_path
 from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.impls.types.program.command import arguments_sdvs
 from exactly_lib.impls.types.string_ import parse_string
@@ -12,6 +11,8 @@ from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_val_deps.types.list_ import list_sdvs
+from exactly_lib.type_val_deps.types.path import rel_opts_configuration
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
 from exactly_lib.util.parse import token_matchers
 

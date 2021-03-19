@@ -1,7 +1,7 @@
 from exactly_lib.impls.types.parse.shell_syntax import SHELL_KEYWORD
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration, \
-    RelOptionsConfiguration
 from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionArgumentConfiguration, \
+    RelOptionsConfiguration
 
 SHELL_COMMAND_MARKER = SHELL_KEYWORD
 

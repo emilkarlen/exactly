@@ -18,12 +18,13 @@ from exactly_lib.impls.instructions.assert_.utils.file_contents.actual_files imp
 from exactly_lib.impls.instructions.assert_.utils.file_contents.parse_instruction import ComparisonActualFileParser
 from exactly_lib.impls.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionParser
 from exactly_lib.impls.types.file_matcher import file_or_dir_contents_doc
-from exactly_lib.impls.types.path import parse_path, path_relativities, rel_opts_configuration
+from exactly_lib.impls.types.path import parse_path
 from exactly_lib.impls.types.path.relative_path_options_documentation import path_element
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case import reserved_words
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
+from exactly_lib.type_val_deps.types.path import rel_opts_configuration, path_relativities
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.document import SectionContents

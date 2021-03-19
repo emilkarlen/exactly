@@ -1,8 +1,8 @@
 import enum
 
-from exactly_lib.impls.types.path import path_relativities
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.type_val_deps.types.path import path_relativities
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 
 
 class ModificationType(enum.Enum):

@@ -1,11 +1,11 @@
 import unittest
 
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case import reserved_words
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType
 from exactly_lib_test.impls.types.path.test_resources import Arrangement, Expectation, ARG_CONFIG_FOR_ALL_RELATIVITIES, \

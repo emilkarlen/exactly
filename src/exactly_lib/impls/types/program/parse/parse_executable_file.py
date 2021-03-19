@@ -1,4 +1,3 @@
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.impls.types.program.command import command_sdvs
 from exactly_lib.impls.types.program.parse import parse_arguments
@@ -6,6 +5,7 @@ from exactly_lib.impls.types.program.parse import parse_executable_file_path
 from exactly_lib.impls.types.program.sdvs.command_program_sdv import ProgramSdvForCommand
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.type_val_deps.types.program.sdv.accumulated_components import AccumulatedComponents
 from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv

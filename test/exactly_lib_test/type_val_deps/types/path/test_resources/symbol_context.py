@@ -1,69 +1,32 @@
-import enum
 import pathlib
 from typing import Optional
 
-from exactly_lib.impls.types.path import parse_path
-from exactly_lib.impls.types.path.path_relativities import ALL_REL_OPTION_VARIANTS
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
-from exactly_lib.symbol.value_type import ValueType, WithStrRenderingType
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType, \
     SpecificPathRelativity
 from exactly_lib.type_val_deps.sym_ref.restrictions import WithStrRenderingTypeRestrictions
-from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
-    ReferenceRestrictionsOnDirectAndIndirect, \
-    OrReferenceRestrictions, OrRestrictionPart
-from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import PathAndRelativityRestriction
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.path import path_part_sdvs
+from exactly_lib.type_val_deps.types.path import references as path_references
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_part_ddv import PathPartDdv
+from exactly_lib.type_val_deps.types.path.path_relativities import ALL_REL_OPTION_VARIANTS
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.path.path_sdv_impls import path_rel_symbol
 from exactly_lib.type_val_deps.types.path.path_sdv_impls.constant import PathConstantSdv
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.test_resources.any_.reference_restrictions import \
-    reference_restrictions__string__w_all_indirect_refs_are_strings
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import \
     data_restrictions_assertions as asrt_data_ref_restriction
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_context import DataSymbolValueContext, \
     DataTypeSymbolContext
 from exactly_lib_test.type_val_deps.types.path.test_resources import sdv_assertions
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathSymbolReferenceAbsStx
-
-
-def path_reference_restrictions(accepted_relativities: PathRelativityVariants
-                                ) -> WithStrRenderingTypeRestrictions:
-    return ReferenceRestrictionsOnDirectAndIndirect(PathAndRelativityRestriction(accepted_relativities))
-
-
-def path_or_string_reference_restrictions(accepted_relativities: PathRelativityVariants
-                                          ) -> WithStrRenderingTypeRestrictions:
-    return OrReferenceRestrictions([
-        OrRestrictionPart(
-            WithStrRenderingType.PATH,
-            ReferenceRestrictionsOnDirectAndIndirect(PathAndRelativityRestriction(accepted_relativities))),
-        OrRestrictionPart(
-            WithStrRenderingType.STRING,
-            reference_restrictions__string__w_all_indirect_refs_are_strings()),
-    ])
-
-
-def is_reference_to__path_or_string(symbol_name: str,
-                                    accepted_relativities: PathRelativityVariants,
-                                    ) -> Assertion[SymbolReference]:
-    return asrt_sym_ref.matches_reference_2(
-        symbol_name,
-        asrt_data_ref_restriction.equals__w_str_rendering(
-            path_or_string_reference_restrictions(accepted_relativities))
-    )
-
-
-class PathReferenceVariant(enum.IntEnum):
-    PATH = 1
-    PATH_OR_STRING = 2
+from exactly_lib_test.type_val_deps.types.path.test_resources.references import path_reference_restrictions, \
+    PathReferenceVariant
 
 
 class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
@@ -161,7 +124,7 @@ class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
 
     @property
     def reference_restriction__path_or_string(self) -> WithStrRenderingTypeRestrictions:
-        return parse_path.path_or_string_reference_restrictions(self._accepted_relativities)
+        return path_references.path_or_string_reference_restrictions(self._accepted_relativities)
 
     @property
     def reference_restriction__path(self) -> WithStrRenderingTypeRestrictions:

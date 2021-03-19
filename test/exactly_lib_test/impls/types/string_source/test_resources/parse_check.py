@@ -1,7 +1,7 @@
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.impls.types.string_source import parse
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib_test.section_document.element_parsers.test_resources.parsing import ParserAsLocationAwareParser
 from exactly_lib_test.section_document.test_resources import parse_checker
 

@@ -4,13 +4,13 @@ from exactly_lib.definitions import formatting, matcher_model
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.types.expression import grammar
-from exactly_lib.impls.types.path import path_relativities
 from exactly_lib.impls.types.string_matcher.impl import equality
 from exactly_lib.impls.types.string_source import parse as parse_str_src
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import PARSE_RESULT
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.type_val_deps.types.path import path_relativities
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem

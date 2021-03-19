@@ -18,7 +18,7 @@ from exactly_lib.util import line_source
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.type_val_deps.test_resources.any_.reference_restrictions import \
     reference_restrictions__unconditionally_unsatisfied, reference_restrictions__unconditionally_satisfied
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathSymbolContext
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolContext
 
 

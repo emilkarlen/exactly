@@ -4,9 +4,9 @@ from typing import List
 
 from exactly_lib.definitions.path import REL_HDS_CASE_OPTION
 from exactly_lib.impls.instructions.multi_phase import run as sut
-from exactly_lib.impls.types.path import path_relativities
 from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.type_val_deps.types.path import path_relativities
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \

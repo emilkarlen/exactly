@@ -20,7 +20,7 @@ from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_a
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_assertions import equals_list_sdv_element
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ddv_assertions import equals_list_ddv
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import arbitrary_path_symbol_context
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import arbitrary_path_symbol_context
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 

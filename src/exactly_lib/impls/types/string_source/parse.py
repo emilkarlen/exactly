@@ -14,6 +14,8 @@ from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
 from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionsConfiguration, \
+    RelOptionArgumentConfiguration
 from exactly_lib.type_val_deps.types.string_ import string_sdv_impls
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv
@@ -21,7 +23,6 @@ from exactly_lib.util.parse import token_matchers
 from exactly_lib.util.parse.token import Token
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from . import defs
-from ..path.rel_opts_configuration import RelOptionsConfiguration, RelOptionArgumentConfiguration
 
 
 def default_parser_for(phase_is_after_act: bool,

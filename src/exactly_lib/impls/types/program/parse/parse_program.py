@@ -3,7 +3,6 @@ from typing import Optional
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import program
 from exactly_lib.impls.types.parse.options import OptionalOptionWMandatoryArgumentParser
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.impls.types.program import syntax_elements as pgm_syntax_elements
 from exactly_lib.impls.types.program.parse import parse_executable_file, parse_system_program, \
     parse_shell_command, parse_with_reference_to_program
@@ -11,6 +10,7 @@ from exactly_lib.section_document.element_parsers.ps_or_tp import parser_opt_par
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase, \
     CurrentLineMustNotBeEmptyExceptForSpace
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.type_val_deps.types.program.sdv.accumulated_components import AccumulatedComponents
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv

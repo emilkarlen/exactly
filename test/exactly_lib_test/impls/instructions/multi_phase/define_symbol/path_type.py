@@ -25,7 +25,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathSymbolValueContext, \
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathSymbolValueContext, \
     ConstantSuffixPathDdvSymbolContext, \
     PathSymbolContext
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton

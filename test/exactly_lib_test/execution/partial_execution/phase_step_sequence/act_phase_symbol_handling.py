@@ -19,7 +19,7 @@ from exactly_lib_test.test_case.actor.test_resources.test_actions import \
 from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import references as data_references
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import value_restrictions
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import arbitrary_path_symbol_context
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import arbitrary_path_symbol_context
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 

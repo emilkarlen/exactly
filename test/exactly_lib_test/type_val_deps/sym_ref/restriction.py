@@ -7,7 +7,7 @@ from exactly_lib_test.impls.types.files_matcher.test_resources import symbol_con
 from exactly_lib_test.type_val_deps.types.files_source.test_resources import \
     symbol_context as files_source_symbol_context
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
-from exactly_lib_test.type_val_deps.types.path.test_resources import path
+from exactly_lib_test.type_val_deps.types.path.test_resources import symbol_context as path
 from exactly_lib_test.type_val_deps.types.string_.test_resources import symbol_context as string
 from exactly_lib_test.type_val_deps.types.string_source.test_resources import symbol_context as string_source
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import symbol_context as st_symbol_context

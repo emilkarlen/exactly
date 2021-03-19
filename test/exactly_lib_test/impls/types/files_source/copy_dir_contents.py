@@ -23,10 +23,10 @@ from exactly_lib_test.test_resources.test_utils import NArrEx, NExArr
 from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_files
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.path.test_resources import path
+from exactly_lib_test.type_val_deps.types.path.test_resources import references as path_references
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import CustomPathAbsStx
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import PathStringAbsStx
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx
 
@@ -281,7 +281,7 @@ def _relativity_conf_for_symbol(symbol_name: str,
 
 
 def is_src_dir_argument(symbol_name: str) -> Assertion[SymbolReference]:
-    return path.is_reference_to__path_or_string(
+    return path_references.is_reference_to__path_or_string(
         symbol_name,
         RELATIVITY_VARIANTS__READ__BEFORE_ACT
     )

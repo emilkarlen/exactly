@@ -4,7 +4,6 @@ from typing import Union, Optional
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.definitions.path import REL_SYMBOL_OPTION_NAME, REL_SOURCE_FILE_DIR_OPTION_NAME
-from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import is_option_argument
@@ -16,6 +15,7 @@ from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVarian
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import PathAndRelativityRestriction
+from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.parse.token import Token
 
