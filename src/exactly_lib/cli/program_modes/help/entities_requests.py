@@ -1,10 +1,11 @@
 from enum import Enum
+from typing import Callable, Iterable
 
 from exactly_lib.cli.program_modes.help.program_modes.help_request import HelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.utils import with_or_without_name
 from exactly_lib.help.contents_structure.entity import EntityDocumentation, CliListConstructorGetter
 from exactly_lib.util.textformat.constructor.section import \
-    SectionContentsConstructor
+    SectionContentsConstructor, ArticleContentsConstructor
 
 
 class EntityHelpItem(Enum):
@@ -42,10 +43,11 @@ class EntityHelpRequest(HelpRequest):
 
 class EntityHelpRequestRendererResolver:
     def __init__(self,
-                 entity_doc_2_article_contents_renderer,
+                 entity_doc_renderer: Callable[[EntityDocumentation], ArticleContentsConstructor],
                  cli_list_renderer_getter: CliListConstructorGetter,
-                 all_entities: list):
-        self.entity_doc_2_article_contents_renderer = entity_doc_2_article_contents_renderer
+                 all_entities: Iterable[EntityDocumentation],
+                 ):
+        self.entity_doc_renderer = entity_doc_renderer
         self.cli_list_renderer_getter = cli_list_renderer_getter
         self.all_entities = all_entities
 
@@ -56,5 +58,5 @@ class EntityHelpRequestRendererResolver:
         if item is EntityHelpItem.INDIVIDUAL_ENTITY:
             return with_or_without_name(request.do_include_name_in_output,
                                         request.individual_entity.singular_name(),
-                                        self.entity_doc_2_article_contents_renderer(request.individual_entity))
+                                        self.entity_doc_renderer(request.individual_entity))
         raise ValueError('Invalid %s: %s' % (str(EntityHelpItem), str(item)))

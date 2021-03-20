@@ -75,18 +75,19 @@ class HtmlDocHierarchyGeneratorGetter:
 
 
 class CliListConstructorGetter:
-    def get_constructor(self, all_entity_doc_list: List[EntityDocumentation]) -> SectionContentsConstructor:
+    def get_constructor(self, all_entity_doc_list: Iterable[EntityDocumentation]) -> SectionContentsConstructor:
         raise NotImplementedError('abstract method')
 
 
 class EntityTypeConfiguration(tuple):
     def __new__(cls,
                 entities_help: EntityTypeHelp,
-                entity_doc_2_article_contents_renderer: Callable[[EntityDocumentation], ArticleContentsConstructor],
+                entity_doc_renderer: Callable[[EntityDocumentation], ArticleContentsConstructor],
                 cli_list_renderer_getter: CliListConstructorGetter,
-                html_doc_generator_getter: HtmlDocHierarchyGeneratorGetter):
+                html_doc_generator_getter: HtmlDocHierarchyGeneratorGetter,
+                ):
         return tuple.__new__(cls, (entities_help,
-                                   entity_doc_2_article_contents_renderer,
+                                   entity_doc_renderer,
                                    cli_list_renderer_getter,
                                    html_doc_generator_getter))
 
@@ -95,7 +96,7 @@ class EntityTypeConfiguration(tuple):
         return self[0]
 
     @property
-    def entity_doc_2_article_contents_renderer(self) -> Callable[[EntityDocumentation], ArticleContentsConstructor]:
+    def entity_doc_renderer(self) -> Callable[[EntityDocumentation], ArticleContentsConstructor]:
         return self[1]
 
     @property

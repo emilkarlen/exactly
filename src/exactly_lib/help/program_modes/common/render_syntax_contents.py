@@ -12,7 +12,7 @@ _SYNTAX_LINE_TAGS = frozenset([std_tags.SYNTAX_TEXT])
 
 LIST_INDENT = 2
 
-BLANK_LINE_BETWEEN_ELEMENTS = lists.Separations(1, 0)
+BLANK_LINE_BETWEEN_ELEMENTS = lists.Separations(1, 1)
 
 
 def variants_list(instruction_name: Optional[str],

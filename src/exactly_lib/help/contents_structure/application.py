@@ -35,7 +35,4 @@ class ApplicationHelp(tuple):
 
     @property
     def entity_type_id_2_entity_type_conf(self) -> Dict[str, EntityTypeConfiguration]:
-        """
-        entity-type-identifier -> EntityTypeConfiguration
-        """
         return self[3]
