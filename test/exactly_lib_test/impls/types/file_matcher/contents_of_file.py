@@ -13,7 +13,6 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arra
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building as sm_args
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as sm_args2
-from exactly_lib_test.impls.types.string_matcher.test_resources import validation_cases
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
@@ -21,6 +20,7 @@ from exactly_lib_test.tcfs.test_resources import non_hds_populator, tcds_populat
 from exactly_lib_test.tcfs.test_resources.dir_populator import NonHdsPopulator
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents, FileSystemElement, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources import validation_cases
 from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.symbol_context import \
     StringMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \

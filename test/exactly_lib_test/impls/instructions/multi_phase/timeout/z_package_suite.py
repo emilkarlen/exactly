@@ -9,7 +9,7 @@ from exactly_lib_test.impls.instructions.multi_phase.timeout.test_resources.abst
     InstructionArgumentsAbsStx, SYNTAX_ERROR_ARGUMENTS, INVALID_INT_VALUES
 from exactly_lib_test.impls.instructions.multi_phase.timeout.test_resources.instruction_check import PARSE_CHECKER, \
     CHECKER
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case.test_resources import instr_settings_assertions as asrt_instr_settings
 from exactly_lib_test.test_resources.test_utils import NIE

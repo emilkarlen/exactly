@@ -8,9 +8,9 @@ from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib_test.impls.types.string_source.test_resources.model_constructor import ModelConstructor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
+from exactly_lib_test.type_val_deps.dep_variants.full_deps.test_resources.common_properties_checker import \
     CommonPropertiesConfiguration, Applier
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.sdv_checker import \
+from exactly_lib_test.type_val_deps.dep_variants.full_deps.test_resources.sdv_checker import \
     FullDepsSdvPropertiesChecker, \
     WithNodeDescriptionExecutionPropertiesChecker
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source

@@ -28,7 +28,6 @@ from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_chec
     ExecutionExpectation, MultiSourceExpectation
 from exactly_lib_test.impls.instructions.test_resources.instr_arr_exp import ParseExpectation
 from exactly_lib_test.impls.types.file_matcher.test_resources import argument_building as fm_args
-from exactly_lib_test.impls.types.file_matcher.test_resources.validation_cases import failing_validation_cases__svh
 from exactly_lib_test.impls.types.matcher.test_resources import matchers
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
@@ -58,6 +57,8 @@ from exactly_lib_test.type_val_deps.test_resources.w_str_rend import symbol_refe
 from exactly_lib_test.type_val_deps.types.file_matcher.test_resources import references as fm_references
 from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.symbol_context import FileMatcherSymbolContext, \
     FileMatcherSymbolContextOfPrimitiveConstant
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.validation_cases import \
+    failing_validation_cases__svh
 from exactly_lib_test.type_val_deps.types.path.test_resources.references import path_or_string_reference_restrictions
 
 

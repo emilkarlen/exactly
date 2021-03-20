@@ -20,7 +20,7 @@ from exactly_lib_test.common.help.test_resources.check_documentation import suit
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ
 from exactly_lib_test.impls.instructions.test_resources.instruction_checker import InstructionChecker
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationActual
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationActual
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.section_document.test_resources import parse_checker

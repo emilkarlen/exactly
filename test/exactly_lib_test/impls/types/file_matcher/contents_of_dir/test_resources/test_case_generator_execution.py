@@ -2,7 +2,7 @@ import unittest
 from typing import Sequence
 
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.test_resources.validation import validation
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
 from exactly_lib_test.impls.types.file_matcher.contents_of_dir.test_resources.case_generator import \
     SingleCaseGenerator, ExecutionResult, FullExecutionResult, ValidationFailure, MultipleExecutionCasesGenerator
 from exactly_lib_test.impls.types.file_matcher.test_resources import integration_check

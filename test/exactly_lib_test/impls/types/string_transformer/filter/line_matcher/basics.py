@@ -10,7 +10,6 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.impls.types.line_matcher.test_resources import arguments_building as lm_args
 from exactly_lib_test.impls.types.line_matcher.test_resources import models as line_matcher_models
-from exactly_lib_test.impls.types.line_matcher.test_resources import validation_cases
 from exactly_lib_test.impls.types.line_matcher.test_resources.line_matchers import LineMatcherThatCollectsModels
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, Expectation, \
     ParseExpectation, ExecutionExpectation, arrangement_wo_tcds, prim_asrt__any
@@ -29,7 +28,7 @@ from exactly_lib_test.symbol.test_resources import symbol_syntax
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.line_matcher.test_resources import references
+from exactly_lib_test.type_val_deps.types.line_matcher.test_resources import references, validation_cases
 from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.symbol_context import LineMatcherSymbolContext, \
     LineMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.type_val_prims.test_resources.primitives import is_identical_to, \

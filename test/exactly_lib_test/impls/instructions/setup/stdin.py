@@ -10,7 +10,7 @@ from exactly_lib_test.impls.instructions.setup.test_resources.instruction_check 
     Expectation, MultiSourceExpectation
 from exactly_lib_test.impls.instructions.test_resources.abstract_syntax import InstructionArgsAbsStx
 from exactly_lib_test.impls.test_resources import abstract_syntaxes
-from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfFileAbsStx, \
     CustomStringSourceAbsStx, StringSourceOfHereDocAbsStx
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf

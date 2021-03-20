@@ -19,7 +19,7 @@ from exactly_lib_test.impls.types.file_matcher.test_resources import integration
 from exactly_lib_test.impls.types.files_matcher.models.test_resources import model_checker
 from exactly_lib_test.impls.types.files_matcher.models.test_resources import test_data
 from exactly_lib_test.impls.types.files_matcher.test_resources import arguments_building as fsm_args
-from exactly_lib_test.impls.types.files_matcher.test_resources import validation_cases
+from exactly_lib_test.impls.types.files_matcher.test_resources import instruction_validation_cases
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, \
     PrimAndExeExpectation, ExecutionExpectation, ParseExpectation, Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
@@ -106,7 +106,7 @@ class TestFilesMatcherShouldBeValidated(unittest.TestCase):
             ),
             input_=
             integration_check.constant_relative_file_name('arbitrary-file-argument'),
-            execution=validation_cases.failing_validation_cases__multi_exe(fsm_symbol_name)
+            execution=instruction_validation_cases.failing_validation_cases__multi_exe(fsm_symbol_name)
         )
 
 

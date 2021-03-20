@@ -6,10 +6,10 @@ from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.impls.types.program.test_resources.assertions import ResultWithTransformationData
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import INPUT, \
+from exactly_lib_test.type_val_deps.dep_variants.full_deps.test_resources.common_properties_checker import INPUT, \
     OUTPUT, \
     CommonPropertiesConfiguration, Applier
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.sdv_checker import \
+from exactly_lib_test.type_val_deps.dep_variants.full_deps.test_resources.sdv_checker import \
     FullDepsSdvPropertiesChecker, \
     WithNodeDescriptionExecutionPropertiesChecker
 

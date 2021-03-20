@@ -11,7 +11,7 @@ from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
     MultiSourceExpectation, Expectation
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.program.parse_program.test_resources import pgm_and_args_cases
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args, result_assertions
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs

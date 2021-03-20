@@ -5,7 +5,6 @@ from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
-from exactly_lib_test.impls.test_resources.validation import validation as asrt_validation
 from exactly_lib_test.impls.types.files_matcher.test_resources import integration_check
 from exactly_lib_test.impls.types.files_matcher.test_resources import model
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
@@ -14,6 +13,7 @@ from exactly_lib_test.impls.types.parse.test_resources.arguments_building import
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__for_expression_parser
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.test_resources.validation import validation as asrt_validation
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 

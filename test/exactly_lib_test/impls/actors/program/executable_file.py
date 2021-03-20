@@ -13,7 +13,7 @@ from exactly_lib_test.impls.actors.test_resources.action_to_check import suite_f
 from exactly_lib_test.impls.actors.test_resources.integration_check import Expectation, \
     check_execution, PostSdsExpectation, arrangement_w_tcds
 from exactly_lib_test.impls.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
-from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.files import file_structure as fs

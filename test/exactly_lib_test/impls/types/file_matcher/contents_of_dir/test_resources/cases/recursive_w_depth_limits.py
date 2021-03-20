@@ -8,7 +8,6 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.impls.test_resources.validation import validation
 from exactly_lib_test.impls.types.file_matcher.contents_of_dir.test_resources.case_generator import \
     SingleCaseGenerator, ExecutionResult, RESULT__MATCHES, RecWLimArguments, ValidationFailure, \
     MultipleExecutionCasesGenerator, FullExecutionResult
@@ -21,8 +20,6 @@ from exactly_lib_test.impls.types.file_matcher.test_resources.argument_building 
 from exactly_lib_test.impls.types.files_matcher.models.test_resources import model_checker
 from exactly_lib_test.impls.types.files_matcher.models.test_resources import test_data
 from exactly_lib_test.impls.types.files_matcher.test_resources import arguments_building as fms_args
-from exactly_lib_test.impls.types.integer.test_resources.validation_cases import \
-    failing_integer_validation_cases
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
@@ -31,8 +28,11 @@ from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, File
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_data_rest
 from exactly_lib_test.type_val_deps.types.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
+from exactly_lib_test.type_val_deps.types.integer.test_resources.validation_cases import \
+    failing_integer_validation_cases
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringIntConstantSymbolContext
 
 

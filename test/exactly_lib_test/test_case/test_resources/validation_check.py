@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
-from exactly_lib_test.impls.test_resources.validation import validation as asrt_validation
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationResultAssertion
+from exactly_lib_test.type_val_deps.test_resources.validation import validation as asrt_validation
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationResultAssertion
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.tcfs.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.tcfs.test_resources.ds_construction import tcds_with_act_as_curr_dir_2

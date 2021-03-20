@@ -11,7 +11,7 @@ from exactly_lib_test.impls.actors.test_resources import relativity_configuratio
 from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, Expectation, \
     check_execution, PostSdsExpectation, arrangement_w_tcds
 from exactly_lib_test.impls.actors.test_resources.validation_cases import VALIDATION_CASES
-from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.files import file_structure as fs

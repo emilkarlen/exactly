@@ -6,7 +6,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.tcfs.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib_test.impls.types.file_matcher.test_resources import argument_building as fm_args2, validation_cases
+from exactly_lib_test.impls.types.file_matcher.test_resources import argument_building as fm_args2
 from exactly_lib_test.impls.types.file_matcher.test_resources import argument_syntax as fm_args
 from exactly_lib_test.impls.types.files_matcher.test_resources import arguments_building as args, \
     integration_check
@@ -23,6 +23,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources import validation_cases
 from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.references import is_reference_to_file_matcher
 from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.symbol_context import \
     FileMatcherSymbolContextOfPrimitiveConstant

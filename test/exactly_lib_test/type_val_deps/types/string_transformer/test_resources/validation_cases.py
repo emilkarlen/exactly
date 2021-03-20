@@ -1,10 +1,11 @@
 from typing import Sequence, List
 
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.test_resources.validation import ddv_validators, validation
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions, ValidationActual, \
-    Expectation
 from exactly_lib_test.impls.types.string_transformer.test_resources import argument_syntax
+from exactly_lib_test.type_val_deps.dep_variants.ddv.test_resources import ddv_validators
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions, ValidationActual, \
+    Expectation
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.string_transformers import \
     string_transformer_from_primitive_value
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \

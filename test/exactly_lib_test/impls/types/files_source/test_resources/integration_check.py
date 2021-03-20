@@ -11,7 +11,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arra
 from exactly_lib_test.impls.types.test_resources.parse_checker import parse_checker
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElements
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps import execution_check
+from exactly_lib_test.type_val_deps.dep_variants.full_deps.test_resources import execution_check
 from exactly_lib_test.type_val_deps.types.files_source.test_resources.properties_configuration import \
     FilesSourcePropertiesConfiguration
 

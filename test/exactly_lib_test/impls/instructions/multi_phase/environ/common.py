@@ -13,7 +13,6 @@ from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.inst
     PARSE_CHECKER, PHASE_SPECS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
     MultiSourceExpectation
-from exactly_lib_test.impls.types.string_source.test_resources import validation_cases as str_src_validation_cases
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.custom_abstract_syntax import SequenceAbsStx
@@ -21,6 +20,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx, \
     MISSING_END_QUOTE__SOFT, MISSING_END_QUOTE_STR__HARD
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_source.test_resources import \
+    validation_cases as str_src_validation_cases
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.symbol_context import StringSourceSymbolContext
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 

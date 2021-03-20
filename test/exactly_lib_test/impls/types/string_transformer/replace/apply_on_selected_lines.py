@@ -4,11 +4,10 @@ from typing import List
 from exactly_lib.type_val_prims.matcher import line_matcher
 from exactly_lib.util.str_.formatter import StringFormatter
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
-from exactly_lib_test.impls.types.line_matcher.test_resources import validation_cases, line_matchers
+from exactly_lib_test.impls.types.line_matcher.test_resources import line_matchers
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import ExecutionExpectation, arrangement_wo_tcds, \
     MultiSourceExpectation
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
-from exactly_lib_test.impls.types.regex.test_resources import assertions as asrt_regex
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformer.replace.test_resources import \
     expectation_of_successful_replace_execution__multi
@@ -16,7 +15,9 @@ from exactly_lib_test.impls.types.string_transformer.test_resources import integ
 from exactly_lib_test.impls.types.string_transformer.test_resources.abstract_syntaxes import ReplaceRegexAbsStx
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_ref_rest
+from exactly_lib_test.type_val_deps.types.line_matcher.test_resources import validation_cases
 from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.symbol_context import LineMatcherSymbolContext
+from exactly_lib_test.type_val_deps.types.regex.test_resources import references as asrt_regex
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
 

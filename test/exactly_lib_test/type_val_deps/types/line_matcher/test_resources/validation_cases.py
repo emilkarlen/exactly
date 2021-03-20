@@ -1,9 +1,10 @@
 from typing import Sequence
 
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.test_resources.validation import ddv_validators, validation
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions, ValidationActual
 from exactly_lib_test.impls.types.string_transformer.test_resources import argument_syntax
+from exactly_lib_test.type_val_deps.dep_variants.ddv.test_resources import ddv_validators
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions, ValidationActual
 from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.abstract_syntax import LineMatcherAbsStx
 from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.line_matchers import sdv_from_primitive_value
 from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.symbol_context import LineMatcherSymbolContext

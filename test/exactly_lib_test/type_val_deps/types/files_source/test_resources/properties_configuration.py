@@ -10,9 +10,9 @@ from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElements
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
+from exactly_lib_test.type_val_deps.dep_variants.full_deps.test_resources.common_properties_checker import \
     CommonPropertiesConfiguration, Applier, CommonSdvPropertiesChecker
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.sdv_checker import \
+from exactly_lib_test.type_val_deps.dep_variants.full_deps.test_resources.sdv_checker import \
     WithDetailsDescriptionExecutionPropertiesChecker
 from exactly_lib_test.type_val_deps.types.path.test_resources import described_path
 

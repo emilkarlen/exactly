@@ -23,7 +23,7 @@ from exactly_lib.util.process_execution.execution_elements import ProcessExecuti
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import eh_assertions as asrt_eh
-from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.tcfs.test_resources.ds_action import PlainTcdsAction
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangementPreAct, \

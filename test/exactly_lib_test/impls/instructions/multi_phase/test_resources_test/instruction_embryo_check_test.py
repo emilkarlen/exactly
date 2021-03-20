@@ -35,7 +35,7 @@ from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_
 from exactly_lib_test.impls.test_resources.symbol_table_check_help import \
     get_symbol_table_from_path_resolving_environment_that_is_first_arg, \
     get_symbol_table_from_instruction_environment_that_is_first_arg, do_fail_if_symbol_table_does_not_equal
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, sds_populator
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement

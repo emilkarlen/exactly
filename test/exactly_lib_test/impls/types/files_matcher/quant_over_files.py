@@ -12,7 +12,7 @@ from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restric
 from exactly_lib.type_val_deps.types.matcher import MatcherSdv
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
-from exactly_lib_test.impls.types.file_matcher.test_resources import argument_building as fm_args, validation_cases
+from exactly_lib_test.impls.types.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.impls.types.files_matcher.test_resources import arguments_building as args, \
     integration_check
 from exactly_lib_test.impls.types.files_matcher.test_resources import expression
@@ -42,6 +42,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Fi
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
     equals_symbol_references__w_str_rendering
+from exactly_lib_test.type_val_deps.types.file_matcher.test_resources import validation_cases
 from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.references import is_reference_to_file_matcher
 from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.symbol_context import FileMatcherSymbolContext, \
     FileMatcherSymbolContextOfPrimitiveConstant

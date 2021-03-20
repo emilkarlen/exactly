@@ -10,17 +10,17 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arra
 from exactly_lib_test.impls.types.string_matcher.test_resources import contents_transformation, integration_check, \
     arguments_building2 as args2
 from exactly_lib_test.impls.types.string_matcher.test_resources import string_matchers
-from exactly_lib_test.impls.types.string_matcher.test_resources import \
-    validation_cases as string_matcher_failing_validation_cases
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
-from exactly_lib_test.impls.types.string_transformer.test_resources import validation_cases \
-    as string_transformer_failing_validation_cases
 from exactly_lib_test.impls.types.test_resources import arguments_building as ab
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources import \
+    validation_cases as string_matcher_failing_validation_cases
 from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.symbol_context import StringMatcherSymbolContext
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import \
+    validation_cases as string_transformer_failing_validation_cases
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \

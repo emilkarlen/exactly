@@ -17,8 +17,8 @@ from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.impls.test_resources.validation import validation
-from exactly_lib_test.impls.test_resources.validation.validation_of_path import \
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
+from exactly_lib_test.type_val_deps.test_resources.validation.validation_of_path import \
     FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.impls.types.logic.test_resources import integration_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import AssertionResolvingEnvironment, Expectation, \

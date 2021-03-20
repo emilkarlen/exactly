@@ -14,7 +14,7 @@ from exactly_lib_test.impls.instructions.multi_phase.copy_.test_resources import
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
     MultiSourceExpectation, Expectation
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.impls.types.test_resources.relativity_options import RelativityOptionConfigurationRelHds, \
     RelativityOptionConfigurationForRelNonHds

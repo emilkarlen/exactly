@@ -9,7 +9,7 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources imp
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import integration_check
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import IS_FAILURE
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, Expectation
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.files_source.test_resources.abstract_syntaxes import FileContentsAbsStx
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_non_hds
 from exactly_lib_test.tcfs.test_resources import tcds_populators

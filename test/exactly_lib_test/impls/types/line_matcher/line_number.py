@@ -6,10 +6,6 @@ from exactly_lib.impls.types.condition import comparators
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name, SymbolWithReferenceSyntax
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib_test.impls.types.integer.test_resources.arguments_building import int_condition__expr
-from exactly_lib_test.impls.types.integer.test_resources.integer_sdv import \
-    is_reference_to_symbol_in_expression
-from exactly_lib_test.impls.types.integer.test_resources.validation_cases import \
-    failing_integer_validation_cases
 from exactly_lib_test.impls.types.line_matcher.test_resources import arguments_building as arg
 from exactly_lib_test.impls.types.line_matcher.test_resources import integration_check
 from exactly_lib_test.impls.types.line_matcher.test_resources import models
@@ -23,6 +19,10 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.types.integer.test_resources.references import \
+    is_reference_to_symbol_in_expression
+from exactly_lib_test.type_val_deps.types.integer.test_resources.validation_cases import \
+    failing_integer_validation_cases
 from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.symbol_context import \
     IntegerMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolContext, \

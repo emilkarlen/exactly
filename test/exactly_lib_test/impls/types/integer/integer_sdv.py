@@ -8,7 +8,7 @@ from exactly_lib.impls.types.string_ import parse_string
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.impls.test_resources.validation import validation
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_hds, fake_sds, fake_tcds
 from exactly_lib_test.test_case.test_resources import instruction_environment

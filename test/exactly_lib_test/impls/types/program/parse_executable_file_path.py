@@ -3,7 +3,6 @@ import unittest
 from typing import Sequence, List
 
 from exactly_lib.definitions import path as path_texts
-from exactly_lib.type_val_deps.types.path.references import path_relativity_restriction
 from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.impls.types.program.command import command_sdvs
 from exactly_lib.impls.types.program.parse import parse_executable_file_path as sut
@@ -17,8 +16,8 @@ from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restric
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
+from exactly_lib.type_val_deps.types.path.references import path_relativity_restriction
 from exactly_lib.util.parse.token import QuoteType
-from exactly_lib_test.impls.test_resources.validation import ddv_assertions, validation
 from exactly_lib_test.impls.types.program.test_resources import parse_executable_file_path_cases as utils
 from exactly_lib_test.impls.types.program.test_resources.parse_executable_file_path_cases import \
     RelativityConfiguration, \
@@ -40,6 +39,8 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.dep_variants.ddv.test_resources import ddv_assertions
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import value_restrictions
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import PathStringAbsStx, \

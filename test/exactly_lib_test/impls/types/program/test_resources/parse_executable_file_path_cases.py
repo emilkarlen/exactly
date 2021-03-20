@@ -13,7 +13,6 @@ from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table, symbol_table_from_none_or_value
-from exactly_lib_test.impls.test_resources.validation import ddv_assertions, validation
 from exactly_lib_test.impls.types.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
@@ -27,6 +26,8 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.dep_variants.ddv.test_resources import ddv_assertions
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
     equals_symbol_references__w_str_rendering
 from exactly_lib_test.type_val_deps.types.path.test_resources.sdv_assertions import matches_path_sdv

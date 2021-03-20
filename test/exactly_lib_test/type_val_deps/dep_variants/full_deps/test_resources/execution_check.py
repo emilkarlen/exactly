@@ -17,7 +17,7 @@ from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, MessageBuilder, \
     StopAssertion
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import PRIMITIVE, \
+from exactly_lib_test.type_val_deps.dep_variants.full_deps.test_resources.common_properties_checker import PRIMITIVE, \
     INPUT, OUTPUT, Applier, CommonExecutionPropertiesChecker
 from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
 

@@ -19,10 +19,10 @@ from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restric
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
-from exactly_lib_test.impls.test_resources.validation.sdv_validators import SdvValidatorThat
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.dep_variants.sdv.test_resources.sdv_validators import SdvValidatorThat
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import value_restriction_assertions as asrt_val_rest
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import value_restrictions
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \

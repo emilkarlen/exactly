@@ -12,8 +12,6 @@ from exactly_lib_test.impls.types.program.test_resources import arguments_buildi
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.program.test_resources.assertions import assert_process_result_data
 from exactly_lib_test.impls.types.string_transformer.test_resources import test_transformers_setup
-from exactly_lib_test.impls.types.string_transformer.test_resources.validation_cases import \
-    failing_validation_cases
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
@@ -26,6 +24,8 @@ from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax
 from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.validation_cases import \
+    failing_validation_cases
 
 
 def suite() -> unittest.TestSuite:

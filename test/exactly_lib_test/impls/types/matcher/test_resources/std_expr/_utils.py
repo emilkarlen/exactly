@@ -13,9 +13,6 @@ from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.impls.test_resources.validation import ddv_validators
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationActual, failing_validation_cases, \
-    ValidationAssertions
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, PrimAndExeExpectation
 from exactly_lib_test.impls.types.matcher.test_resources import matchers
 from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
@@ -26,8 +23,12 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.dep_variants.ddv.test_resources import ddv_validators
 from exactly_lib_test.type_val_deps.test_resources.any_.restrictions_assertions import \
     is_reference_restrictions__value_type__single
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationActual, \
+    failing_validation_cases, \
+    ValidationAssertions
 from exactly_lib_test.type_val_deps.types.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result

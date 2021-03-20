@@ -6,9 +6,9 @@ from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
+from exactly_lib_test.type_val_deps.dep_variants.full_deps.test_resources.common_properties_checker import \
     CommonPropertiesConfiguration, Applier, CommonSdvPropertiesChecker, ApplierThatDoesNothing
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.sdv_checker import \
+from exactly_lib_test.type_val_deps.dep_variants.full_deps.test_resources.sdv_checker import \
     WithNodeDescriptionExecutionPropertiesChecker
 
 

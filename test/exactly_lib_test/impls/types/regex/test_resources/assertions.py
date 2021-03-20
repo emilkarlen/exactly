@@ -3,21 +3,19 @@ from typing import Pattern, Callable, Sequence
 
 from exactly_lib.impls.types.regex.regex_ddv import RegexSdv, RegexDdv
 from exactly_lib.symbol import sdv_structure
-from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependencies
 from exactly_lib.util import symbol_table
-from exactly_lib_test.impls.test_resources.validation.ddv_assertions import \
-    DdvValidationAssertion
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.dep_variants.ddv.test_resources.ddv_assertions import \
+    DdvValidationAssertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.ddv_w_deps_assertions import \
     matches_multi_dir_dependent_value
-from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_ref_rest, \
-    symbol_reference_assertions as asrt_sym_ref
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 
 
 def matches_regex_sdv(
@@ -79,11 +77,3 @@ def matches_regex_sdv(
 
 
 RE_PATTERN_TYPE = type(re.compile(''))
-
-
-def is_reference_to__regex_string_part(symbol_name: str) -> Assertion[SymbolReference]:
-    return asrt_sym_ref.is_reference_to__w_str_rendering(symbol_name)
-
-
-def is_reference_restrictions__regex() -> Assertion[ReferenceRestrictions]:
-    return asrt_ref_rest.is__w_str_rendering()

@@ -9,9 +9,9 @@ from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib_test.impls.types.expression.test_resources.syntax_cases import TestCaseGeneratorForParentheses
 from exactly_lib_test.impls.types.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.files_condition.test_resources import primitive_assertions as asrt_primitive
-from exactly_lib_test.impls.types.files_condition.test_resources.integration_check import CHECKER
-from exactly_lib_test.impls.types.files_condition.test_resources.validation_cases import \
+from exactly_lib_test.impls.types.files_condition.test_resources.instruction_validation_cases import \
     failing_validation_cases__multi_exe
+from exactly_lib_test.impls.types.files_condition.test_resources.integration_check import CHECKER
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation, prim_asrt__constant
 from exactly_lib_test.symbol.test_resources import symbol_syntax

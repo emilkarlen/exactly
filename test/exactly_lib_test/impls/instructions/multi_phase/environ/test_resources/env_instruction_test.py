@@ -10,12 +10,13 @@ from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.inst
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
-from exactly_lib_test.impls.types.string_source.test_resources import validation_cases as str_src_validation_cases
 from exactly_lib_test.test_case.test_resources import instr_settings_assertions as asrt_is
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx
+from exactly_lib_test.type_val_deps.types.string_source.test_resources import \
+    validation_cases as str_src_validation_cases
 
 
 def suite_for_non_setup_phase(conf: ConfigurationBase) -> unittest.TestSuite:

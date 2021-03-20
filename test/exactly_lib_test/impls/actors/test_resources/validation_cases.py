@@ -1,5 +1,5 @@
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
 
 
 class ValidationCase:

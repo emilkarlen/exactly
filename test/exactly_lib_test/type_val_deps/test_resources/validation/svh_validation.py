@@ -3,7 +3,7 @@ from typing import Sequence, Optional
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.result import svh
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.impls.test_resources.validation.validation import Expectation, ValidationActual
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import Expectation, ValidationActual
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion

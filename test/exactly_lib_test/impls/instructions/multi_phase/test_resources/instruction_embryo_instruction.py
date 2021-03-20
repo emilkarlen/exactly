@@ -9,8 +9,8 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.phases.instruction_settings import InstructionSettings
 from exactly_lib.test_case.phases.setup.settings_builder import SetupSettingsBuilder
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
-from exactly_lib_test.impls.test_resources.validation.sdv_validators import SdvValidatorThat
 from exactly_lib_test.test_resources.actions import do_return, action_of, do_nothing
+from exactly_lib_test.type_val_deps.dep_variants.sdv.test_resources.sdv_validators import SdvValidatorThat
 
 
 def instruction_embryo_that__phase_agnostic(

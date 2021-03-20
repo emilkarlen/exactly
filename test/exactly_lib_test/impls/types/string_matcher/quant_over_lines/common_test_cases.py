@@ -8,8 +8,8 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import ConstantDdvValidator
 from exactly_lib.type_val_deps.types.matcher import MatcherSdv
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
-from exactly_lib_test.impls.test_resources.validation import validation as asrt_validation
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.type_val_deps.test_resources.validation import validation as asrt_validation
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.line_matcher.test_resources import arguments_building as lm_args
 from exactly_lib_test.impls.types.line_matcher.test_resources import models as line_matcher_models
 from exactly_lib_test.impls.types.line_matcher.test_resources.arguments_building import NOT_A_LINE_MATCHER

@@ -6,7 +6,7 @@ from exactly_lib_test.impls.actors.test_resources import integration_check
 from exactly_lib_test.impls.actors.test_resources import relativity_configurations
 from exactly_lib_test.impls.actors.test_resources.integration_check import Expectation, PostSdsExpectation, \
     arrangement_w_tcds
-from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as args
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.files import file_structure as fs

@@ -8,7 +8,7 @@ from exactly_lib.type_val_prims.description.details_structured import WithDetail
 from exactly_lib.type_val_prims.description.tree_structured import WithNodeDescription
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, Assertion
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
+from exactly_lib_test.type_val_deps.dep_variants.full_deps.test_resources.common_properties_checker import \
     CommonSdvPropertiesChecker, PRIMITIVE, OUTPUT, CommonExecutionPropertiesChecker
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.logic_structure_assertions import has_valid_description
 from exactly_lib_test.type_val_deps.test_resources.full_deps import full_sdv_assertions as asrt_logic

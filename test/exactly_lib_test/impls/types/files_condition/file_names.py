@@ -4,7 +4,7 @@ from typing import Mapping, Optional
 
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.files_condition.test_resources import primitive_assertions as asrt_primitive
 from exactly_lib_test.impls.types.files_condition.test_resources.integration_check import CHECKER

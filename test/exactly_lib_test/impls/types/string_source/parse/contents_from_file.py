@@ -3,14 +3,13 @@ import unittest
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelOptionType, PathRelativityVariants
 from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expectation, ParseExpectation
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, MultiSourceExpectation, \
     ExecutionExpectation
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check, parse_check
 from exactly_lib_test.impls.types.string_transformer.test_resources import \
-    validation_cases as str_trans_validation_cases, abstract_syntaxes as str_trans_abs_stx
+    abstract_syntaxes as str_trans_abs_stx
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_hds, conf_rel_any
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
@@ -20,7 +19,10 @@ from exactly_lib_test.test_resources.source.abstract_syntax_impls import Optiona
 from exactly_lib_test.test_resources.source.layout import LayoutSpec
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import ConstantSuffixPathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import \
+    validation_cases as str_trans_validation_cases
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
     StringTransformerSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \

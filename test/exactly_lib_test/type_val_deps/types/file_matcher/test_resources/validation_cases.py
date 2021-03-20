@@ -6,16 +6,16 @@ from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.impls.test_resources.validation import ddv_validators, validation
-from exactly_lib_test.impls.test_resources.validation import svh_validation
-from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationActual, \
-    ValidationAssertions
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_wo_tcds, \
     PrimAndExeExpectation
 from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
 from exactly_lib_test.impls.types.string_transformer.test_resources import argument_syntax
 from exactly_lib_test.test_resources.test_utils import NExArr
+from exactly_lib_test.type_val_deps.dep_variants.ddv.test_resources import ddv_validators
+from exactly_lib_test.type_val_deps.test_resources.validation import validation, svh_validation
+from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationActual, \
+    ValidationAssertions
 from exactly_lib_test.type_val_deps.types.file_matcher.test_resources.symbol_context import FileMatcherSymbolContext
 
 

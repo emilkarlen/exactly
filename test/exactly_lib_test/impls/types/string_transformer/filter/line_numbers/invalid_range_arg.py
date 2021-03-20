@@ -1,9 +1,6 @@
 import unittest
 
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
-from exactly_lib_test.impls.types.integer.test_resources.validation_cases import \
-    failing_integer_validation_cases, IntegerValidationCase
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expectation, \
     ParseExpectation, ExecutionExpectation, arrangement_wo_tcds
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
@@ -15,6 +12,9 @@ from exactly_lib_test.impls.types.string_transformer.test_resources import argum
 from exactly_lib_test.impls.types.string_transformer.test_resources import integration_check
 from exactly_lib_test.impls.types.string_transformer.test_resources import parse_check
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.type_val_deps.types.integer.test_resources.validation_cases import \
+    failing_integer_validation_cases, IntegerValidationCase
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolContext
 
 

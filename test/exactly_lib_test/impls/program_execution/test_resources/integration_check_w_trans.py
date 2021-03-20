@@ -12,7 +12,7 @@ from exactly_lib_test.impls.types.program.test_resources import integration_chec
 from exactly_lib_test.impls.types.program.test_resources.assertions import ResultWithTransformationData
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
+from exactly_lib_test.type_val_deps.dep_variants.full_deps.test_resources.common_properties_checker import \
     Applier
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 

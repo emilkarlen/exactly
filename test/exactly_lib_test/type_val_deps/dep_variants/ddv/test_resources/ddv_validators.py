@@ -5,8 +5,8 @@ from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationActual
 from exactly_lib_test.test_resources.actions import do_nothing
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationActual
 
 
 class DdvValidatorThat(DdvValidator):

@@ -9,8 +9,6 @@ from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_buildi
 from exactly_lib_test.impls.types.string_matcher.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
-from exactly_lib_test.impls.types.string_transformer.test_resources.validation_cases import \
-    failing_validation_cases
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
@@ -20,6 +18,8 @@ from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.asse
     is_reference_to_string_transformer
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.validation_cases import \
+    failing_validation_cases
 from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformers import \
     every_line_empty
 

@@ -1,7 +1,7 @@
 from enum import Enum
 
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.impls.test_resources.validation import validation
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

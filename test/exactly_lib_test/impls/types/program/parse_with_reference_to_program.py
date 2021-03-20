@@ -7,8 +7,6 @@ from exactly_lib.type_val_deps.types.path.path_ddvs import simple_of_rel_option
 from exactly_lib.type_val_deps.types.path.path_sdvs import constant
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.test_resources.validation.validation_of_path import \
-    FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.impls.types.logic.test_resources import integration_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import MultiSourceExpectation, \
     arrangement_w_tcds, ExecutionExpectation
@@ -27,7 +25,9 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps import common_properties_checker
+from exactly_lib_test.type_val_deps.dep_variants.full_deps.test_resources import common_properties_checker
+from exactly_lib_test.type_val_deps.test_resources.validation.validation_of_path import \
+    FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes__raw import \
     RawProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx

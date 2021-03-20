@@ -24,7 +24,7 @@ from exactly_lib_test.impls.actors.test_resources.integration_check import Expec
 from exactly_lib_test.impls.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.impls.actors.test_resources.validation_cases import VALIDATION_CASES
 from exactly_lib_test.impls.instructions.configuration.actor.test_resources import ExecutedCommandAssertion
-from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.types.program.test_resources import program_arguments
 from exactly_lib_test.impls.types.test_resources import arguments_building as ab, relativity_options
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext

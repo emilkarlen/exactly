@@ -15,7 +15,6 @@ from exactly_lib_test.impls.types.program.parse_program.test_resources.integrati
     CHECKER_WO_EXECUTION
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as str_src_abs_stx
-from exactly_lib_test.impls.types.string_source.test_resources import validation_cases
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
@@ -24,6 +23,7 @@ from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
+from exactly_lib_test.type_val_deps.types.string_source.test_resources import validation_cases
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 from exactly_lib_test.type_val_prims.program.test_resources import program_assertions as asrt_pgm_val

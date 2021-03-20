@@ -3,7 +3,6 @@ import unittest
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, MultiSourceExpectation, \
     ExecutionExpectation, Expectation, ParseExpectation, arrangement_wo_tcds
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
@@ -12,8 +11,6 @@ from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check
 from exactly_lib_test.impls.types.string_transformer.test_resources import abstract_syntaxes as str_trans_abs_stx
-from exactly_lib_test.impls.types.string_transformer.test_resources.validation_cases import \
-    failing_validation_cases
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
@@ -24,6 +21,7 @@ from exactly_lib_test.test_resources.source.layout import LayoutSpec
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntaxes as program_abs_stx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx, \
@@ -35,6 +33,8 @@ from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abst
     StringTransformerSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.validation_cases import \
+    failing_validation_cases
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers
 

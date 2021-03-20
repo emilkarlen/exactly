@@ -14,12 +14,9 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.impls.test_resources.validation import validation
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments, here_document
 from exactly_lib_test.impls.types.parse.test_resources.source_case import SourceCase
-from exactly_lib_test.impls.types.regex.test_resources.assertions import matches_regex_sdv, \
-    is_reference_to__regex_string_part
+from exactly_lib_test.impls.types.regex.test_resources.assertions import matches_regex_sdv
 from exactly_lib_test.section_document.element_parsers.test_resources.parsing \
     import remaining_source, remaining_source_lines
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
@@ -29,7 +26,10 @@ from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.regex.test_resources.references import is_reference_to__regex_string_part
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolContext
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes, surrounded_by_hard_quotes
 

@@ -21,8 +21,8 @@ from exactly_lib.util.process_execution.execution_elements import ProcessExecuti
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc, text_doc_assertions
 from exactly_lib_test.impls.instructions.test_resources.instr_arr_exp import ParseExpectation
 from exactly_lib_test.impls.instructions.test_resources.instruction_checker import InstructionChecker
-from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationActual
+from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationActual
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line, \

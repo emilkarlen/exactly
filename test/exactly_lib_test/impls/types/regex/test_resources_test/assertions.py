@@ -10,8 +10,8 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import ConstantDd
 from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependencies
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.test_resources.validation import validation as asrt_validation
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.type_val_deps.test_resources.validation import validation as asrt_validation
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.regex.test_resources import assertions as sut
 from exactly_lib_test.impls.types.regex.test_resources.regex_ddvs import RegexSdvConstantTestImpl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails

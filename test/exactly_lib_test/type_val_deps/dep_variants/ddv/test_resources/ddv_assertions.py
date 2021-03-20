@@ -2,9 +2,9 @@ import unittest
 
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions, Expectation
 from exactly_lib_test.test_resources.value_assertions.value_assertion import AssertionBase, MessageBuilder, \
     Assertion
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions, Expectation
 
 
 class DdvValidationAssertion(AssertionBase[DdvValidator]):

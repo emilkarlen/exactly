@@ -5,16 +5,14 @@ from exactly_lib.impls.types.files_source import defs
 from exactly_lib.impls.types.files_source.defs import FileType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.files_source.test_resources import abstract_syntaxes as abs_stx
 from exactly_lib_test.impls.types.files_source.test_resources import integration_check, models
 from exactly_lib_test.impls.types.files_source.test_resources.abstract_syntaxes import LiteralFilesSourceAbsStx, \
     FileSpecAbsStx, ContentsAbsStx
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, MultiSourceExpectation, \
     ExecutionExpectation
-from exactly_lib_test.impls.types.string_source.test_resources import \
-    validation_cases as str_src_validation_cases
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.type_val_deps.test_resources.validation_case import ValidationCaseWSymbolContextAndAssertion
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_rest
 from exactly_lib_test.type_val_deps.types.files_source.test_resources import \
@@ -22,6 +20,8 @@ from exactly_lib_test.type_val_deps.types.files_source.test_resources import \
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolContext
+from exactly_lib_test.type_val_deps.types.string_source.test_resources import \
+    validation_cases as str_src_validation_cases
 
 
 def suite() -> unittest.TestSuite:

@@ -1,5 +1,5 @@
 from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation, expectation
-from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.types.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.test_case.result.test_resources import svh_assertions, pfh_assertions
 

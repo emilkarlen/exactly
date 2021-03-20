@@ -5,10 +5,6 @@ from exactly_lib.impls.types.condition import comparators
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.str_.misc_formatting import lines_content
-from exactly_lib_test.impls.types.integer.test_resources.integer_sdv import \
-    is_reference_to_symbol_in_expression
-from exactly_lib_test.impls.types.integer.test_resources.validation_cases import \
-    failing_integer_validation_cases
 from exactly_lib_test.impls.types.integer_matcher.test_resources import matchers
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
     ExecutionExpectation, Expectation, arrangement_w_tcds
@@ -21,6 +17,10 @@ from exactly_lib_test.impls.types.test_resources.negation_argument_handling impo
     PassOrFail
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.integer.test_resources.references import \
+    is_reference_to_symbol_in_expression
+from exactly_lib_test.type_val_deps.types.integer.test_resources.validation_cases import \
+    failing_integer_validation_cases
 from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.symbol_context import \
     IntegerMatcherSymbolContext, \
     IntegerMatcherSymbolContextOfPrimitiveConstant

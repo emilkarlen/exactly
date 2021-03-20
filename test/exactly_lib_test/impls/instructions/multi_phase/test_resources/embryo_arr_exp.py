@@ -18,8 +18,8 @@ from exactly_lib.util import functional
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ
-from exactly_lib_test.impls.test_resources.validation import validation as validation_utils
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions, ValidationResultAssertion
+from exactly_lib_test.type_val_deps.test_resources.validation import validation as validation_utils
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions, ValidationResultAssertion
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_case.test_resources.settings_builder_assertions import SettingsBuilderAssertionModel

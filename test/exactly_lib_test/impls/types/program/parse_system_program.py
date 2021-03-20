@@ -11,10 +11,6 @@ from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.impls.test_resources.validation import validation
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
-from exactly_lib_test.impls.test_resources.validation.validation_of_path import \
-    FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.impls.types.logic.test_resources import integration_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import MultiSourceExpectation, \
     AssertionResolvingEnvironment, arrangement_w_tcds, ExecutionExpectation, arrangement_wo_tcds
@@ -29,7 +25,11 @@ from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps import common_properties_checker
+from exactly_lib_test.type_val_deps.dep_variants.full_deps.test_resources import common_properties_checker
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.type_val_deps.test_resources.validation.validation_of_path import \
+    FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes__raw import \
     RawSystemCommandLineAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx

@@ -19,7 +19,7 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.uti
     IS_FAILURE, IS_SUCCESS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
     MultiSourceExpectation
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.files_source.test_resources import abstract_syntaxes as fs_abs_stx
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx

@@ -6,7 +6,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition, RelOptionType
 from exactly_lib.type_val_prims.files_source.files_source import FilesSource
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.impls.types.files_source.test_resources import abstract_syntaxes as abs_stx
 from exactly_lib_test.impls.types.files_source.test_resources import integration_check
 from exactly_lib_test.impls.types.files_source.test_resources import models

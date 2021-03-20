@@ -25,7 +25,6 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.partial_execution.test_resources import settings_handlers
 from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ
 from exactly_lib_test.impls.instructions.test_resources.instruction_checker import InstructionChecker
-from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__consume_last_line__s__nsc
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
@@ -43,6 +42,7 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction, tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
 
 
 class Arrangement(ArrangementWithSds):

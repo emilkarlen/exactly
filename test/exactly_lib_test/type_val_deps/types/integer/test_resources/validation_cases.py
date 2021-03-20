@@ -3,13 +3,13 @@ from typing import List, Sequence
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.impls.test_resources.validation import validation
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions, Expectation
-from exactly_lib_test.impls.types.integer.test_resources.integer_sdv import \
-    is_reference_to_symbol_in_expression
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions, Expectation
+from exactly_lib_test.type_val_deps.types.integer.test_resources.references import \
+    is_reference_to_symbol_in_expression
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolContext
 
 

@@ -15,11 +15,11 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arra
 from exactly_lib_test.impls.types.matcher.test_resources import matcher_w_init_action
 from exactly_lib_test.impls.types.matcher.test_resources.matchers import ConstantMatcherWithCustomTrace, T
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as sm_args2
-from exactly_lib_test.impls.types.string_matcher.test_resources import validation_cases
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_resources import argument_renderer
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.string_matcher.test_resources import validation_cases
 from exactly_lib_test.type_val_deps.types.string_matcher.test_resources.symbol_context import \
     StringMatcherSymbolContextOfPrimitiveConstant, \
     StringMatcherSymbolContext

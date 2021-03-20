@@ -8,13 +8,13 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abs
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import IS_FAILURE, IS_SUCCESS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import embryo_arr_exp
 from exactly_lib_test.impls.types.files_source.test_resources import abstract_syntaxes as fs_abs_stx
-from exactly_lib_test.impls.types.string_source.test_resources import validation_cases
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opts
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElements
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import DefaultRelPathAbsStx
+from exactly_lib_test.type_val_deps.types.string_source.test_resources import validation_cases
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.symbol_context import \
     StringSourceSymbolContextOfPrimitiveConstant
 

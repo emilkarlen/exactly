@@ -2,11 +2,11 @@ from typing import Sequence
 
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.impls.test_resources.validation import validation
-from exactly_lib_test.impls.test_resources.validation.ddv_validators import DdvValidatorThat
-from exactly_lib_test.impls.test_resources.validation.svh_validation import ValidationExpectationSvh
-from exactly_lib_test.impls.test_resources.validation.validation import ValidationAssertions, ValidationActual
 from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
+from exactly_lib_test.type_val_deps.dep_variants.ddv.test_resources.ddv_validators import DdvValidatorThat
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
+from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions, ValidationActual
 from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.abstract_syntax import IntegerMatcherAbsStx
 from exactly_lib_test.type_val_deps.types.integer_matcher.test_resources.symbol_context import \
     IntegerMatcherSymbolContext
