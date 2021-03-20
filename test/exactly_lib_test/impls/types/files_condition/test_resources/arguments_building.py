@@ -29,9 +29,9 @@ class FileCondition:
         )
 
 
-BEGIN_BRACE_RENDERER = Singleton(syntax.BEGIN_BRACE)
+BEGIN_BRACE_RENDERER = Singleton(syntax.LITERAL_BEGIN)
 
-END_BRACE_RENDERER = Singleton(syntax.END_BRACE)
+END_BRACE_RENDERER = Singleton(syntax.LITERAL_END)
 
 
 class FilesConditionArg(FromArgumentElementsBase, ABC):
@@ -53,11 +53,11 @@ class FilesCondition(FilesConditionArg):
 
     @property
     def as_argument_elements(self) -> ArgumentElements:
-        ret_val = ArgumentElements([syntax.BEGIN_BRACE])
+        ret_val = ArgumentElements([syntax.LITERAL_BEGIN])
         for fc in self.files:
             ret_val = ret_val.followed_by_lines(fc.as_argument_elements.all_lines)
 
-        return ret_val.last_line_followed_by(ArgumentElements([syntax.END_BRACE]))
+        return ret_val.last_line_followed_by(ArgumentElements([syntax.LITERAL_END]))
 
 
 class SymbolReferenceNameSyntax(FilesConditionArg):
@@ -94,7 +94,7 @@ class Parentheses(FilesConditionArg):
 class InvalidSyntax(FilesConditionArg):
     @property
     def as_argument_elements(self) -> ArgumentElements:
-        return ArgumentElements([syntax.END_BRACE])
+        return ArgumentElements([syntax.LITERAL_END])
 
 
 class Missing(FilesConditionArg):

@@ -32,7 +32,7 @@ def _parse_constant(tokens: TokenParser) -> FilesConditionSdv:
     tokens.require_has_valid_head_token(_FILE_NAME_OR_SET_END)
 
     tokens.consume_mandatory_keyword__part_of_syntax_element(
-        syntax.END_BRACE,
+        syntax.LITERAL_END,
         False,
         syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.singular_name,
     )
@@ -47,7 +47,7 @@ def _parse_elements(tokens: TokenParser) -> Sequence[Tuple[StringSdv, Optional[F
         if tokens.is_at_eol:
             return
         else:
-            tokens.require_head_is_unquoted_and_equals(syntax.END_BRACE, _multiple_files_per_line_error)
+            tokens.require_head_is_unquoted_and_equals(syntax.LITERAL_END, _multiple_files_per_line_error)
 
     def parse_element() -> Tuple[StringSdv, Optional[FileMatcherSdv]]:
         file_name = parse_string.parse_string_sdv(tokens.token_stream, _FILE_NAME_STRING_CONFIGURATION)
@@ -66,7 +66,7 @@ def _parse_elements(tokens: TokenParser) -> Sequence[Tuple[StringSdv, Optional[F
     return ret_val
 
 
-_TOKEN_IS_SET_END = token_matchers.is_unquoted_and_equals(syntax.END_BRACE)
+_TOKEN_IS_SET_END = token_matchers.is_unquoted_and_equals(syntax.LITERAL_END)
 
 _FILE_NAME_STRING_REFERENCES_RESTRICTION = is_string__all_indirect_refs_are_strings(
     text_docs.single_pre_formatted_line_object(
@@ -101,7 +101,7 @@ GRAMMAR = grammar.Grammar(
     mk_reference=files_conditions.new_reference,
     primitives=(
         NameAndValue(
-            syntax.BEGIN_BRACE,
+            syntax.LITERAL_BEGIN,
             grammar.Primitive(_parse_constant,
                               documentation.ConstantSyntaxDescription())
 

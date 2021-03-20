@@ -39,11 +39,11 @@ class TestSyntaxErrorExceptionShouldBeRaisedWhenMissingBeginBrace(_TestCaseHelpe
             ),
             NameAndValue(
                 'quoted start brace token',
-                surrounded_by_hard_quotes_str(syntax.BEGIN_BRACE)
+                surrounded_by_hard_quotes_str(syntax.LITERAL_BEGIN)
             ),
             NameAndValue(
                 'non start brace token',
-                syntax.END_BRACE
+                syntax.LITERAL_END
             ),
         ]
         for must_be_on_current_line in [False, True]:
@@ -53,7 +53,7 @@ class TestSyntaxErrorExceptionShouldBeRaisedWhenMissingBeginBrace(_TestCaseHelpe
                     self._expect_parse_exception(case.value, must_be_on_current_line)
 
     def test_begin_brace_on_following_line_BUT_must_be_on_current_line(self):
-        self._expect_parse_exception('\n{}'.format(syntax.BEGIN_BRACE),
+        self._expect_parse_exception('\n{}'.format(syntax.LITERAL_BEGIN),
                                      must_be_on_current_line=True)
 
 
@@ -156,8 +156,8 @@ class TestSyntaxErrorExceptionShouldBeRaisedWhenMultipleFileNamesOnSameLine(_Tes
 
 
 _SF = StringFormatter({
-    'BEGIN_BRACE': syntax.BEGIN_BRACE,
-    'END_BRACE': syntax.END_BRACE,
+    'BEGIN_BRACE': syntax.LITERAL_BEGIN,
+    'END_BRACE': syntax.LITERAL_END,
     'FILE_MATCHER_SEPARATOR': syntax.FILE_MATCHER_SEPARATOR,
     'FILE_NAME': 'a-file-name',
     'FILE_MATCHER': 'file_matcher_symbol',

@@ -1,8 +1,8 @@
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.test_case import reserved_words
 
-BEGIN_BRACE = reserved_words.BRACE_BEGIN
-END_BRACE = reserved_words.BRACE_END
+LITERAL_BEGIN = reserved_words.BRACE_BEGIN
+LITERAL_END = reserved_words.BRACE_END
 
 END_BRACE__FOR_FORMAT_STRINGS = reserved_words.BRACE__END__FOR_FORMAT_STRINGS
 

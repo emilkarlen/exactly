@@ -33,7 +33,7 @@ from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class ConstantSdv(FilesConditionSdv):
+class Sdv(FilesConditionSdv):
     def __init__(self, files: Sequence[Tuple[StringSdv, Optional[FileMatcherSdv]]]):
         self._files = files
         self._references = []
@@ -55,13 +55,13 @@ class ConstantSdv(FilesConditionSdv):
                           ) -> Tuple[StringDdv, Optional[FileMatcherDdv]]:
             return file_name.resolve(symbols), map_optional(resolve_matcher, matcher)
 
-        return _FilesConditionConstantDdv([
+        return _Ddv([
             resolve_entry(fn, mb_matcher)
             for fn, mb_matcher in self._files
         ])
 
 
-class _FilesConditionConstant(FilesCondition):
+class _Primitive(FilesCondition):
     def __init__(self, files: Mapping[PurePosixPath, Optional[FileMatcher]]):
         self._files = files
         self._describer = _Describer(files)
@@ -75,7 +75,7 @@ class _FilesConditionConstant(FilesCondition):
         return self._files
 
 
-class _FilesConditionConstantAdv(ApplicationEnvironmentDependentValue[FilesCondition]):
+class _Adv(ApplicationEnvironmentDependentValue[FilesCondition]):
     def __init__(self, files: Mapping[PurePosixPath, Optional[FileMatcherAdv]]):
         self._files = files
 
@@ -83,13 +83,13 @@ class _FilesConditionConstantAdv(ApplicationEnvironmentDependentValue[FilesCondi
         def resolve_matcher(adv: FileMatcherAdv) -> FileMatcher:
             return adv.primitive(environment)
 
-        return _FilesConditionConstant({
+        return _Primitive({
             path: map_optional(resolve_matcher, mb_matcher)
             for path, mb_matcher in self._files.items()
         })
 
 
-class _FilesConditionConstantDdv(FilesConditionDdv):
+class _Ddv(FilesConditionDdv):
     def __init__(self, files: Sequence[Tuple[StringDdv, Optional[FileMatcherDdv]]]):
         helper = _DdvHelper(files)
         self._files = helper.files_as_map()
@@ -108,7 +108,7 @@ class _FilesConditionConstantDdv(FilesConditionDdv):
         def val_of_any_dep(matcher: FileMatcherDdv) -> FileMatcherAdv:
             return matcher.value_of_any_dependency(tcds)
 
-        return _FilesConditionConstantAdv({
+        return _Adv({
             path: map_optional(val_of_any_dep, mb_matcher)
             for path, mb_matcher in self._files.items()
         })
@@ -181,9 +181,9 @@ class _Describer(Generic[TSD], DetailsRenderer):
         ])
 
         return details.SequenceRenderer([
-            _BEGIN_BRACE_RENDERER,
+            _LITERAL_BEGIN_RENDERER,
             details.IndentedRenderer(entries_renderer),
-            _END_BRACE_RENDERER,
+            _LITERAL_END_RENDERER,
         ])
 
     @staticmethod
@@ -243,8 +243,8 @@ class _DdvHelper:
         return ddv_validators.all_of(validators)
 
 
-_EMPTY_RENDERER = details.String(' '.join((syntax.BEGIN_BRACE, syntax.END_BRACE)))
+_EMPTY_RENDERER = details.String(' '.join((syntax.LITERAL_BEGIN, syntax.LITERAL_END)))
 
-_BEGIN_BRACE_RENDERER = details.String(syntax.BEGIN_BRACE)
+_LITERAL_BEGIN_RENDERER = details.String(syntax.LITERAL_BEGIN)
 
-_END_BRACE_RENDERER = details.String(syntax.END_BRACE)
+_LITERAL_END_RENDERER = details.String(syntax.LITERAL_END)

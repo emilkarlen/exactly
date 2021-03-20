@@ -15,7 +15,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 class ConstantSyntaxDescription(grammar.PrimitiveDescriptionWithSyntaxElementAsInitialSyntaxToken):
     def __init__(self):
-        super().__init__(_CONSTANT_SYNTAX_ELEMENT_NAME)
+        super().__init__(_LITERAL_SYNTAX_ELEMENT_NAME)
 
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
@@ -28,7 +28,7 @@ class ConstantSyntaxDescription(grammar.PrimitiveDescriptionWithSyntaxElementAsI
     @property
     def syntax_elements(self) -> Sequence[SyntaxElementDescription]:
         return (
-            _constant_sed(_CONSTANT_SYNTAX_ELEMENT_NAME),
+            _constant_sed(_LITERAL_SYNTAX_ELEMENT_NAME),
             _file_condition_sed(),
             _file_name_sed(),
         )
@@ -44,26 +44,26 @@ class ConstantSyntaxDescription(grammar.PrimitiveDescriptionWithSyntaxElementAsI
 def _constant_sed(name: str) -> SyntaxElementDescription:
     return SyntaxElementDescription(
         name,
-        _TP.fnap(_CONSTANT__HEADER),
+        _TP.fnap(_LITERAL__HEADER),
         [
             invokation_variant_from_args([
-                a.Single(a.Multiplicity.MANDATORY, a.Constant(syntax.BEGIN_BRACE)),
+                a.Single(a.Multiplicity.MANDATORY, a.Constant(syntax.LITERAL_BEGIN)),
                 a.Single(a.Multiplicity.ONE_OR_MORE, a.Named(_FILE_CONDITION)),
-                a.Single(a.Multiplicity.MANDATORY, a.Constant(syntax.END_BRACE)),
+                a.Single(a.Multiplicity.MANDATORY, a.Constant(syntax.LITERAL_END)),
             ],
-                _TP.fnap(_CONSTANT__DESCRIPTION_REST)),
+                _TP.fnap(_LITERAL__DESCRIPTION_REST)),
         ]
     )
 
 
-_CONSTANT_SYNTAX_ELEMENT_NAME = 'CONSTANT'
+_LITERAL_SYNTAX_ELEMENT_NAME = 'LITERAL'
 _FILE_CONDITION = 'FILE-CONDITION'
 
-_CONSTANT__HEADER = """\
+_LITERAL__HEADER = """\
 A sequence of file names. Each together with an optional {FILE_MATCHER}.
 """
 
-_CONSTANT__DESCRIPTION_REST = """\
+_LITERAL__DESCRIPTION_REST = """\
 There can be only one {FILE_CONDITION} per line.
 
 
