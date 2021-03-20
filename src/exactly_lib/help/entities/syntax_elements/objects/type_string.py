@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.definitions import misc_texts
+from exactly_lib.definitions import misc_texts, formatting
 from exactly_lib.definitions import path
 from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -10,6 +10,7 @@ from exactly_lib.definitions.entity import syntax_elements, types, concepts
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.symbol import value_type
+from exactly_lib.test_case import reserved_words
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.parse import token
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -30,6 +31,7 @@ class _Documentation(SyntaxElementDocumentation):
             'symbol_reference': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
             'type': concepts.TYPE_CONCEPT_INFO.name,
             'string_type': types.STRING_TYPE_INFO.name,
+            'string_type_plain': types.STRING_TYPE_INFO.name,
             'list_type': types.LIST_TYPE_INFO.name,
             'path_type': types.PATH_TYPE_INFO.name,
 
@@ -42,6 +44,9 @@ class _Documentation(SyntaxElementDocumentation):
             'HARD_Q': token.HARD_QUOTE_CHAR,
             'CHR': 'CHARACTER',
             'whitespace': misc_texts.WHITESPACE,
+
+            'reserved_word': misc_texts.RESERVED_WORD_NAME,
+            'reserved_word_list_str': ', '.join([formatting.keyword(x) for x in reserved_words.RESERVED_TOKENS]),
 
             'Sym_refs_are_substituted': syntax_descriptions.symbols_are_substituted_in(the_string_type),
             'Sym_refs_are_not_substituted': syntax_descriptions.symbols_are_not_substituted_in(the_string_type),
@@ -71,6 +76,10 @@ class _Documentation(SyntaxElementDocumentation):
             self._tp.section(
                 'Concatenation',
                 _DESCRIPTION__CONCATENATION,
+            ),
+            self._tp.section(
+                misc_texts.RESERVED_WORD_NAME.plural.capitalize(),
+                _RESERVED_WORDS_DESCRIPTION,
             ),
             self._tp.section(
                 'Conversion of {non_str_types_w_str_rendering}',
@@ -155,4 +164,11 @@ A non-empty {list_type:/q} is rendered by separating the elements with a single 
 
 
 {path_type:a/qu} is rendered as an absolute path (even if relativity is {REL_CD_OPTION}).
+"""
+
+_RESERVED_WORDS_DESCRIPTION = """\
+The following {string_type_plain:s} are {reserved_word:s}: {reserved_word_list_str}.
+
+
+To use any of them as {string_type:a}, it must be quoted.
 """

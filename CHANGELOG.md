@@ -16,6 +16,7 @@ with exception of a "0." prefix until version 1 is released.
 ### Changed
 
  - Instruction `dir` - Fails if the directory already exists (breaking)
+ - Type `string` - Reserved words
 
 ## [0.14.0] - 2021-03-01
 

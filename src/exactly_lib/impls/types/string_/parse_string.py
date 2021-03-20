@@ -9,6 +9,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions
+from exactly_lib.test_case import reserved_words
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions as _reference_restrictions
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv, StringFragmentSdv
@@ -97,6 +98,11 @@ def parse_fragments_from_tokens(tokens: TokenStream,
     if tokens.is_null:
         raise SingleInstructionInvalidArgumentException('Expecting {} argument'.format(conf.argument_name))
     string_token = tokens.consume()
+    if string_token.is_plain and string_token.source_string in reserved_words.RESERVED_TOKENS:
+        raise SingleInstructionInvalidArgumentException(
+            'Illegal {}: {}'.format(conf.argument_name,
+                                    string_token.source_string),
+        )
     return parse_fragments_from_token(string_token)
 
 

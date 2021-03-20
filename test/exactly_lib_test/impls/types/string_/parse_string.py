@@ -1,3 +1,4 @@
+import itertools
 import unittest
 from typing import List
 
@@ -10,6 +11,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestricti
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, \
     symbol_reference_syntax_for_name, \
     constant, symbol, Fragment
+from exactly_lib.test_case import reserved_words
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import \
@@ -32,8 +34,9 @@ from exactly_lib_test.type_val_deps.types.string_.test_resources.sdv_assertions 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestFailWhenNoArgument),
+        unittest.makeSuite(TestFailWhenHeadIsReservedToken),
         unittest.makeSuite(TestParseFragmentsFromToken),
-        unittest.makeSuite(TestParseStringResolver),
+        unittest.makeSuite(TestParseStringSdv),
         unittest.makeSuite(TestParseFromParseSource),
     ])
 
@@ -64,6 +67,20 @@ class TestFailWhenNoArgument(unittest.TestCase):
             sut.parse_string_sdv(TokenStream(''))
 
 
+class TestFailWhenHeadIsReservedToken(unittest.TestCase):
+    def test_parse_fragments_from_token(self):
+        for reserved in reserved_words.RESERVED_TOKENS:
+            with self.subTest(reserved):
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    sut.parse_fragments_from_tokens(TokenStream(reserved))
+
+    def test_parse_string_sdv(self):
+        for reserved in reserved_words.RESERVED_TOKENS:
+            with self.subTest(reserved):
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    sut.parse_string_sdv(TokenStream(reserved))
+
+
 def successful_parse_of_constant() -> List[TC]:
     return [
         TC(_src('plain-word1 plain-word2'),
@@ -78,13 +95,15 @@ def successful_parse_of_constant() -> List[TC]:
                token_stream=assert_token_stream(is_null=asrt.is_true),
            )
            ),
-        TC(_src('"double quoted word" plain-word2'),
+        TC(_src('{soft_quote}double quoted word{soft_quote} plain-word2',
+                soft_quote=SOFT_QUOTE_CHAR),
            Expectation(
                fragments=[constant('double quoted word')],
                token_stream=assert_token_stream(head_token=assert_token_string_is('plain-word2')),
            )
            ),
-        TC(_src('\'single quoted word\' plain-word2'),
+        TC(_src('{hard_quote}single quoted word{hard_quote} plain-word2',
+                hard_quote=HARD_QUOTE_CHAR),
            Expectation(
                fragments=[constant('single quoted word')],
                token_stream=assert_token_stream(head_token=assert_token_string_is('plain-word2')),
@@ -99,6 +118,43 @@ def successful_parse_of_constant() -> List[TC]:
            )
            ),
     ]
+
+
+def successful_parse_of_quoted_reserved_tokens() -> List[TC]:
+    def cases_for_word(reserved: str) -> List[TC]:
+        return [
+            TC(_src('{hard_quote}{reserved}{hard_quote}',
+                    hard_quote=HARD_QUOTE_CHAR,
+                    reserved=reserved),
+               Expectation(
+                   fragments=[constant(reserved)],
+                   token_stream=assert_token_stream(is_null=asrt.is_true),
+               )
+               ),
+            TC(_src('{hard_quote}{reserved}{hard_quote} plain-word2',
+                    hard_quote=HARD_QUOTE_CHAR,
+                    reserved=reserved),
+               Expectation(
+                   fragments=[constant(reserved)],
+                   token_stream=assert_token_stream(head_token=assert_token_string_is('plain-word2')),
+               )
+               ),
+            TC(_src('{soft_quote}{reserved}{soft_quote} plain-word2',
+                    soft_quote=SOFT_QUOTE_CHAR,
+                    reserved=reserved),
+               Expectation(
+                   fragments=[constant(reserved)],
+                   token_stream=assert_token_stream(head_token=assert_token_string_is('plain-word2')),
+               )
+               ),
+        ]
+
+    return list(
+        itertools.chain.from_iterable([
+            cases_for_word(word)
+            for word in reserved_words.RESERVED_TOKENS
+        ])
+    )
 
 
 def successful_parse_of_single_symbol() -> List[TC]:
@@ -174,13 +230,18 @@ class TestParseFragmentsFromToken(unittest.TestCase):
         for tc in cases:
             self._test_case(tc)
 
+    def test_successful_parse_of_quoted_reserved_tokens(self):
+        cases = successful_parse_of_quoted_reserved_tokens()
+        for tc in cases:
+            self._test_case(tc)
+
     def test_successful_parse_of_complex_structure(self):
         cases = successful_parse_of_complex_structure()
         for tc in cases:
             self._test_case(tc)
 
 
-class TestParseStringResolver(unittest.TestCase):
+class TestParseStringSdv(unittest.TestCase):
     def _test_case(self, tc: TC):
         with self.subTest(token_stream=tc.source_string):
             # ARRANGE #
@@ -203,6 +264,11 @@ class TestParseStringResolver(unittest.TestCase):
 
     def test_successful_parse_of_constant(self):
         cases = successful_parse_of_constant()
+        for tc in cases:
+            self._test_case(tc)
+
+    def test_successful_parse_of_quoted_reserved_tokens(self):
+        cases = successful_parse_of_quoted_reserved_tokens()
         for tc in cases:
             self._test_case(tc)
 

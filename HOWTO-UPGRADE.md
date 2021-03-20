@@ -6,6 +6,18 @@ Describes how to upgrade test cases to one version from the preceding version.
 
 Make sure the directory do not already exist.
 
+## Type `string` - Reserved words
+
+Surround any plain reserved word with single quotes:
+
+ - `(` -> `'('`
+ - `)` -> `')'`
+ - `[` -> `'['`
+ - `]` -> `']'`
+ - `{` -> `'{'`
+ - `}` -> `'}'`
+ - `:` -> `':'`
+
 # [0.14.0]
 
 ## Renaming of types
