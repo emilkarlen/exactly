@@ -39,19 +39,19 @@ class TestInvalidDelimiters(unittest.TestCase):
         invalid_delimiters_cases: Sequence[NameAndValue[Tuple[str, str]]] = [
             NameAndValue(
                 'start missing',
-                ('', syntax.LITERAL_END),
+                ('', syntax.FILE_LIST_END),
             ),
             NameAndValue(
                 'start is end',
-                (syntax.LITERAL_END, syntax.LITERAL_END),
+                (syntax.FILE_LIST_END, syntax.FILE_LIST_END),
             ),
             NameAndValue(
                 'end missing',
-                (syntax.LITERAL_BEGIN, ''),
+                (syntax.FILE_LIST_BEGIN, ''),
             ),
             NameAndValue(
                 'end is start',
-                (syntax.LITERAL_BEGIN, syntax.LITERAL_BEGIN),
+                (syntax.FILE_LIST_BEGIN, syntax.FILE_LIST_BEGIN),
             ),
         ]
         for valid_file_specs_case in valid_file_specs_cases:

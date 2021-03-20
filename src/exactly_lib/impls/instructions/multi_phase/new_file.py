@@ -16,7 +16,7 @@ from exactly_lib.impls.instructions.multi_phase.utils.instruction_part_utils imp
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.impls.types.files_source import documentation as _fs_doc
 from exactly_lib.impls.types.files_source import file_maker as _file_maker
-from exactly_lib.impls.types.files_source.impl import parse_literal
+from exactly_lib.impls.types.files_source.impl import parse_file_list
 from exactly_lib.impls.types.path import path_err_msgs, parse_path, relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
     TokenParser
@@ -120,7 +120,7 @@ class _TheInstructionEmbryo(embryo.PhaseAgnosticInstructionEmbryo[Optional[TextR
 class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo[Optional[TextRenderer]]):
     def __init__(self, phase_is_after_act: bool):
         self._path_parser = parse_path.PathParser(REL_OPT_ARG_CONF)
-        self._file_maker_parser = parse_literal.ParserOfFileMaker.of_regular_file_maker(phase_is_after_act)
+        self._file_maker_parser = parse_file_list.ParserOfFileMaker.of_regular_file_maker(phase_is_after_act)
 
     def _parse(self, source: ParseSource) -> _TheInstructionEmbryo:
         with from_parse_source(source,

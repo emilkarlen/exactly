@@ -15,7 +15,7 @@ from exactly_lib.impls.instructions.multi_phase.utils.assert_phase_info import I
 from exactly_lib.impls.types.files_source import documentation as _fs_doc
 from exactly_lib.impls.types.files_source import parse as _parse_fs
 from exactly_lib.impls.types.files_source.file_maker import FileMakerSdv
-from exactly_lib.impls.types.files_source.impl import parse_literal
+from exactly_lib.impls.types.files_source.impl import parse_file_list
 from exactly_lib.impls.types.path import parse_path, relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.sdv_structure import SymbolUsage, references_from_objects_with_symbol_references
@@ -110,7 +110,7 @@ class TheInstructionEmbryo(embryo.PhaseAgnosticInstructionEmbryo[Optional[TextRe
 class EmbryoParser(embryo.InstructionEmbryoParserFromTokensWoFileSystemLocationInfo[Optional[TextRenderer]]):
     def __init__(self):
         self._path_parser = parse_path.PathParser(RELATIVITY_VARIANTS)
-        self._file_maker_parser = parse_literal.ParserOfFileMaker.of_directory_maker(
+        self._file_maker_parser = parse_file_list.ParserOfFileMaker.of_directory_maker(
             _parse_fs.FullFilesSourceParser()
         )
 

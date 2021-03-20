@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.impls.types.files_source.literal import invalid_syntax, illegal_destination_path, \
+from exactly_lib_test.impls.types.files_source.file_list import invalid_syntax, illegal_destination_path, \
     symbol_references, individual_file_spec, multiple_file_spec, validation
 
 

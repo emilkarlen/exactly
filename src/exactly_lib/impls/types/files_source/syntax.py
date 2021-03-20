@@ -8,10 +8,10 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 
 COPY_CONTENTS_OF_EXISTING_DIR = 'dir-contents-of'
 
-LITERAL_BEGIN = reserved_words.BRACE_BEGIN
-LITERAL_END = reserved_words.BRACE_END
+FILE_LIST_BEGIN = reserved_words.BRACE_BEGIN
+FILE_LIST_END = reserved_words.BRACE_END
 
-LITERAL_END__FOR_FORMAT_STRINGS = reserved_words.BRACE__END__FOR_FORMAT_STRINGS
+FILE_LIST_END__FOR_FORMAT_STRINGS = reserved_words.BRACE__END__FOR_FORMAT_STRINGS
 
 FILE_MATCHER_SEPARATOR = ':'
 

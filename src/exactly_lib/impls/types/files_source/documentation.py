@@ -41,9 +41,9 @@ class CopySyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxT
         ])
 
 
-class LiteralSyntaxDescription(grammar.PrimitiveDescriptionWithSyntaxElementAsInitialSyntaxToken):
+class FileListSyntaxDescription(grammar.PrimitiveDescriptionWithSyntaxElementAsInitialSyntaxToken):
     def __init__(self):
-        super().__init__(_LITERAL_SYNTAX_ELEMENT_NAME)
+        super().__init__(_FILE_LIST_SYNTAX_ELEMENT_NAME)
 
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
@@ -51,12 +51,12 @@ class LiteralSyntaxDescription(grammar.PrimitiveDescriptionWithSyntaxElementAsIn
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
-        return ()
+        return _TP.fnap(_FILE_LIST__HEADER)
 
     @property
     def syntax_elements(self) -> Sequence[SyntaxElementDescription]:
         return (
-            _constant_sed(_LITERAL_SYNTAX_ELEMENT_NAME),
+            _file_list_sed(_FILE_LIST_SYNTAX_ELEMENT_NAME),
             _file_spec_sed(),
             _file_name_sed(),
         )
@@ -69,17 +69,17 @@ class LiteralSyntaxDescription(grammar.PrimitiveDescriptionWithSyntaxElementAsIn
         ])
 
 
-def _constant_sed(name: str) -> SyntaxElementDescription:
+def _file_list_sed(name: str) -> SyntaxElementDescription:
     return SyntaxElementDescription(
         name,
-        _TP.fnap(_LITERAL__HEADER),
+        (),
         [
             invokation_variant_from_args([
-                a.Single(a.Multiplicity.MANDATORY, a.Constant(syntax.LITERAL_BEGIN)),
+                a.Single(a.Multiplicity.MANDATORY, a.Constant(syntax.FILE_LIST_BEGIN)),
                 a.Single(a.Multiplicity.ONE_OR_MORE, a.Named(syntax.FILE_SPEC__SE_STR)),
-                a.Single(a.Multiplicity.MANDATORY, a.Constant(syntax.LITERAL_END)),
+                a.Single(a.Multiplicity.MANDATORY, a.Constant(syntax.FILE_LIST_END)),
             ],
-                _TP.fnap(_LITERAL__DESCRIPTION_REST)),
+                _TP.fnap(_FILE_LIST__DESCRIPTION_REST)),
         ]
     )
 
@@ -271,13 +271,13 @@ _PATH__MUST_EXIST__DIR = """\
 The path must be an existing {dir_file_type}.
 """
 
-_LITERAL_SYNTAX_ELEMENT_NAME = 'LITERAL'
+_FILE_LIST_SYNTAX_ELEMENT_NAME = 'FILE-LIST'
 
-_LITERAL__HEADER = """\
+_FILE_LIST__HEADER = """\
 A sequence of files, created or modified, relative the populated {dir_file_type}.
 """
 
-_LITERAL__DESCRIPTION_REST = """\
+_FILE_LIST__DESCRIPTION_REST = """\
 There can be only one {FILE_SPEC} per line.
 
 
@@ -331,7 +331,6 @@ _FILE_SPEC_RENDERING_ENV = FileSpecRenderingEnvironment(
     True,
     _TP,
 )
-
 
 _DESCRIPTION_OF_COPY = """\
 A copy of the contents of {SRC_PATH} (recursive).

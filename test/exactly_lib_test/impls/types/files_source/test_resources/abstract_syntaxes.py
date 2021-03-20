@@ -183,8 +183,8 @@ def dir_spec__str_name(file_name: str,
 class LiteralFilesSourceAbsStx(FilesSourceAbsStx):
     def __init__(self,
                  files: Sequence[FileSpecAbsStx],
-                 delimiter__begin: str = syntax.LITERAL_BEGIN,
-                 delimiter__end: str = syntax.LITERAL_END,
+                 delimiter__begin: str = syntax.FILE_LIST_BEGIN,
+                 delimiter__end: str = syntax.FILE_LIST_END,
                  ):
         self._files = files
         self.delimiter__begin = delimiter__begin

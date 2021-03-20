@@ -3,7 +3,7 @@ import unittest
 from typing import Sequence
 
 from exactly_lib.impls.types.files_source.defs import ModificationType
-from exactly_lib.impls.types.files_source.impl import literal
+from exactly_lib.impls.types.files_source.impl import file_list
 from exactly_lib.impls.types.files_source.impl.file_makers.regular import RegularFileMaker
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.types.files_source.sdv import FilesSourceSdv
@@ -58,8 +58,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
         referenced_symbol = FilesSourceSymbolContext.of_primitive(
             'referenced_name',
-            literal.Literal([
-                literal.FileSpecification(
+            file_list.Primitive([
+                file_list.FileSpecification(
                     create_file.name,
                     RegularFileMaker(
                         ModificationType.CREATE,

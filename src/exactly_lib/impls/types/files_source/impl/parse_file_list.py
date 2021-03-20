@@ -10,14 +10,14 @@ from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv
 from exactly_lib.util import functional
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentUsageOnCommandLineRenderer
 from exactly_lib.util.parse import token_matchers
-from . import literal
+from . import file_list
 from .file_makers import regular as _fm_regular, dir_ as _fm_dir
 from .. import syntax
 from ..file_maker import FileMakerSdv
 from ...string_ import parse_string
 
 
-class ParserOfLiteral(ParserFromTokens[FilesSourceSdv]):
+class Parser(ParserFromTokens[FilesSourceSdv]):
     def __init__(self, parser_of_nested: ParserFromTokens[FilesSourceSdv]):
         self._file_spec_parser = ParserOfFileSpec(parser_of_nested)
         self._superfluous_line_contents_message = _MESSAGE_FACTORY.generator_for(
@@ -30,14 +30,14 @@ class ParserOfLiteral(ParserFromTokens[FilesSourceSdv]):
         token_parser.require_has_valid_head_token(_FILE_NAME_OR_SET_END)
 
         token_parser.consume_mandatory_keyword__part_of_syntax_element(
-            syntax.LITERAL_END,
+            syntax.FILE_LIST_END,
             False,
             syntax_elements.FILES_SOURCE_SYNTAX_ELEMENT.singular_name,
         )
 
-        return literal.LiteralSdv(file_specs)
+        return file_list.Sdv(file_specs)
 
-    def _parse_file_specs(self, token_parser: TokenParser) -> Sequence[literal.FileSpecificationSdv]:
+    def _parse_file_specs(self, token_parser: TokenParser) -> Sequence[file_list.FileSpecificationSdv]:
         ret_val = []
         while not token_parser.has_valid_head_matching(_TOKEN_SPEC_LIST_END):
             ret_val.append(self._file_spec_parser.parse(token_parser))
@@ -46,7 +46,7 @@ class ParserOfLiteral(ParserFromTokens[FilesSourceSdv]):
         return ret_val
 
 
-_TOKEN_SPEC_LIST_END = token_matchers.is_unquoted_and_equals(syntax.LITERAL_END)
+_TOKEN_SPEC_LIST_END = token_matchers.is_unquoted_and_equals(syntax.FILE_LIST_END)
 
 CONTENTS = TypeVar('CONTENTS')
 
@@ -103,7 +103,7 @@ class ParserOfFileMaker(Generic[CONTENTS], ParserFromTokens[FileMakerSdv]):
             return self._EXPLICIT_CONTENTS_CONFIG[mb_explicit_modification_token], contents
 
 
-class ParserOfFileSpec(ParserFromTokens[literal.FileSpecificationSdv]):
+class ParserOfFileSpec(ParserFromTokens[file_list.FileSpecificationSdv]):
     def __init__(self, parser_of_nested: ParserFromTokens[FilesSourceSdv]):
         self._name_parser = parse_string.StringFromTokensParser(_FILE_NAME_STRING_CONFIGURATION)
         self._file_maker_parsers: Mapping[str, ParserFromTokens[FileMakerSdv]] = {
@@ -112,11 +112,11 @@ class ParserOfFileSpec(ParserFromTokens[literal.FileSpecificationSdv]):
         }
         self._file_type_tokens = tuple(self._file_maker_parsers.keys())
 
-    def parse(self, token_parser: TokenParser) -> literal.FileSpecificationSdv:
+    def parse(self, token_parser: TokenParser) -> file_list.FileSpecificationSdv:
         file_type_token = self._file_type(token_parser)
         file_name = self._name_parser.parse(token_parser)
         file_maker = self._file_maker_parsers[file_type_token].parse(token_parser)
-        return literal.FileSpecificationSdv(file_name, file_maker)
+        return file_list.FileSpecificationSdv(file_name, file_maker)
 
     def _file_type(self, token_parser: TokenParser) -> str:
         return token_parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
@@ -128,7 +128,7 @@ class ParserOfFileSpec(ParserFromTokens[literal.FileSpecificationSdv]):
 
 _FILE_NAME_STRING_CONFIGURATION = parse_string.Configuration(
     syntax.FILE_NAME.name,
-    literal.FILE_NAME_STRING_REFERENCES_RESTRICTION,
+    file_list.FILE_NAME_STRING_REFERENCES_RESTRICTION,
 )
 
 _MESSAGE_FACTORY = MessageFactory({
@@ -137,7 +137,7 @@ _MESSAGE_FACTORY = MessageFactory({
 
 _FILE_NAME_OR_SET_END = ArgumentUsageOnCommandLineRenderer.CHOICE_SEPARATOR.join(
     (syntax.FILE_NAME.name,
-     syntax.LITERAL_END__FOR_FORMAT_STRINGS)
+     syntax.FILE_LIST_END__FOR_FORMAT_STRINGS)
 )
 
 _HEADER = """\

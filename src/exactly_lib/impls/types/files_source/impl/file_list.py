@@ -113,7 +113,7 @@ class FileSpecificationSdv(TypesSymbolDependentValue[FileSpecificationDdv]):
         )
 
 
-class Literal(FilesSource):
+class Primitive(FilesSource):
     def __init__(self, files: Sequence[FileSpecification]):
         self._files = files
         self._describer = _Describer(self._files)
@@ -127,18 +127,18 @@ class Literal(FilesSource):
             file.maker.make(_child_dp(directory, PurePosixPath(file.name)))
 
 
-class LiteralAdv(FilesSourceAdv):
+class _Adv(FilesSourceAdv):
     def __init__(self, files: Sequence[FileSpecificationAdv]):
         self._files = files
 
     def primitive(self, environment: ApplicationEnvironment) -> FilesSource:
-        return Literal([
+        return Primitive([
             file.primitive(environment)
             for file in self._files
         ])
 
 
-class LiteralDdv(FilesSourceDdv):
+class _Ddv(FilesSourceDdv):
     def __init__(self, files: Sequence[FileSpecificationDdv]):
         self._files = files
         validators = [
@@ -156,13 +156,13 @@ class LiteralDdv(FilesSourceDdv):
         return self._validator
 
     def value_of_any_dependency(self, tcds: TestCaseDs) -> FilesSourceAdv:
-        return LiteralAdv([
+        return _Adv([
             file.value_of_any_dependency(tcds)
             for file in self._files
         ])
 
 
-class LiteralSdv(FilesSourceSdv):
+class Sdv(FilesSourceSdv):
     def __init__(self, files: Sequence[FileSpecificationSdv]):
         self._files = files
         self._references = tuple(references_from_objects_with_symbol_references(files))
@@ -172,7 +172,7 @@ class LiteralSdv(FilesSourceSdv):
         return self._references
 
     def resolve(self, symbols: SymbolTable) -> FilesSourceDdv:
-        return LiteralDdv([
+        return _Ddv([
             file_spec.resolve(symbols)
             for file_spec in self._files
         ])
@@ -255,9 +255,9 @@ FILE_SPEC = TypeVar('FILE_SPEC', bound=WithDetailsDescription)
 
 
 class _Describer(Generic[FILE_SPEC], DetailsRenderer):
-    EMPTY_RENDERER = details.String(' '.join((syntax.LITERAL_BEGIN, syntax.LITERAL_END)))
-    BEGIN_BRACE_RENDERER = details.String(syntax.LITERAL_BEGIN)
-    END_BRACE_RENDERER = details.String(syntax.LITERAL_END)
+    EMPTY_RENDERER = details.String(' '.join((syntax.FILE_LIST_BEGIN, syntax.FILE_LIST_END)))
+    BEGIN_BRACE_RENDERER = details.String(syntax.FILE_LIST_BEGIN)
+    END_BRACE_RENDERER = details.String(syntax.FILE_LIST_END)
 
     def __init__(self, files: Sequence[FILE_SPEC]):
         self._files = files

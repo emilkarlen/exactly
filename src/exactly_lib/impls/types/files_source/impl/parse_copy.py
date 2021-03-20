@@ -5,7 +5,7 @@ from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptio
 from . import copy_dir_contents
 
 
-class ParserOfCopy(ParserFromTokens[FilesSourceSdv]):
+class Parser(ParserFromTokens[FilesSourceSdv]):
     def __init__(self, source_dir_argument: RelOptionArgumentConfiguration):
         self._src_path_parser = parse_path.PathParser(source_dir_argument)
 
