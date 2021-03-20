@@ -8,15 +8,15 @@ class TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType(unittest.TestCa
     with the test case class, identifies the test case.
     """
 
-    def __init__(self, object_whos_type_is_used_for_short_description):
+    def __init__(self, object_who_s_type_is_used_for_short_description):
         super().__init__()
-        self.__object_whos_type_is_used_for_short_description = object_whos_type_is_used_for_short_description
+        self.__object_who_s_type_is_used_for_short_description = object_who_s_type_is_used_for_short_description
 
     def shortDescription(self):
-        if isinstance(self.__object_whos_type_is_used_for_short_description, str):
-            object_str = self.__object_whos_type_is_used_for_short_description
+        if isinstance(self.__object_who_s_type_is_used_for_short_description, str):
+            object_str = self.__object_who_s_type_is_used_for_short_description
         else:
-            object_str = str(type(self.__object_whos_type_is_used_for_short_description))
+            object_str = str(type(self.__object_who_s_type_is_used_for_short_description))
         return str(type(self)) + '\n/ ' + object_str
 
     def runTest(self):

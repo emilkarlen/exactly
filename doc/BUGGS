@@ -22,7 +22,7 @@ contents airports.csv
 Exception:
 'ascii' codec can't decode byte 0xc3 in position 118: ordinal not in range(128)
 ----------------------------------------
-** One failing part is the application of the string-stransformer in
+** One failing part is the application of the string-transformer in
 instructions.assert_.utils.file_contents.parts.file_assertion_part.FileToCheck#_write_transformed_contents
 
 This will give HARD_ERROR

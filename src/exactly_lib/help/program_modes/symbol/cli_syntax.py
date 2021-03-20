@@ -43,7 +43,7 @@ class SymbolCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         return DescriptionWithSubSections(_TP.text(misc_texts.SYMBOL_COMMAND_SINGLE_LINE_DESCRIPTION),
                                           docs.section_contents([]))
 
-    def synopsises(self) -> List[cli_syntax.Synopsis]:
+    def synopses(self) -> List[cli_syntax.Synopsis]:
         return [
             synopsis_all(),
             synopsis_individual()

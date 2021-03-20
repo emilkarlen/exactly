@@ -72,11 +72,11 @@ class TestSeeAlsoUrlInfo(unittest.TestCase):
         expected_title = 'expected title'
         expected_url = 'expected url'
         expected = sut.SeeAlsoUrlInfo(expected_title, expected_url)
-        actuals = [
+        list_of_actual = [
             sut.SeeAlsoUrlInfo('actual title', expected_url),
             sut.SeeAlsoUrlInfo(expected_title, 'actual url')
         ]
-        for actual in actuals:
+        for actual in list_of_actual:
             with self.subTest(actual=actual):
                 # ASSERT #
                 self.assertNotEqual(expected, actual)

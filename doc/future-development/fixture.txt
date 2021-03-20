@@ -2,7 +2,7 @@
 
 <2017-12-11 mån>
 
-A "fixture" is a setup of something, togheter with cleanup behaviour.
+A "fixture" is a setup of something, together with cleanup behaviour.
 
 The cleanup is performed only if the setup has been performed successfully.
 
@@ -26,8 +26,8 @@ the setup having taken place.
 * Solution
 
 The solution is to introduce a "fixture" functionality/instruction, that
-defines both setup and cleanup, and whos cleanup is performed only if
-the setup has been peformed successfully.
+defines both setup and cleanup, and who's cleanup is performed only if
+the setup has been performed successfully.
 
 The fixture setup and cleanup is defined in terms of an external program.
 It is given either "setup" or "cleanup" as the first argument, to

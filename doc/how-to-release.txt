@@ -27,7 +27,7 @@ Make sure to be in line with the release
 * Contact info in COPYRIGHT
 Make sure the contact info at the end of the COPYRIGHT is correct.
 * Minimum Python version
-** proram_info.py
+** program_info.py
 ** setup.py
 ** README
 * github pages - Add Ref Man for release version

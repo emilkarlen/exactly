@@ -490,12 +490,12 @@ def after_manipulation(manipulator: Callable[[T], Any],
                        assertion: Assertion[T],
                        name: str = '',
                        ) -> Assertion[T]:
-    after_manip = AfterManipulation(manipulator, assertion)
+    after_manipulation = AfterManipulation(manipulator, assertion)
     return (
-        named(name, after_manip)
+        named(name, after_manipulation)
         if name
         else
-        after_manip
+        after_manipulation
     )
 
 

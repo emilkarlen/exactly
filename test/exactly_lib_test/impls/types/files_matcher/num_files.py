@@ -51,7 +51,7 @@ class TestWithAssertionVariantForNumFiles(test_case_bases.TestWithAssertionVaria
 class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesCheck(
     expression.InstructionArgumentsVariantConstructor):
     """
-    Constructs the instruction argument for a given comparision condition string.
+    Constructs the instruction argument for a given comparison condition string.
     """
 
     def apply(self,

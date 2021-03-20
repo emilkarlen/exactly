@@ -11,7 +11,7 @@ the multi phase implementation and treats it as a phase-specific instruction.
 * Drawbacks
 
   - each "instance" has its own documentation
-    Resulting in multiple similair documentations
+    Resulting in multiple similar documentations
     Too much documentation
 
   - implementations often need to handle two cases: before and after the act
@@ -37,8 +37,8 @@ instead of, as today, a parse error.
 
 ** html-doc: Move MPI to separate part
 
-** builtin help sysstem: doc for MPI: show single instr doc when instr search
-Now the help lists all instructions found with a given namn.
+** builtin help system: doc for MPI: show single instr doc when instr search
+Now the help lists all instructions found with a given name.
 The system should know if an instr is a MPI, and then display a single
 instr doc.
 

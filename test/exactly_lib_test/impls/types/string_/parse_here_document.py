@@ -67,7 +67,7 @@ class TestFailingScenarios(unittest.TestCase):
                 'MARKER    ',
             ],
             [
-                'NOTMARKER',
+                'NOT_MARKER',
             ],
         ]
         for following_lines in following_lines_cases:

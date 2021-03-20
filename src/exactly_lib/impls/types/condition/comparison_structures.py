@@ -34,7 +34,7 @@ class OperandDdv(Generic[T], MultiDependenciesDdv[T], ABC):
 
 
 class OperandSdv(Generic[T], SymbolDependentValue, ABC):
-    """Resolves an operand used in a comparision"""
+    """Resolves an operand used in a comparison"""
 
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         """

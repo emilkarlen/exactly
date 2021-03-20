@@ -1,13 +1,13 @@
 -*- org -*-
 
-* Look at how symbols are defined, todays solution might not be the best
+* Look at how symbols are defined, today's solution might not be the best
 <2017-05-10 ons>
 Today, symbols are defined by instructions in two places:
  - symbol_usages
  - main
 
 symbol_usages "report" symbol definitions and references.
-This information is sufficent (for today's func) to handle everything related
+This information is sufficient (for today's func) to handle everything related
 to symbols.  But that information is not used for sym def.  Instead, the main
 method must define a symbol by putting it in the symbol table.
 Aspects:
@@ -19,7 +19,7 @@ validation.
 
 The drawback is that symbols cannot have values that depend on the
 main-execution of a test case.  E.g., it is impossible to have a value that is
-the content/file-name that has been construted by the sut.
+the content/file-name that has been constructed by the sut.
 It would be very nice to have this ability.
 
 Two possible solutions are:
@@ -29,7 +29,7 @@ Two possible solutions are:
 **** Separate symbol tables
 *** Separate handling
 **** definition
-Dynamic symbols would be reqognized by how they were defined - i.e. which
+Dynamic symbols would be recognized by how they were defined - i.e. which
 instruction defines them.
 They are put in the sym-tbl b
 **** instruction reporting of symbol references
@@ -46,11 +46,11 @@ This requires two different symbol tables
  - one for validation that that does not contain values for dyn-syms
  - one for main execution that does contain values for all symbols
 
-** Prevent impl-error by preventing accidental access to symbl
+** Prevent impl-error by preventing accidental access to symbol
 An instruction that does not declare a reference to a symbol (via
 `symbol_usages`) should not be able to use that symbol.  It would be good if
 an implementation error would be reported if an instruction tries to do this -
-i.e. the symbol table is populated incrementaly during execution (as opposed
+i.e. the symbol table is populated incrementally during execution (as opposed
 to populating it with all symbols before execution of instruction.main).
 
 This is possible today, by letting the infrastructure populate the sym-tbl
@@ -63,18 +63,18 @@ Now: @[SYMBOL_NAME]@
 
 Maybe it would be better to have just: SYMBOL_NAME
 
-I believe it is possible to avoid name clashes by just chosing a symbol name
-that is not used elswhere in the test case.
+I believe it is possible to avoid name clashes by just choosing a symbol name
+that is not used elsewhere in the test case.
 
 This would also avoid clashes with the special character sequences @[, ]@
-* Mixfix syntax for function names
+* Mix-fix syntax for function names
 
 Postfix syntax for argument can make function calls unnatural to read:
 ----------------------------------------
 dir_contains_n_files('my-dir', 5)
 ----------------------------------------
 
-A mixfix syntax could be easier:
+A mix-fix syntax could be easier:
 
 ----------------------------------------
 dir('my-dir')contains(5)files
@@ -83,7 +83,7 @@ dir('my-dir')contains(5)files
 The name in the symbol table for that function could be
 "dir()contains()files"
 
-Each parenthasis should be able to take more than one parameter.
+Each parenthesis should be able to take more than one parameter.
 
 Positive is that this syntax is compatible with normal syntax, if people find
 it difficult to learn/use/understand/remember.

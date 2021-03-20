@@ -1,8 +1,8 @@
 -*- org -*-
 
-* Documentaion of instructions
+* Documentation of instructions
 
-Style: presens
+Style: present tense
 
 DOES the JOB
 

@@ -89,7 +89,7 @@ class test_fail_WHEN_file_does_not_exist(unittest.TestCase):
 class test_validate_pre_sds_SHOULD_fail_WHEN_statement_line_is_not_an_existing_file__absolute_file_name(
     TestCaseForConfigurationForValidation):
     def runTest(self):
-        absolute_name_of_non_existing_file = str(pathlib.Path().resolve() / 'non' / 'existing' / 'file' / 'oiasdlkv')
+        absolute_name_of_non_existing_file = str(pathlib.Path().resolve() / 'non' / 'existing' / 'file' / 'oia-sdl-kv')
         act_phase_instructions = [instr([absolute_name_of_non_existing_file])]
         actual = self._do_parse_and_validate_pre_sds(act_phase_instructions)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,

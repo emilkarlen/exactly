@@ -62,7 +62,7 @@ class NameWithGenderWithFormattingTest(unittest.TestCase):
     def test_get_parts(self):
         value = sut.NameWithGenderWithFormatting(sut.NameWithGender('det-word',
                                                                     'sing',
-                                                                    'plur'),
+                                                                    'the-plural'),
                                                  '[',
                                                  ']')
 
@@ -74,7 +74,7 @@ class NameWithGenderWithFormattingTest(unittest.TestCase):
                          value.singular,
                          'singular')
 
-        self.assertEqual('plur',
+        self.assertEqual('the-plural',
                          value.plural,
                          'plural')
 

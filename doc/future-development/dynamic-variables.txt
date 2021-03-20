@@ -2,37 +2,37 @@
 
 <2018-04-05 tor>
 
-Exactly really lacks dynamic values - random numbers, todays date,
+Exactly really lacks dynamic values - random numbers, today's date,
 contents of a directory etc.
 
-The challenge is how to combine todays pure/static values and dynamic
+The challenge is how to combine today's pure/static values and dynamic
 variables.
 
 They would probably reside in the same name space - and existence of referenced
 names should probably be checked statically.  And in one respect types are
 static in that variables are data values that can be transformed to a string,
-much like variables shell style languages.  But probably some typings for
-string and list, e.g., would be usefull.  The question is wether the typing
+much like variables in shell style languages.  But probably some types for
+string and list, e.g., would be useful.  The question is whether the typing
 should be static or dynamic.
 
 Anyway.  The feeling for the moment is that it would be best to let static and
 dynamic values have clearly separated semantics:
 
-Todays symbols are pure values - the value is constant - they can be
+Today's symbols are pure values - the value is constant - they can be
 evaluated any number of times and will always yield the same result.
 
 Symbols: evaluated during symbol- pre-sds- and post-sds-validation
- (without the risk of gettig different values
+ (without the risk of getting different values
 
 "variables":
 evaluated in "main" and must only be evaluated once
- (for each assignment (it might be usefull to let them be
-mutable - or "reassignable".)
+ (for each assignment (it might be useful to let them be
+mutable - or "re-assignable".)
 
- Wether to use static or dynamic typing is a
+Whether to use static or dynamic typing is a
 difficult question though.
 
-Todys "symbols" are evaluated in the "pure" environment of
+Today's "symbols" are evaluated in the "pure" environment of
  - other symbols
  - test case directory structure
 
@@ -65,7 +65,7 @@ var x = $( my-prog )
 <2019-01-03 Thu>
 Static symbols have a resolving dependency in the form
 of directory partitions that are referred.
-Given this inforamtion, there are different ways to resolve
+Given this information, there are different ways to resolve
 a value:
  - value_when_no_dependencies
  - value_of_any_dependency

@@ -19,7 +19,7 @@ from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context 
 
 class InstructionArgumentsVariantConstructor:
     """
-    Constructs the instruction argument for a given comparision condition string.
+    Constructs the instruction argument for a given comparison condition string.
     """
 
     def apply(self,

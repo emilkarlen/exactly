@@ -40,8 +40,8 @@ from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_a
 from exactly_lib_test.type_val_deps.types.path.test_resources import abstract_syntaxes as path_abs_stx
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import RelativityAbsStx, \
     PathWConstNameAbsStx
-from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.path.test_resources.references import PathReferenceVariant
+from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import PathDdvSymbolContext
 
 
 class SymbolsConfiguration:
@@ -366,11 +366,11 @@ class RelativityOptionConfigurationForRelNonHds(RelativityOptionConfiguration, A
     def populator_for_relativity_option_root__non_hds__s(self, contents: FileSystemElements) -> NonHdsPopulator:
         return self.populator_for_relativity_option_root__non_hds(DirContents(contents))
 
-    # TODO ska inte finnas i denna klass - finns pga felaktig design
+    # TODO Should not exist in this class - exists due to bad design
     def root_dir__sds(self, sds: SandboxDs) -> pathlib.Path:
         raise NotImplementedError()
 
-    # TODO ska inte finnas i denna klass - finns pga felaktig design
+    # TODO Should not exist in this class - exists due to bad design
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> sds_populator.SdsPopulator:
         raise NotImplementedError()
 

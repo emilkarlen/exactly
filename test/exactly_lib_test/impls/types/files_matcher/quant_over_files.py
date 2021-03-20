@@ -181,7 +181,7 @@ class TestFailingValidationPreSdsDueToInvalidIntegerArgumentOfNumLines(expressio
 class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumLinesCheck(
     expression.InstructionArgumentsVariantConstructor):
     """
-    Constructs the instruction argument for a given comparision condition string.
+    Constructs the instruction argument for a given comparison condition string.
     """
 
     def apply(self, condition_str: str) -> str:

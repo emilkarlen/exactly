@@ -5,7 +5,7 @@ File inclusion done by the section document parser.
 
 * Definition of path constants, for more flexible location of files
 <2018-07-19 tor>
-Similair to
+Similar to
 ----------------------------------------
 def path P ...
 ----------------------------------------

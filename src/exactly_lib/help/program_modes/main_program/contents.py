@@ -23,7 +23,7 @@ class MainCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         return DescriptionWithSubSections(docs.text(_SINGLE_LINE_DESCRIPTION),
                                           docs.SectionContents([], []))
 
-    def synopsises(self) -> List[cli_syntax.Synopsis]:
+    def synopses(self) -> List[cli_syntax.Synopsis]:
         return [
             test_case_cli_syntax.synopsis(),
             test_suite_cli_syntax.synopsis(),

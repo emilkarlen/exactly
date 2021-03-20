@@ -60,7 +60,7 @@ class ConfigForAssertValidateSymbols(validate_symbols_utils.Configuration):
         return test.assert_phase_instruction_that(symbol_usages=do_raise(exception))
 
 
-class ConfigForCleanuptValidateSymbols(validate_symbols_utils.Configuration):
+class ConfigForCleanupValidateSymbols(validate_symbols_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.CLEANUP,
                          phase_step.CLEANUP__VALIDATE_SYMBOLS,
@@ -95,7 +95,7 @@ def _configurations() -> list:
         ConfigForSetupValidateSymbols(),
         ConfigForBeforeAssertValidateSymbols(),
         ConfigForAssertValidateSymbols(),
-        ConfigForCleanuptValidateSymbols(),
+        ConfigForCleanupValidateSymbols(),
     ]
 
 

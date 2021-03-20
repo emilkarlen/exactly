@@ -3,7 +3,7 @@
 <2018-03-14 ons>
 
 
-Posibility to "generate" test cases from data sets could be usefull -
+Possibility to "generate" test cases from data sets could be useful -
 some kind of "Data Driven tests".
 
 Aka subTest in Python, and also like the "Robot framework" and

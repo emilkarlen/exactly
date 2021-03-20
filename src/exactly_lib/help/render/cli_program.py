@@ -44,7 +44,7 @@ class _ProgramDocumentationRenderer:
                                     sections)
 
     def _synopsis_section(self, program: CliProgramSyntaxDocumentation) -> docs.Section:
-        list_items = itertools.chain.from_iterable(map(self._synopsis_list_items, program.synopsises()))
+        list_items = itertools.chain.from_iterable(map(self._synopsis_list_items, program.synopses()))
         return synopsis_section(docs.SectionContents([self._list(list_items)]))
 
     @staticmethod

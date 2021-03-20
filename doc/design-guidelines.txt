@@ -77,7 +77,7 @@ infinitely large.
 
 *** Functionality for working with files
 The program should supply a "core" instruction set that covers the
-most common needs of tests covered by exactly's main purpose.
+most common needs of tests covered by Exactly's main purpose.
 This means that the "core" instruction set mostly covers working with files -
 attributes of files and the contents of files.
 
@@ -87,7 +87,7 @@ The core instruction set makes it possible to extend the "built-in"
 functionality by executing external programs.
 This is useful both as a way of incorporating functionality offered by
 existing programs (so that it does not have to be duplicated by exactly),
-and as a convenient way to extend exactly's functionality by writing custom
+and as a convenient way to extend Exactly's functionality by writing custom
 external programs (when this is more convenient than implementing the
 functionality as custom instructions).
 

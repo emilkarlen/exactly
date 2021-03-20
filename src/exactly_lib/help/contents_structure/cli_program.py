@@ -18,7 +18,7 @@ class CliProgramSyntaxDocumentation:
     def initial_paragraphs(self) -> List[ParagraphItem]:
         return []
 
-    def synopsises(self) -> List[Synopsis]:
+    def synopses(self) -> List[Synopsis]:
         raise NotImplementedError()
 
     def argument_descriptions(self) -> List[DescribedArgument]:

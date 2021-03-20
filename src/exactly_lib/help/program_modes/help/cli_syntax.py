@@ -37,7 +37,7 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         command_line_syntax_text = CommandLineSyntaxRenderer().apply(command_line)
         return docs.paras(command_line_syntax_text)
 
-    def synopsises(self) -> List[cli_syntax.Synopsis]:
+    def synopses(self) -> List[cli_syntax.Synopsis]:
         non_entities_help = [
             _synopsis([], 'Gives a brief description of the program.'),
             _synopsis([_c(clo.HELP)], 'Displays this help.'),
