@@ -1,9 +1,9 @@
 from typing import Mapping
 
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.impls.types.files_source.defs import ModificationType, FileType
-from exactly_lib.test_case import reserved_words
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 COPY_CONTENTS_OF_EXISTING_DIR = 'dir-contents-of'

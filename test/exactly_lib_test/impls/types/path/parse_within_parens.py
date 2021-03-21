@@ -1,9 +1,9 @@
 import unittest
 
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
-from exactly_lib.test_case import reserved_words
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.util.name_and_value import NameAndValue

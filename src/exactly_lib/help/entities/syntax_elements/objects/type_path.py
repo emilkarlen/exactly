@@ -14,6 +14,7 @@ from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
 from exactly_lib.definitions.instruction_arguments import REL_SYMBOL_OPTION
 from exactly_lib.definitions.path import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_ORDER, REL_source_file_dir_OPTION
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE
@@ -23,7 +24,6 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.tcfs.relative_path_options import REL_HDS_OPTIONS_MAP, \
     REL_SDS_OPTIONS_MAP, RelOptionInfo, REL_CWD_INFO
-from exactly_lib.test_case import reserved_words
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import render_argument
 from exactly_lib.util.textformat.structure import structures as docs

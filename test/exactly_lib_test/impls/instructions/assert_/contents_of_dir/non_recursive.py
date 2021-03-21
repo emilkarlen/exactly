@@ -1,10 +1,10 @@
 import unittest
 
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.impls.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.test_case import reserved_words
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable

@@ -1,7 +1,7 @@
 from typing import TypeVar, Generic, List
 
+from exactly_lib.definitions.test_case import reserved_tokens
 from exactly_lib.section_document.element_parsers.token_stream_parser import ParserFromTokens, TokenParser
-from exactly_lib.test_case import reserved_tokens
 
 ELEMENT = TypeVar('ELEMENT')
 

@@ -1,13 +1,13 @@
 import unittest
 from typing import List, Sequence
 
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.impls.types.list_ import parse_list as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case import reserved_words
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions
 from exactly_lib.type_val_deps.types.list_ import list_sdv as lr, list_sdvs
 from exactly_lib.type_val_deps.types.list_.list_sdv import ElementSdv

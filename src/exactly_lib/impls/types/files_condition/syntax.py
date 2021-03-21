@@ -1,5 +1,5 @@
 from exactly_lib.definitions import instruction_arguments
-from exactly_lib.test_case import reserved_words
+from exactly_lib.definitions.test_case import reserved_words
 
 LITERAL_BEGIN = reserved_words.BRACE_BEGIN
 LITERAL_END = reserved_words.BRACE_END

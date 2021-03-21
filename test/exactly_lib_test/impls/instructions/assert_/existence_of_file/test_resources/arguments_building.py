@@ -2,7 +2,7 @@ from abc import ABC
 from typing import List, Optional
 
 from exactly_lib.definitions import logic
-from exactly_lib.test_case import reserved_words
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.impls.types.file_matcher.test_resources.argument_building import FileMatcherArg
 from exactly_lib_test.tcfs.test_resources.path_arguments import PathArgument

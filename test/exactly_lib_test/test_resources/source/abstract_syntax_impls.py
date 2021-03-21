@@ -1,7 +1,7 @@
 from typing import Sequence, Optional, Callable
 
 from exactly_lib.definitions import logic
-from exactly_lib.test_case import reserved_words
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib_test.test_resources.source import token_sequences, layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax

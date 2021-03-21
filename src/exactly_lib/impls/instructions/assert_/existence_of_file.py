@@ -10,6 +10,7 @@ from exactly_lib.definitions import logic
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.impls import negation_of_predicate, file_properties, common_arguments
 from exactly_lib.impls.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.impls.text_render.header_rendering import SimpleHeaderMinorBlockRenderer
@@ -26,7 +27,6 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
     InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case import reserved_words
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import instruction_environment as i

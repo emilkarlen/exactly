@@ -2,6 +2,7 @@ import functools
 import pathlib
 from typing import Sequence, Optional, Callable, Union
 
+from exactly_lib.definitions.test_case import reserved_words, reserved_tokens
 from exactly_lib.impls.types.path.parse_relativity import parse_explicit_relativity_info
 from exactly_lib.impls.types.string_.parse_string import parse_string_sdv_from_token, \
     parse_fragments_from_token, string_sdv_from_fragments
@@ -16,7 +17,6 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.test_case import reserved_words, reserved_tokens
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.path import path_part_sdvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv

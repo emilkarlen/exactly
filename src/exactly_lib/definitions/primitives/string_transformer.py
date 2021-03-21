@@ -2,9 +2,10 @@ from exactly_lib.definitions.entity import types
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from . import program
+from ..test_case import reserved_words
 
 IDENTITY_TRANSFORMER_NAME = 'identity'
-SEQUENCE_OPERATOR_NAME = '|'
+SEQUENCE_OPERATOR_NAME = reserved_words.PIPE
 RUN_PROGRAM = program.RUN_PROGRAM_PRIMITIVE
 
 STRING_TRANSFORMER_ARGUMENT = a.Named(types.STRING_TRANSFORMER_TYPE_INFO.syntax_element_name)

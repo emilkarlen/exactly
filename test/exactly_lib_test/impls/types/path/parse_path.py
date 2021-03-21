@@ -3,6 +3,7 @@ from pathlib import Path, PurePosixPath
 
 from exactly_lib.definitions.path import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTION, REL_CWD_OPTION, \
     REL_HDS_CASE_OPTION_NAME
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.impls.types.path import parse_path as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -11,7 +12,6 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
-from exactly_lib.test_case import reserved_words
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import PathAndRelativityRestriction

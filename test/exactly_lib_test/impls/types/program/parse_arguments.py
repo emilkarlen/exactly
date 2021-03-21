@@ -1,6 +1,7 @@
 import unittest
 from typing import List, Sequence
 
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.impls.types.path.parse_relativity import reference_restrictions_for_path_symbol
 from exactly_lib.impls.types.program.parse import parse_arguments as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -9,7 +10,6 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType
-from exactly_lib.test_case import reserved_words
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.list_ import list_sdvs

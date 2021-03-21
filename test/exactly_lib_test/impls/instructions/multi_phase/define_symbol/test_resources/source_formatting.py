@@ -2,6 +2,7 @@ from typing import List
 
 from exactly_lib.definitions import path
 from exactly_lib.definitions.entity import types
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYPE_INFO_DICT
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.value_type import ValueType
@@ -52,7 +53,7 @@ def src__const(type_: ValueType,
                value: str) -> str:
     return ' '.join([ANY_TYPE_INFO_DICT[type_].identifier,
                      symbol_name,
-                     '=',
+                     reserved_words.ASSIGN,
                      value])
 
 

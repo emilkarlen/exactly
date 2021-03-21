@@ -1,6 +1,7 @@
 from typing import List
 
 from exactly_lib.definitions import misc_texts
+from exactly_lib.definitions.test_case import reserved_tokens
 from exactly_lib.impls.types.string_ import parse_string
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -9,7 +10,6 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case import reserved_tokens
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions
 from exactly_lib.type_val_deps.types.list_ import list_sdvs as lrs
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv

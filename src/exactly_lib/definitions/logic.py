@@ -1,11 +1,11 @@
-from exactly_lib.test_case import reserved_words
 from exactly_lib.util.logic_types import Quantifier
+from .test_case import reserved_words
 
-NOT_OPERATOR_NAME = '!'
+NOT_OPERATOR_NAME = reserved_words.NEGATION_OPERATOR
 
-AND_OPERATOR_NAME = '&&'
+AND_OPERATOR_NAME = reserved_words.CONJUNCTION_OPERATOR
 
-OR_OPERATOR_NAME = '||'
+OR_OPERATOR_NAME = reserved_words.DISJUNCTION_OPERATOR
 
 FALSE = 'false'
 TRUE = 'true'

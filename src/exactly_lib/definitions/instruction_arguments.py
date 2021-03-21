@@ -1,8 +1,9 @@
-from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.definitions.path import REL_SYMBOL_OPTION_NAME
 from exactly_lib.util.cli_syntax.elements import argument as a
+from .entity import syntax_elements
+from .path import REL_SYMBOL_OPTION_NAME
+from .test_case import reserved_words
 
-ASSIGNMENT_OPERATOR = '='
+ASSIGNMENT_OPERATOR = reserved_words.ASSIGN
 APPEND_OPERATOR = '+='
 
 SYMBOL_SYNTAX_ELEMENT_NAME = 'SYMBOL'

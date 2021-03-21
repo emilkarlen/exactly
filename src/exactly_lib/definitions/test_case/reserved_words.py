@@ -1,0 +1,25 @@
+PAREN_BEGIN = '('
+PAREN_END = ')'
+
+BRACKET_BEGIN = '['
+BRACKET_END = ']'
+
+BRACE_BEGIN = '{'
+BRACE_END = '}'
+BRACE__END__FOR_FORMAT_STRINGS = '}}'
+
+ASSIGN = '='
+PIPE = '|'
+COLON = ':'
+NEGATION_OPERATOR = '!'
+CONJUNCTION_OPERATOR = '&&'
+DISJUNCTION_OPERATOR = '||'
+
+RESERVED_TOKENS = (PAREN_BEGIN, PAREN_END,
+                   BRACKET_BEGIN, BRACKET_END,
+                   BRACE_BEGIN, BRACE_END,
+                   ASSIGN,
+                   PIPE,
+                   COLON,
+                   NEGATION_OPERATOR, CONJUNCTION_OPERATOR, DISJUNCTION_OPERATOR,
+                   )

@@ -1,3 +1,4 @@
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.impls.instructions.assert_.contents_of_dir import impl_utils
 from exactly_lib.impls.instructions.assert_.contents_of_dir.impl_utils import FilesSource
 from exactly_lib.impls.instructions.assert_.utils import assertion_part
@@ -13,7 +14,6 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.element_parsers.token_stream_parser import \
     token_parser_with_additional_error_message_format_map
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case import reserved_words
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import ConstantSuccessSdvValidator
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv

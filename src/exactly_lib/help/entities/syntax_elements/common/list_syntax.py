@@ -1,9 +1,9 @@
 from typing import List
 
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.impls.types.list_ import parse_list
 from exactly_lib.section_document import defs
-from exactly_lib.test_case import reserved_words
 from exactly_lib.util.str_.name import NameWithGenderWithFormatting
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser

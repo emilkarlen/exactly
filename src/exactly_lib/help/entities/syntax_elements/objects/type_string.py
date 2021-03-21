@@ -7,10 +7,10 @@ from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.symbol import value_type
-from exactly_lib.test_case import reserved_words
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.parse import token
 from exactly_lib.util.textformat.structure.core import ParagraphItem

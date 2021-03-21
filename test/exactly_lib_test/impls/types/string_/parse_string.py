@@ -2,6 +2,7 @@ import itertools
 import unittest
 from typing import List
 
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.impls.types.string_ import parse_string as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -11,7 +12,6 @@ from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestricti
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, \
     symbol_reference_syntax_for_name, \
     constant, symbol, Fragment
-from exactly_lib.test_case import reserved_words
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restrictions import \

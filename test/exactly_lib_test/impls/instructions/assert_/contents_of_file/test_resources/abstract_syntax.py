@@ -1,4 +1,4 @@
-from exactly_lib.test_case import reserved_words
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib_test.impls.instructions.test_resources.abstract_syntax import InstructionArgsAbsStx
 from exactly_lib_test.impls.types.string_matcher.test_resources.abstract_syntaxes import StringMatcherNegationAbsStx
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence

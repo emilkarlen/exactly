@@ -1,6 +1,7 @@
 import unittest
 from typing import List
 
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -10,7 +11,6 @@ from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case import reserved_words
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__for_expr_parse__s__nsc, NSourceCase

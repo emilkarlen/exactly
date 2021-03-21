@@ -4,8 +4,6 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.types.line_matcher.test_resources.abstract_syntaxes import LineMatcherInfixOpAbsStx
 from exactly_lib_test.impls.types.string_transformer.test_resources import integration_check
 from exactly_lib_test.impls.types.string_transformer.test_resources.abstract_syntaxes import ReplaceRegexAbsStx
-from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_resources.source import abs_stx_utils
 from exactly_lib_test.type_val_deps.types.line_matcher.test_resources.abstract_syntax import \
     LineMatcherSymbolReferenceAbsStx
 
@@ -76,19 +74,11 @@ class TestLineMatcherShouldBeParsedAsSimpleExpr(unittest.TestCase):
                                            preserve_new_lines=False,
                                            lines_filter=line_matcher_w_infix_op,
                                            )
-        for source_format_case in abs_stx_utils.formatting_cases(syntax):
-            with self.subTest(formatting=source_format_case.name):
-                source = remaining_source(source_format_case.value)
-                # ACT #
-                integration_check.PARSE_CHECKER__FULL.check_valid_arguments(
-                    self,
-                    source,
-                )
-                # ASSERT #
-                remaining_non_space_source_str = source.remaining_source.lstrip()
-                self.assertTrue(
-                    remaining_non_space_source_str.startswith(valid_regex)
-                )
+        # ACT #
+        integration_check.PARSE_CHECKER__FULL.check_invalid_syntax__abs_stx(
+            self,
+            syntax,
+        )
 
 
 if __name__ == '__main__':
