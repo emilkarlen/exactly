@@ -1,0 +1,16 @@
+[setup]
+
+def string file_contents = 'the contents of the file'
+
+file f.txt = @[file_contents]@
+
+def program p = % python3 -existing-file -rel-home exit-0.py
+
+[assert]
+
+exists f.txt :
+    type file &&
+    run ( @ p ) && contents equals @[file_contents]@
+
+contents f.txt :
+    ( run @ p irrelevant-arg ) && equals @[file_contents]@

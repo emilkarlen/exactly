@@ -4,6 +4,7 @@ from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict, Optional,
     Union, AbstractSet
 
 from exactly_lib.definitions import logic
+from exactly_lib.section_document import defs
 from exactly_lib.section_document.element_parsers import misc_utils
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -19,6 +20,9 @@ from exactly_lib.util.parse.token import Token, TokenMatcher
 from exactly_lib.util.str_ import english_text
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.str_.str_constructor import ToStringObject, StringConstructor
+
+_NOT_AT_EOL = 'Not at ' + defs.END_OF_LINE
+_MISSING_START = 'Missing '
 
 T = TypeVar('T')
 
@@ -67,10 +71,10 @@ class TokenParser:
         if self._lookahead_token_has_invalid_syntax():
             self.require_head_token_has_valid_syntax(syntax_element_name)
         elif self._token_stream.is_null:
-            self.error('Missing ' + syntax_element_name)
+            self.error(_MISSING_START + syntax_element_name)
 
     def report_missing(self, syntax_element_name: str) -> T:
-        return self.error('Missing ' + syntax_element_name)
+        return self.error(_MISSING_START + syntax_element_name)
 
     def require_head_is_unquoted_and_equals(self, expected: str, error_message: ErrorMessageGenerator):
         if not self.head_is_unquoted_and_equals(expected):
@@ -106,7 +110,7 @@ class TokenParser:
 
     def require_is_at_eol(self, error_message: ErrorMessageGenerator):
         if not self.is_at_eol:
-            self.error_from('Not at end of line', error_message)
+            self.error_from(_NOT_AT_EOL, error_message)
 
     def require_is_not_at_eol(self, error_message_format_string: str,
                               extra_format_map: dict = None):
@@ -128,7 +132,7 @@ class TokenParser:
 
     def require_has_valid_head_token(self, syntax_element: str):
         if self.token_stream.look_ahead_state is LookAheadState.NULL:
-            self.error_plain('Missing ' + syntax_element)
+            self.error_plain(_MISSING_START + syntax_element)
         self._require_head_token_has_valid_syntax(
             str_constructor.FormatPositional('Invalid syntax of {}:\n', syntax_element)
         )
@@ -210,7 +214,8 @@ class TokenParser:
         """
 
         def constants_list() -> str:
-            return english_text.or_sequence(['"' + constant + '"' for constant in expected_constants])
+            return english_text.or_sequence([defs.format_constant(constant)
+                                             for constant in expected_constants])
 
         if self.token_stream.is_null:
             return self.error(error_message_header_template + ': Missing {__CONSTANTS__}',

@@ -1,12 +1,13 @@
 import unittest
 from typing import List, Sequence
 
-from exactly_lib.impls.types.parse import parse_list as sut
+from exactly_lib.impls.types.list_ import parse_list as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
+from exactly_lib.test_case import reserved_words
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions
 from exactly_lib.type_val_deps.types.list_ import list_sdv as lr, list_sdvs
 from exactly_lib.type_val_deps.types.list_.list_sdv import ElementSdv
@@ -53,6 +54,13 @@ class TestInvalidSyntax(unittest.TestCase):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     sut.parse_list(source)
 
+    def test_raise_exception_WHEN_element_is_a_reserved_word_that_is_not_r_paren(self):
+        for illegal_string in set(reserved_words.RESERVED_TOKENS).difference(reserved_words.PAREN_END):
+            source = remaining_source(illegal_string)
+            with self.subTest(illegal_string):
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    sut.parse_list(source)
+
 
 class TestEmptyList(unittest.TestCase):
     def test(self):
@@ -69,9 +77,7 @@ class TestEmptyList(unittest.TestCase):
                  remaining_source('   '),
                  expectation=
                  Expectation(elements=[],
-                             source=asrt_source.source_is_not_at_end(
-                                 current_line_number=asrt.equals(1),
-                                 remaining_part_of_current_line=asrt.equals('   '))),
+                             source=asrt_source.is_at_end_of_line(1)),
                  ),
             Case('empty line, with following lines',
                  source=
@@ -79,6 +85,32 @@ class TestEmptyList(unittest.TestCase):
                  expectation=
                  Expectation(elements=[],
                              source=asrt_source.is_at_end_of_line(1),
+                             )
+                 ),
+            Case('line with r-paren',
+                 source=
+                 remaining_source(reserved_words.PAREN_END, ['contents of following line']),
+                 expectation=
+                 Expectation(elements=[],
+                             source=asrt_source.source_is_not_at_end(
+                                 current_line_number=asrt.equals(1),
+                                 remaining_part_of_current_line=asrt.equals(reserved_words.PAREN_END)),
+                             )
+                 ),
+            Case('line with continuation-token, followed by empty line',
+                 source=
+                 remaining_source(sut.CONTINUATION_TOKEN, ['']),
+                 expectation=
+                 Expectation(elements=[],
+                             source=asrt_source.is_at_end_of_line(2),
+                             )
+                 ),
+            Case('line with continuation-token (followed by space), followed by empty line',
+                 source=
+                 remaining_source(sut.CONTINUATION_TOKEN + '  ', ['']),
+                 expectation=
+                 Expectation(elements=[],
+                             source=asrt_source.is_at_end_of_line(2),
                              )
                  ),
         ]
@@ -147,7 +179,7 @@ class TestSingleElementList(unittest.TestCase):
                  Expectation(elements=
                              [list_sdvs.str_element(single_token_value)],
                              source=
-                             asrt_source.is_at_line(1, ' ')),
+                             asrt_source.is_at_end_of_line(1)),
                  ),
             Case('single element, followed by single space, on the last line',
                  source=
@@ -167,7 +199,7 @@ class TestSingleElementList(unittest.TestCase):
                  Expectation(elements=
                              [list_sdvs.str_element(single_token_value)],
                              source=
-                             asrt_source.is_at_line(1, ' ')),
+                             asrt_source.is_at_end_of_line(1)),
                  ),
             Case('single element, at end of line, followed by line with only space',
                  source=
@@ -187,7 +219,7 @@ class TestSingleElementList(unittest.TestCase):
                  Expectation(elements=
                              [list_sdvs.str_element(single_token_value)],
                              source=
-                             asrt_source.is_at_line(1, ' ')),
+                             asrt_source.is_at_end_of_line(1)),
                  ),
             Case('single element, at end of line, followed by line with invalid quoting',
                  source=
@@ -198,6 +230,41 @@ class TestSingleElementList(unittest.TestCase):
                              [list_sdvs.str_element(single_token_value)],
                              source=
                              asrt_source.is_at_end_of_line(1)),
+                 ),
+            Case('continuation token, followed by line with single element',
+                 source=
+                 remaining_source(sut.CONTINUATION_TOKEN,
+                                  [single_token_value]),
+                 expectation=
+                 Expectation(elements=
+                             [list_sdvs.str_element(single_token_value)],
+                             source=
+                             asrt_source.is_at_end_of_line(2)),
+                 ),
+            Case('single element, followed by continuation token, followed by empty line',
+                 source=
+                 remaining_source(single_token_value + ' ' + sut.CONTINUATION_TOKEN,
+                                  ['']),
+                 expectation=
+                 Expectation(elements=
+                             [list_sdvs.str_element(single_token_value)],
+                             source=
+                             asrt_source.is_at_end_of_line(2)),
+                 ),
+            Case('single element, followed by r-paren and more',
+                 source=
+                 remaining_source(' '.join((single_token_value, reserved_words.PAREN_END, 'const_str')),
+                                  ['"   ']),
+                 expectation=
+                 Expectation(elements=
+                             [list_sdvs.str_element(single_token_value)],
+                             source=
+                             asrt_source.source_is_not_at_end(
+                                 current_line_number=asrt.equals(1),
+                                 remaining_part_of_current_line=asrt.equals(
+                                     ' '.join((reserved_words.PAREN_END, 'const_str')))
+                             )
+                             ),
                  ),
         ]
         # ACT & ASSERT #
@@ -292,6 +359,53 @@ class TestMultipleElementList(unittest.TestCase):
                      ]),
                      source=
                      asrt_source.is_at_end_of_line(1)),
+                 ),
+            Case('multiple string constants on line followed by r-paren',
+                 source=
+                 remaining_source(' '.join((single_token_value_1,
+                                            single_token_value_2,
+                                            reserved_words.PAREN_END,
+                                            'constant')),
+                                  ['  ']),
+                 expectation=
+                 Expectation(elements=
+                             [list_sdvs.str_element(single_token_value_1),
+                              list_sdvs.str_element(single_token_value_2)
+                              ],
+                             source=
+                             asrt_source.source_is_not_at_end(
+                                 current_line_number=asrt.equals(1),
+                                 remaining_part_of_current_line=asrt.equals(
+                                     ' '.join((reserved_words.PAREN_END, 'constant')))
+                             )
+                             ),
+                 ),
+            Case('1st string on first line, followed by continuation-token, followed by line with 2nd string',
+                 source=
+                 remaining_source(single_token_value_1 + ' ' + sut.CONTINUATION_TOKEN,
+                                  [single_token_value_2]),
+                 expectation=
+                 Expectation(elements=
+                             [list_sdvs.str_element(single_token_value_1),
+                              list_sdvs.str_element(single_token_value_2)
+                              ],
+                             source=
+                             asrt_source.is_at_end_of_line(2)),
+                 ),
+            Case('multiple elements on two lines, separated by continuation token',
+                 source=
+                 remaining_source('a b ' + sut.CONTINUATION_TOKEN,
+                                  ['  c d  ']),
+                 expectation=
+                 Expectation(elements=
+                             [list_sdvs.str_element('a'),
+                              list_sdvs.str_element('b'),
+                              list_sdvs.str_element('c'),
+                              list_sdvs.str_element('d'),
+                              ],
+                             source=
+                             asrt_source.is_at_end_of_line(2)
+                             ),
                  ),
         ]
         # ACT & ASSERT #

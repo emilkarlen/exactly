@@ -10,9 +10,11 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts, syntax_elements, actors
 from exactly_lib.definitions.entity import types
+from exactly_lib.definitions.formatting import misc_name_with_formatting
 from exactly_lib.definitions.primitives import string_transformer, program
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
+from exactly_lib.help.entities.syntax_elements.common.list_syntax import list_syntax_description
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help.entities.utils import programs
 from exactly_lib.help.entities.utils.se_within_parens import OptionallyWithinParens
@@ -20,12 +22,18 @@ from exactly_lib.impls import texts
 from exactly_lib.impls.types.path import relative_path_options_documentation as rel_path_doc
 from exactly_lib.impls.types.program import syntax_elements as pgm_syntax_elements
 from exactly_lib.processing import exit_values
+from exactly_lib.section_document import defs
 from exactly_lib.type_val_deps.types.path import path_relativities
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.str_ import name
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _STDIN_ARGUMENT = a.Named('STDIN')
+
+_ARGUMENT_LIST_TYPE = misc_name_with_formatting(
+    name.an_name(name.Name.new_with_plural_s('argument list'))
+)
 
 
 class _Documentation(SyntaxElementDocumentation):
@@ -102,7 +110,14 @@ class _PgmAndArgs(SyntaxElementDescriptionTree):
             a.single_mandatory(self._pgm_for_arg_list.element),
             syntax_elements.PROGRAM_ARGUMENT_SYNTAX_ELEMENT.zero_or_more,
         ],
-            _TEXT_PARSER.fnap(_PGM_WITH_ARG_LIST_INVOKATION_VARIANT_DESCRIPTION))
+            self._pgm_for_arg_list_variant_description(),
+        )
+
+    @staticmethod
+    def _pgm_for_arg_list_variant_description() -> Sequence[ParagraphItem]:
+        ret_val = _TEXT_PARSER.fnap(_PGM_WITH_ARG_LIST_INVOKATION_VARIANT_DESCRIPTION)
+        ret_val += list_syntax_description(_ARGUMENT_LIST_TYPE)
+        return ret_val
 
 
 class _ShellCommandLine(InvokationVariantHelper):
@@ -225,6 +240,7 @@ _TEXT_PARSER = TextParser({
     'SYMBOL_NAME': formatting.syntax_element_(syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT),
     'ARGUMENT': formatting.syntax_element(syntax_elements.PROGRAM_ARGUMENT_SYNTAX_ELEMENT.singular_name),
     'SHELL_COMMAND_LINE': formatting.syntax_element_(syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT),
+    'EOL': defs.END_OF_LINE,
     'executable_file': formatting.misc_name_with_formatting(misc_texts.EXECUTABLE_FILE),
     'FAIL': exit_values.EXECUTION__FAIL.exit_identifier,
     'shell_command': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND),
@@ -240,7 +256,7 @@ DOCUMENTATION = OptionallyWithinParens(
 )
 
 _PGM_AND_ARGS = """\
-A program followed by arguments until end of line.
+A program followed by arguments until {EOL}.
 """
 
 _PGM_WITH_ARG_LIST_INVOKATION_VARIANT_DESCRIPTION = """\

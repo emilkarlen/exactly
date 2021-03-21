@@ -1,0 +1,9 @@
+[cases]
+
+*.case
+
+[setup]
+
+def path print_arguments_source = -rel-here ../../utils/print-arguments.py
+
+def program print_argument = -python -existing-file @[print_arguments_source]@

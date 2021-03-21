@@ -49,7 +49,7 @@ class TestValidSyntax(unittest.TestCase):
             self,
             equivalent_source_variants__for_expr_parse__s__nsc,
             OptionallyOnNewLine(WithinParensAbsStx(program_ref_case.pgm_and_args,
-                                                   end_paren_on_separate_line=True)),
+                                                   end_paren_on_separate_line=False)),
             arrangement_wo_tcds(
                 symbols=SymbolContext.symbol_table_of_contexts(program_ref_case.symbols),
             ),

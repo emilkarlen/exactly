@@ -5,9 +5,11 @@ from exactly_lib.impls.types.path.parse_relativity import reference_restrictions
 from exactly_lib.impls.types.program.parse import parse_arguments as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType
+from exactly_lib.test_case import reserved_words
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.list_ import list_sdvs
@@ -17,19 +19,19 @@ from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
-from exactly_lib_test.impls.types.parse import parse_list as test_of_list
+from exactly_lib_test.impls.types.list_ import parse_list as test_of_list
 from exactly_lib_test.impls.types.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_for_consume_until_end_of_last_line_3
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opts
 from exactly_lib_test.impls.types.test_resources.relativity_options import RelativityOptionConfiguration
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.test_case.test_resources import validation_check
 from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, File, Dir
-from exactly_lib_test.test_resources.source.layout import LayoutSpec
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_data_rest
@@ -37,7 +39,7 @@ from exactly_lib_test.type_val_deps.test_resources.w_str_rend.references import 
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
     ArgumentOfSymbolReferenceAbsStx, ArgumentOfTextUntilEndOfLineAbsStx, ArgumentOfExistingPathAbsStx, \
-    NonSymLinkFileType, ArgumentsAbsStx
+    NonSymLinkFileType, ArgumentsAbsStx, ContinuationTokenFollowedByArgumentAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolContext
 
 
@@ -90,7 +92,7 @@ class Case:
            ) -> 'Case':
         return Case(
             name,
-            source.tokenization().layout(LayoutSpec.of_default()),
+            source.as_str__default(),
             arrangement,
             expectation,
         )
@@ -103,7 +105,7 @@ class Case:
                  ) -> 'Case':
         return Case(
             name,
-            ArgumentsAbsStx(source).tokenization().layout(LayoutSpec.of_default()),
+            ArgumentsAbsStx(source).as_str__default(),
             arrangement,
             expectation,
         )
@@ -136,9 +138,23 @@ class TestInvalidSyntax(unittest.TestCase):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     sut.parser().parse(source)
 
+    def test_exception_SHOULD_be_raised_WHEN_first_element_is_reserved_word(self):
+        for reserved_word in set(reserved_words.RESERVED_TOKENS).difference(reserved_words.PAREN_END):
+            with self.subTest(reserved_word):
+                source = remaining_source(reserved_word)
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    sut.parser().parse(source)
+
+    def test_exception_SHOULD_be_raised_WHEN_second_element_is_reserved_word(self):
+        for reserved_word in set(reserved_words.RESERVED_TOKENS).difference(reserved_words.PAREN_END):
+            source = remaining_source('valid' + ' ' + reserved_word)
+            with self.subTest(reserved_word):
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    sut.parser().parse(source)
+
 
 class TestNoElements(unittest.TestCase):
-    def test(self):
+    def test_no_strings(self):
         # ARRANGE #
         source_cases = [
             NameAndValue('empty string',
@@ -146,6 +162,9 @@ class TestNoElements(unittest.TestCase):
                          ),
             NameAndValue('string with only space',
                          '  \t '
+                         ),
+            NameAndValue('continuation token followed by empty line',
+                         '  {ct}\n '.format(ct=ContinuationTokenFollowedByArgumentAbsStx.CONTINUATION_TOKEN)
                          ),
         ]
         cases = [
@@ -160,7 +179,23 @@ class TestNoElements(unittest.TestCase):
             for ne in source_cases
         ]
         # ACT & ASSERT #
-        _test_cases(self, cases)
+        _test_cases_w_source_variants(self, cases)
+
+    def test_paren_end(self):
+        _test_case(
+            self,
+            ARRANGEMENT__NEUTRAL,
+            Expectation(
+                elements=[],
+                validators=asrt.is_empty_sequence,
+                references=asrt.is_empty_sequence,
+            ),
+            remaining_source(reserved_words.PAREN_END),
+            asrt_source.source_is_not_at_end(
+                current_line_number=asrt.equals(1),
+                remaining_source=asrt.equals(reserved_words.PAREN_END)
+            )
+        )
 
 
 class TestSingleElement(unittest.TestCase):
@@ -173,6 +208,17 @@ class TestSingleElement(unittest.TestCase):
         cases = [
             Case.of('plain string',
                     ArgumentOfStringAbsStx.of_str(plain_string),
+                    ARRANGEMENT__NEUTRAL,
+                    Expectation(
+                        elements=[list_sdvs.str_element(plain_string)],
+                        validators=asrt.is_empty_sequence,
+                        references=asrt.is_empty_sequence,
+                    )
+                    ),
+            Case.of('continuation token followed by plain string on next line',
+                    ContinuationTokenFollowedByArgumentAbsStx(
+                        ArgumentOfStringAbsStx.of_str(plain_string)
+                    ),
                     ARRANGEMENT__NEUTRAL,
                     Expectation(
                         elements=[list_sdvs.str_element(plain_string)],
@@ -193,7 +239,25 @@ class TestSingleElement(unittest.TestCase):
                     ),
         ]
         # ACT & ASSERT #
-        _test_cases(self, cases)
+        _test_cases_w_source_variants(self, cases)
+
+    def test_string_token_followed_by_paren_end(self):
+        plain_string = 'plain'
+        source = ' '.join((plain_string, reserved_words.PAREN_END))
+        _test_case(
+            self,
+            ARRANGEMENT__NEUTRAL,
+            Expectation(
+                elements=[list_sdvs.str_element(plain_string)],
+                validators=asrt.is_empty_sequence,
+                references=asrt.is_empty_sequence,
+            ),
+            remaining_source(source),
+            asrt_source.source_is_not_at_end(
+                current_line_number=asrt.equals(1),
+                remaining_source=asrt.equals(reserved_words.PAREN_END)
+            )
+        )
 
     def test_remaining_part_of_current_line_as_literal(self):
         # ARRANGE #
@@ -242,7 +306,7 @@ class TestSingleElement(unittest.TestCase):
                     )),
         ]
         # ACT & ASSERT #
-        _test_cases(self, cases)
+        _test_cases_w_source_variants(self, cases)
 
     def test_existing_regular_file(self):
         # ARRANGE #
@@ -341,7 +405,7 @@ class TestSingleElement(unittest.TestCase):
                         ),
                     )
                 )
-                _test_case(self, _case)
+                _test_case_w_source_variants(self, _case)
 
     def test_existing_dir(self):
         # ARRANGE #
@@ -374,7 +438,6 @@ class TestSingleElement(unittest.TestCase):
         for case in relativity_cases:
             with self.subTest(case.name):
                 rel_opt_conf = case.relativity_variant
-                assert isinstance(rel_opt_conf, RelativityOptionConfiguration)  # Type info for IDE
 
                 _case = Case.of(
                     'default relativity SHOULD be CASE_HOME',
@@ -455,7 +518,7 @@ class TestSingleElement(unittest.TestCase):
                         ),
                     )
                 )
-                _test_case(self, _case)
+                _test_case_w_source_variants(self, _case)
 
     def test_existing_path(self):
         # ARRANGE #
@@ -567,7 +630,7 @@ class TestSingleElement(unittest.TestCase):
                         ),
                     )
                 )
-                _test_case(self, _case)
+                _test_case_w_source_variants(self, _case)
 
 
 def is_single_validator_with(expectations: Sequence[NameAndValue[Assertion[DdvValidator]]]
@@ -610,6 +673,34 @@ class TestMultipleElements(unittest.TestCase):
                     references=asrt.is_empty_sequence,
                 )),
             Case.of_multi(
+                'plain strings on several lines (separated by continuation token)',
+                [ArgumentOfStringAbsStx.of_str(plain_string1),
+                 ContinuationTokenFollowedByArgumentAbsStx(
+                     ArgumentOfStringAbsStx.of_str(plain_string2)
+                 ),
+                 ],
+                ARRANGEMENT__NEUTRAL,
+                Expectation(
+                    elements=[list_sdvs.str_element(plain_string1),
+                              list_sdvs.str_element(plain_string2)],
+                    validators=asrt.is_empty_sequence,
+                    references=asrt.is_empty_sequence,
+                )),
+            Case.of_multi(
+                'plain strings on several lines (separated by continuation token) / first line empty',
+                [ContinuationTokenFollowedByArgumentAbsStx(
+                    ArgumentOfStringAbsStx.of_str(plain_string1)
+                ),
+                    ArgumentOfStringAbsStx.of_str(plain_string2),
+                ],
+                ARRANGEMENT__NEUTRAL,
+                Expectation(
+                    elements=[list_sdvs.str_element(plain_string1),
+                              list_sdvs.str_element(plain_string2)],
+                    validators=asrt.is_empty_sequence,
+                    references=asrt.is_empty_sequence,
+                )),
+            Case.of_multi(
                 'symbol reference + plain string + until-end-of-line',
                 [ArgumentOfSymbolReferenceAbsStx(symbol_name_1),
                  ArgumentOfStringAbsStx.of_str(plain_string1),
@@ -640,36 +731,48 @@ class TestMultipleElements(unittest.TestCase):
                 )),
         ]
         # ACT & ASSERT #
-        _test_cases(self, cases)
+        _test_cases_w_source_variants(self, cases)
 
 
-def _test_cases(put: unittest.TestCase, cases: Sequence[Case]):
+def _test_cases_w_source_variants(put: unittest.TestCase, cases: Sequence[Case]):
     for case in cases:
         with put.subTest(case.name):
-            _test_case(put, case)
+            _test_case_w_source_variants(put, case)
 
 
-def _test_case(put: unittest.TestCase, case: Case):
+def _test_case_w_source_variants(put: unittest.TestCase, case: Case):
+    for source_case in equivalent_source_variants_for_consume_until_end_of_last_line_3(case.source):
+        with put.subTest(source_case.name):
+            _test_case(put,
+                       case.arrangement,
+                       case.expectation,
+                       source_case.input_value,
+                       source_case.expected_value)
+
+
+def _test_case(put: unittest.TestCase,
+               arrangement: Arrangement,
+               expectation: Expectation,
+               source: ParseSource,
+               expected_source_after_parse: Assertion[ParseSource],
+               ):
     parser = sut.parser()
     # ACT #
 
-    for source_case in equivalent_source_variants_for_consume_until_end_of_last_line_3(case.source):
-        with put.subTest(source_case.name):
-            actual = parser.parse(source_case.input_value)
+    actual = parser.parse(source)
 
-            # ASSERT #
+    # ASSERT #
 
-            source_case.expected_value.apply_with_message(put, source_case.input_value, 'parse source')
+    expected_source_after_parse.apply_with_message(put, source, 'source after parse')
 
-            expectation = case.expectation
-            test_of_list.check_elements(put,
-                                        expectation.elements,
-                                        actual.arguments_list)
+    test_of_list.check_elements(put,
+                                expectation.elements,
+                                actual.arguments_list)
 
-            expectation.references.apply_with_message(put, actual.references,
-                                                      'symbol references')
+    expectation.references.apply_with_message(put, actual.references,
+                                              'symbol references')
 
-            actual_ddv = actual.resolve(case.arrangement.symbols)
-            expectation.validators.apply_with_message(put,
-                                                      actual_ddv.validators,
-                                                      'validators')
+    actual_ddv = actual.resolve(arrangement.symbols)
+    expectation.validators.apply_with_message(put,
+                                              actual_ddv.validators,
+                                              'validators')

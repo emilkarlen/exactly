@@ -102,7 +102,7 @@ class WithinParensAbsStx(AbstractSyntax):
             TokenSequence.sequence([layout.NEW_LINE, reserved_words.PAREN_END])
             if self._end_paren_on_separate_lines
             else
-            TokenSequence.singleton(reserved_words.PAREN_END)
+            TokenSequence.sequence([layout.OPTIONAL_NEW_LINE, reserved_words.PAREN_END])
         )
 
 

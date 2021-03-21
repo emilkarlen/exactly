@@ -6,7 +6,7 @@ from exactly_lib.impls.types.files_matcher import parse_files_matcher
 from exactly_lib.impls.types.files_source import parse as parse_files_source
 from exactly_lib.impls.types.integer_matcher import parse_integer_matcher
 from exactly_lib.impls.types.line_matcher import parse_line_matcher
-from exactly_lib.impls.types.parse import parse_list
+from exactly_lib.impls.types.list_ import parse_list
 from exactly_lib.impls.types.path import parse_path
 from exactly_lib.impls.types.program.parse import parse_program
 from exactly_lib.impls.types.string_ import parse_string_or_here_doc

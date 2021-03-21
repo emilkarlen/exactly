@@ -1,0 +1,12 @@
+[assert]
+
+stdout
+  -from @ print_argument a b \
+          c d
+  equals
+<<EOF
+a
+b
+c
+d
+EOF

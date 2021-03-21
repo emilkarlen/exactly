@@ -32,6 +32,7 @@ class TokenStream:
     def _new_lexer(self) -> shlex.shlex:
         lexer = shlex.shlex(self._source_io, posix=True)
         lexer.whitespace_split = True
+        lexer.escape = ''
         return lexer
 
     @property

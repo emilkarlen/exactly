@@ -1,6 +1,8 @@
 [suites]
 
 path
+string
+list
 integer-matcher
 string-matcher
 line-matcher

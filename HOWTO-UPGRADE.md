@@ -6,7 +6,7 @@ Describes how to upgrade test cases to one version from the preceding version.
 
 Make sure the directory do not already exist.
 
-## Type `string` - Reserved words
+## Type `string`, `list` and `PROGRAM-ARGUMENT` - Reserved words
 
 Surround any plain reserved word with single quotes:
 

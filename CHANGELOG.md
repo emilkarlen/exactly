@@ -17,6 +17,11 @@ with exception of a "0." prefix until version 1 is released.
 
  - Instruction `dir` - Fails if the directory already exists (breaking)
  - Type `string` - Reserved words
+ - Type `list` - `)` ends list
+ - Type `list` - Multi line list using backslash
+ - Syntax elements `PROGRAM-ARGUMENT` - Reserved words
+ - Syntax elements `PROGRAM-ARGUMENT` - `)` ends list
+ - Syntax elements `PROGRAM-ARGUMENT` - Multi line list using backslash
 
 ## [0.14.0] - 2021-03-01
 

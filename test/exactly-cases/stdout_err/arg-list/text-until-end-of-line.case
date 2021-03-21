@@ -1,0 +1,8 @@
+[assert]
+
+stdout
+  -from @ print_argument :> text until end of line
+  equals
+<<EOF
+text until end of line
+EOF
