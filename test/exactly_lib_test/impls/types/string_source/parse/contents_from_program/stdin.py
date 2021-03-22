@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib.util.parse.token import QuoteType
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     Expectation, MultiSourceExpectation
@@ -119,8 +118,9 @@ class TestStdinViaExecution(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
         model_contents = 'the contents of stdin of program'
-        stdin_string_source_syntax = string_source_abs_stx.StringSourceOfStringAbsStx.of_str(model_contents,
-                                                                                             QuoteType.HARD, )
+        stdin_string_source_syntax = string_source_abs_stx.StringSourceOfStringAbsStx.of_str_hard(
+            model_contents,
+        )
         for output_file in ProcOutputFile:
             for ignore_exit_code in [False, True]:
                 with self.subTest(output_file=output_file,

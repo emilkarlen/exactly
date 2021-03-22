@@ -11,6 +11,7 @@ from exactly_lib_test.test_resources.source.abstract_syntax_impls import Optiona
     CustomAbsStx
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
+from exactly_lib_test.type_val_deps.types.string_.test_resources import rich_abstract_syntaxes as rich_str_abs_stx
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.symbol_context import \
     StringSourceSymbolContextOfPrimitiveConstant
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
@@ -48,8 +49,8 @@ class TestValidSyntax(unittest.TestCase):
 
     def test_here_doc(self):
         # ARRANGE #
-        string_value = str_abs_stx.StringHereDocAbsStx('single line in here doc\n')
-        string_source_syntax = string_source_abs_stx.StringSourceOfHereDocAbsStx(string_value)
+        string_value = rich_str_abs_stx.HereDocAbsStx('single line in here doc\n')
+        string_source_syntax = string_source_abs_stx.StringSourceOfStringAbsStx(string_value)
         CHECKER.check__abs_stx__layouts__source_variants__wo_input(
             self,
             equivalent_source_variants__for_full_line_expr_parse__s__nsc,

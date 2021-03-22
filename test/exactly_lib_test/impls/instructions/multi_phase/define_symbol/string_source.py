@@ -4,7 +4,6 @@ from typing import Sequence
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.parse.token import QuoteType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.abstract_syntax import \
     DefineSymbolWMandatoryValue
@@ -14,8 +13,8 @@ from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resource
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, Expectation
 from exactly_lib_test.impls.types.logic.test_resources import intgr_arr_exp
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check as str_src_check
-from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx, \
-    StringSourceOfHereDocAbsStx
+from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import \
+    StringSourceOfStringAbsStx
 from exactly_lib_test.symbol.test_resources import symbol_syntax
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
@@ -27,8 +26,8 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions
-from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import MISSING_END_QUOTE__SOFT, \
-    StringLiteralAbsStx, StringHereDocAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import MISSING_END_QUOTE__SOFT
+from exactly_lib_test.type_val_deps.types.string_.test_resources.rich_abstract_syntaxes import HereDocAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.symbol_context import \
     StringSourceSymbolContextOfPrimitiveConstant
@@ -90,8 +89,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
         expected_contents = here_doc_line_template.format(symbol=referenced_symbol.str_value) + '\n'
 
         syntax = _syntax_of(
-            StringSourceOfHereDocAbsStx(
-                StringHereDocAbsStx.of_lines__wo_new_lines([
+            StringSourceOfStringAbsStx(
+                HereDocAbsStx.of_lines__wo_new_lines([
                     here_doc_line_template.format(symbol=referenced_symbol.name__sym_ref_syntax)
                 ])
             ),
@@ -134,7 +133,7 @@ class TestUnsuccessfulScenarios(unittest.TestCase):
             NameAndValue(
                 'superfluous arguments',
                 SequenceAbsStx.followed_by_superfluous(
-                    StringSourceOfStringAbsStx(StringLiteralAbsStx('valid string', QuoteType.HARD))
+                    StringSourceOfStringAbsStx.of_str_hard('valid string')
                 ),
             ),
         ]

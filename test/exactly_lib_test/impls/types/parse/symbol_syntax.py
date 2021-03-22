@@ -25,7 +25,7 @@ class TestFragment(unittest.TestCase):
                             self.assertEqual(expected, actual)
 
     def test_equals_string(self):
-        actual = 's' == sut.Fragment('s', False)
+        actual = 's' == sut.constant('s')
         self.assertFalse(actual)
 
 

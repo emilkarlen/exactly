@@ -3,7 +3,6 @@ from typing import List
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -65,7 +64,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                  concepts.TYPE_CONCEPT_INFO,
                  concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
                  syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
-                 syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
+                 syntax_elements.RICH_STRING_SYNTAX_ELEMENT,
                  ] +
                 list(syntax_elements.ALL_ELEMENTS_CORRESPONDING_TO_TYPES)
         )

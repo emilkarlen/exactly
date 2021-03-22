@@ -7,7 +7,7 @@ The first line
 
 [assert]
 
-`Default mode`
+`Default mode / here-doc`
 
 contents actual.txt :
          matches
@@ -15,7 +15,13 @@ contents actual.txt :
 The.*
 -
 
-`Full match option`
+`Default mode / text-until-end-of-line`
+
+contents actual.txt :
+         any line : contents matches
+:> The.*
+
+`Full match option / here-doc`
 
 contents actual.txt :
          matches -full

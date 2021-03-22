@@ -9,8 +9,8 @@ from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramAbsStx, PgmAndArgsAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
-    ArgumentOfExistingPathAbsStx, ArgumentsAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfExistingPathAbsStx, \
+    ArgumentsAbsStx, ArgumentOfRichStringAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
@@ -140,9 +140,8 @@ class ProgramOfPythonInterpreterAbsStx(PgmAndArgsAbsStx):
     @staticmethod
     def of_execute_python_src_string(py_src: str) -> PgmAndArgsAbsStx:
         return ProgramOfPythonInterpreterAbsStx([
-            ArgumentOfStringAbsStx.of_str(python_program_execution.PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE),
-            ArgumentOfStringAbsStx.of_str(syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER),
-            ArgumentOfStringAbsStx.of_str(py_src),
+            ArgumentOfRichStringAbsStx.of_str(python_program_execution.PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE),
+            ArgumentOfRichStringAbsStx.of_str_until_eol(py_src),
         ])
 
     @staticmethod

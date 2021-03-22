@@ -33,8 +33,8 @@ from exactly_lib_test.type_val_deps.test_resources.validation.validation_of_path
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes__raw import \
     RawSystemCommandLineAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
-    ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx, NonSymLinkFileType
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import \
+    ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx, NonSymLinkFileType, ArgumentOfRichStringAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringSymbolAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command, \
@@ -63,7 +63,7 @@ class TestFailingParse(unittest.TestCase):
             NameAndValue('invalid argument - broken syntax due to missing end quote',
                          RawSystemCommandLineAbsStx.of_str(
                              'valid_program_name',
-                             [ArgumentOfStringAbsStx.of_str(QUOTE_CHAR_FOR_TYPE[QuoteType.SOFT] + 'argument')])
+                             [ArgumentOfRichStringAbsStx.of_str(QUOTE_CHAR_FOR_TYPE[QuoteType.SOFT] + 'argument')])
                          ),
         ]
         checker = parse_checker.Checker(ParserAsLocationAwareParser(sut.program_parser()))
@@ -128,13 +128,13 @@ class TestSuccessfulParse(unittest.TestCase):
                           expected_symbol_references=[],
                           ),
             ArgumentsCase('single constant argument',
-                          source_elements=[ArgumentOfStringAbsStx.of_str('argument')],
+                          source_elements=[ArgumentOfRichStringAbsStx.of_str('argument')],
                           expected_resolved_values=lambda tcds: ['argument'],
                           expected_symbol_references=[],
                           ),
             ArgumentsCase('symbol reference and constant argument',
                           source_elements=[ArgumentOfSymbolReferenceAbsStx(argument_string_symbol.name),
-                                           ArgumentOfStringAbsStx.of_str('argument')],
+                                           ArgumentOfRichStringAbsStx.of_str('argument')],
                           expected_resolved_values=lambda tcds: [argument_string_symbol.str_value, 'argument'],
                           expected_symbol_references=[
                               argument_string_symbol.reference_assertion__w_str_rendering
@@ -264,7 +264,7 @@ class TestValidation(unittest.TestCase):
         # ARRANGE #
         abstract_syntax = RawSystemCommandLineAbsStx.of_str(
             'program_name',
-            [ArgumentOfStringAbsStx.of_str('argument-that-is-not-a-file')]
+            [ArgumentOfRichStringAbsStx.of_str('argument-that-is-not-a-file')]
         )
         # ACT & ASSERT #
         CHECKER_WO_EXECUTION.check__abs_stx__layouts__source_variants__wo_input(

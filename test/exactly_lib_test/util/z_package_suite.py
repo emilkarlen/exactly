@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.util import functional, tables, \
+from exactly_lib_test.util import functional, either, tables, \
     symbol_table, collection, value_lookup, file_utils
 from exactly_lib_test.util.cli_syntax import z_package_suite as cli_syntax
 from exactly_lib_test.util.description_tree import z_package_suite as description_tree
@@ -18,6 +18,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         value_lookup.suite(),
         functional.suite(),
+        either.suite(),
         str_.suite(),
         symbol_table.suite(),
         test_resources_test.suite(),  # These tests depend on symbol_table,

@@ -1,0 +1,10 @@
+[act]
+
+-python -c <<EOF
+import sys
+sys.stderr.write('text on stderr')
+EOF
+
+[assert]
+
+stderr equals 'text on stderr'

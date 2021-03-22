@@ -99,7 +99,7 @@ class TestFileMustExist(unittest.TestCase):
     def test_regular_file(self):
         file_name = 'destination.txt'
         file_name_syntax = StringLiteralAbsStx(file_name, QuoteType.HARD)
-        explicit_file_contents = str_src_abs_stx.StringSourceOfStringAbsStx(
+        explicit_file_contents = str_src_abs_stx.StringSourceOfStringAbsStx.of_plain(
             StringLiteralAbsStx.empty_string()
         )
         file_spec_syntax = regular_file_spec(
@@ -153,7 +153,7 @@ class TestFileMustExist(unittest.TestCase):
 
         file_name_syntax = StringLiteralAbsStx(file_name, QuoteType.HARD)
 
-        explicit_file_contents = str_src_abs_stx.StringSourceOfStringAbsStx(
+        explicit_file_contents = str_src_abs_stx.StringSourceOfStringAbsStx.of_plain(
             StringLiteralAbsStx.empty_string()
         )
         file_spec_cases = [
@@ -194,7 +194,7 @@ class TestFileMustExist(unittest.TestCase):
 def file_must_not_exist_source_cases(file_name: str) -> Sequence[NameAndValue[FileSpecAbsStx]]:
     file_name_syntax = StringLiteralAbsStx(file_name, QuoteType.HARD)
 
-    explicit_file_contents = str_src_abs_stx.StringSourceOfStringAbsStx(
+    explicit_file_contents = str_src_abs_stx.StringSourceOfStringAbsStx.of_plain(
         StringLiteralAbsStx.empty_string()
     )
     explicit_dir_contents = LiteralFilesSourceAbsStx(())
@@ -251,7 +251,7 @@ def file_must_not_exist(file_name: str) -> Sequence[NameAndValue[FileSystemEleme
 def file_must_exist_as_regular_source_cases(file_name: str) -> Sequence[NameAndValue[FileSpecAbsStx]]:
     file_name_syntax = StringLiteralAbsStx(file_name, QuoteType.HARD)
 
-    explicit_file_contents = str_src_abs_stx.StringSourceOfStringAbsStx(
+    explicit_file_contents = str_src_abs_stx.StringSourceOfStringAbsStx.of_plain(
         StringLiteralAbsStx.empty_string()
     )
     explicit_dir_contents = LiteralFilesSourceAbsStx(())

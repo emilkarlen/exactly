@@ -14,7 +14,8 @@ from exactly_lib_test.impls.types.program.parse_program.test_resources import pg
 from exactly_lib_test.impls.types.program.test_resources.stdin_test_setups import NoStdinTestSetup, \
     SingleStdinOfProgramTestSetup, MultipleStdinOfProgramTestSetup
 from exactly_lib_test.impls.types.string_matcher.test_resources.string_matchers import EqualsConstant
-from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
+from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import \
+    StringSourceOfStringAbsStx
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangementPostAct

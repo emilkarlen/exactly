@@ -21,7 +21,8 @@ from exactly_lib_test.impls.types.files_source.test_resources import integration
 from exactly_lib_test.impls.types.files_source.test_resources.abstract_syntaxes import LiteralFilesSourceAbsStx
 from exactly_lib_test.impls.types.logic.test_resources import intgr_arr_exp
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import ExecutionExpectation
-from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
+from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import \
+    StringSourceOfStringAbsStx
 from exactly_lib_test.symbol.test_resources import symbol_syntax
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement

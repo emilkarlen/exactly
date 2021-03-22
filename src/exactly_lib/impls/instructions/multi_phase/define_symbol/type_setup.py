@@ -33,13 +33,7 @@ class TypeSetup:
 TYPE_SETUPS_LIST = [
     TypeSetup(types.STRING_TYPE_INFO,
               type_parser.StringParser(),
-              [
-                  a.Choice.of_single_argument_choices(
-                      a.Multiplicity.MANDATORY,
-                      [syntax_elements.STRING_SYNTAX_ELEMENT.argument,
-                       syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.argument],
-                  )
-              ]),
+              [syntax_elements.RICH_STRING_SYNTAX_ELEMENT.single_mandatory]),
     TypeSetup.new_with_std_syntax(types.LIST_TYPE_INFO,
                                   type_parser.ListParser()),
     TypeSetup.new_with_std_syntax(types.PATH_TYPE_INFO,

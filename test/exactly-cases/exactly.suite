@@ -24,6 +24,8 @@ dir-contents
 
 expr-syntax
 
+define-symbol
+
 path
 
 suites

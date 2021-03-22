@@ -19,11 +19,12 @@ def parse(token_parser: TokenParser) -> StringMatcherSdv:
     is_full_match = token_parser.consume_and_handle_optional_option(False,
                                                                     lambda parser: True,
                                                                     matcher_options.FULL_MATCH_ARGUMENT_OPTION)
-    token_parser.require_has_valid_head_token(syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
-    regex_sdv = parse_regex.parse_regex2(token_parser,
-                                         must_be_on_same_line=False)
+    regex_sdv = _PARSER_OF_REGEX.parse_from_token_parser(token_parser)
 
     return matches.sdv(is_full_match, regex_sdv)
+
+
+_PARSER_OF_REGEX = parse_regex.ParserOfRegex()
 
 
 class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):

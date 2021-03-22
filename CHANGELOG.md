@@ -12,6 +12,10 @@ with exception of a "0." prefix until version 1 is released.
  - Type `files-source` - Produces a set of files (for populating a directory)   
  - Instruction `dir` - Populate a dir with contents given by a `files-source`
  - Instruction `file` - Append contents to existing file
+ - Instruction `def` - `string` - Form `:> TEXT-UNTIL-END-OF-LINE`
+ - Type `text-source` - Form `:> TEXT-UNTIL-END-OF-LINE`
+ - Syntax element `REGEX` - Form `:> TEXT-UNTIL-END-OF-LINE`
+ - Syntax element `PROGRAM-ARGUMENT` - Form `HERE-DOCUMENT`
 
 ### Changed
 

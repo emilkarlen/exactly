@@ -120,9 +120,9 @@ SYMBOL_REFERENCE_SYNTAX_ELEMENT = _name_and_ref_target__non_type(
     'A reference to a symbol using special reference syntax'
 )
 
-HERE_DOCUMENT_SYNTAX_ELEMENT = _name_and_ref_target__non_type(
-    'HERE-DOCUMENT',
-    'A {string} value, given as a sequence of lines, resembling shell "here document" syntax'.format(
+RICH_STRING_SYNTAX_ELEMENT = _name_and_ref_target__non_type(
+    'RICH-STRING',
+    'A {string} value, with additional forms'.format(
         string=types.STRING_TYPE_INFO.singular_name)
 )
 

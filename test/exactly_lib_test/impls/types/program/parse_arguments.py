@@ -37,9 +37,9 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_data_rest
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.references import reference_to__on_direct_and_indirect
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
-    ArgumentOfSymbolReferenceAbsStx, ArgumentOfTextUntilEndOfLineAbsStx, ArgumentOfExistingPathAbsStx, \
-    NonSymLinkFileType, ArgumentsAbsStx, ContinuationTokenFollowedByArgumentAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import \
+    ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx, \
+    NonSymLinkFileType, ArgumentsAbsStx, ContinuationTokenFollowedByArgumentAbsStx, ArgumentOfRichStringAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolContext
 
 
@@ -207,7 +207,7 @@ class TestSingleElement(unittest.TestCase):
         string_symbol = StringSymbolContext.of_arbitrary_value(symbol_name)
         cases = [
             Case.of('plain string',
-                    ArgumentOfStringAbsStx.of_str(plain_string),
+                    ArgumentOfRichStringAbsStx.of_str(plain_string),
                     ARRANGEMENT__NEUTRAL,
                     Expectation(
                         elements=[list_sdvs.str_element(plain_string)],
@@ -217,7 +217,7 @@ class TestSingleElement(unittest.TestCase):
                     ),
             Case.of('continuation token followed by plain string on next line',
                     ContinuationTokenFollowedByArgumentAbsStx(
-                        ArgumentOfStringAbsStx.of_str(plain_string)
+                        ArgumentOfRichStringAbsStx.of_str(plain_string)
                     ),
                     ARRANGEMENT__NEUTRAL,
                     Expectation(
@@ -266,7 +266,7 @@ class TestSingleElement(unittest.TestCase):
 
         cases = [
             Case.of('string with one space after marker, and no space at EOL',
-                    ArgumentOfTextUntilEndOfLineAbsStx.of_str(str_with_space_and_invalid_token_syntax),
+                    ArgumentOfRichStringAbsStx.of_str_until_eol(str_with_space_and_invalid_token_syntax),
                     ARRANGEMENT__NEUTRAL,
                     Expectation(
                         elements=[list_sdvs.str_element(str_with_space_and_invalid_token_syntax)],
@@ -274,7 +274,7 @@ class TestSingleElement(unittest.TestCase):
                         references=asrt.is_empty_sequence,
                     )),
             Case.of('with surrounding space',
-                    ArgumentOfTextUntilEndOfLineAbsStx.of_str(
+                    ArgumentOfRichStringAbsStx.of_str_until_eol(
                         '   ' + str_with_space_and_invalid_token_syntax + '  \t '
                     ),
                     ARRANGEMENT__NEUTRAL,
@@ -284,7 +284,7 @@ class TestSingleElement(unittest.TestCase):
                         references=asrt.is_empty_sequence,
                     )),
             Case.of('with symbol reference',
-                    ArgumentOfTextUntilEndOfLineAbsStx.of_str(
+                    ArgumentOfRichStringAbsStx.of_str_until_eol(
                         ''.join(['before',
                                  symbol_reference_syntax_for_name(symbol_name),
                                  'after'])
@@ -663,8 +663,8 @@ class TestMultipleElements(unittest.TestCase):
         cases = [
             Case.of_multi(
                 'plain strings',
-                [ArgumentOfStringAbsStx.of_str(plain_string1),
-                 ArgumentOfStringAbsStx.of_str(plain_string2)],
+                [ArgumentOfRichStringAbsStx.of_str(plain_string1),
+                 ArgumentOfRichStringAbsStx.of_str(plain_string2)],
                 ARRANGEMENT__NEUTRAL,
                 Expectation(
                     elements=[list_sdvs.str_element(plain_string1),
@@ -674,9 +674,9 @@ class TestMultipleElements(unittest.TestCase):
                 )),
             Case.of_multi(
                 'plain strings on several lines (separated by continuation token)',
-                [ArgumentOfStringAbsStx.of_str(plain_string1),
+                [ArgumentOfRichStringAbsStx.of_str(plain_string1),
                  ContinuationTokenFollowedByArgumentAbsStx(
-                     ArgumentOfStringAbsStx.of_str(plain_string2)
+                     ArgumentOfRichStringAbsStx.of_str(plain_string2)
                  ),
                  ],
                 ARRANGEMENT__NEUTRAL,
@@ -689,9 +689,9 @@ class TestMultipleElements(unittest.TestCase):
             Case.of_multi(
                 'plain strings on several lines (separated by continuation token) / first line empty',
                 [ContinuationTokenFollowedByArgumentAbsStx(
-                    ArgumentOfStringAbsStx.of_str(plain_string1)
+                    ArgumentOfRichStringAbsStx.of_str(plain_string1)
                 ),
-                    ArgumentOfStringAbsStx.of_str(plain_string2),
+                    ArgumentOfRichStringAbsStx.of_str(plain_string2),
                 ],
                 ARRANGEMENT__NEUTRAL,
                 Expectation(
@@ -703,8 +703,8 @@ class TestMultipleElements(unittest.TestCase):
             Case.of_multi(
                 'symbol reference + plain string + until-end-of-line',
                 [ArgumentOfSymbolReferenceAbsStx(symbol_name_1),
-                 ArgumentOfStringAbsStx.of_str(plain_string1),
-                 ArgumentOfTextUntilEndOfLineAbsStx.of_str(remaining_part_of_current_line_with_sym_ref),
+                 ArgumentOfRichStringAbsStx.of_str(plain_string1),
+                 ArgumentOfRichStringAbsStx.of_str_until_eol(remaining_part_of_current_line_with_sym_ref),
                  ],
                 Arrangement(
                     SymbolContext.symbol_table_of_contexts([

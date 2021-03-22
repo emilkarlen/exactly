@@ -6,10 +6,9 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.impls.types.regex.regex_ddv import RegexSdv, RegexDdv
-from exactly_lib.impls.types.string_.parse_string_or_here_doc import parse_string_or_here_doc_from_token_parser
-from exactly_lib.section_document.element_parsers.ps_or_tp import parsers
-from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
-from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
+from exactly_lib.impls.types.string_ import parse_rich_string
+from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import ParserFromTokenParserBase
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
@@ -29,49 +28,19 @@ IGNORE_CASE_OPTION_NAME = a.OptionName(long_name='ignore-case')
 
 IGNORE_CASE_OPTION = option_syntax.option_syntax(IGNORE_CASE_OPTION_NAME)
 
-MISSING_REGEX_ARGUMENT_ERR_MSG = 'Missing ' + syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name
 
-MISSING_STRING_ARGUMENT_FOR_REGEX_ERR_MSG = 'Missing {} argument for {}'.format(
-    syntax_elements.STRING_SYNTAX_ELEMENT.argument.name,
-    syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name,
-)
+class ParserOfRegex(ParserFromTokenParserBase[RegexSdv]):
+    def __init__(self):
+        super().__init__(False, False)
+        self._string_parser = parse_rich_string.RichStringParser()
 
-
-def regex_parser() -> Parser[RegexSdv]:
-    return _PARSER
-
-
-class ParserOfRegex(ParserFromTokens[RegexSdv]):
-    def parse(self, token_parser: TokenParser) -> RegexSdv:
-        return parse_regex2(token_parser,
-                            must_be_on_same_line=False,
-                            consume_last_here_doc_line=False)
-
-
-def parse_regex(parser: TokenParser,
-                must_be_on_same_line: bool = True,
-                consume_last_here_doc_line: bool = False) -> RegexSdv:
-    return parse_regex2(parser, must_be_on_same_line, consume_last_here_doc_line)
-
-
-def parse_regex2(parser: TokenParser,
-                 must_be_on_same_line: bool = True,
-                 consume_last_here_doc_line: bool = False) -> RegexSdv:
-    if must_be_on_same_line:
-        parser.require_is_not_at_eol(MISSING_REGEX_ARGUMENT_ERR_MSG)
-
-    is_ignore_case = parser.consume_and_handle_optional_option(False,
-                                                               lambda x: True,
-                                                               IGNORE_CASE_OPTION_NAME)
-    if must_be_on_same_line:
-        parser.require_is_not_at_eol(MISSING_REGEX_ARGUMENT_ERR_MSG)
-
-    regex_pattern = parse_string_or_here_doc_from_token_parser(parser,
-                                                               consume_last_here_doc_line)
-    return _RegexSdv(is_ignore_case, regex_pattern)
-
-
-_PARSER = parsers.ParserFromTokenParserFunction(parse_regex)
+    def parse_from_token_parser(self, token_parser: TokenParser) -> RegexSdv:
+        token_parser.require_has_valid_head_token(syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
+        is_ignore_case = token_parser.consume_and_handle_optional_option(False,
+                                                                         lambda x: True,
+                                                                         IGNORE_CASE_OPTION_NAME)
+        regex_pattern = self._string_parser.parse_from_token_parser(token_parser)
+        return _RegexSdv(is_ignore_case, regex_pattern)
 
 
 class _RegexSdv(RegexSdv):

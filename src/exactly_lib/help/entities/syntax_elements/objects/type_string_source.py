@@ -34,7 +34,6 @@ class Documentation(SyntaxElementDocumentation):
     def __init__(self):
         super().__init__(syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT)
         self._tp = TextParser({
-            'HERE_DOCUMENT': syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name,
             'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
             'stdout': misc_texts.STDOUT,
             'stderr': misc_texts.STDERR,
@@ -68,8 +67,6 @@ class Documentation(SyntaxElementDocumentation):
         optional_transformation_option = a.Single(a.Multiplicity.OPTIONAL,
                                                   string_transformer.STRING_TRANSFORMATION_ARGUMENT)
 
-        here_doc_arg = syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.single_mandatory
-        string_arg = syntax_elements.STRING_SYNTAX_ELEMENT.single_mandatory
         program_token = syntax_elements.PROGRAM_SYNTAX_ELEMENT.single_mandatory
         output_channel_token = a.Choice.of_single_argument_choices(
             a.Multiplicity.MANDATORY,
@@ -93,8 +90,8 @@ class Documentation(SyntaxElementDocumentation):
                  optional_transformation_option],
                 self._tp.fnap(_REFERENCE_DESCRIPTION),
             ),
-            invokation_variant_from_args([string_arg, optional_transformation_option]),
-            invokation_variant_from_args([here_doc_arg, optional_transformation_option]),
+            invokation_variant_from_args([syntax_elements.RICH_STRING_SYNTAX_ELEMENT.single_mandatory,
+                                          optional_transformation_option]),
             invokation_variant_from_args([file_option,
                                           src_file_arg,
                                           optional_transformation_option,
@@ -122,9 +119,8 @@ class Documentation(SyntaxElementDocumentation):
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         name_and_cross_refs = [
             syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT,
+            syntax_elements.RICH_STRING_SYNTAX_ELEMENT,
             syntax_elements.PATH_SYNTAX_ELEMENT,
-            syntax_elements.STRING_SYNTAX_ELEMENT,
-            syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
             syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
             syntax_elements.PROGRAM_SYNTAX_ELEMENT,
         ]

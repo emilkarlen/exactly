@@ -20,9 +20,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import FullProgramAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfRichStringAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
-from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
 from exactly_lib_test.type_val_deps.types.string_source.test_resources import validation_cases
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
@@ -41,9 +40,7 @@ class TestSuccessfulParsing(unittest.TestCase):
     def test_stdin_only_as_source_argument(self):
         # ARRANGE #
         str_src_contents = 'the_str_src_contents'
-        stdin_syntax = str_src_abs_stx.StringSourceOfStringAbsStx(
-            str_abs_stx.StringLiteralAbsStx(str_src_contents)
-        )
+        stdin_syntax = str_src_abs_stx.StringSourceOfStringAbsStx.of_str(str_src_contents)
 
         for pgm_and_args_case in pgm_and_args_cases.cases_w_and_wo_argument_list__including_program_reference():
             program_w_stdin = FullProgramAbsStx(
@@ -87,8 +84,8 @@ class TestSuccessfulParsing(unittest.TestCase):
         # ARRANGE #
         str_src_contents__of_argument = 'the_str_src_contents__of_argument'
         str_src_contents__of_referenced_pgm = 'the_str_src_contents__of_program'
-        stdin_argument_syntax = str_src_abs_stx.StringSourceOfStringAbsStx(
-            str_abs_stx.StringLiteralAbsStx(str_src_contents__of_argument)
+        stdin_argument_syntax = str_src_abs_stx.StringSourceOfStringAbsStx.of_str(
+            str_src_contents__of_argument
         )
         stdin_sdv__of_referenced = str_src_sdvs.ConstantStringStringSourceSdv(
             string_sdvs.str_constant(str_src_contents__of_referenced_pgm)
@@ -121,7 +118,7 @@ class TestSuccessfulParsing(unittest.TestCase):
                 program_w_stdin = FullProgramAbsStx(
                     ProgramOfSymbolReferenceAbsStx(
                         referenced_program.name,
-                        [ArgumentOfStringAbsStx.of_str(arg) for arg in arguments_case.value]
+                        [ArgumentOfRichStringAbsStx.of_str(arg) for arg in arguments_case.value]
                     ),
                     stdin=stdin_argument_syntax,
                 )
@@ -207,9 +204,7 @@ class TestValidation(unittest.TestCase):
         valid_stdin_sdv = sdvs.ConstantStringStringSourceSdv(
             string_sdvs.str_constant(stdin_contents)
         )
-        valid_stdin_syntax = str_src_abs_stx.StringSourceOfStringAbsStx(
-            str_abs_stx.StringLiteralAbsStx(stdin_contents)
-        )
+        valid_stdin_syntax = str_src_abs_stx.StringSourceOfStringAbsStx.of_str(stdin_contents)
 
         referenced_program__system_program = 'the-system-program'
 

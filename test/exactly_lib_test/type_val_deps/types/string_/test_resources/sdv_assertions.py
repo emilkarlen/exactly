@@ -159,10 +159,9 @@ class MatchesPrimitiveValueResolvedOfAnyDependency(AssertionBase[StringSdv]):
 
     def _apply(self,
                put: unittest.TestCase,
-               value,
+               value: StringSdv,
                message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, StringSdv)
-        assert isinstance(value, StringSdv)  # Type info for IDE
         equals_symbol_references__w_str_rendering(self.symbol_references).apply_with_message(put,
                                                                                              value.references,
                                                                                              'symbol references')

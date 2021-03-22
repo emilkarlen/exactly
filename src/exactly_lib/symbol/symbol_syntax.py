@@ -65,6 +65,26 @@ def parse_symbol_reference__from_str(token: str) -> Optional[str]:
     return None
 
 
+def parse_maybe_symbol_reference(unquoted_token_str: str) -> Optional[str]:
+    """
+    Gives the name of the referenced symbol,
+    if the token has the syntax of a symbol reference
+    with a valid symbol name.
+    :returns: None if the token (as a whole) is not a symbol reference.
+    """
+    if (unquoted_token_str.startswith(SYMBOL_REFERENCE_BEGIN) and
+            unquoted_token_str.endswith(SYMBOL_REFERENCE_END)):
+        mb_sym_name = unquoted_token_str[2:][:-2]
+        return (
+            mb_sym_name
+            if is_symbol_name(mb_sym_name)
+            else
+            None
+        )
+    else:
+        return None
+
+
 class Fragment:
     def __init__(self,
                  value: str,
@@ -114,10 +134,11 @@ def split(s: str) -> List[Fragment]:
 def _extract_fragment(s: str) -> Tuple[str, List[Fragment]]:
     pos, name, rest = _find_symbol_reference(s)
     if pos == -1:
-        return '', [Fragment(s, False)]
+        return '', [constant(s)]
     if pos == 0:
-        return rest, [Fragment(name, True)]
-    return rest, [Fragment(s[:pos], False), Fragment(name, True)]
+        return rest, [symbol(name)]
+    return rest, [constant(s[:pos]),
+                  symbol(name)]
 
 
 def _find_symbol_reference(s):

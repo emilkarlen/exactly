@@ -15,7 +15,8 @@ from exactly_lib.util.parse.token import QuoteType
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as str_src_abs_stx
-from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
+from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import \
+    StringSourceOfStringAbsStx
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.dir_populator import TcdsPopulator
@@ -28,7 +29,7 @@ from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax
     ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import FullProgramAbsStx, \
     ProgramOfPythonInterpreterAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfRichStringAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
 from exactly_lib_test.util.file_utils.test_resources.assertions import IsProcessExecutionFileWIthContents
 
@@ -84,9 +85,7 @@ class NonEmptyStdinTestSetupBase(StdinTestSetupBase, ABC):
                                 ) -> FullProgramAbsStx:
         return FullProgramAbsStx(
             pgm_and_args,
-            stdin=str_src_abs_stx.StringSourceOfStringAbsStx.of_str(
-                stdin_contents,
-                QuoteType.HARD),
+            stdin=str_src_abs_stx.StringSourceOfStringAbsStx.of_str_hard(stdin_contents),
         )
 
 
@@ -176,7 +175,7 @@ else:
                                           program_stdin: str,
                                           additional_expected_stdin: str = '',
                                           ) -> FullProgramAbsStx:
-        expected_contents_arg_syntax = ArgumentOfStringAbsStx.of_str(
+        expected_contents_arg_syntax = ArgumentOfRichStringAbsStx.of_str(
             program_stdin + additional_expected_stdin, QuoteType.HARD
         )
         checker_pgm_syntax = ProgramOfPythonInterpreterAbsStx.of_execute_python_src_file(
@@ -185,7 +184,7 @@ else:
         )
         return FullProgramAbsStx(
             checker_pgm_syntax,
-            stdin=StringSourceOfStringAbsStx.of_str(program_stdin, QuoteType.HARD)
+            stdin=StringSourceOfStringAbsStx.of_str_hard(program_stdin)
         )
 
     @property

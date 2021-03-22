@@ -7,8 +7,6 @@ from exactly_lib.impls.instructions.multi_phase.utils.instruction_from_parts_for
     TheInstructionEmbryo, ExecutionResultAndStderr
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.impls.types.program import syntax_elements
-from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
-    SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.tcfs.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreOrPostSds
@@ -20,7 +18,6 @@ from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instru
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args, result_assertions
 from exactly_lib_test.impls.types.test_resources import arguments_building as args
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.tcfs.test_resources import path_arguments
 from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.tcfs.test_resources.sds_populator import contents_in
@@ -180,12 +177,6 @@ class TestExecuteInterpret(TestCaseBase):
 
 
 class TestSource(TestCaseBase):
-    def test_parse_should_fail_when_no_source_argument(self):
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parts_parser('instruction-name').parse(
-                ARBITRARY_FS_LOCATION_INFO,
-                single_line_source('EXECUTABLE %s' % syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER))
-
     def test_check_zero_exit_code(self):
         self._check_single_line_arguments_with_source_variants(
             self._python_interpreter_for_source_on_command_line('exit(0)'),

@@ -8,8 +8,6 @@ from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType
-from exactly_lib_test.type_val_deps.test_resources.validation.validation_of_path import \
-    FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.impls.types.logic.test_resources import integration_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import MultiSourceExpectation, arrangement_w_tcds, \
     ExecutionExpectation, AssertionResolvingEnvironment, arrangement_wo_tcds
@@ -26,14 +24,16 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.test_resources.validation.validation_of_path import \
+    FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_data_rest
 from exactly_lib_test.type_val_deps.types.list_.test_resources.symbol_context import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import PgmAndArgsWArgumentsAbsStx, \
     ProgramOfShellCommandLineAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
-    ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import \
+    ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx, ArgumentOfRichStringAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
@@ -81,21 +81,21 @@ class TestDriverTypesWArgListExceptSymbolReference(unittest.TestCase):
         arguments_cases = [
             ArgumentsCase(
                 'one / wo symbol references',
-                arguments=[ArgumentOfStringAbsStx.of_str(arg_w_space, QuoteType.SOFT)],
+                arguments=[ArgumentOfRichStringAbsStx.of_str(arg_w_space, QuoteType.SOFT)],
                 expected_arguments=[arg_w_space],
                 symbols=(),
             ),
             ArgumentsCase(
                 'two / wo symbol references',
-                arguments=[ArgumentOfStringAbsStx.of_str(arg_wo_space),
-                           ArgumentOfStringAbsStx.of_str(arg_w_space, QuoteType.HARD)],
+                arguments=[ArgumentOfRichStringAbsStx.of_str(arg_wo_space),
+                           ArgumentOfRichStringAbsStx.of_str(arg_w_space, QuoteType.HARD)],
                 expected_arguments=[arg_wo_space, arg_w_space],
                 symbols=(),
             ),
             ArgumentsCase(
                 'three / w symbol references',
                 arguments=[ArgumentOfSymbolReferenceAbsStx(string_symbol_1.name),
-                           ArgumentOfStringAbsStx.of_str(arg_w_space, QuoteType.HARD),
+                           ArgumentOfRichStringAbsStx.of_str(arg_w_space, QuoteType.HARD),
                            ArgumentOfSymbolReferenceAbsStx(string_symbol_2.name)],
                 expected_arguments=[string_symbol_1.str_value, arg_w_space, string_symbol_2.str_value],
                 symbols=[string_symbol_1, string_symbol_2],
@@ -152,9 +152,9 @@ class TestDriverTypesWArgListExceptSymbolReference(unittest.TestCase):
             ),
             NameAndValue(
                 '2nd argument fails validation',
-                [ArgumentOfStringAbsStx.of_str('valid1'),
+                [ArgumentOfRichStringAbsStx.of_str('valid1'),
                  invalid_argument_syntax,
-                 ArgumentOfStringAbsStx.of_str('valid2')],
+                 ArgumentOfRichStringAbsStx.of_str('valid2')],
             ),
         ]
 
@@ -304,7 +304,7 @@ class TestShellArgumentsAndSymbolReferences(unittest.TestCase):
             [
                 ArgumentOfSymbolReferenceAbsStx(string_argument_symbol.name),
                 ArgumentOfSymbolReferenceAbsStx(list_argument_symbol.name),
-                ArgumentOfStringAbsStx.of_str(str_w_list_ref),
+                ArgumentOfRichStringAbsStx.of_str(str_w_list_ref),
             ]
         )
 

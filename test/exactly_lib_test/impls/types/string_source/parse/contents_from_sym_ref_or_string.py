@@ -8,8 +8,8 @@ from exactly_lib.util.parse.token import QuoteType
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, \
     AssertionResolvingEnvironment, MultiSourceExpectation
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check
-from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx, \
-    TransformedStringSourceAbsStx
+from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import TransformedStringSourceAbsStx, \
+    StringSourceOfStringAbsStx
 from exactly_lib_test.impls.types.string_source.test_resources.parse_check import ARBITRARY_FILE_RELATIVITIES
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -221,7 +221,7 @@ def _path_case(contents_transformation: Callable[[str], str]) -> Case:
         ARBITRARY_FILE_RELATIVITIES.accepted_relativity_variants,
     )
     return Case(
-        StringSourceOfStringAbsStx(
+        StringSourceOfStringAbsStx.of_plain(
             StringLiteralAbsStx(symbol_context.name__sym_ref_syntax, QuoteType.SOFT)
         ),
         symbol_context,
@@ -241,7 +241,7 @@ def _list_case(contents_transformation: Callable[[str], str]) -> Case:
     symbol_context = ListSymbolContext.of_constants('LIST_SYMBOL', elements)
 
     return Case(
-        StringSourceOfStringAbsStx(
+        StringSourceOfStringAbsStx.of_plain(
             StringLiteralAbsStx(symbol_context.name__sym_ref_syntax, QuoteType.SOFT)
         ),
         symbol_context,

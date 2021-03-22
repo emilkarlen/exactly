@@ -1,6 +1,6 @@
 from exactly_lib.common.help import headers
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args, InvokationVariant
-from exactly_lib.definitions import misc_texts, formatting, syntax_descriptions
+from exactly_lib.definitions import misc_texts, formatting, syntax_descriptions, file_types
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, concepts, types
@@ -12,14 +12,11 @@ from exactly_lib.type_val_deps.types.path.rel_opts_configuration import arg_conf
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-TEXT_UNTIL_END_OF_LINE_ARGUMENT = a.Named('TEXT-UNTIL-END-OF-LINE')
-
 
 def documentation() -> SyntaxElementDocumentation:
     invokation_variants = [
         _string(),
         _symbol_reference(),
-        _text_until_end_of_line(),
         _existing_path(
             pgm_syntax_elements.EXISTING_FILE_OPTION_NAME,
             _EXISTING_FILE_DESCRIPTION,
@@ -46,7 +43,7 @@ def documentation() -> SyntaxElementDocumentation:
 
         ],
         cross_reference_id_list([
-            syntax_elements.STRING_SYNTAX_ELEMENT,
+            syntax_elements.RICH_STRING_SYNTAX_ELEMENT,
             syntax_elements.PATH_SYNTAX_ELEMENT,
             syntax_elements.LIST_SYNTAX_ELEMENT,
             syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT,
@@ -66,21 +63,11 @@ def _existing_path(option: a.OptionName,
     )
 
 
-def _text_until_end_of_line() -> InvokationVariant:
-    return invokation_variant_from_args([
-        a.Single(a.Multiplicity.MANDATORY,
-                 a.Constant(pgm_syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER)),
-        a.Single(a.Multiplicity.MANDATORY,
-                 TEXT_UNTIL_END_OF_LINE_ARGUMENT)
-    ],
-        _TEXT_PARSER.fnap(_TEXT_UNTIL_END_OF_LINE_DESCRIPTION)
-    )
-
-
 def _string() -> InvokationVariant:
     return invokation_variant_from_args([
-        syntax_elements.STRING_SYNTAX_ELEMENT.single_mandatory,
+        syntax_elements.RICH_STRING_SYNTAX_ELEMENT.single_mandatory,
     ],
+        _TEXT_PARSER.fnap(_RICH_TEXT_DESCRIPTION)
     )
 
 
@@ -102,14 +89,14 @@ _TEXT_PARSER = TextParser({
     'list_se': formatting.syntax_element_(syntax_elements.LIST_SYNTAX_ELEMENT),
     'path_type': types.PATH_TYPE_INFO.name,
     'path_se': formatting.syntax_element_(syntax_elements.PATH_SYNTAX_ELEMENT),
+    'rich_string_se': syntax_elements.RICH_STRING_SYNTAX_ELEMENT.singular_name,
     'A_ref_to_symbol_w_string_conversion': types.a_ref_to_a_symbol_w_string_conversion__sentence(),
     'soft_quote': syntax_descriptions.SOFT_QUOTE_NAME,
     'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
     'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
+    'dir_file_type': file_types.DIRECTORY,
+    'regular_file_type': file_types.REGULAR,
     'Note': headers.NOTE_LINE_HEADER,
-    'Sym_refs_are_substituted': syntax_descriptions.symbols_are_substituted_in(
-        TEXT_UNTIL_END_OF_LINE_ARGUMENT.name
-    ),
 })
 
 _MAIN__DESCRIPTION = """\
@@ -136,15 +123,17 @@ convert it to a {string_type} by surrounding it with {soft_quote:s}.
 The elements will be separated by a single space.
 """
 
-_TEXT_UNTIL_END_OF_LINE_DESCRIPTION = """\
-The remaining part of the current line becomes a single argument.
-
-
-{Sym_refs_are_substituted}
+_RICH_TEXT_DESCRIPTION = """\
+{Note}
+If a {rich_string_se} that spans whole lines is used,
+it will be the last element in the list.
 """
 
 _EXISTING_FILE_DESCRIPTION = """\
 A {path_se}, with additional check for existence.
+
+
+{path_se} must be {regular_file_type:a}.
 
 
 {SYMBOLIC_LINKS_ARE_FOLLOWED}.
@@ -157,6 +146,9 @@ _EXISTING_DIR_DESCRIPTION = """\
 A {path_se}, with additional check for existence.
 
 
+{path_se} must be {dir_file_type:a}.
+
+
 {SYMBOLIC_LINKS_ARE_FOLLOWED}.
 
 
@@ -165,6 +157,9 @@ Gives a single argument of an absolute path.
 
 _EXISTING_PATH_DESCRIPTION = """\
 A {path_se}, with additional check for existence.
+
+
+{path_se} can be any type of file.
 
 
 {SYMBOLIC_LINKS_ARE_FOLLOWED}.

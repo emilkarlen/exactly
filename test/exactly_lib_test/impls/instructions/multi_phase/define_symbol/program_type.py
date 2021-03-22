@@ -4,7 +4,7 @@ from exactly_lib.impls.instructions.multi_phase.define_symbol import parser as s
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.abstract_syntax import \
     DefineSymbolWMandatoryValue
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
-    INSTRUCTION_CHECKER
+    INSTRUCTION_CHECKER, PARSE_CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
     MultiSourceExpectation

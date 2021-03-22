@@ -1,6 +1,6 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.help.entities.syntax_elements.contents_structure import for_type_with_grammar
-from exactly_lib.help.entities.syntax_elements.objects import here_document, regex, glob_pattern, \
+from exactly_lib.help.entities.syntax_elements.objects import rich_string, regex, glob_pattern, \
     type_string, type_list, type_path, type_program, symbol_name, symbol_reference, \
     integer, shell_command_line, act_interpreter, program_argument, type_string_source
 from exactly_lib.impls.types.file_matcher import parse_file_matcher
@@ -16,7 +16,7 @@ ALL_SYNTAX_ELEMENT_DOCS = (
 
     integer.DOCUMENTATION,
 
-    here_document.DOCUMENTATION,
+    rich_string.DOCUMENTATION,
     regex.DOCUMENTATION,
     glob_pattern.DOCUMENTATION,
     shell_command_line.DOCUMENTATION,

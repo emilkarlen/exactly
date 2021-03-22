@@ -2,11 +2,9 @@ from pathlib import Path
 from typing import Callable
 
 from exactly_lib.definitions.argument_rendering import cl_syntax
-from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.types import glob_pattern
 from exactly_lib.impls.types.matcher.property_getter import PropertyGetter
 from exactly_lib.impls.types.regex import parse_regex
-from exactly_lib.impls.types.regex.regex_ddv import RegexSdv
 from exactly_lib.section_document.element_parsers import token_stream_parsing
 from exactly_lib.section_document.element_parsers.token_stream_parser import ParserFromTokens, TokenParser
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
@@ -21,7 +19,7 @@ def parser(
 ) -> ParserFromTokens[FileMatcherSdv]:
     def parse_matcher_of_regex(token_parser: TokenParser) -> FileMatcherSdv:
         return sdv.reg_ex_sdv(model_property__regex,
-                              _parse_regex(token_parser))
+                              _REGEX_PARSER.parse_from_token_parser(token_parser))
 
     def parse_matcher_of_glob_pattern(token_parser: TokenParser) -> FileMatcherSdv:
         return sdv.glob_pattern_sdv(model_property__glob_pattern,
@@ -41,7 +39,7 @@ def parser_for_name_part(
 
     def parse_matcher_of_regex(token_parser: TokenParser) -> FileMatcherSdv:
         return sdv.reg_ex_sdv(property_getter,
-                              _parse_regex(token_parser))
+                              _REGEX_PARSER.parse_from_token_parser(token_parser))
 
     def parse_matcher_of_glob_pattern(token_parser: TokenParser) -> FileMatcherSdv:
         return sdv.glob_pattern_sdv__str(property_getter,
@@ -68,10 +66,6 @@ def _parser(parse_matcher_of_regex: Callable[[TokenParser], FileMatcherSdv],
     )
 
 
-def _parse_regex(token_parser: TokenParser) -> RegexSdv:
-    token_parser.require_has_valid_head_token(syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
-    return parse_regex.parse_regex2(token_parser,
-                                    must_be_on_same_line=True)
-
+_REGEX_PARSER = parse_regex.ParserOfRegex()
 
 _SYNTAX_ELEM_STR = cl_syntax.cl_syntax_for_args((defs.GLOB_OR_REGEX__ARG_USAGE,))

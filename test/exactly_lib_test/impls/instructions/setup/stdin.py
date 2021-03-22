@@ -10,9 +10,8 @@ from exactly_lib_test.impls.instructions.setup.test_resources.instruction_check 
     Expectation, MultiSourceExpectation
 from exactly_lib_test.impls.instructions.test_resources.abstract_syntax import InstructionArgsAbsStx
 from exactly_lib_test.impls.test_resources import abstract_syntaxes
-from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfFileAbsStx, \
-    CustomStringSourceAbsStx, StringSourceOfHereDocAbsStx
+    CustomStringSourceAbsStx, StringSourceOfStringAbsStx
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
@@ -22,7 +21,8 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Fi
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
-from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringHereDocAbsStx
+from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.type_val_deps.types.string_.test_resources.rich_abstract_syntaxes import HereDocAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.symbol_context import \
@@ -178,7 +178,7 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
     def test_doc_without_symbol_references(self):
         content_line_of_here_doc = 'content line of here doc\n'
         syntax = InstructionAbsStx(
-            StringSourceOfHereDocAbsStx(StringHereDocAbsStx(content_line_of_here_doc))
+            StringSourceOfStringAbsStx(HereDocAbsStx(content_line_of_here_doc))
         )
         CHECKER.check_multi_source__abs_stx(
             self,
@@ -201,9 +201,10 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
             symbol.reference_assertion__w_str_rendering
         )
         syntax = InstructionAbsStx(
-            StringSourceOfHereDocAbsStx(StringHereDocAbsStx(
-                content_line_of_here_doc_template.format(symbol=symbol.name__sym_ref_syntax)
-            ))
+            StringSourceOfStringAbsStx(
+                HereDocAbsStx(
+                    content_line_of_here_doc_template.format(symbol=symbol.name__sym_ref_syntax)
+                ))
         )
         # ACT & ASSERT #
         CHECKER.check_multi_source__abs_stx(

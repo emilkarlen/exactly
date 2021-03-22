@@ -13,7 +13,8 @@ from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.inst
     PARSE_CHECKER, PHASE_SPECS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
     MultiSourceExpectation
-from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
+from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import \
+    StringSourceOfStringAbsStx
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.custom_abstract_syntax import SequenceAbsStx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -45,21 +46,27 @@ class TestInvalidSyntaxOfSetShouldBeDetected(unittest.TestCase):
             cases = [
                 NameAndValue(
                     'missing arguments',
-                    SetVariableArgumentsAbsStx(StringLiteralAbsStx(''),
-                                               StringSourceOfStringAbsStx.of_str(''),
-                                               phase_spec=phase_spec),
+                    SetVariableArgumentsAbsStx(
+                        StringLiteralAbsStx(''),
+                        StringSourceOfStringAbsStx.of_str(''),
+                        phase_spec=phase_spec,
+                    ),
                 ),
                 NameAndValue(
                     'more than three arguments',
-                    SetVariableArgumentsAbsStx(StringLiteralAbsStx('arg1'),
-                                               StringSourceOfStringAbsStx.of_str('arg2 arg3'),
-                                               phase_spec=phase_spec),
+                    SetVariableArgumentsAbsStx(
+                        StringLiteralAbsStx('arg1'),
+                        StringSourceOfStringAbsStx.of_str('arg2 arg3'),
+                        phase_spec=phase_spec,
+                    ),
                 ),
                 NameAndValue(
                     'invalid quoting of value',
-                    SetVariableArgumentsAbsStx(StringLiteralAbsStx('name'),
-                                               StringSourceOfStringAbsStx(MISSING_END_QUOTE__SOFT),
-                                               phase_spec=phase_spec),
+                    SetVariableArgumentsAbsStx(
+                        StringLiteralAbsStx('name'),
+                        StringSourceOfStringAbsStx(MISSING_END_QUOTE__SOFT),
+                        phase_spec=phase_spec,
+                    ),
                 ),
             ]
             for case in cases:

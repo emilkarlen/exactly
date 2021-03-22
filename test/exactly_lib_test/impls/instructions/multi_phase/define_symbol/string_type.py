@@ -1,18 +1,20 @@
 import unittest
 
-from exactly_lib.impls.instructions.multi_phase.define_symbol import parser as sut
-from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
-    SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, symbol, constant
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.abstract_syntax import \
+    DefineSymbolWMandatoryValue
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
-    INSTRUCTION_CHECKER
+    INSTRUCTION_CHECKER, PARSE_CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, Expectation
 from exactly_lib_test.impls.types.string_.parse_string import string_sdv_from_fragments
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.symbol.test_resources.symbol_syntax import A_VALID_SYMBOL_NAME
+from exactly_lib_test.test_resources.source.abstract_syntax_impls import CustomAbsStx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import MISSING_END_QUOTE__HARD, \
+    MISSING_END_QUOTE__SOFT
 from exactly_lib_test.type_val_deps.types.string_.test_resources.here_doc_assertion_utils import here_doc_lines
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext, \
     StringSymbolContext
@@ -28,27 +30,49 @@ def suite() -> unittest.TestSuite:
 
 
 class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
-    def runTest(self):
-        test_cases = [
+    def test_invalid_formatting(self):
+        cases = [
             NameAndValue(
                 'Missing end quote (soft)',
-                src2(ValueType.STRING, 'name', '{soft_quote}string')
+                MISSING_END_QUOTE__SOFT
             ),
             NameAndValue(
                 'Missing end quote (hard)',
-                src2(ValueType.STRING, 'name', '{hard_quote}string')
+                MISSING_END_QUOTE__HARD
             ),
             NameAndValue(
                 'Superfluous arguments',
-                src2(ValueType.PATH, 'name', 'x superfluous-arg')
+                CustomAbsStx.of_str('x superfluous-arg')
             ),
         ]
-        parser = sut.EmbryoParser()
-        for case in test_cases:
-            source = remaining_source(case.value)
-            with self.subTest(case.name):
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+        for case in cases:
+            syntax = DefineSymbolWMandatoryValue(
+                A_VALID_SYMBOL_NAME,
+                ValueType.STRING,
+                case.value,
+            )
+            PARSE_CHECKER.check_invalid_syntax__abs_stx(
+                self,
+                syntax,
+                sub_test_identifiers={
+                    'case': case.name
+                }
+            )
+
+    def test_reserved_word(self):
+        for reserved_word in reserved_words.RESERVED_TOKENS:
+            syntax = DefineSymbolWMandatoryValue(
+                A_VALID_SYMBOL_NAME,
+                ValueType.STRING,
+                CustomAbsStx.of_str(reserved_word)
+            )
+            PARSE_CHECKER.check_invalid_syntax__abs_stx(
+                self,
+                syntax,
+                sub_test_identifiers={
+                    'reserved_word': reserved_word
+                }
+            )
 
 
 class TestSuccessfulDefinition(unittest.TestCase):

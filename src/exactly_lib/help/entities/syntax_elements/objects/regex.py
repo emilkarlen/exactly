@@ -12,15 +12,13 @@ _IGNORE_CASE_ARGUMENT = a.Option(parse_regex.IGNORE_CASE_OPTION_NAME)
 _CL_ARGUMENTS = [
     a.Single(a.Multiplicity.OPTIONAL,
              _IGNORE_CASE_ARGUMENT),
-    a.Choice.of_multiple_single_argument_choices(
-        a.Multiplicity.MANDATORY,
-        (syntax_elements.STRING_SYNTAX_ELEMENT.argument,
-         syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.argument,)
-    ),
+    syntax_elements.RICH_STRING_SYNTAX_ELEMENT.single_mandatory,
 ]
 
-SEE_ALSO_URL_INFO = SeeAlsoUrlInfo('Python regular expressions',
-                                   'https://docs.python.org/3/library/re.html#regular-expression-syntax')
+SEE_ALSO_URL_INFO = SeeAlsoUrlInfo(
+    'Python regular expressions',
+    'https://docs.python.org/3/library/re.html#regular-expression-syntax'
+)
 
 _DESCRIPTION_OF_IGNORE_CASE_OPTION = """\
 Makes the matching ignore case.
@@ -39,8 +37,7 @@ DOCUMENTATION = syntax_element_documentation(
                                                 TextParser().fnap(_DESCRIPTION_OF_IGNORE_CASE_OPTION))
     ],
     [
-        syntax_elements.STRING_SYNTAX_ELEMENT.cross_reference_target,
-        syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.cross_reference_target,
+        syntax_elements.RICH_STRING_SYNTAX_ELEMENT.cross_reference_target,
         SEE_ALSO_URL_INFO,
     ]
 )

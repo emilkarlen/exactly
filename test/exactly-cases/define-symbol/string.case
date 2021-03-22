@@ -1,0 +1,24 @@
+[setup]
+
+def string plain = plain-value
+
+def string soft_quotes   = "within soft quotes"
+def string soft_quotes_n =
+"within soft quotes"
+
+def string hard_quotes   = 'within hard quotes'
+def string hard_quotes_n =
+    'within hard quotes'
+
+def string text_until_eol   = :> the text until eol
+def string text_until_eol_n =
+   :> the text until eol
+
+def string here_doc   = <<EOF
+contents
+EOF
+
+def string here_doc_n =
+<<EOF
+contents
+EOF

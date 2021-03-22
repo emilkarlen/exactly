@@ -9,7 +9,7 @@ from exactly_lib.impls.types.line_matcher import parse_line_matcher
 from exactly_lib.impls.types.list_ import parse_list
 from exactly_lib.impls.types.path import parse_path
 from exactly_lib.impls.types.program.parse import parse_program
-from exactly_lib.impls.types.string_ import parse_string_or_here_doc
+from exactly_lib.impls.types.string_ import parse_rich_string
 from exactly_lib.impls.types.string_matcher import parse_string_matcher
 from exactly_lib.impls.types.string_source import parse as _parse_string_source
 from exactly_lib.impls.types.string_transformer import parse_string_transformer
@@ -30,14 +30,14 @@ class TypeValueParser:
 
 
 class StringParser(TypeValueParser):
+    def __init__(self):
+        self._rich_string_parser = parse_rich_string.RichStringParser()
+
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
               token_parser: TokenParser,
               ) -> SymbolDependentValue:
-        return parse_string_or_here_doc.parse_string_or_here_doc_from_token_parser(
-            token_parser,
-            consume_last_here_doc_line=False,
-        )
+        return self._rich_string_parser.parse_from_token_parser(token_parser)
 
 
 class PathParser(TypeValueParser):

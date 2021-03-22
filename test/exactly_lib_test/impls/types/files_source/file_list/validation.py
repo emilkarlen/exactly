@@ -11,7 +11,8 @@ from exactly_lib_test.impls.types.files_source.test_resources.abstract_syntaxes 
     FileSpecAbsStx, ContentsAbsStx
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, MultiSourceExpectation, \
     ExecutionExpectation
-from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
+from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import \
+    StringSourceOfStringAbsStx
 from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.type_val_deps.test_resources.validation_case import ValidationCaseWSymbolContextAndAssertion
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_rest
@@ -199,7 +200,7 @@ def file_type_and_contents_variants(file_name: StringAbsStx) -> Sequence[NameAnd
     ]
 
 
-_VALID_STRING_SOURCE = StringSourceOfStringAbsStx(StringLiteralAbsStx.empty_string())
+_VALID_STRING_SOURCE = StringSourceOfStringAbsStx.of_plain(StringLiteralAbsStx.empty_string())
 _VALID_FILES_SOURCE = abs_stx.LiteralFilesSourceAbsStx(())
 
 _CONTENTS_CASES: Mapping[FileType, Sequence[NameAndValue[ContentsAbsStx]]] = {

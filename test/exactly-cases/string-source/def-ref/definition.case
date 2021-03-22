@@ -9,6 +9,11 @@ def list   LIST_SYMBOL   = 1st 2nd 3rd
 def text-source CONSTANT   = 'a constant string'
 def text-source CONSTANT_T = 'a constant string' -transformed-by @[ST]@
 
+def text-source TEXT_UNTIL_EOL   = :> a constant string
+def text-source TEXT_UNTIL_EOL_T = :> a constant string
+                                    -transformed-by @[ST]@
+def text-source TEXT_UNTIL_EOL_E = :>
+
 def text-source STRING_REF   = @[STRING_SYMBOL]@
 def text-source STRING_REF_T = @[STRING_SYMBOL]@ -transformed-by @[ST]@
 

@@ -68,9 +68,7 @@ class TestAppend(unittest.TestCase):
 
         append_contents_syntax = abs_stx.FileContentsExplicitAbsStx(
             ModificationType.APPEND,
-            str_src_abs_stx.StringSourceOfStringAbsStx.of_str(
-                to_append__text, QuoteType.HARD,
-            )
+            str_src_abs_stx.StringSourceOfStringAbsStx.of_str_hard(to_append__text)
         )
         name_of_modified_file = 'destination.txt'
 
@@ -331,8 +329,7 @@ def create_path_cases(created_leaf_file_name: str) -> Sequence[FileSpecAndExpect
             FileType.REGULAR,
             abs_stx.FileContentsExplicitAbsStx(
                 ModificationType.CREATE,
-                str_src_abs_stx.StringSourceOfStringAbsStx.of_str(explicit_file_contents,
-                                                                  QuoteType.HARD)
+                str_src_abs_stx.StringSourceOfStringAbsStx.of_str_hard(explicit_file_contents)
             ),
             fs.File(created_leaf_file_name, explicit_file_contents),
         ),

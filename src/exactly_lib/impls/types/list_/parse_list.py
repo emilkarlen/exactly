@@ -8,7 +8,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, from_parse_source, \
     ParserFromTokens
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions
 from exactly_lib.type_val_deps.types.list_ import list_sdvs as lrs
@@ -62,11 +61,10 @@ def element_of(token: Token) -> lrs.ElementSdv:
     string_fragments = parse_string.parse_fragments_from_token(token)
     if len(string_fragments) == 1:
         single_fragment = string_fragments[0]
-        assert isinstance(single_fragment, symbol_syntax.Fragment)
         if single_fragment.is_constant:
             return lrs.str_element(single_fragment.value)
         else:
-            return _symbol_reference_element(single_fragment.value)
+            return symbol_reference_element(single_fragment.value)
     else:
         string_sdv = parse_string.string_sdv_from_fragments(
             string_fragments,
@@ -75,7 +73,7 @@ def element_of(token: Token) -> lrs.ElementSdv:
         return lrs.string_element(string_sdv)
 
 
-def _symbol_reference_element(s: str) -> lrs.ElementSdv:
+def symbol_reference_element(s: str) -> lrs.ElementSdv:
     return lrs.symbol_element(_symbol_reference(s))
 
 

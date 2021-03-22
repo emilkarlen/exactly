@@ -50,7 +50,7 @@ from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context imp
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import \
     ProgramOfExecutableFileCommandLineAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfRichStringAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 
@@ -143,7 +143,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
             Case.of(
                 'without_option',
                 PathStringAbsStx.of_plain_str('file'),
-                arguments=[ArgumentOfStringAbsStx.of_str('arg2')],
+                arguments=[ArgumentOfRichStringAbsStx.of_str('arg2')],
                 expectation=
                 ExpectationOnExeFile(
                     path_ddv=path_of_default_relativity('file'),
@@ -165,7 +165,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
             Case.of(
                 'relative_file_name_with_space_and_arguments',
                 PathStringAbsStx(StringLiteralAbsStx('the file', QuoteType.SOFT)),
-                arguments=[ArgumentOfStringAbsStx(StringLiteralAbsStx('an argument', QuoteType.SOFT))],
+                arguments=[ArgumentOfRichStringAbsStx.of_str('an argument', QuoteType.SOFT)],
                 expectation=
                 ExpectationOnExeFile(
                     path_ddv=path_of_default_relativity('the file'),
@@ -187,7 +187,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
             Case.of(
                 'option_with_tail',
                 RelOptPathAbsStx(RelOptionType.REL_CWD, 'FILE'),
-                arguments=[ArgumentOfStringAbsStx.of_str('tail')],
+                arguments=[ArgumentOfRichStringAbsStx.of_str('tail')],
                 expectation=
                 ExpectationOnExeFile(
                     path_ddv=path_of(RelOptionType.REL_CWD, 'FILE'),
@@ -309,8 +309,8 @@ class NoParenthesesAndFollowingArguments(ExecutableTestBase):
     def runTest(self):
         instruction_argument = ProgramOfExecutableFileCommandLineAbsStx(
             PathStringAbsStx.of_plain_str(self.configuration.executable),
-            [ArgumentOfStringAbsStx.of_str('arg1'),
-             ArgumentOfStringAbsStx.of_str('-arg2'),
+            [ArgumentOfRichStringAbsStx.of_str('arg1'),
+             ArgumentOfRichStringAbsStx.of_str('-arg2'),
              ],
         )
         utils.check__abs_stx(
@@ -348,8 +348,8 @@ def _python_executable(arguments: Sequence[ArgumentAbsStx] = ()) -> ProgramOfExe
 class TestParseAbsolutePath(unittest.TestCase):
     def test_existing_file(self):
         arguments = _python_executable(
-            [ArgumentOfStringAbsStx.of_str('remaining'),
-             ArgumentOfStringAbsStx.of_str('args')]
+            [ArgumentOfRichStringAbsStx.of_str('remaining'),
+             ArgumentOfRichStringAbsStx.of_str('args')]
         )
         expectation_on_exe_file = ExpectationOnExeFile(
             path_ddv=path_ddvs.absolute_file_name(sys.executable),
@@ -370,8 +370,8 @@ class TestParseAbsolutePath(unittest.TestCase):
         non_existing_file_path_str = str(non_existing_file_path)
         arguments = ProgramOfExecutableFileCommandLineAbsStx(
             PathStringAbsStx.of_plain_str(non_existing_file_path_str),
-            [ArgumentOfStringAbsStx.of_str('remaining'),
-             ArgumentOfStringAbsStx.of_str('args')]
+            [ArgumentOfRichStringAbsStx.of_str('remaining'),
+             ArgumentOfRichStringAbsStx.of_str('args')]
         )
 
         expectation_on_exe_file = ExpectationOnExeFile(

@@ -19,11 +19,9 @@ class _DefineSymbolBase(InstructionArgsAbsStx, ABC):
         self.value = value
 
     def _type_and_sym_name_tokens(self) -> TokenSequence:
-        return TokenSequence.concat([
-            TokenSequence.sequence([
-                ANY_TYPE_INFO_DICT[self.value_type].identifier,
-                self.symbol_name,
-            ]),
+        return TokenSequence.sequence([
+            ANY_TYPE_INFO_DICT[self.value_type].identifier,
+            self.symbol_name,
         ])
 
 

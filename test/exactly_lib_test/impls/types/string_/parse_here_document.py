@@ -1,14 +1,11 @@
 import unittest
 
-from exactly_lib.impls.types.string_ import parse_here_document as sut
+from exactly_lib.impls.types.string_ import parse_rich_string as sut
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib_test.section_document.element_parsers.optional_description_and_instruction_parser import \
-    source_is_at_end
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, remaining_source_lines
-from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end, \
-    is_at_beginning_of_line
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
@@ -25,6 +22,7 @@ def suite() -> unittest.TestSuite:
 
 class TestFailingScenarios(unittest.TestCase):
     def test_fail_when_document_is_mandatory_but_is_not_given(self):
+        parser = sut.HereDocParser(True)
         test_cases = [
             '',
             '    ',
@@ -32,7 +30,7 @@ class TestFailingScenarios(unittest.TestCase):
         for first_line in test_cases:
             with self.subTest(msg='remaining source: ' + repr(first_line)):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_as_last_argument(True, remaining_source(first_line))
+                    parser.parse(remaining_source(first_line))
 
     def test_fail_when_invalid_here_document_argument(self):
         first_line_cases = [
@@ -46,9 +44,10 @@ class TestFailingScenarios(unittest.TestCase):
         ]
         for first_line in first_line_cases:
             for is_mandatory in test_cases:
+                parser = sut.HereDocParser(is_mandatory)
                 with self.subTest(msg='mandatory: ' + repr(is_mandatory)):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        sut.parse_as_last_argument(is_mandatory, remaining_source(first_line))
+                        parser.parse(remaining_source(first_line))
 
     def test_fail_when_end_marker_not_found(self):
         first_line = '<<MARKER'
@@ -73,10 +72,10 @@ class TestFailingScenarios(unittest.TestCase):
         ]
         for following_lines in following_lines_cases:
             for is_mandatory in [False, True]:
+                parser = sut.HereDocParser(is_mandatory)
                 with self.subTest(msg=repr((is_mandatory, following_lines))):
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        sut.parse_as_last_argument(is_mandatory,
-                                                   remaining_source(first_line, following_lines))
+                    with self.assertRaises(sut.HereDocumentContentsParsingException):
+                        parser.parse(remaining_source(first_line, following_lines))
 
 
 class SuccessfulCase:
@@ -100,8 +99,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 expected_document_contents=
                 hd.matches_resolved_value([]),
                 source_after_parse=
-                source_is_at_end)
-            ,
+                asrt_source.is_at_end_of_line(2)
+            ),
             SuccessfulCase(
                 source_lines=[
                     '<<eof',
@@ -110,7 +109,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 expected_document_contents=
                 hd.matches_resolved_value([]),
                 source_after_parse=
-                source_is_at_end),
+                asrt_source.is_at_end_of_line(2)
+            ),
             SuccessfulCase(
                 source_lines=[
                     '<<-',
@@ -120,7 +120,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 hd.matches_resolved_value([])
                 ,
                 source_after_parse=
-                source_is_at_end),
+                asrt_source.is_at_end_of_line(2)
+            ),
             SuccessfulCase(
                 source_lines=[
                     '<<MARKER',
@@ -131,9 +132,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 hd.matches_resolved_value([])
                 ,
                 source_after_parse=
-                source_is_not_at_end(current_line_number=asrt.equals(3),
-                                     remaining_part_of_current_line=asrt.equals(' after')))
-            ,
+                asrt_source.is_at_end_of_line(2)
+            ),
             SuccessfulCase(
                 source_lines=[
                     '<<eof',
@@ -143,8 +143,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 expected_document_contents=
                 hd.matches_resolved_value(['single line contents']),
                 source_after_parse=
-                source_is_at_end)
-            ,
+                asrt_source.is_at_end_of_line(3)
+            ),
             SuccessfulCase(
                 source_lines=[
                     '<<EOF',
@@ -158,9 +158,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
                                            'second line',
                                            ]),
                 source_after_parse=
-                source_is_not_at_end(current_line_number=asrt.equals(5),
-                                     remaining_part_of_current_line=asrt.equals('line after')))
-            ,
+                asrt_source.is_at_end_of_line(4)
+            ),
         ]
         for case in cases:
             self._check_case(case)
@@ -190,7 +189,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                     ],
                     symbols=symbol1.symbol_table
                 ),
-                source_after_parse=is_at_beginning_of_line(4),
+                source_after_parse=asrt_source.is_at_end_of_line(3),
             ),
             SuccessfulCase(
                 source_lines=[
@@ -223,7 +222,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                     ],
                     )
                 ),
-                source_after_parse=is_at_beginning_of_line(5),
+                source_after_parse=asrt_source.is_at_end_of_line(4),
             ),
         ]
         for case in cases:
@@ -231,36 +230,41 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
     def _check_case(self, case: SuccessfulCase):
         for is_mandatory in [False, True]:
+            parser = sut.HereDocParser(is_mandatory)
             with self.subTest(source_lines=case.source_lines,
                               is_mandatory=str(is_mandatory)):
                 source = remaining_source_lines(case.source_lines)
-                actual = sut.parse_as_last_argument(is_mandatory, source)
+                actual = parser.parse(source)
                 case.expected_document_contents.apply_with_message(self, actual,
                                                                    'sdv')
                 case.source_after_parse.apply_with_message(self, source,
                                                            'source')
 
     def test_document_is_not_mandatory_and_not_present(self):
+        some_white_space = '    '
         source_cases = [
             ([
                  '',
              ],
-             source_is_at_end),
+             asrt_source.is_at_end_of_line(1)),
             ([
-                 '    ',
+                 some_white_space,
              ],
-             source_is_at_end),
+             asrt_source.assert_source(
+                 current_line_number=asrt.equals(1),
+                 remaining_part_of_current_line=asrt.equals(some_white_space)
+             )),
             ([
                  '',
                  'line after',
              ],
-             source_is_not_at_end(current_line_number=asrt.equals(2),
-                                  remaining_part_of_current_line=asrt.equals('line after'))),
+             asrt_source.is_at_end_of_line(1)),
         ]
+        parser = sut.HereDocParser(False)
         for source_lines, source_assertion in source_cases:
             with self.subTest(msg=repr((source_lines, source_assertion))):
                 source = remaining_source_lines(source_lines)
-                actual = sut.parse_as_last_argument(False, source)
+                actual = parser.parse(source)
                 self.assertIsNone(actual, 'return value from parsing')
                 source_assertion.apply_with_message(self, source, 'source')
 

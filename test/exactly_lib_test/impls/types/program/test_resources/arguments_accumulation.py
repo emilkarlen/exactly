@@ -17,9 +17,6 @@ from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.type_val_deps.test_resources.validation import validation
-from exactly_lib_test.type_val_deps.test_resources.validation.validation_of_path import \
-    FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.impls.types.logic.test_resources import integration_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import AssertionResolvingEnvironment, Expectation, \
     ParseExpectation, MultiSourceExpectation, arrangement_wo_tcds, arrangement_w_tcds, ExecutionExpectation
@@ -32,11 +29,14 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
+from exactly_lib_test.type_val_deps.test_resources.validation.validation_of_path import \
+    FAILING_VALIDATION_ASSERTION_FOR_PARTITION
 from exactly_lib_test.type_val_deps.types.list_.test_resources.symbol_context import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.program.test_resources import references
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx, \
-    ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import \
+    ArgumentOfSymbolReferenceAbsStx, ArgumentOfExistingPathAbsStx, ArgumentOfRichStringAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import program_assertions as asrt_pgm_val, \
@@ -125,7 +125,7 @@ class ArgumentAccumulationTestExecutor(TestExecutorBase, ABC):
         source_to_parse = self.source_to_parse(
             referenced_program_symbol.name,
             [
-                ArgumentOfStringAbsStx.of_str(arg)
+                ArgumentOfRichStringAbsStx.of_str(arg)
                 for arg in additional_argument
             ],
         )
@@ -314,7 +314,7 @@ class ValidationOfSdvArgumentsExecutor(TestExecutorBase, ABC):
             referenced_system_program_sdv_w_invalid_arguments
         )
 
-        argument_syntax = ArgumentOfStringAbsStx.of_str('valid-arg')
+        argument_syntax = ArgumentOfRichStringAbsStx.of_str('valid-arg')
 
         reference_and_additional_invalid_argument = self.source_to_parse(
             valid_program_symbol.name,

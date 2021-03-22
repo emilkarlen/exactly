@@ -11,7 +11,8 @@ from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
-from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources import rich_abstract_syntaxes as _rs_abs_stx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.rich_abstract_syntax import RichStringAbsStx
 
 
 class ArgumentOfSymbolReferenceAbsStx(ArgumentAbsStx):
@@ -20,26 +21,6 @@ class ArgumentOfSymbolReferenceAbsStx(ArgumentAbsStx):
 
     def tokenization(self) -> TokenSequence:
         return symbol_tok_seq.SymbolReferenceAsReferenceSyntax(self.symbol_name)
-
-
-class ArgumentOfStringAbsStx(ArgumentAbsStx):
-    def __init__(self, string: StringAbsStx):
-        self.string = string
-
-    @staticmethod
-    def of_str(argument: str,
-               quoting: Optional[QuoteType] = None,
-               ) -> ArgumentAbsStx:
-        return ArgumentOfStringAbsStx(str_abs_stx.StringLiteralAbsStx(argument, quoting))
-
-    @staticmethod
-    def of_shlex_quoted(argument: str) -> ArgumentAbsStx:
-        return ArgumentOfStringAbsStx(
-            str_abs_stx.StringLiteralAbsStx.of_shlex_quoted(argument)
-        )
-
-    def tokenization(self) -> TokenSequence:
-        return self.string.tokenization()
 
 
 class ContinuationTokenFollowedByArgumentAbsStx(ArgumentAbsStx):
@@ -56,21 +37,28 @@ class ContinuationTokenFollowedByArgumentAbsStx(ArgumentAbsStx):
         ])
 
 
-class ArgumentOfTextUntilEndOfLineAbsStx(ArgumentAbsStx):
-    def __init__(self, text_until_end_of_line: StringAbsStx):
-        self.text_until_end_of_line = text_until_end_of_line
+class ArgumentOfRichStringAbsStx(ArgumentAbsStx):
+    def __init__(self, value: RichStringAbsStx):
+        self.value = value
 
     @staticmethod
-    def of_str(text_until_end_of_line: str) -> 'ArgumentOfTextUntilEndOfLineAbsStx':
-        return ArgumentOfTextUntilEndOfLineAbsStx(
-            str_abs_stx.StringLiteralAbsStx(text_until_end_of_line)
+    def of_str(argument: str,
+               quoting: Optional[QuoteType] = None,
+               ) -> 'ArgumentOfRichStringAbsStx':
+        return ArgumentOfRichStringAbsStx(
+            _rs_abs_stx.PlainStringAbsStx(
+                str_abs_stx.StringLiteralAbsStx(argument, quoting)
+            )
+        )
+
+    @staticmethod
+    def of_str_until_eol(text_until_end_of_line: str) -> 'ArgumentOfRichStringAbsStx':
+        return ArgumentOfRichStringAbsStx(
+            _rs_abs_stx.TextUntilEndOfLineAbsStx(text_until_end_of_line)
         )
 
     def tokenization(self) -> TokenSequence:
-        return TokenSequence.concat([
-            TokenSequence.singleton(syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER),
-            self.text_until_end_of_line.tokenization()
-        ])
+        return self.value.tokenization()
 
 
 class NonSymLinkFileType(enum.Enum):

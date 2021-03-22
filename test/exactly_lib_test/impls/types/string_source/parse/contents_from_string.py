@@ -1,5 +1,6 @@
 import unittest
 from typing import Callable
+from typing import NamedTuple, Sequence
 
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -7,12 +8,12 @@ from exactly_lib.util.parse.token import QuoteType, SOFT_QUOTE_CHAR
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import MultiSourceExpectation, \
     Expectation, ParseExpectation, arrangement_w_tcds
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__for_full_line_expr_parse__s__nsc
+    equivalent_source_variants__for_full_line_expr_parse__s__nsc, equivalent_source_variants__for_expr_parse__s__nsc
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntaxes as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources import integration_check
 from exactly_lib_test.impls.types.string_source.test_resources import parse_check
-from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx, \
-    StringSourceOfHereDocAbsStx
+from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import \
+    StringSourceOfStringAbsStx
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_resources.source.abstract_syntax_impls import OptionallyOnNewLine
@@ -20,6 +21,10 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import data_restrictions_assertions as asrt_rest
 from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
 from exactly_lib_test.type_val_deps.types.string_.test_resources import here_doc
+from exactly_lib_test.type_val_deps.types.string_.test_resources import rich_abstract_syntaxes as rich_str_abs_stx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.rich_abstract_syntax import RichStringAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.rich_abstract_syntaxes import PlainStringAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string_source.test_resources import references
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
@@ -37,127 +42,122 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
-    def test_string(self):
-        # ARRANGE #
-        string_value = str_abs_stx.StringLiteralAbsStx('the_string_value')
-        string_source_syntax = string_source_abs_stx.StringSourceOfStringAbsStx(string_value)
-        # ACT & ASSERT #
-        CHECKER.check__abs_stx__layouts__std_source_variants__wo_input(
-            self,
-            OptionallyOnNewLine(string_source_syntax),
-            arrangement_w_tcds(),
-            MultiSourceExpectation.of_prim__const(
-                asrt_string_source.pre_post_freeze__matches_str__const(
-                    string_value.value,
-                    may_depend_on_external_resources=False,
-                )
+class Case(NamedTuple):
+    name: str
+    syntax: RichStringAbsStx
+    expected: str
+
+
+def _check_w_constant_contents(put: unittest.TestCase,
+                               case: Case):
+    ss_syntax = string_source_abs_stx.StringSourceOfStringAbsStx(case.syntax)
+    source_variants = (
+        equivalent_source_variants__for_full_line_expr_parse__s__nsc
+        if case.syntax.spans_whole_line
+        else
+        equivalent_source_variants__for_expr_parse__s__nsc
+    )
+    CHECKER.check__abs_stx__layouts__source_variants__wo_input(
+        put,
+        source_variants,
+        OptionallyOnNewLine(ss_syntax),
+        arrangement_w_tcds(),
+        MultiSourceExpectation.of_prim__const(
+            asrt_string_source.pre_post_freeze__matches_str__const(
+                case.expected,
+                may_depend_on_external_resources=False,
             )
-        )
+        ),
+        sub_test_identifiers={
+            'name': case.name
+        }
+    )
 
-    def test_empty_string(self):
-        # ARRANGE #
-        string_value = str_abs_stx.StringLiteralAbsStx.empty_string()
-        string_source_syntax = string_source_abs_stx.StringSourceOfStringAbsStx(string_value)
-        # ACT & ASSERT #
-        CHECKER.check__abs_stx__layouts__std_source_variants__wo_input(
-            self,
-            OptionallyOnNewLine(string_source_syntax),
-            arrangement_w_tcds(),
-            MultiSourceExpectation.of_prim__const(
-                asrt_string_source.pre_post_freeze__matches_str__const(
-                    string_value.value,
-                    may_depend_on_external_resources=False,
-                )
+
+def _check_transformed_w_constant_contents(put: unittest.TestCase,
+                                           case: Case):
+    str_added_by_transformer = '<string added by transformer>'
+    transformer_symbol = StringTransformerSymbolContext.of_primitive(
+        'TRANSFORMER',
+        string_transformers.add(str_added_by_transformer),
+    )
+
+    ss_syntax = string_source_abs_stx.TransformedStringSourceAbsStx(
+        string_source_abs_stx.StringSourceOfStringAbsStx(case.syntax),
+        transformer_symbol.abstract_syntax,
+    )
+    CHECKER.check__abs_stx__layouts__source_variants__wo_input(
+        put,
+        equivalent_source_variants__for_expr_parse__s__nsc,
+        OptionallyOnNewLine(ss_syntax),
+        arrangement_w_tcds(
+            symbols=transformer_symbol.symbol_table,
+        ),
+        MultiSourceExpectation.of_prim__const(
+            symbol_references=transformer_symbol.references_assertion,
+            primitive=asrt_string_source.pre_post_freeze__matches_str__const(
+                case.expected + str_added_by_transformer,
+                may_depend_on_external_resources=False,
             )
-        )
+        ),
+        sub_test_identifiers={
+            'name': case.name
+        }
+    )
 
-    def test_sym_ref_syntax_within_hard_quotes(self):
-        # ARRANGE #
-        string_value = str_abs_stx.StringLiteralAbsStx(
-            symbol_syntax.symbol_reference_syntax_for_name(A_VALID_SYMBOL_NAME),
-            QuoteType.HARD
-        )
-        string_source_syntax = string_source_abs_stx.StringSourceOfStringAbsStx(string_value)
-        # ACT & ASSERT #
-        CHECKER.check__abs_stx__layouts__std_source_variants__wo_input(
-            self,
-            OptionallyOnNewLine(string_source_syntax),
-            arrangement_w_tcds(),
-            MultiSourceExpectation.of_prim__const(
-                asrt_string_source.pre_post_freeze__matches_str__const(
-                    string_value.value,
-                    may_depend_on_external_resources=False,
-                )
-            )
-        )
 
-    def test_string__here_doc_start_within_quoted(self):
-        # ARRANGE #
-        string_value = str_abs_stx.StringLiteralAbsStx(here_doc.here_doc_start_token('MARKER'),
-                                                       quoting_=QuoteType.SOFT)
-        string_source_syntax = string_source_abs_stx.StringSourceOfStringAbsStx(string_value)
-        # ACT & ASSERT #
-        CHECKER.check__abs_stx__layouts__std_source_variants__wo_input(
-            self,
-            OptionallyOnNewLine(string_source_syntax),
-            arrangement_w_tcds(),
-            MultiSourceExpectation.of_prim__const(
-                asrt_string_source.pre_post_freeze__matches_str__const(
-                    string_value.value,
-                    may_depend_on_external_resources=False,
-                )
-            )
-        )
-
-    def test_here_doc(self):
-        # ARRANGE #
-        string_value = str_abs_stx.StringHereDocAbsStx('single line in here doc\n')
-        string_source_syntax = string_source_abs_stx.StringSourceOfHereDocAbsStx(string_value)
-        CHECKER.check__abs_stx__layouts__source_variants__wo_input(
-            self,
-            equivalent_source_variants__for_full_line_expr_parse__s__nsc,
-            OptionallyOnNewLine(string_source_syntax),
-            arrangement_w_tcds(),
-            MultiSourceExpectation.of_prim__const(
-                asrt_string_source.pre_post_freeze__matches_str__const(
-                    string_value.value,
-                    may_depend_on_external_resources=False,
-                )
-            )
-        )
-
-    def test_here_doc__transformed(self):
-        # ARRANGE #
-        str_added_by_transformer = '<string added by transformer>'
-        transformer_symbol = StringTransformerSymbolContext.of_primitive(
-            'TRANSFORMER',
-            string_transformers.add(str_added_by_transformer),
-        )
-
-        here_doc_value = str_abs_stx.StringHereDocAbsStx('single line in here doc\n')
-        value_after_transformation = here_doc_value.value + str_added_by_transformer
-
-        string_source_syntax = string_source_abs_stx.TransformedStringSourceAbsStx(
-            string_source_abs_stx.StringSourceOfHereDocAbsStx(here_doc_value),
-            transformer_symbol.abstract_syntax,
-        )
-
-        CHECKER.check__abs_stx__layouts__source_variants__wo_input(
-            self,
-            equivalent_source_variants__for_full_line_expr_parse__s__nsc,
-            OptionallyOnNewLine(string_source_syntax),
-            arrangement_w_tcds(
-                symbols=transformer_symbol.symbol_table,
+def cases_w_constant_contents() -> Sequence[Case]:
+    here_doc_contents = 'single line in here doc\n'
+    return [
+        Case(
+            'plain string',
+            PlainStringAbsStx(
+                StringLiteralAbsStx('the_string_value')
             ),
-            MultiSourceExpectation.of_prim__const(
-                symbol_references=transformer_symbol.references_assertion,
-                primitive=asrt_string_source.pre_post_freeze__matches_str__const(
-                    value_after_transformation,
-                    may_depend_on_external_resources=False,
+            'the_string_value',
+        ),
+        Case(
+            'empty string',
+            PlainStringAbsStx(
+                StringLiteralAbsStx.empty_string()
+            ),
+            '',
+        ),
+        Case(
+            'sym ref syntax within hard quoted',
+            PlainStringAbsStx(
+                StringLiteralAbsStx(
+                    symbol_syntax.symbol_reference_syntax_for_name(A_VALID_SYMBOL_NAME),
+                    QuoteType.HARD
                 )
-            )
-        )
+            ),
+            symbol_syntax.symbol_reference_syntax_for_name(A_VALID_SYMBOL_NAME),
+        ),
+        Case(
+            'here doc start within quotes',
+            PlainStringAbsStx(
+                StringLiteralAbsStx(here_doc.here_doc_start_token('MARKER'),
+                                    quoting_=QuoteType.SOFT)),
+            here_doc.here_doc_start_token('MARKER'),
+        ),
+        Case(
+            'here doc',
+            rich_str_abs_stx.HereDocAbsStx(here_doc_contents),
+            here_doc_contents,
+        ),
+    ]
+
+
+class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
+    def test_untransformed(self):
+        cases = cases_w_constant_contents()
+        for case in cases:
+            _check_w_constant_contents(self, case)
+
+    def test_transformed(self):
+        cases = cases_w_constant_contents()
+        for case in cases:
+            _check_transformed_w_constant_contents(self, case)
 
 
 class TestSymbolReferences(unittest.TestCase):
@@ -168,7 +168,7 @@ class TestSymbolReferences(unittest.TestCase):
             default_restrictions=asrt_rest.is__w_str_rendering(),
         )
 
-        string_source_syntax = StringSourceOfStringAbsStx(
+        string_source_syntax = StringSourceOfStringAbsStx.of_plain(
             str_abs_stx.StringSymbolAbsStx(contents_symbol.name)
         )
 
@@ -199,8 +199,8 @@ class TestSymbolReferences(unittest.TestCase):
 
         def symbol_ref_syntax_2_contents_arguments(syntax: str) -> StringSourceAbsStx:
             string_value = string_value_template.format(symbol=syntax)
-            return StringSourceOfStringAbsStx(
-                str_abs_stx.StringLiteralAbsStx(string_value, QuoteType.SOFT)
+            return StringSourceOfStringAbsStx.of_str(
+                string_value, QuoteType.SOFT
             )
 
         self._test_symbol_reference_in_contents(symbol_ref_syntax_2_contents_arguments,
@@ -214,7 +214,7 @@ class TestSymbolReferences(unittest.TestCase):
 
         def symbol_ref_syntax_2_contents_arguments(syntax: str) -> StringSourceAbsStx:
             string_value = string_value_template.format(symbol=syntax)
-            return StringSourceOfStringAbsStx(
+            return StringSourceOfStringAbsStx.of_plain(
                 str_abs_stx.StringLiteralAbsStx(string_value, QuoteType.SOFT)
             )
 
@@ -228,8 +228,8 @@ class TestSymbolReferences(unittest.TestCase):
             return here_doc_line_template.format(symbol=symbol_value) + '\n'
 
         def symbol_ref_syntax_2_contents_arguments(syntax: str) -> StringSourceAbsStx:
-            return StringSourceOfHereDocAbsStx(
-                str_abs_stx.StringHereDocAbsStx.of_lines__wo_new_lines([
+            return StringSourceOfStringAbsStx(
+                rich_str_abs_stx.HereDocAbsStx.of_lines__wo_new_lines([
                     here_doc_line_template.format(symbol=syntax)
                 ])
             )
@@ -278,7 +278,7 @@ class TestSymbolReferences(unittest.TestCase):
 class TestInvalidSyntax(unittest.TestCase):
     def test_fail_when_missing_end_quote(self):
         # ARRANGE #
-        string_w_missing_end_quote = StringSourceOfStringAbsStx(
+        string_w_missing_end_quote = StringSourceOfStringAbsStx.of_plain(
             str_abs_stx.StringLiteralAbsStx(SOFT_QUOTE_CHAR + 'contents')
         )
         # ACT & ASSERT #

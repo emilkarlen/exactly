@@ -1,14 +1,14 @@
 import functools
 
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.file_properties import FileType
-from exactly_lib.impls.types.list_ import parse_list, generic_parser
+from exactly_lib.impls.types.list_ import generic_parser, parse_list
 from exactly_lib.impls.types.path import parse_path
-from exactly_lib.impls.types.program import syntax_elements
+from exactly_lib.impls.types.program import syntax_elements as _pgm_syntax_elements
 from exactly_lib.impls.types.program.command import arguments_sdvs
-from exactly_lib.impls.types.string_ import parse_string
+from exactly_lib.impls.types.string_ import parse_string, parse_rich_string
+from exactly_lib.impls.types.string_.syntax_elements import TEXT_UNTIL_EOL_TOKEN_MATCHER
 from exactly_lib.section_document.element_parsers import token_stream_parsing as parsing
-from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
-    SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
 from exactly_lib.tcfs.path_relativity import RelOptionType
@@ -22,9 +22,13 @@ REL_OPTIONS_CONF = rel_opts_configuration.RelOptionsConfiguration(
     rel_opts_configuration.RELATIVITY_VARIANTS_FOR_ALL_EXCEPT_RESULT,
     RelOptionType.REL_HDS_CASE)
 
-REL_OPT_ARG_CONF = RelOptionArgumentConfiguration(REL_OPTIONS_CONF,
-                                                  syntax_elements.ARGUMENT_SYNTAX_ELEMENT_NAME.name,
-                                                  True)
+REL_OPT_ARG_CONF = RelOptionArgumentConfiguration(
+    REL_OPTIONS_CONF,
+    syntax_elements.PROGRAM_ARGUMENT_SYNTAX_ELEMENT.singular_name,
+    True)
+
+_STRING_CONFIGURATION = parse_string.Configuration(syntax_elements.PROGRAM_ARGUMENT_SYNTAX_ELEMENT.singular_name,
+                                                   reference_restrictions=None)
 
 
 def parser() -> Parser[ArgumentsSdv]:
@@ -50,37 +54,45 @@ def _accumulate(x: ArgumentsSdv, y: ArgumentsSdv) -> ArgumentsSdv:
 
 class _ElementParser(ParserFromTokens[ArgumentsSdv]):
     def __init__(self):
+        self._string_or_sym_ref_parser = parse_rich_string.SymbolNameOrStringRichStringParser(_STRING_CONFIGURATION)
         self._element_choices = [
             parsing.TokenSyntaxSetup(
-                token_matchers.is_unquoted_and_equals(syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER),
+                TEXT_UNTIL_EOL_TOKEN_MATCHER,
                 _parse_rest_of_line_as_single_element,
             ),
             parsing.TokenSyntaxSetup(
-                token_matchers.is_option(syntax_elements.EXISTING_FILE_OPTION_NAME),
+                token_matchers.is_option(_pgm_syntax_elements.EXISTING_FILE_OPTION_NAME),
                 _parse_existing_file,
             ),
             parsing.TokenSyntaxSetup(
-                token_matchers.is_option(syntax_elements.EXISTING_DIR_OPTION_NAME),
+                token_matchers.is_option(_pgm_syntax_elements.EXISTING_DIR_OPTION_NAME),
                 _parse_existing_dir,
             ),
             parsing.TokenSyntaxSetup(
-                token_matchers.is_option(syntax_elements.EXISTING_PATH_OPTION_NAME),
+                token_matchers.is_option(_pgm_syntax_elements.EXISTING_PATH_OPTION_NAME),
                 _parse_existing_path,
             ),
         ]
 
     def parse(self, token_parser: TokenParser) -> ArgumentsSdv:
-        return parsing.parse_mandatory_choice_with_default(token_parser,
-                                                           syntax_elements.ARGUMENT_SYNTAX_ELEMENT_NAME.name,
-                                                           self._element_choices,
-                                                           _parse_plain_list_element)
+        return parsing.parse_mandatory_choice_with_default(
+            token_parser,
+            syntax_elements.PROGRAM_ARGUMENT_SYNTAX_ELEMENT.singular_name,
+            self._element_choices,
+            self._parse_plain_list_element,
+        )
+
+    def _parse_plain_list_element(self, token_parser: TokenParser) -> ArgumentsSdv:
+        sym_ref_or_string = self._string_or_sym_ref_parser.parse_from_token_parser(token_parser)
+        if sym_ref_or_string.is_left():
+            sym_ref_element = parse_list.symbol_reference_element(sym_ref_or_string.left())
+            return ArgumentsSdv.new_without_validation(list_sdvs.from_elements([sym_ref_element]))
+        else:
+            return ArgumentsSdv.new_without_validation(list_sdvs.from_string(sym_ref_or_string.right()))
 
 
 def _parse_rest_of_line_as_single_element(token_parser: TokenParser) -> ArgumentsSdv:
     string = parse_string.parse_rest_of_line_as_single_string(token_parser, strip_space=True)
-    if not string.has_fragments:
-        raise SingleInstructionInvalidArgumentException('Empty contents after ' +
-                                                        syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER)
     return ArgumentsSdv.new_without_validation(list_sdvs.from_string(string))
 
 

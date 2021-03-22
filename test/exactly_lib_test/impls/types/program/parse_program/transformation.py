@@ -19,7 +19,7 @@ from exactly_lib_test.test_resources.source.layout import LayoutSpec
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramOfSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import FullProgramAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfRichStringAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.symbol_context import ProgramSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import validation_cases
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
@@ -115,7 +115,7 @@ class TestParsingAndSymbolReferences(unittest.TestCase):
                 program_w_transformer = FullProgramAbsStx(
                     ProgramOfSymbolReferenceAbsStx(
                         referenced_program.name,
-                        [ArgumentOfStringAbsStx.of_str(arg) for arg in arguments_case.value]
+                        [ArgumentOfRichStringAbsStx.of_str(arg) for arg in arguments_case.value]
                     ),
                     transformation=transformer__in_source.abstract_syntax
                 )

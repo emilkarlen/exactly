@@ -18,6 +18,16 @@ Surround any plain reserved word with single quotes:
  - `}` -> `'}'`
  - `:` -> `':'`
 
+## New `RICH-STRING` syntax
+
+Unquoted string constant `:>` must be quoted for
+
+ - Instruction `def` / type  `string`
+ - Type `text-source`
+ - Syntax element `REGEX`
+
+Unquoted string constant for the form `<<MARKER` must be quoted for syntax element `PROGRAM-ARGUMENT`
+
 # [0.14.0]
 
 ## Renaming of types

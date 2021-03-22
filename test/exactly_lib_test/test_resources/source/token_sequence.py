@@ -114,7 +114,12 @@ def str_fragments_of_token(token: Token, spec: LayoutSpec, position: AbstractSet
     if isinstance(token, LayoutAble):
         return token.layout(spec, position)
     else:
+        if not isinstance(token, str):
+            raise ValueError(_INVALID_TOKEN_TYPE + repr(token))
         return [token]
+
+
+_INVALID_TOKEN_TYPE = 'Token is neither {} nor str: '.format(LayoutAble.__name__)
 
 
 def _is_not_empty_string(s: str) -> bool:

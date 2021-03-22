@@ -115,6 +115,7 @@ class TestFailingParse(unittest.TestCase):
                 Arguments('"missing end quote'),
             ),
         ]
+        parser = sut.ParserOfRegex()
         for source_case in cases:
             for option in OPTION_CASES:
                 arguments = source_case.value.prepend_to_first_line(option)
@@ -122,7 +123,7 @@ class TestFailingParse(unittest.TestCase):
                                   option=option):
                     source = remaining_source_lines(arguments.lines)
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        sut.parse_regex(source)
+                        parser.parse_from_token_parser(source)
 
 
 class TestValidRegex(unittest.TestCase):
@@ -279,22 +280,25 @@ class TestValidRegex(unittest.TestCase):
 
         text_on_following_line = 'text on following line'
 
+        here_doc_argument = here_document([regex_source_line])
         source_cases = [
             SourceCase(
                 'end of file after HD',
                 source=
-                here_document([regex_source_line]),
+                here_doc_argument,
 
                 source_assertion=
-                assert_token_stream(is_null=asrt.is_true),
+                assert_token_stream(remaining_part_of_current_line=asrt.equals(''),
+                                    remaining_source=asrt.equals('')),
             ),
             SourceCase(
                 'followed by more lines',
                 source=
-                here_document([regex_source_line]).followed_by_lines([text_on_following_line]),
+                here_doc_argument.followed_by_lines([text_on_following_line]),
 
                 source_assertion=
-                assert_token_stream(remaining_part_of_current_line=asrt.equals(text_on_following_line)),
+                assert_token_stream(remaining_part_of_current_line=asrt.equals(''),
+                                    remaining_source=asrt.equals('\n' + text_on_following_line)),
             ),
         ]
 
@@ -543,7 +547,9 @@ class TestResolvingOfSymbolReferences(unittest.TestCase):
 
         single_sym_ref_source = remaining_source(symbol_reference_syntax_for_name(STRING_SYMBOL_NAME))
 
-        actual_sdv = sut.parse_regex(single_sym_ref_source)
+        parser = sut.ParserOfRegex()
+        # ACT #
+        actual_sdv = parser.parse_from_token_parser(single_sym_ref_source)
 
         non_matching_string = '0'
 
@@ -552,7 +558,7 @@ class TestResolvingOfSymbolReferences(unittest.TestCase):
                 string_symbol = StringSymbolContext.of_constant(STRING_SYMBOL_NAME, symbol_value)
                 symbols = string_symbol.symbol_table
 
-                # ACT & ASSERT #
+                # ASSERT #
 
                 self._assert_resolved_pattern_has_pattern_string(
                     actual_sdv,
@@ -622,10 +628,11 @@ def _check(put: unittest.TestCase,
            arrangement: Arrangement,
            expectation: Expectation):
     # ARRANGE #
+    parser = sut.ParserOfRegex()
     tcds = fake_tcds()
 
     # ACT #
-    actual_sdv = sut.parse_regex(source, consume_last_here_doc_line=True)
+    actual_sdv = parser.parse_from_token_parser(source)
     # ASSERT #
     expectation.token_stream.apply_with_message(put,
                                                 source.token_stream,

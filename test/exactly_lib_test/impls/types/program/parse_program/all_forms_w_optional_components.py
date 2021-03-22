@@ -14,8 +14,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import FullProgramAbsStx, \
     PgmAndArgsWArgumentsAbsStx
-from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfStringAbsStx
-from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
+from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfRichStringAbsStx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerPrimitiveSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
@@ -37,9 +36,7 @@ class TestPgmAndArgs(unittest.TestCase):
         arguments = ['arg']
         str_src_contents = 'the_str_src_contents'
         stdin_syntax = str_src_abs_stx.StringSourceWithinParensAbsStx(
-            str_src_abs_stx.StringSourceOfStringAbsStx(
-                str_abs_stx.StringLiteralAbsStx(str_src_contents)
-            )
+            str_src_abs_stx.StringSourceOfStringAbsStx.of_str(str_src_contents)
         )
         transformer_symbol = StringTransformerPrimitiveSymbolContext(
             'TRANSFORMER',
@@ -50,7 +47,7 @@ class TestPgmAndArgs(unittest.TestCase):
             program_w_stdin = FullProgramAbsStx(
                 PgmAndArgsWArgumentsAbsStx(
                     pgm_and_args_case.pgm_and_args,
-                    [ArgumentOfStringAbsStx.of_str(arg) for arg in arguments],
+                    [ArgumentOfRichStringAbsStx.of_str(arg) for arg in arguments],
                 ),
                 stdin=stdin_syntax,
                 transformation=transformer_symbol.abstract_syntax,
@@ -98,9 +95,7 @@ class TestShellCommandLine(unittest.TestCase):
         # ARRANGE #
         str_src_contents = 'the_str_src_contents'
         stdin_syntax = str_src_abs_stx.StringSourceWithinParensAbsStx(
-            str_src_abs_stx.StringSourceOfStringAbsStx(
-                str_abs_stx.StringLiteralAbsStx(str_src_contents)
-            )
+            str_src_abs_stx.StringSourceOfStringAbsStx.of_str(str_src_contents)
         )
         transformer_symbol = StringTransformerPrimitiveSymbolContext(
             'TRANSFORMER',

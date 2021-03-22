@@ -10,8 +10,9 @@ from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import ProgramAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources import abstract_syntaxes as str_abs_stx
+from exactly_lib_test.type_val_deps.types.string_.test_resources import rich_abstract_syntaxes as rich_str_abs_stx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntax import StringAbsStx
-from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringHereDocAbsStx
+from exactly_lib_test.type_val_deps.types.string_.test_resources.rich_abstract_syntax import RichStringAbsStx
 from exactly_lib_test.type_val_deps.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx, \
     TransformableStringSourceAbsStx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
@@ -59,37 +60,27 @@ class CustomStringSourceAbsStx(StringSourceAbsStx):
 
 
 class StringSourceOfStringAbsStx(TransformableStringSourceAbsStx):
-    def __init__(self, string: StringAbsStx):
+    def __init__(self, string: RichStringAbsStx):
         self.string = string
 
     @staticmethod
-    def of_str(s: str, quoting: Optional[QuoteType] = None) -> StringSourceAbsStx:
-        return StringSourceOfStringAbsStx(
+    def of_str(s: str, quoting: Optional[QuoteType] = None) -> 'StringSourceOfStringAbsStx':
+        return StringSourceOfStringAbsStx.of_plain(
             str_abs_stx.StringLiteralAbsStx(s, quoting)
         )
 
     @staticmethod
-    def of_str__hard(s: str) -> StringSourceAbsStx:
+    def of_str_hard(s: str) -> 'StringSourceOfStringAbsStx':
+        return StringSourceOfStringAbsStx.of_str(s, QuoteType.HARD)
+
+    @staticmethod
+    def of_plain(string: StringAbsStx) -> 'StringSourceOfStringAbsStx':
         return StringSourceOfStringAbsStx(
-            str_abs_stx.StringLiteralAbsStx(s, QuoteType.HARD)
+            rich_str_abs_stx.PlainStringAbsStx(string)
         )
 
     def tokenization(self) -> TokenSequence:
         return self.string.tokenization()
-
-
-class StringSourceOfHereDocAbsStx(TransformableStringSourceAbsStx):
-    def __init__(self, here_doc: StringHereDocAbsStx):
-        self.here_doc = here_doc
-
-    @staticmethod
-    def of_str(s: str, quoting: Optional[QuoteType] = None) -> StringSourceAbsStx:
-        return StringSourceOfStringAbsStx(
-            str_abs_stx.StringLiteralAbsStx(s, quoting)
-        )
-
-    def tokenization(self) -> TokenSequence:
-        return self.here_doc.tokenization()
 
 
 class StringSourceOfFileAbsStx(TransformableStringSourceAbsStx):

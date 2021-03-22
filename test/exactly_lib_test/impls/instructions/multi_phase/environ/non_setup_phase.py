@@ -14,7 +14,8 @@ from exactly_lib_test.impls.instructions.multi_phase.environ.test_resources.refe
     ValueWSymRefsAndVarRefs, NameWSymRefs
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
     ExecutionExpectation
-from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import StringSourceOfStringAbsStx
+from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntaxes import \
+    StringSourceOfStringAbsStx
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case.test_resources import instr_settings_assertions as asrt_instr_settings
 from exactly_lib_test.test_resources.test_utils import NArrEx
@@ -150,9 +151,11 @@ class TestSetWithSymbolAndVarReferences(unittest.TestCase):
         for phase_spec__source in [None, Phase.NON_ACT]:
             CHECKER.check__abs_stx__multi__std_layouts_and_source_variants(
                 self,
-                SetVariableArgumentsAbsStx(NameWSymRefs.STRING_ABS_STX,
-                                           StringSourceOfStringAbsStx(ValueWSymRefsAndVarRefs.STRING_ABS_STX),
-                                           phase_spec=phase_spec__source),
+                SetVariableArgumentsAbsStx(
+                    NameWSymRefs.STRING_ABS_STX,
+                    StringSourceOfStringAbsStx(ValueWSymRefsAndVarRefs.STRING_ABS_STX),
+                    phase_spec=phase_spec__source,
+                ),
                 symbol_usages=SymbolContext.usages_assertion_of_contexts(all_symbols),
                 execution_cases=execution_cases,
                 sub_test_identifiers={

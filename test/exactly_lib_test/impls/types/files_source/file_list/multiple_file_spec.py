@@ -117,7 +117,7 @@ def file_name_arg(file_name: str) -> StringLiteralAbsStx:
 
 
 def str_src_of_str(contents: str) -> str_src_abs_stx.StringSourceAbsStx:
-    return str_src_abs_stx.StringSourceOfStringAbsStx.of_str(contents, QuoteType.HARD)
+    return str_src_abs_stx.StringSourceOfStringAbsStx.of_str_hard(contents)
 
 
 if __name__ == '__main__':

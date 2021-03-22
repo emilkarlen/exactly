@@ -108,7 +108,7 @@ def parse_fragments_from_tokens(tokens: TokenStream,
 
 def parse_fragments_from_token(token: Token) -> List[symbol_syntax.Fragment]:
     if token.is_quoted and token.is_hard_quote_type:
-        return [symbol_syntax.Fragment(token.string, is_symbol=False)]
+        return [symbol_syntax.constant(token.string)]
     return symbol_syntax.split(token.string)
 
 

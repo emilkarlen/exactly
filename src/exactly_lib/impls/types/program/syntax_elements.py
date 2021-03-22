@@ -1,5 +1,6 @@
 from exactly_lib.definitions.primitives import program, string_transformer
 from exactly_lib.definitions.test_case.instructions import instruction_names
+from exactly_lib.impls.types.string_ import syntax_elements as string_se
 from exactly_lib.type_val_deps.types.path import path_relativities
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -15,7 +16,8 @@ EXE_FILE_REL_OPTION_ARG_CONF = path_relativities.ALL_REL_OPTIONS_ARG_CONFIG
 PYTHON_EXECUTABLE_OPTION_NAME = argument.OptionName(long_name='python')
 PYTHON_EXECUTABLE_OPTION_STRING = long_option_syntax(PYTHON_EXECUTABLE_OPTION_NAME.long)
 
-REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER = ':>'
+REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER = string_se.TEXT_UNTIL_EOL_MARKER
+
 EXISTING_FILE_OPTION_NAME = a.OptionName(long_name='existing-file')
 EXISTING_DIR_OPTION_NAME = a.OptionName(long_name='existing-dir')
 EXISTING_PATH_OPTION_NAME = a.OptionName(long_name='existing-path')

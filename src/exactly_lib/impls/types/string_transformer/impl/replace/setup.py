@@ -34,7 +34,7 @@ class ParserOfReplace(ParserFromTokens[StringTransformerSdv]):
         token_parser.require_has_valid_head_token(_REGEX_ARGUMENT.name)
         mb_line_matcher = self._parser_of_lines_selection.parse_from_token_parser(token_parser)
         preserve_new_lines = token_parser.consume_optional_option(names.PRESERVE_NEW_LINES_OPTION_NAME)
-        regex_sdv = self._parser_of_regex.parse(token_parser)
+        regex_sdv = self._parser_of_regex.parse_from_token_parser(token_parser)
         replacement = self._parser_of_replacement.parse(token_parser)
 
         return _impl.Sdv(mb_line_matcher,
