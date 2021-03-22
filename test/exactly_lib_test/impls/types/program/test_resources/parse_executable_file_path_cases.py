@@ -31,32 +31,36 @@ from exactly_lib_test.type_val_deps.test_resources.validation import validation
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
     equals_symbol_references__w_str_rendering
 from exactly_lib_test.type_val_deps.types.path.test_resources.sdv_assertions import matches_path_sdv
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import \
+    ProgramOfExecutableFileCommandLineAbsStx
 
 
 class RelativityConfiguration:
     def __init__(self, rel_opt_conf: RelativityOptionConfiguration):
-        self._rel_opt_conf = rel_opt_conf
+        self.rel_opt_conf = rel_opt_conf
 
     @property
     def option(self) -> str:
-        return self._rel_opt_conf.option_argument_str
+        return self.rel_opt_conf.option_argument_str
 
     @property
     def exists_pre_sds(self) -> bool:
-        return self._rel_opt_conf.exists_pre_sds
+        return self.rel_opt_conf.exists_pre_sds
 
     def file_installation(self, file: File) -> TcdsPopulator:
-        return self._rel_opt_conf.populator_for_relativity_option_root(DirContents([file]))
+        return self.rel_opt_conf.populator_for_relativity_option_root(DirContents([file]))
 
     def installation_dir(self, tcds: TestCaseDs) -> pathlib.Path:
-        return self._rel_opt_conf.population_dir(tcds)
+        return self.rel_opt_conf.population_dir(tcds)
 
 
 def suite_for(configuration: RelativityConfiguration) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTests([CheckExistingFile(configuration),
-                      CheckExistingButNonExecutableFile(configuration),
-                      CheckNonExistingFile(configuration)])
+    ret_val.addTests([
+        CheckExistingFile(configuration),
+        CheckExistingButNonExecutableFile(configuration),
+        CheckNonExistingFile(configuration)
+    ])
     return ret_val
 
 
@@ -217,7 +221,7 @@ class CheckExistingFile(CheckBase):
     def runTest(self):
         # ARRANGE #
         conf = self.configuration
-        arguments_str = '{} file.exe remaining args'.format(conf.option)
+        arguments_str = _exe_file_syntax_str(conf, 'file.exe', 'remaining args')
         source = ParseSource(arguments_str)
         # ACT #
         exe_file = parse_executable_file_path.parser().parse(source)
@@ -237,7 +241,7 @@ class CheckExistingButNonExecutableFile(CheckBase):
     def runTest(self):
         # ARRANGE #
         conf = self.configuration
-        arguments_str = '{} file.exe remaining args'.format(conf.option)
+        arguments_str = _exe_file_syntax_str(conf, 'file.exe', 'remaining args')
         source = ParseSource(arguments_str)
         # ACT #
         exe_file = parse_executable_file_path.parser().parse(source)
@@ -253,7 +257,7 @@ class CheckNonExistingFile(CheckBase):
     def runTest(self):
         # ARRANGE #
         conf = self.configuration
-        arguments_str = '{} file.exe remaining args'.format(conf.option)
+        arguments_str = _exe_file_syntax_str(conf, 'file.exe', 'remaining args')
         source = ParseSource(arguments_str)
         # ACT #
         exe_file = parse_executable_file_path.parser().parse(source)
@@ -271,3 +275,13 @@ def has_remaining_part_of_first_line(remaining_part: str) -> Assertion[ParseSour
     return asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
                                             remaining_part_of_current_line=asrt.equals(
                                                 remaining_part))
+
+
+def _exe_file_syntax_str(configuration: RelativityConfiguration,
+                         file_name: str,
+                         remaining_args: str) -> str:
+    syntax = ProgramOfExecutableFileCommandLineAbsStx(
+        configuration.rel_opt_conf.path_abs_stx_of_name(file_name),
+        []
+    )
+    return syntax.as_str__default() + ' ' + remaining_args

@@ -27,7 +27,6 @@ from exactly_lib_test.impls.types.test_resources import relativity_options
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import tcds_populators as tcds_pop
-from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.argument_renderer import CustomOptionArgument
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
@@ -47,8 +46,9 @@ from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes 
     RelOptPathAbsStx, \
     RelSymbolPathAbsStx
 from exactly_lib_test.type_val_deps.types.path.test_resources.symbol_context import ConstantSuffixPathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import PgmAndArgsAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntaxes import \
-    ProgramOfExecutableFileCommandLineAbsStx
+    ProgramOfExecutableFileCommandLineAbsStx, ProgramOfPythonInterpreterAbsStx, PgmAndArgsWArgumentsAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stx import ArgumentAbsStx
 from exactly_lib_test.type_val_deps.types.program.test_resources.argument_abs_stxs import ArgumentOfRichStringAbsStx
 from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import StringLiteralAbsStx
@@ -75,7 +75,7 @@ def suite() -> unittest.TestSuite:
 
 class TestCaseConfiguration:
     def __init__(self,
-                 executable: str,
+                 executable: PgmAndArgsAbsStx,
                  validation_result: validation.Expectation,
                  path_ddv: PathDdv,
                  expected_symbol_references: List[SymbolReference],
@@ -255,14 +255,18 @@ class TestParseInvalidSyntax(unittest.TestCase):
 
 
 CONFIGURATION_FOR_PYTHON_EXECUTABLE = TestCaseConfiguration(
-    syntax_elements.PYTHON_EXECUTABLE_OPTION_STRING,
+    ProgramOfPythonInterpreterAbsStx(()),
     validation_result=validation.Expectation.passes_all(),
     path_ddv=path_ddvs.absolute_file_name(sys.executable),
     expected_symbol_references=[],
 )
 
 CONFIGURATION_FOR_ABSOLUTE_PATH_OF_EXISTING_EXECUTABLE_FILE = TestCaseConfiguration(
-    string_formatting.file_name(sys.executable),
+    ProgramOfExecutableFileCommandLineAbsStx(
+        PathStringAbsStx.of_plain_str(
+            sys.executable, QuoteType.HARD,
+        )
+    ),
     validation_result=validation.Expectation.passes_all(),
     path_ddv=path_ddvs.absolute_file_name(sys.executable),
     expected_symbol_references=[],
@@ -271,7 +275,11 @@ CONFIGURATION_FOR_ABSOLUTE_PATH_OF_EXISTING_EXECUTABLE_FILE = TestCaseConfigurat
 _ABSOLUT_PATH_THAT_DOES_NOT_EXIST = str(non_existing_absolute_path('/absolute/path/that/is/expected/to/not/exist'))
 
 CONFIGURATION_FOR_ABSOLUTE_PATH_OF_NON_EXISTING_FILE = TestCaseConfiguration(
-    string_formatting.file_name(_ABSOLUT_PATH_THAT_DOES_NOT_EXIST),
+    ProgramOfExecutableFileCommandLineAbsStx(
+        PathStringAbsStx.of_plain_str(
+            _ABSOLUT_PATH_THAT_DOES_NOT_EXIST, QuoteType.HARD,
+        )
+    ),
     validation_result=validation.Expectation.pre_eds(False),
     path_ddv=path_ddvs.absolute_file_name(_ABSOLUT_PATH_THAT_DOES_NOT_EXIST),
     expected_symbol_references=[],
@@ -289,12 +297,9 @@ class ExecutableTestBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectT
 
 class NoParenthesesAndNoFollowingArguments(ExecutableTestBase):
     def runTest(self):
-        instruction_argument = ProgramOfExecutableFileCommandLineAbsStx(
-            PathStringAbsStx.of_plain_str(self.configuration.executable)
-        )
         utils.check__abs_stx(
             self,
-            instruction_argument,
+            self.configuration.executable,
             utils.Arrangement(tcds_pop.empty()),
             utils.Expectation(
                 path_ddv=self.configuration.path_ddv,
@@ -307,8 +312,8 @@ class NoParenthesesAndNoFollowingArguments(ExecutableTestBase):
 
 class NoParenthesesAndFollowingArguments(ExecutableTestBase):
     def runTest(self):
-        instruction_argument = ProgramOfExecutableFileCommandLineAbsStx(
-            PathStringAbsStx.of_plain_str(self.configuration.executable),
+        instruction_argument = PgmAndArgsWArgumentsAbsStx(
+            self.configuration.executable,
             [ArgumentOfRichStringAbsStx.of_str('arg1'),
              ArgumentOfRichStringAbsStx.of_str('-arg2'),
              ],

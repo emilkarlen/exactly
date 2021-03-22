@@ -57,8 +57,8 @@ class PathStringAbsStx(PathAbsStx):
         self.string = string
 
     @staticmethod
-    def of_plain_str(string: str) -> 'PathStringAbsStx':
-        return PathStringAbsStx(StringLiteralAbsStx(string))
+    def of_plain_str(string: str, quoting: Optional[QuoteType] = None) -> 'PathStringAbsStx':
+        return PathStringAbsStx(StringLiteralAbsStx(string, quoting))
 
     @staticmethod
     def of_shlex_quoted(unquoted_path_str: str) -> 'PathStringAbsStx':
