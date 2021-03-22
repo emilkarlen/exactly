@@ -4,8 +4,8 @@
 
 [setup]
 
-def program ENV_VAR_EQUALS     = -python -existing-file ( -rel-home src/env-var-equals.py )
+def program ENV_VAR_EQUALS     = -python -existing-file -rel-home src/env-var-equals.py
 
-def program ENV_VAR_IS_NOT_SET = -python -existing-file ( -rel-home src/env-var-is-not-set.py )
+def program ENV_VAR_IS_NOT_SET = -python -existing-file -rel-home src/env-var-is-not-set.py
 
-def program PRINT_ENV_VAR      = -python -existing-file ( -rel-home src/print-env-var.py )
+def program PRINT_ENV_VAR      = -python -existing-file -rel-home src/print-env-var.py

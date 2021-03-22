@@ -28,6 +28,10 @@ Unquoted string constant `:>` must be quoted for
 
 Unquoted string constant for the form `<<MARKER` must be quoted for syntax element `PROGRAM-ARGUMENT`
 
+## PATH values may not be surrounded by parentheses
+
+Remove any parentheses around PATH values.
+
 # [0.14.0]
 
 ## Renaming of types

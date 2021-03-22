@@ -1,13 +1,10 @@
 import unittest
 
-from exactly_lib_test.impls.types.path import parse_path, parse_within_parens
+from exactly_lib_test.impls.types.path import parse_path
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        parse_path.suite(),
-        parse_within_parens.suite(),
-    ])
+    return parse_path.suite()
 
 
 if __name__ == '__main__':

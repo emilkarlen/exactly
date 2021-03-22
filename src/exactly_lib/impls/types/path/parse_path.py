@@ -2,7 +2,7 @@ import functools
 import pathlib
 from typing import Sequence, Optional, Callable, Union
 
-from exactly_lib.definitions.test_case import reserved_words, reserved_tokens
+from exactly_lib.definitions.test_case import reserved_tokens
 from exactly_lib.impls.types.path.parse_relativity import parse_explicit_relativity_info
 from exactly_lib.impls.types.string_.parse_string import parse_string_sdv_from_token, \
     parse_fragments_from_token, string_sdv_from_fragments
@@ -56,18 +56,7 @@ def parse_path(tokens: TokenStream,
     """
     conf = _Conf(source_file_location, conf)
     parser = _Parser(conf)
-    if _token_stream_has_head(tokens, reserved_tokens.IS_PAREN__BEGIN):
-        tokens.consume()
-        ret_val = parser._parse_path__wo_parens(tokens)
-        if _token_stream_has_head(tokens, reserved_tokens.IS_PAREN__END):
-            tokens.consume()
-            return ret_val
-        else:
-            raise SingleInstructionInvalidArgumentException(
-                'Missing "{}" (unquoted)'.format(reserved_words.PAREN_END)
-            )
-    else:
-        return parser._parse_path__wo_parens(tokens)
+    return parser.parse(tokens)
 
 
 def _token_stream_has_head(token_stream: TokenStream, condition: TokenMatcher) -> bool:
@@ -91,7 +80,7 @@ class _Parser:
     def __init__(self, conf: _Conf):
         self.conf = conf
 
-    def _parse_path__wo_parens(self, tokens: TokenStream) -> PathSdv:
+    def parse(self, tokens: TokenStream) -> PathSdv:
         """
         :param tokens: Argument list
         :raises SingleInstructionInvalidArgumentException: Invalid arguments

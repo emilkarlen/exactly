@@ -19,7 +19,6 @@ from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
-from exactly_lib.help.entities.utils.se_within_parens import OptionallyWithinParens
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.tcfs.relative_path_options import REL_HDS_OPTIONS_MAP, \
@@ -202,9 +201,7 @@ class _Documentation(SyntaxElementDocumentation):
                 )
 
 
-DOCUMENTATION = OptionallyWithinParens(
-    _Documentation(),
-)
+DOCUMENTATION = _Documentation()
 
 
 def _options_for_directories_in_the_(rel_opt_2_rel_option_info: dict,

@@ -27,6 +27,10 @@ with exception of a "0." prefix until version 1 is released.
  - Syntax elements `PROGRAM-ARGUMENT` - `)` ends list
  - Syntax elements `PROGRAM-ARGUMENT` - Multi line list using backslash
 
+### Removed
+
+ - Syntax element `PATH` - Optional surrounding by parentheses
+
 ## [0.14.0] - 2021-03-01
 
 ### Added
