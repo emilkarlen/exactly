@@ -1,4 +1,3 @@
-import os
 from typing import List, Callable
 
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
@@ -212,5 +211,5 @@ class _InvalidUsageReporter(ProcessResultReporter):
         output_file = environment.std_files.err
 
         output_file.write(self._error_message)
-        output_file.write(os.linesep)
+        output_file.write('\n')
         return exit_codes.EXIT_INVALID_USAGE

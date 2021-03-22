@@ -1,5 +1,4 @@
-import os
-from typing import Optional, Sequence
+from typing import Optional, Sequence, TextIO
 
 from exactly_lib.util import ansi_terminal_color as ansi
 from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
@@ -13,10 +12,7 @@ class FilePrinter:
     Optional support of ansi colors.
     """
 
-    def __init__(self, file):
-        """
-        :param file: A file-like object.
-        """
+    def __init__(self, file: TextIO):
         self.file = file
 
     def flush(self):
@@ -27,10 +23,13 @@ class FilePrinter:
         if flush:
             self.file.flush()
 
+    def write_new_line(self):
+        self.file.write('\n')
+
     def write_line(self, line: str, indent: str = ''):
         self.file.write(indent)
         self.file.write(line)
-        self.file.write(os.linesep)
+        self.write_new_line()
 
     def set_color(self, color: ForegroundColor):
         pass
@@ -50,10 +49,10 @@ class FilePrinter:
         self.file.write(line)
         if color is not None:
             self.unset_color()
-        self.file.write(os.linesep)
+        self.write_new_line()
 
     def write_empty_line(self):
-        self.file.write(os.linesep)
+        self.write_new_line()
 
     def write_line_if_present(self, line: str):
         if line:
