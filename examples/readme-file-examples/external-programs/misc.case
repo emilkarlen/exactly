@@ -52,7 +52,7 @@ stdout -from $ echo 'Interesting output'
        equals "Interesting output@[NEW_LINE]@"
 
 exit-code -from my-assert-helper-program
-          == 0
+           ( <= 2 || > 10 )
 
 exists output.txt : (
        type file

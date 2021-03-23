@@ -1,6 +1,6 @@
 [assert]
 
-exists @[MY_PROJECTS_ROOT_DIR]@ : type dir && @[ALL_PROJECT_DIRS_ARE_VALID]@
+exists @[MY_PROJECTS_ROOT_DIR]@ : type dir && ALL_PROJECT_DIRS_ARE_VALID
 
 [setup]
 
@@ -20,11 +20,11 @@ def file-matcher IS_VALID_PROJECT_DIR =
 
     type dir &&
     dir-contents
-       matches { Makefile : @[IS_VALID_MAKEFILE]@ }
+       matches { Makefile : IS_VALID_MAKEFILE }
 
 
 def file-matcher ALL_PROJECT_DIRS_ARE_VALID =
 
     dir-contents -recursive
-      -selection name @[MY_PROJECT_DIR_NAME]@
-        every file : @[IS_VALID_PROJECT_DIR]@
+      -selection name MY_PROJECT_DIR_NAME
+        every file : IS_VALID_PROJECT_DIR

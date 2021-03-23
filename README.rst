@@ -77,7 +77,7 @@ This test assumes that
 
 
 If the actual email address of "Pablo Gauss" is not the expected one,
-then Exactly will *report failure*. For example:
+then Exactly will **report failure**. For example:
 
 .. parsed-literal::
    :class: terminal
@@ -275,7 +275,7 @@ The following case shows some examples, but **doesn't make sense** as a realisti
            equals "Interesting output@[NEW_LINE]@"
 
     exit-code -from my-assert-helper-program
-              == 0
+              ( <= 2 || > 10 )
 
     exists output.txt : (
            type file
@@ -337,7 +337,7 @@ and must contain a 'Makefile' with a target 'all'::
 
     [assert]
 
-    exists @[MY_PROJECTS_ROOT_DIR]@ : type dir && @[ALL_PROJECT_DIRS_ARE_VALID]@
+    exists @[MY_PROJECTS_ROOT_DIR]@ : type dir && ALL_PROJECT_DIRS_ARE_VALID
 
     [setup]
 
@@ -357,20 +357,23 @@ and must contain a 'Makefile' with a target 'all'::
 
         type dir &&
         dir-contents
-           matches { Makefile : @[IS_VALID_MAKEFILE]@ }
+           matches { Makefile : IS_VALID_MAKEFILE }
 
 
     def file-matcher ALL_PROJECT_DIRS_ARE_VALID =
 
         dir-contents -recursive
-          -selection name @[MY_PROJECT_DIR_NAME]@
-            every file : @[IS_VALID_PROJECT_DIR]@
+          -selection name MY_PROJECT_DIR_NAME
+            every file : IS_VALID_PROJECT_DIR
 
 
-The ``@[SYMBOL_NAME]@`` syntax is a reference to the "symbol" "SYMBOL_NAME".
-This syntax can always be used.
+The ``@[symbol_name]@`` syntax is a reference to the "symbol" *symbol_name*.
+This syntax must be used wherever a string value is accepted,
+as in ``@[MY_PROJECTS_ROOT_DIR]@``, where a file name string is accepted.
 
-In some contexts, just ``SYMBOL_NAME`` will also do.
+Just ``symbol_name`` will do in all other contexts.
+
+The ``@[symbol_name]@`` syntax can be used in any context.
 
 
 Testing a git commit hook
@@ -527,7 +530,7 @@ Both of them defaults to the directory
 that contains the test case file,
 but can be changed via ``[conf]``.
 
-Exactly does it's best to prevent files in these directories from being modified.
+Exactly does its best to prevent files in these directories from being modified.
 
 
 The **sandbox directory structure** is temporary directories for
@@ -717,7 +720,8 @@ DEVELOPMENT STATUS
 Current version is fully functional, but some syntax and semantics is inconsistent:
 
 * Some instructions allow arguments to span multiple lines, some do not.
-* Support for escapes characters in strings is missing.
+* Support for character escaping in strings is missing.
+* Support for comments inside instructions is missing.
 
 Incompatible changes to syntax and semantics may occur in every 0.x release.
 
