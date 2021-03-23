@@ -90,6 +90,7 @@ class _SymbolConcept(ConceptDocumentation):
 
             'def': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
 
+            'string_type_in_text': types.STRING_TYPE_INFO.name,
             'string_type': types.VALUE_TYPE_2_TYPES_INFO_DICT[ValueType.STRING].identifier,
             'plain_string': misc_texts.PLAIN_STRING,
             'list_type': types.VALUE_TYPE_2_TYPES_INFO_DICT[ValueType.LIST].identifier,
@@ -208,6 +209,9 @@ The special syntax is designed to reduce the risk of clashes
 with the syntax of other programming languages and shell script, e.g.
 
 This is important since {program_name} has limited capabilities for escaping and quoting.
+
+
+The special syntax must be used wherever {string_type_in_text:a} value is accepted.
 
 
 Also, {plain_string:s} that resemble the special syntax will not be considered as errors,

@@ -59,7 +59,10 @@ There are two categories of {type:s}:
 """
 
 _REST__AFTER_CATEGORY_LIST = """\
-Each {type} has its own specialized syntax. 
+Each {type} has its own specialized syntax.
+
+
+Every value is constant.
 """
 
 _TYPE_CATEGORY__DATA = """\
