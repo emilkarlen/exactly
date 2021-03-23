@@ -38,4 +38,4 @@ class InitialPartReaderWithRestIndicator(TextFromFileReader):
         return ret_val
 
 
-STD_ERR_TEXT_READER = InitialPartReaderWithRestIndicator(32, 1024)
+STD_ERR_TEXT_READER = InitialPartReaderWithRestIndicator(2 ** 8, 16 * 2 ** 10)
