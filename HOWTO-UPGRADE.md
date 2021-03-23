@@ -1,6 +1,6 @@
 Describes how to upgrade test cases to one version from the preceding version.
 
-# [next]
+# [0.15.0]
 
 ## Instruction `dir` - Fails if the directory already exists
 
