@@ -74,6 +74,7 @@ readme_examples_root_dir = 'readme-file-examples'
 readme_contacts_dir = Path('contacts')
 readme_classify_dir = Path('classify')
 readme_sandbox_dir = Path('sandbox')
+readme_ext_pgm_dir = Path('external-programs')
 
 
 ########################################
@@ -112,12 +113,15 @@ README_FILES = itertools.chain.from_iterable([
         [FILTER_LINES,
          ]),
     do_nothing_list(
-        Path('external-programs'),
+        readme_ext_pgm_dir,
         [MY_ASSERT_HELPER_PROGRAM,
          MY_SETUP_HELPER_PROGRAM,
          MY_STRING_TRANSFORMER_PROGRAM,
          SYSTEM_UNDER_TEST,
          ]),
+    sts(
+        readme_ext_pgm_dir / 'bin',
+        ['mysql']),
     sts(Path('transform'),
         [PROGRAM_THAT_WRITES_LOG_FILE]
         ),
