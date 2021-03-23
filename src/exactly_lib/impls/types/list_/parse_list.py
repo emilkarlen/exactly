@@ -15,8 +15,6 @@ from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.util.parse.token import Token
 from . import generic_parser
 
-CONTINUATION_TOKEN = '\\'
-
 
 def parse_list(source: ParseSource) -> ListSdv:
     with from_parse_source(source) as token_parser:

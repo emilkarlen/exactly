@@ -1,11 +1,9 @@
 from typing import TypeVar, Generic, List
 
-from exactly_lib.definitions.test_case import reserved_tokens
 from exactly_lib.section_document.element_parsers.token_stream_parser import ParserFromTokens, TokenParser
+from exactly_lib.type_val_deps.types.list_ import defs
 
 ELEMENT = TypeVar('ELEMENT')
-
-CONTINUATION_TOKEN = '\\'
 
 
 class ElementsUntilEndOfLineParser(Generic[ELEMENT], ParserFromTokens[List[ELEMENT]]):
@@ -16,10 +14,10 @@ class ElementsUntilEndOfLineParser(Generic[ELEMENT], ParserFromTokens[List[ELEME
         ret_val = []
 
         while not token_parser.is_at_eol:
-            if token_parser.remaining_part_of_current_line.strip() == CONTINUATION_TOKEN:
+            if token_parser.remaining_part_of_current_line.strip() == defs.CONTINUATION_TOKEN:
                 token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
                 continue
-            if token_parser.has_valid_head_matching(reserved_tokens.IS_PAREN__END):
+            if token_parser.has_valid_head_matching(defs.IS_STOP_AT_TOKEN):
                 break
             ret_val.append(self._element_parser.parse(token_parser))
 

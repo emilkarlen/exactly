@@ -9,6 +9,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions
+from exactly_lib.type_val_deps.types.list_ import defs
 from exactly_lib.type_val_deps.types.list_ import list_sdv as lr, list_sdvs
 from exactly_lib.type_val_deps.types.list_.list_sdv import ElementSdv
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
@@ -99,7 +100,7 @@ class TestEmptyList(unittest.TestCase):
                  ),
             Case('line with continuation-token, followed by empty line',
                  source=
-                 remaining_source(sut.CONTINUATION_TOKEN, ['']),
+                 remaining_source(defs.CONTINUATION_TOKEN, ['']),
                  expectation=
                  Expectation(elements=[],
                              source=asrt_source.is_at_end_of_line(2),
@@ -107,7 +108,7 @@ class TestEmptyList(unittest.TestCase):
                  ),
             Case('line with continuation-token (followed by space), followed by empty line',
                  source=
-                 remaining_source(sut.CONTINUATION_TOKEN + '  ', ['']),
+                 remaining_source(defs.CONTINUATION_TOKEN + '  ', ['']),
                  expectation=
                  Expectation(elements=[],
                              source=asrt_source.is_at_end_of_line(2),
@@ -233,7 +234,7 @@ class TestSingleElementList(unittest.TestCase):
                  ),
             Case('continuation token, followed by line with single element',
                  source=
-                 remaining_source(sut.CONTINUATION_TOKEN,
+                 remaining_source(defs.CONTINUATION_TOKEN,
                                   [single_token_value]),
                  expectation=
                  Expectation(elements=
@@ -243,7 +244,7 @@ class TestSingleElementList(unittest.TestCase):
                  ),
             Case('single element, followed by continuation token, followed by empty line',
                  source=
-                 remaining_source(single_token_value + ' ' + sut.CONTINUATION_TOKEN,
+                 remaining_source(single_token_value + ' ' + defs.CONTINUATION_TOKEN,
                                   ['']),
                  expectation=
                  Expectation(elements=
@@ -382,7 +383,7 @@ class TestMultipleElementList(unittest.TestCase):
                  ),
             Case('1st string on first line, followed by continuation-token, followed by line with 2nd string',
                  source=
-                 remaining_source(single_token_value_1 + ' ' + sut.CONTINUATION_TOKEN,
+                 remaining_source(single_token_value_1 + ' ' + defs.CONTINUATION_TOKEN,
                                   [single_token_value_2]),
                  expectation=
                  Expectation(elements=
@@ -394,7 +395,7 @@ class TestMultipleElementList(unittest.TestCase):
                  ),
             Case('multiple elements on two lines, separated by continuation token',
                  source=
-                 remaining_source('a b ' + sut.CONTINUATION_TOKEN,
+                 remaining_source('a b ' + defs.CONTINUATION_TOKEN,
                                   ['  c d  ']),
                  expectation=
                  Expectation(elements=

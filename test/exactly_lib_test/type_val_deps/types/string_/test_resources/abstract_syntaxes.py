@@ -2,6 +2,7 @@ import itertools
 import shlex
 from typing import Optional, Sequence, AbstractSet
 
+from exactly_lib.definitions.test_case import reserved_words
 from exactly_lib.util.parse.token import QuoteType
 from exactly_lib_test.symbol.test_resources import token_sequences as symbol_tok_seq
 from exactly_lib_test.test_resources.source import token_sequence
@@ -49,6 +50,13 @@ MISSING_END_QUOTE_STR__HARD = quoting.HARD_QUOTE_CHAR + 'missing_end_quote'
 
 MISSING_END_QUOTE__SOFT = StringLiteralAbsStx(MISSING_END_QUOTE_STR__SOFT)
 MISSING_END_QUOTE__HARD = StringLiteralAbsStx(MISSING_END_QUOTE_STR__HARD)
+RESERVED_WORD__NON_PAREN = StringLiteralAbsStx(reserved_words.ASSIGN)
+
+SOME_INVALID_STRINGS: Sequence[StringLiteralAbsStx] = (
+    MISSING_END_QUOTE__SOFT,
+    MISSING_END_QUOTE__HARD,
+    RESERVED_WORD__NON_PAREN,
+)
 
 
 class StringConcatAbsStx(StringAbsStx):

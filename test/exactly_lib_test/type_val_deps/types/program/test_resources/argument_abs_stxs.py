@@ -1,8 +1,8 @@
 import enum
 from typing import Optional, Sequence
 
-from exactly_lib.impls.types.list_ import parse_list
 from exactly_lib.impls.types.program import syntax_elements
+from exactly_lib.type_val_deps.types.list_ import defs
 from exactly_lib.util.parse.token import QuoteType
 from exactly_lib_test.symbol.test_resources import token_sequences as symbol_tok_seq
 from exactly_lib_test.test_resources.source import token_sequences
@@ -24,14 +24,14 @@ class ArgumentOfSymbolReferenceAbsStx(ArgumentAbsStx):
 
 
 class ContinuationTokenFollowedByArgumentAbsStx(ArgumentAbsStx):
-    CONTINUATION_TOKEN = parse_list.CONTINUATION_TOKEN
+    CONTINUATION_TOKEN = defs.CONTINUATION_TOKEN
 
     def __init__(self, argument_on_next_line: ArgumentAbsStx):
         self._argument_on_next_line = argument_on_next_line
 
     def tokenization(self) -> TokenSequence:
         return TokenSequence.concat([
-            TokenSequence.singleton(parse_list.CONTINUATION_TOKEN),
+            TokenSequence.singleton(defs.CONTINUATION_TOKEN),
             TokenSequence.new_line(),
             self._argument_on_next_line.tokenization(),
         ])

@@ -1,11 +1,12 @@
 import unittest
 
+from exactly_lib.type_val_deps.types.list_ import defs
 from exactly_lib.type_val_deps.types.list_ import list_sdvs as sdvs
 from exactly_lib.util.parse.token import QuoteType
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.abstract_syntax import \
     DefineSymbolWOptionalValue
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.embryo_checker import \
-    INSTRUCTION_CHECKER
+    INSTRUCTION_CHECKER, PARSE_CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
     MultiSourceExpectation
@@ -17,11 +18,40 @@ from exactly_lib_test.type_val_deps.types.list_.test_resources.abstract_syntax i
 from exactly_lib_test.type_val_deps.types.list_.test_resources.abstract_syntaxes import EmptyListAbsStx, \
     NonEmptyListAbsStx, ListElementStringAbsStx
 from exactly_lib_test.type_val_deps.types.list_.test_resources.symbol_context import ListSymbolContext
+from exactly_lib_test.type_val_deps.types.string_.test_resources.abstract_syntaxes import SOME_INVALID_STRINGS, \
+    StringLiteralAbsStx
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestListSuccessfulParse)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestInvalidSyntax),
+        unittest.makeSuite(TestListSuccessfulParse),
+    ])
+
+
+class TestInvalidSyntax(unittest.TestCase):
+    def test_invalid_string(self):
+        for invalid_string in SOME_INVALID_STRINGS:
+            invalid_list = NonEmptyListAbsStx([ListElementStringAbsStx(invalid_string)])
+            PARSE_CHECKER.check_invalid_syntax__abs_stx(
+                self,
+                invalid_list,
+                sub_test_identifiers={
+                    'invalid_string': repr(invalid_string.value)
+                }
+            )
+
+    def test_superfluous_arguments_after_explicit_list_delimiter(self):
+        stop_element = ListElementStringAbsStx(StringLiteralAbsStx(defs.STOP_AT_CHAR))
+        invalid_list = NonEmptyListAbsStx([
+            stop_element,
+            ListElementStringAbsStx(StringLiteralAbsStx('valid')),
+        ])
+        PARSE_CHECKER.check_invalid_syntax__abs_stx(
+            self,
+            invalid_list,
+        )
 
 
 class TestListSuccessfulParse(unittest.TestCase):
