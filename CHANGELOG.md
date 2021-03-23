@@ -19,6 +19,7 @@ with exception of a "0." prefix until version 1 is released.
 
 ### Changed
 
+ - Default timeout - Set to 60s
  - Instruction `dir` - Fails if the directory already exists (breaking)
  - Type `string` - Reserved words
  - Type `list` - `)` ends list

@@ -5,7 +5,7 @@ from exactly_lib.util import functional
 
 ENV_VARS__DEFAULT = None
 ENV_VARS_GETTER__DEFAULT = os_environ_getter
-TIMEOUT__DEFAULT = None
+TIMEOUT__DEFAULT = 60
 
 TIMEOUT__NONE_TOKEN = 'none'
 
