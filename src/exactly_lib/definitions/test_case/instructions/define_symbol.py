@@ -1,5 +1,5 @@
 from types import MappingProxyType
-from typing import List, Sequence
+from typing import List, Sequence, Mapping
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import cl_syntax, path_syntax
@@ -84,7 +84,7 @@ _SYMBOL_NAME = a.Single(a.Multiplicity.MANDATORY,
 _EQUALS = a.Single(a.Multiplicity.MANDATORY,
                    a.Constant(ASSIGNMENT_ARGUMENT))
 
-TYPE_W_STR_RENDERING_INFO_DICT = MappingProxyType({
+TYPE_W_STR_RENDERING_INFO_DICT: Mapping[WithStrRenderingType, TypeInfo] = MappingProxyType({
     WithStrRenderingType.STRING:
         TypeInfo(types.STRING_TYPE_INFO,
                  _standard_type_value_args(types.STRING_TYPE_INFO,
@@ -106,7 +106,7 @@ def _logic_type_info(type_info: TypeNameAndCrossReferenceId) -> TypeInfo:
     return TypeInfo(type_info, _standard_type_value_args(type_info))
 
 
-ANY_TYPE_INFO_DICT = {
+ANY_TYPE_INFO_DICT: Mapping[ValueType, TypeInfo] = {
     ValueType.STRING:
         TYPE_W_STR_RENDERING_INFO_DICT[WithStrRenderingType.STRING],
     ValueType.PATH:

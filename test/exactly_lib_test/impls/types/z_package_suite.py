@@ -12,7 +12,6 @@ from exactly_lib_test.impls.types.line_matcher import z_package_suite as line_ma
 from exactly_lib_test.impls.types.list_ import z_package_suite as list_
 from exactly_lib_test.impls.types.logic import z_package_suite as logic
 from exactly_lib_test.impls.types.matcher import z_package_suite as matcher
-from exactly_lib_test.impls.types.parse import z_package_suite as parse
 from exactly_lib_test.impls.types.path import z_package_suite as path
 from exactly_lib_test.impls.types.program import z_package_suite as program
 from exactly_lib_test.impls.types.regex import z_package_suite as regex
@@ -28,7 +27,6 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(regex.suite())
     ret_val.addTest(expression.suite())
     ret_val.addTest(interval.suite())
-    ret_val.addTest(parse.suite())
     ret_val.addTest(string.suite())
     ret_val.addTest(path.suite())
     ret_val.addTest(list_.suite())

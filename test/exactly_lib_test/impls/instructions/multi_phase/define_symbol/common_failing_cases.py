@@ -1,12 +1,14 @@
 import unittest
 
+from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYPE_INFO_DICT
 from exactly_lib.impls.instructions.multi_phase.define_symbol import parser as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import \
-    remaining_source, \
-    TYPE_IDENT_2_VALID_VALID
+    remaining_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.symbol.test_resources.symbol_syntax import A_VALID_SYMBOL_NAME
 
 
 def suite() -> unittest.TestSuite:
@@ -44,9 +46,10 @@ class TestFailingParseWithInvalidSyntaxAfterValidType(unittest.TestCase):
     def runTest(self):
         parser = sut.EmbryoParser()
         for (source_str, case_name) in INVALID_SYNTAX_WITH_VALID_TYPE_CASES:
-            for (type_ident, valid_value) in TYPE_IDENT_2_VALID_VALID.items():
+            for value_type in ValueType:
+                type_ident = ANY_TYPE_INFO_DICT[value_type].identifier
                 source_str = source_str.format(valid_type=type_ident,
-                                               valid_value=valid_value)
+                                               valid_value=A_VALID_SYMBOL_NAME)
                 source = remaining_source(source_str)
                 with self.subTest(type=type_ident,
                                   msg=case_name):

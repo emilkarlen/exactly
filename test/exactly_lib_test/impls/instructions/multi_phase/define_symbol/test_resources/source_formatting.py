@@ -7,14 +7,6 @@ from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYP
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR, HARD_QUOTE_CHAR
-from exactly_lib_test.impls.types.file_matcher.test_resources import argument_syntax as file_matcher_syntax
-from exactly_lib_test.impls.types.line_matcher.test_resources import argument_syntax as line_matcher_syntax
-from exactly_lib_test.impls.types.parse.test_resources import \
-    string_argument_syntax, list_argument_syntax, path_argument_syntax
-from exactly_lib_test.impls.types.program.test_resources import arguments_building as program_syntax
-from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building as string_matcher_syntax
-from exactly_lib_test.impls.types.string_transformer.test_resources import \
-    argument_syntax as string_transformers_syntax
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, ParseSourceBuilder
 
 
@@ -78,20 +70,6 @@ _STD_FORMAT_MAP = {
     'rel_symbol': path.REL_symbol_OPTION,
     'rel_source_file': path.REL_source_file_dir_OPTION,
     'new_line': '\n',
-}
-
-TYPE_IDENT_2_VALID_VALID = {
-    types.STRING_TYPE_INFO.identifier: string_argument_syntax.arbitrary_value_on_single_line(),
-    types.LIST_TYPE_INFO.identifier: list_argument_syntax.arbitrary_value_on_single_line(),
-    types.PATH_TYPE_INFO.identifier: path_argument_syntax.arbitrary_value_on_single_line(),
-
-    types.LINE_MATCHER_TYPE_INFO.identifier: line_matcher_syntax.syntax_for_arbitrary_line_matcher(),
-    types.FILE_MATCHER_TYPE_INFO.identifier: file_matcher_syntax.arbitrary_value_on_single_line(),
-    types.STRING_MATCHER_TYPE_INFO.identifier: string_matcher_syntax.arbitrary_single_line_value_that_must_not_be_quoted(),
-
-    types.STRING_TRANSFORMER_TYPE_INFO.identifier: string_transformers_syntax.arbitrary_value_on_single_line(),
-
-    types.PROGRAM_TYPE_INFO.identifier: program_syntax.arbitrary_value_on_single_line(),
 }
 
 
