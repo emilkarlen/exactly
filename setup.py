@@ -32,6 +32,7 @@ setup(
     },
     packages=find_packages(SRC_DIR_NAME),
     long_description=read('README.rst'),
+    long_description_content_type='text/x-rst',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Programming Language :: Python :: 3',
