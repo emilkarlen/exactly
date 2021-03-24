@@ -305,7 +305,7 @@ Must not contain {parent_dir}.
 """
 
 INTERMEDIATE_DIRS_ARE_CREATED = """\
-Intermediate {dir_file_type:s} as created, if required.
+Intermediate {dir_file_type:s} are created, if required.
 """
 
 _SPACE_SEPARATION_PARAGRAPH = 'All parts must be separated by {whitespace}.'

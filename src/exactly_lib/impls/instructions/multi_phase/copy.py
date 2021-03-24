@@ -8,7 +8,7 @@ from exactly_lib.common.help.syntax_contents_structure import invokation_variant
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.parts import failure_details
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.definitions import instruction_arguments, formatting
+from exactly_lib.definitions import instruction_arguments, formatting, file_types
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.entity import syntax_elements, concepts
@@ -82,6 +82,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
             'sandbox': formatting.concept_(concepts.SDS_CONCEPT_INFO),
             'SOURCE': self._src_rel_opt_arg_conf.argument.name,
             'DESTINATION': REL_OPTION_ARG_CONF_FOR_DESTINATION.argument.name,
+            'dir_file_type': file_types.DIRECTORY,
         }
         super().__init__(name, format_map)
         self._doc_elements = src_dst.DocumentationElements(
@@ -291,18 +292,18 @@ def _install_into_directory(os_services: OsServices,
 _MAIN_DESCRIPTION_REST = """\
   * If {DESTINATION} is not given
 
-    {SOURCE} is installed in the {current_dir},
+    {SOURCE} is copied to the {current_dir},
     as a file/directory with the basename of {SOURCE}.
 
 
   * If {DESTINATION} is given, but does not exist
   
-    {SOURCE} is copied as a file/directory with the path of {DESTINATION}
+    {SOURCE} is copied to a file/directory with the path of {DESTINATION}
 
     (the basename of {SOURCE} is not preserved).
 
 
-    Intermediate directories as created, if required.
+    Intermediate {dir_file_type:s} are created, if required.
 
 
   * If {DESTINATION} does exist
