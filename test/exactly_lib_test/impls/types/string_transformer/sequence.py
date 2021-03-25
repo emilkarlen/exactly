@@ -6,7 +6,6 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, Expectation, \
     ParseExpectation, ExecutionExpectation, prim_asrt__constant
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformer.test_resources import argument_syntax as st_args
 from exactly_lib_test.impls.types.string_transformer.test_resources import integration_check
@@ -14,6 +13,7 @@ from exactly_lib_test.impls.types.string_transformer.test_resources.integration_
     expectation_of_successful_execution_2
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import validation_cases
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \

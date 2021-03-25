@@ -9,7 +9,7 @@ from exactly_lib_test.impls.types.logic.test_resources import integration_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expectation, arrangement_wo_tcds
 from exactly_lib_test.impls.types.matcher.test_resources.matcher_checker import \
     MatcherPropertiesConfiguration
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 
 CHECKER = integration_check.IntegrationChecker(
     parse_line_matcher.parsers(True).full,

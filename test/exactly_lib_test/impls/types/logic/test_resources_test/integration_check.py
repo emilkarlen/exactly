@@ -41,7 +41,6 @@ from exactly_lib_test.impls.types.matcher.test_resources.matcher_checker import 
     MatcherPropertiesConfiguration
 from exactly_lib_test.impls.types.matcher.test_resources.matchers import MatcherThatReportsHardError, \
     MatcherTestImplBase
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.test_resources import matcher_assertions
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_contents_check, \
@@ -51,6 +50,7 @@ from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case.test_resources.act_result import ActResultProducerFromActResult
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import sds_2_tcds_assertion

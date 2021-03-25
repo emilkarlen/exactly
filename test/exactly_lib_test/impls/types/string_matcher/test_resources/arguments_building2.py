@@ -7,12 +7,12 @@ from exactly_lib.impls.types.string_matcher import matcher_options
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.impls.types.string_source.test_resources.argument_renderers import FileOrString, \
     FileOrStringAsString, FileOrStringAsFile, \
     FileOrStringAsHereDoc, HereDocument
 from exactly_lib_test.tcfs.test_resources.path_arguments import PathArgument
 from exactly_lib_test.test_resources.argument_renderer import elements_for_binary_operator_arg
+from exactly_lib_test.test_resources.arguments.arguments_building import ArgumentElements
 from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
 from exactly_lib_test.test_resources.strings import WithToString
 

@@ -17,7 +17,6 @@ from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
     PrimAndExeExpectation, Expectation, MultiSourceExpectation
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__for_expression_parser, \
     equivalent_source_variants__for_expression_parser_2, \
@@ -26,6 +25,7 @@ from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instru
     equivalent_source_variants__for_expr_parse__s__nsc, NSourceCase
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.source import abs_stx_utils
 from exactly_lib_test.test_resources.source import layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax

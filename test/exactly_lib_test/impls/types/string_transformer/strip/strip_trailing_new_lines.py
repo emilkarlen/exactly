@@ -2,7 +2,6 @@ import unittest
 from typing import List
 
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformer.strip.test_resources import \
     no_leading_or_trailing_space_cases, only_leading_space_cases, trailing_new_lines_cases_w_leading_space
@@ -11,6 +10,7 @@ from exactly_lib_test.impls.types.string_transformer.test_resources import integ
 from exactly_lib_test.impls.types.string_transformer.test_resources import may_dep_on_ext_resources
 from exactly_lib_test.impls.types.string_transformer.test_resources.integration_check import \
     expectation_of_successful_execution_2
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.test_utils import ArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

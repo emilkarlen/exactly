@@ -9,9 +9,9 @@ from exactly_lib_test.impls.types.files_matcher.test_resources import integratio
 from exactly_lib_test.impls.types.files_matcher.test_resources import model
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
     ExecutionExpectation, Expectation
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__for_expression_parser
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.test_resources.validation import validation as asrt_validation
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext

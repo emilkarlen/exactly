@@ -23,7 +23,6 @@ from exactly_lib_test.impls.types.file_matcher.contents_of_dir.test_resources im
 from exactly_lib_test.impls.types.file_matcher.contents_of_dir.test_resources.cases import file_type
 from exactly_lib_test.impls.types.files_matcher.models.test_resources import test_data, model_checker
 from exactly_lib_test.impls.types.files_matcher.test_resources import arguments_building as fsm_args
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
@@ -36,6 +35,7 @@ from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgume
 from exactly_lib_test.tcfs.test_resources.tcds_populators import TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

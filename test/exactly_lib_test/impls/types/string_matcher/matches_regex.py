@@ -6,8 +6,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
     ParseExpectation, ExecutionExpectation, Expectation
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements, \
-    here_document_as_elements
 from exactly_lib_test.impls.types.string_matcher.test_resources import test_configuration
 from exactly_lib_test.impls.types.string_matcher.test_resources import test_configuration as tc
 from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_building import args, \
@@ -18,6 +16,8 @@ from exactly_lib_test.impls.types.string_source.test_resources import model_cons
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.section_document.test_resources import parse_source_assertions  as asrt_source
+from exactly_lib_test.test_resources.arguments.arguments_building import ArgumentElements, \
+    here_document_as_elements
 from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationAssertions
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.validation_cases import \
     failing_validation_cases

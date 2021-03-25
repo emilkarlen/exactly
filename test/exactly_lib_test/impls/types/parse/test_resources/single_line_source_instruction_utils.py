@@ -4,9 +4,9 @@ from typing import List, Tuple, Iterator, TypeVar, Callable, Sequence
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util import collection
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.source import layout as tokens_layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.test_utils import NEA, NIE

@@ -7,8 +7,8 @@ from exactly_lib_test.impls.types.file_matcher.test_resources import integration
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, \
     ExecutionExpectation, \
     Expectation
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.tcfs.test_resources import non_hds_populator
+from exactly_lib_test.test_resources.arguments.arguments_building import ArgumentElements
 from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, File, Dir
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result

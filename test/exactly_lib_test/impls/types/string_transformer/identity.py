@@ -4,10 +4,10 @@ from typing import List
 from exactly_lib.impls.types.string_transformer import names
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation, prim_asrt__constant
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformer.test_resources import integration_check, \
     may_dep_on_ext_resources, freeze_check
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformer_assertions import \

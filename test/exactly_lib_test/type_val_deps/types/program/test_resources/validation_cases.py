@@ -7,7 +7,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_wo_tcds, \
     PrimAndExeExpectation
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
+from exactly_lib_test.test_resources.arguments.arguments_building import ArgumentElements
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext

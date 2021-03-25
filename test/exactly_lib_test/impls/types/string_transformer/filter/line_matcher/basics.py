@@ -13,7 +13,6 @@ from exactly_lib_test.impls.types.line_matcher.test_resources import models as l
 from exactly_lib_test.impls.types.line_matcher.test_resources.line_matchers import LineMatcherThatCollectsModels
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, Expectation, \
     ParseExpectation, ExecutionExpectation, arrangement_wo_tcds, prim_asrt__any
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as sm_args
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformer.test_resources import argument_syntax as st_args
@@ -25,6 +24,7 @@ from exactly_lib_test.section_document.test_resources import parse_source
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_syntax
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion

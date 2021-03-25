@@ -14,7 +14,6 @@ from exactly_lib_test.impls.types.files_matcher.test_resources.model import Mode
     ModelConstructor
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__for_expression_parser
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt_conf
@@ -29,6 +28,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
 from exactly_lib_test.tcfs.test_resources.ds_action import MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.tcfs.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 
 SOME_ACCEPTED_REL_OPT_CONFIGURATIONS = [

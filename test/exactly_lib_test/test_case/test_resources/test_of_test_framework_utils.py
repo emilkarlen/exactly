@@ -7,8 +7,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase
 

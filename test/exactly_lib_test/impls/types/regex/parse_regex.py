@@ -14,7 +14,6 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments, here_document
 from exactly_lib_test.impls.types.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.impls.types.regex.test_resources.assertions import matches_regex_sdv
 from exactly_lib_test.section_document.element_parsers.test_resources.parsing \
@@ -23,6 +22,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     assert_token_stream
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments, here_document
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, \
     MessageBuilder

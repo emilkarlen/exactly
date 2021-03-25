@@ -5,10 +5,10 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib_test.impls.instructions.assert_.process_output.stdout_err.test_resources.program_output import \
     configuration, \
     arguments_building as po_ab
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.impls.types.string_matcher.test_resources import matcher_arguments
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.test_resources.arguments.arguments_building import ArgumentElements
 
 
 def suite_for(conf: configuration.ProgramOutputInstructionConfiguration) -> unittest.TestSuite:

@@ -9,8 +9,8 @@ from exactly_lib_test.impls.types.file_matcher.test_resources.integration_check 
 from exactly_lib_test.impls.types.file_matcher.test_resources.test_utils import Actual
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.matcher_argument import NameRegexComponent
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

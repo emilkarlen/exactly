@@ -5,12 +5,12 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__multi_line
 from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.tcfs.test_resources import tcds_populators as tcds
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction

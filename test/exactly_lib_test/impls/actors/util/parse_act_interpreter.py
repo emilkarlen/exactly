@@ -10,7 +10,6 @@ from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.program.ddv.command import CommandDdv
 from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
 from exactly_lib.type_val_prims.program.command import CommandDriver
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_for_consume_until_end_of_last_line2
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args
@@ -19,6 +18,7 @@ from exactly_lib_test.impls.types.test_resources import relativity_options as re
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
+from exactly_lib_test.test_resources.arguments.arguments_building import ArgumentElements
 from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion

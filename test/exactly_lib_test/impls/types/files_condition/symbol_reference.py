@@ -14,9 +14,9 @@ from exactly_lib_test.impls.types.files_condition.test_resources.integration_che
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation, prim_asrt__constant
 from exactly_lib_test.impls.types.logic.test_resources.symbol_ref_syntax import symbol_ref_syntax_cases
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_syntax
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.files_condition.test_resources.references import \
     is_reference_to_files_condition

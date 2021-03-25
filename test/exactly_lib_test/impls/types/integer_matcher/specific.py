@@ -12,17 +12,17 @@ from exactly_lib.util.description_tree import details
 from exactly_lib.util.interval.w_inversion.interval import IntIntervalWInversion
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
-from exactly_lib_test.type_val_deps.test_resources.validation import validation
 from exactly_lib_test.impls.types.integer_matcher.test_resources import parse_check, integration_check
 from exactly_lib_test.impls.types.interval.test_resources import with_interval as asrt_w_interval
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expectation, prim_asrt__constant
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
     ExecutionExpectation
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
 from exactly_lib_test.type_val_deps.test_resources.w_str_rend import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringSymbolContext
 from exactly_lib_test.type_val_prims.matcher.test_resources.matcher_assertions import is_equivalent_to, ModelInfo

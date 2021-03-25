@@ -7,7 +7,6 @@ from exactly_lib_test.impls.program_execution.test_resources.integration_check_w
     CHECKER_W_TRANSFORMATION
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.program.test_resources.assertions import assert_process_result_data
@@ -15,6 +14,7 @@ from exactly_lib_test.impls.types.string_transformer.test_resources import test_
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
+from exactly_lib_test.test_resources.arguments.arguments_building import ArgumentElements
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_with_stdout_stderr_exit_code
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.layout import LayoutSpec

@@ -7,11 +7,11 @@ from exactly_lib_test.impls.instructions.assert_.process_output.stdout_err.test_
     arguments_building as args
 from exactly_lib_test.impls.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.impls.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.impls.types.string_matcher.test_resources import matcher_arguments
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForPfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.test_resources.arguments.arguments_building import ArgumentElements
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \

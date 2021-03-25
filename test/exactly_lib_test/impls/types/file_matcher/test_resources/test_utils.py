@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 
 
 class Actual:

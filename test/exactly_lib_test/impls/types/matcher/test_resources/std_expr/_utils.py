@@ -17,9 +17,9 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arra
 from exactly_lib_test.impls.types.matcher.test_resources import matchers
 from exactly_lib_test.impls.types.matcher.test_resources import sdv_ddv
 from exactly_lib_test.impls.types.matcher.test_resources.std_expr.configuration import MODEL, MatcherConfiguration
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion

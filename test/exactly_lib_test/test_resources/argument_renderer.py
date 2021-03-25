@@ -8,7 +8,7 @@ from exactly_lib.util import collection
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments, ArgumentElements
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.section_document.test_resources import parse_source
 from exactly_lib_test.test_resources.strings import WithToString
 

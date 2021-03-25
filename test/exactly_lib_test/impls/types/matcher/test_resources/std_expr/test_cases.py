@@ -20,10 +20,10 @@ from exactly_lib_test.impls.types.matcher.test_resources.std_expr._utils import 
     Case, BinaryOperatorApplicationCheckHelper, get_mk_operand_trace, BinaryOperatorValidationCheckHelper
 from exactly_lib_test.impls.types.matcher.test_resources.std_expr.configuration import MODEL, \
     MatcherConfiguration
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources import matcher_argument
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result

@@ -3,12 +3,12 @@ from typing import Sequence, Optional
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.definitions.primitives.string_transformer import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.impls.types.program import syntax_elements
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.impls.types.string_transformer.test_resources.argument_syntax import \
     syntax_for_transformer_option
 from exactly_lib_test.impls.types.test_resources import arguments_building as ab
 from exactly_lib_test.test_resources import argument_renderer as primitive_ab
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.test_resources.programs import python_program_execution
 from exactly_lib_test.test_resources.strings import WithToString
 

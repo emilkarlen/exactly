@@ -21,9 +21,6 @@ from exactly_lib.util.process_execution.execution_elements import ProcessExecuti
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc, text_doc_assertions
 from exactly_lib_test.impls.instructions.test_resources.instr_arr_exp import ParseExpectation
 from exactly_lib_test.impls.instructions.test_resources.instruction_checker import InstructionChecker
-from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
-from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationActual
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line, \
     equivalent_source_variants__consume_last_line__s__nsc
@@ -34,11 +31,14 @@ from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh
 from exactly_lib_test.test_case.test_resources import instruction_settings as instr_settings
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ArrangementPostAct2
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.source import layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, StopAssertion
+from exactly_lib_test.type_val_deps.test_resources.validation.svh_validation import ValidationExpectationSvh
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationActual
 
 
 class SourceArrangement:

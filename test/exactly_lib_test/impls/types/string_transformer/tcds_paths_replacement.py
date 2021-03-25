@@ -12,7 +12,6 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.resolving_environment import FullResolvingEnvironment
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.string_transformer.test_resources import argument_syntax as args, \
     may_dep_on_ext_resources, freeze_check
 from exactly_lib_test.impls.types.string_transformer.test_resources import integration_check
@@ -23,6 +22,7 @@ from exactly_lib_test.impls.types.string_transformer.test_resources.replace_tcds
     ReplacedSymbolsFileContentsGeneratorWithAllReplacedVariables
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_utils import sandbox_directory_structure
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

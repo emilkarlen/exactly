@@ -3,7 +3,7 @@ from typing import List
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.impls.types.string_transformer import names
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments, ArgumentElements
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments, ArgumentElements
 
 
 def syntax_for_transformer_option(transformer_expression: str) -> str:

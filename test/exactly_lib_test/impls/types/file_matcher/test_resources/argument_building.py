@@ -11,11 +11,11 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as sm_args
 from exactly_lib_test.test_resources import argument_renderer
 from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.argument_renderer import OptionArgument, ArgumentElementsRenderer
+from exactly_lib_test.test_resources.arguments.arguments_building import ArgumentElements
 from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
 from exactly_lib_test.test_resources.strings import WithToString
 
