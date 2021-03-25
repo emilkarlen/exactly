@@ -1,7 +1,6 @@
 import unittest
 
-from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
-    SingleInstructionInvalidArgumentException
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import abstract_syntax as abs_stx
@@ -11,26 +10,26 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.com
     InvalidDestinationFileTestCasesData
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.defs import DISALLOWED_DST_RELATIVITIES, \
     ALLOWED_DST_FILE_RELATIVITIES
-from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.parse_check import just_parse, \
-    check_invalid_syntax, check_invalid_syntax__abs_stx
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.parse_check import \
+    check_invalid_syntax__abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import \
     IS_SUCCESS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.embryo_arr_exp import Arrangement, \
     MultiSourceExpectation
 from exactly_lib_test.impls.types.files_source.test_resources import abstract_syntaxes as fs_abs_stx
-from exactly_lib_test.impls.types.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any
-from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
-from exactly_lib_test.tcfs.test_resources.format_rel_option import format_rel_options
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import File, Dir
+from exactly_lib_test.test_resources.source.custom_abstract_syntax import SequenceAbsStx
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR__PLAIN
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntax import CustomPathAbsStx
+from exactly_lib_test.type_val_deps.types.path.test_resources.abstract_syntaxes import RelOptPathAbsStx
 
 
 def suite() -> unittest.TestSuite:
@@ -42,30 +41,35 @@ def suite() -> unittest.TestSuite:
 
 
 class TestFailingParse(unittest.TestCase):
-    def test_path_is_mandatory__without_option(self):
-        check_invalid_syntax(self, single_line_source(''))
-
-    def test_path_is_mandatory__with_option(self):
-        arguments = args_with_rel_ops('{rel_act_option}')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            just_parse(single_line_source(arguments))
+    def test_missing_path(self):
+        empty_path_argument = CustomPathAbsStx.empty()
+        arguments_w_missing_path = abs_stx.without_contents(empty_path_argument)
+        check_invalid_syntax__abs_stx(
+            self,
+            arguments_w_missing_path
+        )
 
     def test_disallowed_relativities(self):
+        # ARRANGE #
         for relativity in DISALLOWED_DST_RELATIVITIES:
-            with self.subTest(relativity=str(relativity)):
-                relativity_conf = conf_rel_any(relativity)
-                instruction_syntax = abs_stx.without_contents(relativity_conf.path_abs_stx_of_name('file-name'))
-                check_invalid_syntax__abs_stx(self, instruction_syntax)
+            relativity_conf = conf_rel_any(relativity)
+            instruction_syntax = abs_stx.without_contents(relativity_conf.path_abs_stx_of_name('file-name'))
+            # ACT & ASSERT #
+            check_invalid_syntax__abs_stx(
+                self,
+                instruction_syntax,
+                sub_test_identifiers={
+                    'relativity': relativity,
+                }
+            )
 
-    def test_fail_when_superfluous_arguments__without_option(self):
-        arguments = 'expected-argument superfluous-argument'
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            just_parse(single_line_source(arguments))
-
-    def test_fail_when_superfluous_arguments__with_option(self):
-        arguments = format_rel_options('{rel_act} expected-argument superfluous-argument')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            just_parse(single_line_source(arguments))
+    def test_superfluous_arguments(self):
+        # ARRANGE #
+        valid_path = RelOptPathAbsStx(RelOptionType.REL_ACT, 'valid-file-name')
+        valid_syntax = abs_stx.without_contents(valid_path)
+        invalid_syntax = SequenceAbsStx.followed_by_superfluous(valid_syntax)
+        # ACT & ASSERT #
+        check_invalid_syntax__abs_stx(self, invalid_syntax)
 
 
 class TestSuccessfulScenariosWithNoContents(unittest.TestCase):

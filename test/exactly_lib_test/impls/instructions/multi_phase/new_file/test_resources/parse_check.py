@@ -1,4 +1,6 @@
 import unittest
+from types import MappingProxyType
+from typing import Mapping, Any
 
 from exactly_lib.impls.instructions.multi_phase import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
@@ -23,11 +25,14 @@ def check_invalid_syntax(put: unittest.TestCase, source: ParseSource):
             checker.check_invalid_arguments(put, source)
 
 
-def check_invalid_syntax__abs_stx(put: unittest.TestCase, source: AbstractSyntax):
+def check_invalid_syntax__abs_stx(put: unittest.TestCase,
+                                  source: AbstractSyntax,
+                                  sub_test_identifiers: Mapping[str, Any] = MappingProxyType({}),
+                                  ):
     for phase_is_after_act in [False, True]:
         checker = PARSE_CHECKERS[phase_is_after_act]
         with put.subTest(phase_is_after_act=phase_is_after_act):
-            checker.check_invalid_syntax__abs_stx(put, source)
+            checker.check_invalid_syntax__abs_stx(put, source, sub_test_identifiers)
 
 
 PARSE_CHECKERS = {
