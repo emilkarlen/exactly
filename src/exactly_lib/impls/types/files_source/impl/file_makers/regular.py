@@ -4,7 +4,7 @@ from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.impls.file_properties import FileType
 from exactly_lib.impls.types.files_source.defs import ModificationType
 from exactly_lib.impls.types.string_source import constant_str
-from exactly_lib.symbol.sdv_structure import SymbolReference, TypesSymbolDependentValue, ObjectWithSymbolReferences
+from exactly_lib.symbol.sdv_structure import SymbolReference, TypedSymbolDependentValue, ObjectWithSymbolReferences
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue
@@ -19,8 +19,8 @@ from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 from . import description
 from . import utils
-from ...file_maker import FileMakerDdv, FileMakerSdv, FileMaker
 from ... import defs
+from ...file_maker import FileMakerDdv, FileMakerSdv, FileMaker
 
 
 class RegularFileMakerSdv(FileMakerSdv):
@@ -38,7 +38,7 @@ class RegularFileMakerSdv(FileMakerSdv):
     def resolve(self, symbols: SymbolTable) -> FileMakerDdv:
         return RegularFileMakerDdv(
             self._modification,
-            TypesSymbolDependentValue.resolve__optional(self._contents, symbols),
+            TypedSymbolDependentValue.resolve__optional(self._contents, symbols),
         )
 
 

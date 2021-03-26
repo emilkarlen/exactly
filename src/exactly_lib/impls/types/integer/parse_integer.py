@@ -11,7 +11,7 @@ from exactly_lib.impls.types.integer.integer_ddv import CustomIntegerValidator
 from exactly_lib.impls.types.integer.integer_sdv import IntegerSdv
 from exactly_lib.impls.types.string_ import parse_string
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
-    token_parser_with_additional_error_message_format_map, ParserFromTokens
+    ParserFromTokens
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.reference_restrictions import \
     is_string__all_indirect_refs_are_strings
@@ -52,12 +52,12 @@ class MandatoryIntegerParser(ParserFromTokens[IntegerSdv]):
                  ):
         self._custom_integer_restriction = custom_integer_restriction
         self._integer_argument_name_in_err_msg = integer_argument_name_in_err_msg
+        self._string_parser = parse_string.StringFromTokensParser(_STRING_PARSER_CONFIGURATION)
 
     def parse(self, token_parser: TokenParser) -> IntegerSdv:
-        my_parser = token_parser_with_additional_error_message_format_map(token_parser, {
-            'INTEGER': self._integer_argument_name_in_err_msg})
-        integer_token = my_parser.consume_mandatory_token('Missing {INTEGER} expression')
-        return integer_sdv_of(integer_token, self._custom_integer_restriction)
+        string_sdv = self._string_parser.parse(token_parser)
+        return integer_sdv.IntegerSdv(string_sdv,
+                                      self._custom_integer_restriction)
 
 
 def integer_sdv_of(value_token: Token,
@@ -75,6 +75,15 @@ def _string_sdv_of(value_token: Token) -> StringSdv:
     )
 
 
+def validator_for_non_negative(actual: int) -> Optional[TextRenderer]:
+    if actual < 0:
+        return expected_found.unexpected_lines(_NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION,
+                                               str(actual))
+    return None
+
+
+_NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION = 'An integer >= 0'
+
 _REFERENCE_RESTRICTIONS = is_string__all_indirect_refs_are_strings(
     text_docs.single_pre_formatted_line_object(
         str_constructor.FormatMap(
@@ -87,12 +96,7 @@ _REFERENCE_RESTRICTIONS = is_string__all_indirect_refs_are_strings(
     )
 )
 
-
-def validator_for_non_negative(actual: int) -> Optional[TextRenderer]:
-    if actual < 0:
-        return expected_found.unexpected_lines(_NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION,
-                                               str(actual))
-    return None
-
-
-_NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION = 'An integer >= 0'
+_STRING_PARSER_CONFIGURATION = parse_string.Configuration(
+    syntax_elements.INTEGER_SYNTAX_ELEMENT.singular_name,
+    _REFERENCE_RESTRICTIONS,
+)

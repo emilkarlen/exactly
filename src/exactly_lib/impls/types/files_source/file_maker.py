@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.symbol.sdv_structure import TypesSymbolDependentValue
+from exactly_lib.symbol.sdv_structure import TypedSymbolDependentValue
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue
 from exactly_lib.type_val_deps.dep_variants.ddv.w_validation import ValidatableDdv
@@ -37,5 +37,5 @@ class FileMakerDdv(ValidatableDdv[FileMakerAdv], ABC):
         pass
 
 
-class FileMakerSdv(TypesSymbolDependentValue[FileMakerDdv], ABC):
+class FileMakerSdv(TypedSymbolDependentValue[FileMakerDdv], ABC):
     pass

@@ -745,7 +745,7 @@ def from_parse_source(source: ParseSource,
 
 
 @contextmanager
-def from_remaining_part_of_current_line_of_parse_source(parse_source: ParseSource):
+def from_remaining_part_of_current_line_of_parse_source(parse_source: ParseSource) -> ContextManager[TokenParser]:
     """
     Gives a :class:`TokenParser` backed by the given :class:`ParseSource`.
 

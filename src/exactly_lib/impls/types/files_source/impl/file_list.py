@@ -5,7 +5,7 @@ from exactly_lib.common.report_rendering import header_blocks
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.symbol.sdv_structure import SymbolReference, TypesSymbolDependentValue, \
+from exactly_lib.symbol.sdv_structure import SymbolReference, TypedSymbolDependentValue, \
     references_from_objects_with_symbol_references
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
@@ -94,7 +94,7 @@ class FileSpecificationDdv(WithDetailsDescription):
         )
 
 
-class FileSpecificationSdv(TypesSymbolDependentValue[FileSpecificationDdv]):
+class FileSpecificationSdv(TypedSymbolDependentValue[FileSpecificationDdv]):
     def __init__(self,
                  name: StringSdv,
                  maker: FileMakerSdv,

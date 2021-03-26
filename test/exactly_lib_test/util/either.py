@@ -1,6 +1,7 @@
 import unittest
 from typing import Callable, Union
 
+from exactly_lib.util import either as sut
 from exactly_lib.util.either import Either
 
 
@@ -8,6 +9,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestLeft),
         unittest.makeSuite(TestRight),
+        unittest.makeSuite(TestReducer),
     ])
 
 
@@ -91,6 +93,33 @@ class TestRight(unittest.TestCase):
 
     def test_invalid_access(self):
         self.CHECKER.test_invalid_access(self)
+
+
+class TestReducer(unittest.TestCase):
+    def test_reduce_left(self):
+        reducer = _Reducer(72, 'hello')
+        actual = reducer.reduce(Either.of_left(72))
+        self.assertEqual(True, actual)
+
+    def test_reduce_right(self):
+        reducer = _Reducer(72, 'hello')
+        actual = reducer.reduce(Either.of_right('hello'))
+        self.assertEqual(True, actual)
+
+
+class _Reducer(sut.Reducer[int, str, bool]):
+    def __init__(self,
+                 true_iff_int_equals: int,
+                 true_iff_string_equals: str,
+                 ):
+        self._true_iff_int_equals = true_iff_int_equals
+        self._true_iff_string_equals = true_iff_string_equals
+
+    def reduce_left(self, x: int) -> bool:
+        return x == self._true_iff_int_equals
+
+    def reduce_right(self, x: str) -> bool:
+        return x == self._true_iff_string_equals
 
 
 if __name__ == '__main__':

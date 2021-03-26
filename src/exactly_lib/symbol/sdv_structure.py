@@ -42,14 +42,14 @@ class SymbolDependentValue(ObjectWithSymbolReferences):
 T = TypeVar('T')
 
 
-class TypesSymbolDependentValue(Generic[T], SymbolDependentValue):
+class TypedSymbolDependentValue(Generic[T], SymbolDependentValue):
     """Hopefully, this class can replace :class:`SymbolDependentValue`"""
 
     def resolve(self, symbols: SymbolTable) -> T:
         raise NotImplementedError('abstract method')
 
     @staticmethod
-    def resolve__optional(sdv: Optional['TypesSymbolDependentValue[T]'],
+    def resolve__optional(sdv: Optional['TypedSymbolDependentValue[T]'],
                           symbols: SymbolTable,
                           ) -> Optional[T]:
         return (
@@ -130,6 +130,9 @@ class ReferenceRestrictions(ABC):
         :return: None if satisfied, otherwise a failure description
         """
         pass
+
+
+SymbolName = str
 
 
 class SymbolUsage:

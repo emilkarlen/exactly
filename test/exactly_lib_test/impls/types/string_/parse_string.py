@@ -7,8 +7,9 @@ from exactly_lib.impls.types.string_ import parse_string as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
+from exactly_lib.section_document.element_parsers.token_stream_parser import ParserFromTokens, TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions, SymbolDependentValue
+from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions, SymbolDependentValue, SymbolName
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, \
     symbol_reference_syntax_for_name, \
     constant, symbol, Fragment
@@ -19,6 +20,7 @@ from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions.value_restriction
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringFragmentSdv, \
     StringSdv
+from exactly_lib.util.either import Either
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib_test.impls.types.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
@@ -27,7 +29,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion, AssertionBase, MessageBuilder
 from exactly_lib_test.type_val_deps.types.string_.test_resources.sdv_assertions import equals_string_sdv
 
 
@@ -36,7 +38,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFailWhenNoArgument),
         unittest.makeSuite(TestFailWhenHeadIsReservedToken),
         unittest.makeSuite(TestParseFragmentsFromToken),
-        unittest.makeSuite(TestParseStringSdv),
+        unittest.makeSuite(TestParseStringSdvAndParseSymRefOrStringSdv),
         unittest.makeSuite(TestParseFromParseSource),
     ])
 
@@ -241,21 +243,53 @@ class TestParseFragmentsFromToken(unittest.TestCase):
             self._test_case(tc)
 
 
-class TestParseStringSdv(unittest.TestCase):
+class TestParseStringSdvAndParseSymRefOrStringSdv(unittest.TestCase):
     def _test_case(self, tc: TC):
-        with self.subTest(token_stream=tc.source_string):
-            # ARRANGE #
-            token_stream = TokenStream(tc.source_string)
-            # ACT #
-            actual = sut.parse_string_sdv(token_stream, CONFIGURATION)
-            # ASSERT #
-            assertion_on_result = assert_equals_string_sdv(tc.expectation.fragments)
-            assertion_on_result.apply_with_message(self, actual, 'fragment')
-            tc.expectation.token_stream.apply_with_message(self, token_stream, 'token_stream')
+        with self.subTest(token_stream=tc.source_string,
+                          parser='parse_string_sdv'):
+            self._test_case__parse_string_sdv(tc)
 
-    def test_missing_argument(self):
+        with self.subTest(token_stream=tc.source_string,
+                          parser='sym_ref_or_string_parser'):
+            parser = sut.SymbolReferenceOrStringParser(CONFIGURATION)
+            self._test_case__sym_ref_or_string_parser(parser, tc)
+
+    def _test_case__parse_string_sdv(self, tc: TC):
+        # ARRANGE #
+        token_stream = TokenStream(tc.source_string)
+        # ACT #
+        actual = sut.parse_string_sdv(token_stream, CONFIGURATION)
+        # ASSERT #
+        tc.expectation.token_stream.apply_with_message(self, token_stream, 'token_stream')
+        assertion_on_result = assert_equals_string_sdv(tc.expectation.fragments)
+        assertion_on_result.apply_with_message(self, actual, 'fragment')
+
+    def _test_case__sym_ref_or_string_parser(self, parser: ParserFromTokens, tc: TC):
+        # ARRANGE #
+        token_stream = TokenStream(tc.source_string)
+        token_parser = TokenParser(token_stream)
+        expected_fragments = tc.expectation.fragments
+        head_is_plain = TokenStream(tc.source_string).head.is_plain
+        assertion_on_value = (
+            _EqualsEitherOfSymbolName(expected_fragments[0].value)
+            if head_is_plain and len(expected_fragments) == 1 and expected_fragments[0].is_symbol
+            else
+            _EqualsEitherOfStringSdv(expected_fragments)
+        )
+        # ACT #
+        actual = parser.parse(token_parser)
+        # ASSERT #
+        tc.expectation.token_stream.apply_with_message(self, token_stream, 'token_stream')
+        assertion_on_value.apply_with_message(self, actual, 'fragment')
+
+    def test_missing_argument__parse_string_sdv(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_string_sdv(TokenStream(''))
+
+    def test_missing_argument__parse_sym_ref_or_string_sdv(self):
+        parser = sut.SymbolReferenceOrStringParser(CONFIGURATION)
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            parser.parse(TokenParser(TokenStream('')))
 
     def test_successful_parse_of_single_symbol(self):
         cases = successful_parse_of_single_symbol()
@@ -361,3 +395,41 @@ def single_symbol_reference(symbol_name: str,
 def no_restrictions() -> ReferenceRestrictions:
     return ReferenceRestrictionsOnDirectAndIndirect(direct=ArbitraryValueWStrRenderingRestriction.of_any(),
                                                     indirect=None)
+
+
+class _EqualsEitherOfSymbolName(AssertionBase[Either[SymbolName, StringSdv]]):
+    def __init__(self, expected_symbol_name: str):
+        self._expected_symbol_name = expected_symbol_name
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: Either[SymbolName, StringSdv],
+               message_builder: MessageBuilder,
+               ):
+        put.assertTrue(value.is_left(),
+                       message_builder.apply('form of Either')
+                       )
+        put.assertEqual(self._expected_symbol_name,
+                        value.left(),
+                        message_builder.apply('value of Either (left SymbolName)')
+                        )
+
+
+class _EqualsEitherOfStringSdv(AssertionBase[Either[SymbolName, StringSdv]]):
+    def __init__(self, expected_fragments: List[Fragment]):
+        self._expected_fragments = expected_fragments
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: Either[SymbolName, StringSdv],
+               message_builder: MessageBuilder,
+               ):
+        put.assertTrue(value.is_right(),
+                       message_builder.apply('form of Either')
+                       )
+        assertion_on_sdv = assert_equals_string_sdv(self._expected_fragments)
+        assertion_on_sdv.apply(
+            put,
+            value.right(),
+            message_builder.for_sub_component('sdv')
+        )

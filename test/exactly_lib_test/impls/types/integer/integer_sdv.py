@@ -1,29 +1,20 @@
 import unittest
-from typing import Optional, Sequence
+from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.impls.exception.svh_exception import SvhValidationException
 from exactly_lib.impls.types.integer import integer_sdv as sut
-from exactly_lib.impls.types.string_ import parse_string
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.type_val_deps.test_resources.validation import validation
-from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.tcfs.test_resources.fake_ds import fake_hds, fake_sds, fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_case.test_resources import instruction_environment
-from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.type_val_deps.test_resources.w_str_rend import references as data_references
-from exactly_lib_test.type_val_deps.test_resources.w_str_rend.symbol_reference_assertions import \
-    equals_symbol_references__w_str_rendering
-from exactly_lib_test.type_val_deps.types.string_.test_resources.symbol_context import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestValidationPreSds),
-        unittest.makeSuite(TestValidateAndResolve),
     ])
 
 
@@ -38,175 +29,6 @@ class CustomValidator:
             return self.error_message
 
         return None
-
-
-class Expected:
-    def __init__(self,
-                 resolved_value: int,
-                 symbol_references: list):
-        self.resolved_value = resolved_value
-        self.symbol_references = symbol_references
-
-
-class Case:
-    def __init__(self,
-                 name: str,
-                 source: str,
-                 expected: Expected):
-        self.name = name
-        self.source = source
-        self.expected = expected
-
-
-class Symbol:
-    def __init__(self,
-                 name: str,
-                 value_int: int,
-                 value_str: str,
-                 ):
-        self.name = name
-        self.value_int = value_int
-        self.value_str = value_str
-        self.ref_syntax = symbol_reference_syntax_for_name(name)
-        self.symbol_reference = data_references.reference_to__on_direct_and_indirect(name)
-
-
-class TestValidateAndResolve(unittest.TestCase):
-    def test(self):
-        # ARRANGE #
-
-        symbol_simple = Symbol('symbol_simple', 3, '3')
-
-        symbol_complex = Symbol('symbol_complex', 7, '2 + 5')
-
-        defined_symbols = self._symbol_table_with_string_values([
-            symbol_simple,
-            symbol_complex,
-        ])
-
-        the_instruction_environment = InstructionEnvironmentPostSdsBuilder.new(
-            hds=fake_hds(),
-            environ={},
-            sds=fake_sds(),
-            symbols=defined_symbols,
-        ).build_post_sds()
-
-        cases = [
-            Case(
-                'single constant integer',
-                '1',
-                Expected(
-                    resolved_value=1,
-                    symbol_references=[])
-            ),
-            Case(
-                'single symbol reference with simple contents',
-                symbol_simple.ref_syntax,
-                Expected(
-                    resolved_value=symbol_simple.value_int,
-                    symbol_references=[symbol_simple.symbol_reference]
-                )),
-            Case(
-                'constant complex expression',
-                '1 + 2*3 * (2+2)',
-                Expected(
-                    resolved_value=1 + 2 * 3 * (2 + 2),
-                    symbol_references=[])
-            ),
-            Case(
-                'single symbol reference with complex contents',
-                symbol_complex.ref_syntax,
-                Expected(
-                    resolved_value=symbol_complex.value_int,
-                    symbol_references=[symbol_complex.symbol_reference]
-                )
-            ),
-            Case(
-                'mixed expression',
-                '1 + {symbol_simple} * ({symbol_complex})'.format(
-                    symbol_simple=symbol_simple.ref_syntax,
-                    symbol_complex=symbol_complex.ref_syntax),
-                Expected(
-                    resolved_value=1 + symbol_simple.value_int * symbol_complex.value_int,
-                    symbol_references=[symbol_simple.symbol_reference,
-                                       symbol_complex.symbol_reference]
-                )
-            ),
-        ]
-        for case in cases:
-            with self.subTest(case_name=case.name, source_str=case.source,
-                              expected_value=case.expected.resolved_value):
-                # ARRANGE #
-
-                string_value_sdv = parse_string.string_sdv_from_string(case.source)
-                sdv_to_check = sut.IntegerSdv(string_value_sdv)
-
-                # ACT #
-
-                actual_symbol_references = sdv_to_check.references
-
-                sdv_to_check.validate_pre_sds(
-                    the_instruction_environment.path_resolving_environment_pre_or_post_sds)
-
-                actual_value = sdv_to_check.resolve(the_instruction_environment.symbols)
-                actual = actual_value.value_of_any_dependency(the_instruction_environment.tcds)
-
-                # ASSERT #
-
-                self.assertEqual(case.expected.resolved_value,
-                                 actual)
-
-                equals_symbol_references__w_str_rendering(case.expected.symbol_references) \
-                    .apply_without_message(self,
-                                           actual_symbol_references)
-
-    @staticmethod
-    def _symbol_table_with_string_values(all_symbols: Sequence[Symbol]):
-        return SymbolContext.symbol_table_of_contexts([
-            StringConstantSymbolContext(sym.name, sym.value_str)
-            for sym in all_symbols
-        ])
-
-
-class TestSymbolReferences(unittest.TestCase):
-    def test_no_references_SHOULD_be_reported_WHEN_string_sdv_has_no_references(self):
-        # ARRANGE #
-
-        sdv_to_check = sut.IntegerSdv(
-            string_sdvs.str_constant(str(1))
-        )
-
-        # ACT #
-
-        actual = sdv_to_check.references
-
-        # ASSERT #
-
-        self.assertEqual([], actual,
-                         'no references should be reported')
-
-    def test_references_of_string_sdv_SHOULD_be_reported(self):
-        # ARRANGE #
-
-        reference_of_string_sdv = data_references.reference_to__on_direct_and_indirect('symbol name')
-
-        the_string_sdv = string_sdvs.symbol_reference(reference_of_string_sdv)
-
-        sdv_to_check = sut.IntegerSdv(
-            the_string_sdv
-        )
-
-        # ACT #
-
-        actual = sdv_to_check.references
-
-        # ASSERT #
-
-        expected_references = [reference_of_string_sdv]
-
-        assertion = equals_symbol_references__w_str_rendering(expected_references)
-
-        assertion.apply_without_message(self, actual)
 
 
 class TestValidationPreSds(unittest.TestCase):

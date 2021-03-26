@@ -1,10 +1,13 @@
 import unittest
 
-from exactly_lib_test.impls.types.integer import integer_sdv
+from exactly_lib_test.impls.types.integer import integer_sdv, parse_integer
 
 
 def suite() -> unittest.TestSuite:
-    return integer_sdv.suite()
+    return unittest.TestSuite([
+        integer_sdv.suite(),
+        parse_integer.suite(),
+    ])
 
 
 if __name__ == '__main__':

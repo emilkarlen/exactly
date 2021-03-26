@@ -7,7 +7,7 @@ from exactly_lib.impls.svh_validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.impls.types.condition.comparison_structures import OperandSdv
 from exactly_lib.impls.types.integer.evaluate_integer import NotAnIntegerException, python_evaluate
 from exactly_lib.impls.types.integer.integer_ddv import CustomIntegerValidator, IntegerDdv
-from exactly_lib.symbol.sdv_structure import SymbolReference, ObjectWithSymbolReferences
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreSds
 from exactly_lib.type_val_deps.types.string_.string_ddv import StringDdv
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
@@ -27,7 +27,7 @@ class _IntResolver:
         return python_evaluate(value_string)
 
 
-class IntegerSdv(OperandSdv[int], ObjectWithSymbolReferences):
+class IntegerSdv(OperandSdv[int]):
     def __init__(self,
                  value_sdv: StringSdv,
                  custom_integer_validator: Optional[CustomIntegerValidator] = None):

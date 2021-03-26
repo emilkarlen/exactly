@@ -11,6 +11,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol import symbol_syntax
+from exactly_lib.symbol.sdv_structure import SymbolName
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.either import Either
 from exactly_lib.util.parse.token import TokenMatcher, Token
@@ -54,11 +55,11 @@ class RichStringParser(ParserFromTokenParserBase[StringSdv]):
             )
 
 
-class SymbolNameOrStringRichStringParser(ParserFromTokenParserBase[Either[str, StringSdv]]):
+class SymbolNameOrStringRichStringParser(ParserFromTokenParserBase[Either[SymbolName, StringSdv]]):
     def __init__(self, conf: parse_string.Configuration = DEFAULT_CONFIGURATION):
         super().__init__(False, False)
         self._conf = conf
-        self._plain_string_parser = parse_string.StringFromTokensParser(conf)
+        self._plain_string_parser = parse_string.SymbolReferenceOrStringParser(conf)
         self._here_doc_parser = HereDocParser(True)
 
     def parse_from_token_parser(self, token_parser: TokenParser) -> Either[str, StringSdv]:
@@ -72,18 +73,7 @@ class SymbolNameOrStringRichStringParser(ParserFromTokenParserBase[Either[str, S
             string_sdv = parse_string.parse_rest_of_line_as_single_string(token_parser, strip_space=True)
             return Either.of_right(string_sdv)
         else:
-            return self._parse_sym_ref_or_plain_string(token_parser)
-
-    def _parse_sym_ref_or_plain_string(self, token_parser: TokenParser) -> Either[str, StringSdv]:
-        head = token_parser.head
-
-        if head.is_plain:
-            mb_symbol_name = symbol_syntax.parse_maybe_symbol_reference(head.source_string)
-            if mb_symbol_name is not None:
-                token_parser.consume_head()
-                return Either.of_left(mb_symbol_name)
-
-        return Either.of_right(self._plain_string_parser.parse(token_parser))
+            return self._plain_string_parser.parse(token_parser)
 
 
 class HereDocParser(ParserFromTokenParserBase[Optional[StringSdv]]):

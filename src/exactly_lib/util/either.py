@@ -26,6 +26,25 @@ class Either(Generic[L, R]):
         raise ValueError('This object do not represent a right')
 
 
+T = TypeVar('T')
+
+
+class Reducer(Generic[L, R, T]):
+    def reduce(self, x: Either[L, R]) -> T:
+        return (
+            self.reduce_left(x.left())
+            if x.is_left()
+            else
+            self.reduce_right(x.right())
+        )
+
+    def reduce_left(self, x: L) -> T:
+        raise NotImplementedError('abstract method')
+
+    def reduce_right(self, x: R) -> T:
+        raise NotImplementedError('abstract method')
+
+
 class _Left(Generic[L, R], Either[L, R]):
     def __init__(self, left: L):
         self._left = left

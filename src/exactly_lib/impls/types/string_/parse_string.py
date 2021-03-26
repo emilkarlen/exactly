@@ -1,4 +1,4 @@
-from typing import List, Optional, Sequence
+from typing import List, Optional, Sequence, Tuple
 
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.test_case import reserved_words
@@ -9,10 +9,11 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions
+from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions, SymbolName
 from exactly_lib.type_val_deps.sym_ref.w_str_rend_restrictions import reference_restrictions as _reference_restrictions
 from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv, StringFragmentSdv
+from exactly_lib.util.either import Either
 from exactly_lib.util.parse.token import Token
 
 
@@ -34,6 +35,22 @@ class StringFromTokensParser(ParserFromTokens[StringSdv]):
 
     def parse(self, token_parser: TokenParser) -> StringSdv:
         return parse_string_from_token_parser(token_parser, self._conf)
+
+
+class SymbolReferenceOrStringParser(ParserFromTokens[Either[SymbolName, StringSdv]]):
+    """Gives the name of the symbol, the token represents a single unquoted symbol reference."""
+
+    def __init__(self, conf: Configuration):
+        self._conf = conf
+
+    def parse(self, token_parser: TokenParser) -> Either[SymbolName, StringSdv]:
+        is_plain_token, fragments = parse_fragments_from_tokens__w_is_plain(token_parser.token_stream, self._conf)
+        if is_plain_token and len(fragments) == 1 and fragments[0].is_symbol:
+            return Either.of_left(fragments[0].value)
+        else:
+            return Either.of_right(
+                string_sdv_from_fragments(fragments, self._conf.reference_restrictions)
+            )
 
 
 def parse_string_sdv_from_parse_source(source: ParseSource,
@@ -95,6 +112,17 @@ def parse_fragments_from_tokens(tokens: TokenStream,
     :raises SingleInstructionInvalidArgumentException: Missing argument
     """
 
+    return parse_fragments_from_tokens__w_is_plain(tokens, conf)[1]
+
+
+def parse_fragments_from_tokens__w_is_plain(
+        tokens: TokenStream,
+        conf: Configuration = DEFAULT_CONFIGURATION) -> Tuple[bool, List[symbol_syntax.Fragment]]:
+    """
+    Consumes a single token.
+    :raises SingleInstructionInvalidArgumentException: Missing argument
+    """
+
     if tokens.is_null:
         raise SingleInstructionInvalidArgumentException('Expecting {} argument'.format(conf.argument_name))
     string_token = tokens.consume()
@@ -103,7 +131,7 @@ def parse_fragments_from_tokens(tokens: TokenStream,
             'Illegal {}: {}'.format(conf.argument_name,
                                     string_token.source_string),
         )
-    return parse_fragments_from_token(string_token)
+    return string_token.is_plain, parse_fragments_from_token(string_token)
 
 
 def parse_fragments_from_token(token: Token) -> List[symbol_syntax.Fragment]:
