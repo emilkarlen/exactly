@@ -26,10 +26,10 @@ def reference_restrictions_for_path_symbol(accepted_relativity_variants: PathRel
         PathAndRelativityRestriction(accepted_relativity_variants))
 
 
-def parse_explicit_relativity_info(options: RelOptionsConfiguration,
-                                   source_file_location: Optional[pathlib.Path],
-                                   source: TokenStream) -> Optional[
-    Union[RelOptionType, SymbolReference, pathlib.Path]]:
+def parse_explicit_relativity_info(
+        options: RelOptionsConfiguration,
+        source_file_location: Optional[pathlib.Path],
+        source: TokenStream) -> Optional[Union[RelOptionType, SymbolReference, pathlib.Path]]:
     """
     :return None if relativity is not given explicitly
     """

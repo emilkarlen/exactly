@@ -1,11 +1,12 @@
 import functools
 import pathlib
-from typing import Sequence, Optional, Callable, Union
+from typing import Sequence, Optional, Callable, Union, Tuple, List
 
 from exactly_lib.definitions.test_case import reserved_tokens
 from exactly_lib.impls.types.path.parse_relativity import parse_explicit_relativity_info
+from exactly_lib.impls.types.string_ import parse_string
 from exactly_lib.impls.types.string_.parse_string import parse_string_sdv_from_token, \
-    parse_fragments_from_token, string_sdv_from_fragments
+    string_sdv_from_fragments
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -15,7 +16,8 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
     LookAheadState
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol import symbol_syntax
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolName
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.path import path_part_sdvs
@@ -25,6 +27,8 @@ from exactly_lib.type_val_deps.types.path.references import path_or_string_refer
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
 from exactly_lib.type_val_deps.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
+from exactly_lib.util import either
+from exactly_lib.util.either import Either
 from exactly_lib.util.parse.token import TokenType, Token, TokenMatcher
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -76,11 +80,38 @@ class _Conf:
         self.rel_opt_conf = rel_opt_conf
 
 
+class MakePathFromMbSymbolReference(either.Reducer[SymbolName, PathSdv, PathSdv]):
+    def __init__(self, rel_opt_conf: RelOptionArgumentConfiguration):
+        self._rel_opt_conf = rel_opt_conf
+
+    def reduce_left(self, x: SymbolName) -> PathSdv:
+        return path_sdvs.reference(
+            SymbolReference(x,
+                            path_or_string_reference_restrictions(
+                                self._rel_opt_conf.options.accepted_relativity_variants)
+                            ),
+            path_part_sdvs.empty(),
+            self._rel_opt_conf.options.default_option,
+        )
+
+    def reduce_right(self, x: PathSdv) -> PathSdv:
+        return x
+
+
 class _Parser:
     def __init__(self, conf: _Conf):
         self.conf = conf
+        self.symbol_name_reducer = MakePathFromMbSymbolReference(conf.rel_opt_conf)
 
     def parse(self, tokens: TokenStream) -> PathSdv:
+        """
+        :param tokens: Argument list
+        :raises SingleInstructionInvalidArgumentException: Invalid arguments
+        """
+
+        return self.symbol_name_reducer.reduce(self.parse_mb_sym_ref(tokens))
+
+    def parse_mb_sym_ref(self, tokens: TokenStream) -> Either[SymbolName, PathSdv]:
         """
         :param tokens: Argument list
         :raises SingleInstructionInvalidArgumentException: Invalid arguments
@@ -95,7 +126,7 @@ class _Parser:
             raise SingleInstructionInvalidArgumentException(
                 std_error_message_text_for_token_syntax_error_from_exception(ex))
 
-    def _with_required_suffix(self, tokens: TokenStream) -> PathSdv:
+    def _with_required_suffix(self, tokens: TokenStream) -> Either[SymbolName, PathSdv]:
         """
         :param tokens: Argument list
         :raises SingleInstructionInvalidArgumentException: Invalid arguments
@@ -107,7 +138,7 @@ class _Parser:
             self._raise_missing_arguments_exception()
         return self._with_non_empty_token_stream(tokens)
 
-    def _with_optional_suffix(self, tokens: TokenStream) -> PathSdv:
+    def _with_optional_suffix(self, tokens: TokenStream) -> Either[SymbolName, PathSdv]:
         """
         :param tokens: Argument list
         :raises SingleInstructionInvalidArgumentException: Invalid arguments
@@ -120,7 +151,7 @@ class _Parser:
             return self._result_from_no_arguments()
         return self._with_non_empty_token_stream(tokens)
 
-    def _with_non_empty_token_stream(self, tokens: TokenStream) -> PathSdv:
+    def _with_non_empty_token_stream(self, tokens: TokenStream) -> Either[SymbolName, PathSdv]:
         initial_argument_string = tokens.remaining_part_of_current_line
         relativity_info = parse_explicit_relativity_info(self.conf.rel_opt_conf.options,
                                                          self.conf.source_file_location,
@@ -131,7 +162,7 @@ class _Parser:
                 return self._result_from_no_arguments()
             else:
                 path_part_sdv2_path_sdv = self._path_constructor(relativity_info)
-                return path_part_sdv2_path_sdv(path_part_sdvs.empty())
+                return Either.of_right(path_part_sdv2_path_sdv(path_part_sdvs.empty()))
 
         if tokens.look_ahead_state is LookAheadState.SYNTAX_ERROR:
             raise SingleInstructionInvalidArgumentException(
@@ -154,14 +185,21 @@ class _Parser:
             return self._without_explicit_relativity(head_token)
         else:
             path_part_2_path_sdv = self._path_constructor(relativity_info)
-            return self._with_explicit_relativity(head_token, path_part_2_path_sdv)
+            return Either.of_right(self._with_explicit_relativity(head_token, path_part_2_path_sdv))
 
-    def _without_explicit_relativity(self, path_argument: Token) -> PathSdv:
-        string_fragments = parse_fragments_from_token(path_argument)
-        if _string_fragments_is_constant(string_fragments):
-            return self._just_string_argument(path_argument.string)
+    def _without_explicit_relativity(self, path_argument: Token) -> Either[SymbolName, PathSdv]:
+        sym_ref_of_fragments = parse_string.parse_sym_ref_or_fragments_from_token(path_argument)
+        if sym_ref_of_fragments.is_left():
+            if path_argument.is_plain:
+                return Either.of_left(sym_ref_of_fragments.left())
+            else:
+                return Either.of_right(self.symbol_name_reducer.reduce_left(sym_ref_of_fragments.left()))
         else:
-            return self._just_argument_with_symbol_references(string_fragments)
+            string_fragments = sym_ref_of_fragments.right()
+            if _string_fragments_is_constant(string_fragments):
+                return Either.of_right(self._just_string_argument(path_argument.string))
+            else:
+                return Either.of_right(self._just_argument_with_symbol_references(string_fragments))
 
     def _with_explicit_relativity(self, path_argument: Token,
                                   path_part_2_path_sdv: Callable[[PathPartSdv], PathSdv]) -> PathSdv:
@@ -187,7 +225,8 @@ class _Parser:
         return path_sdvs.constant(path_ddvs.of_rel_option(self.conf.rel_opt_conf.options.default_option,
                                                           path_suffix))
 
-    def _just_argument_with_symbol_references(self, string_fragments: list,
+    def _just_argument_with_symbol_references(self,
+                                              string_fragments: List[symbol_syntax.Fragment],
                                               ) -> PathSdv:
         if _first_fragment_is_symbol_that_can_act_as_path(string_fragments):
             path_or_str_sym_ref, path_suffix = self._extract_parts_that_can_act_as_path_and_suffix(string_fragments)
@@ -201,9 +240,11 @@ class _Parser:
             return _PathSdvOfRelativityOptionAndSuffixSdv(self.conf.rel_opt_conf.options.default_option,
                                                           path_suffix)
 
-    def _result_from_no_arguments(self, ) -> PathSdv:
-        return path_sdvs.constant(path_ddvs.of_rel_option(self.conf.rel_opt_conf.options.default_option,
-                                                          path_ddvs.empty_path_part()))
+    def _result_from_no_arguments(self, ) -> Either[SymbolName, PathSdv]:
+        return Either.of_right(
+            path_sdvs.constant(path_ddvs.of_rel_option(self.conf.rel_opt_conf.options.default_option,
+                                                       path_ddvs.empty_path_part()))
+        )
 
     def _raise_missing_arguments_exception(self):
         msg = 'Missing ' + self.conf.rel_opt_conf.argument_syntax_name
@@ -225,7 +266,7 @@ class _Parser:
             raise TypeError("You promised you shouldn't give me a  " + str(relativity_info))
 
     def _extract_parts_that_can_act_as_path_and_suffix(self, string_fragments: list,
-                                                       ) -> (SymbolReference, PathPartSdv):
+                                                       ) -> Tuple[SymbolReference, PathPartSdv]:
         path_or_string_symbol = SymbolReference(
             string_fragments[0].value,
             path_or_string_reference_restrictions(self.conf.rel_opt_conf.options.accepted_relativity_variants),

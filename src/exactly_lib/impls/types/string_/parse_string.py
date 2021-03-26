@@ -45,7 +45,8 @@ class SymbolReferenceOrStringParser(ParserFromTokens[Either[SymbolName, StringSd
 
     def parse(self, token_parser: TokenParser) -> Either[SymbolName, StringSdv]:
         is_plain_token, fragments = parse_fragments_from_tokens__w_is_plain(token_parser.token_stream, self._conf)
-        if is_plain_token and len(fragments) == 1 and fragments[0].is_symbol:
+        mb_just_symbol_name = _is_single_sym_ref(fragments)
+        if is_plain_token and mb_just_symbol_name is not None:
             return Either.of_left(fragments[0].value)
         else:
             return Either.of_right(
@@ -140,6 +141,19 @@ def parse_fragments_from_token(token: Token) -> List[symbol_syntax.Fragment]:
     return symbol_syntax.split(token.string)
 
 
+def parse_sym_ref_or_fragments_from_token(token: Token) -> Either[SymbolName, List[symbol_syntax.Fragment]]:
+    if token.is_quoted and token.is_hard_quote_type:
+        return Either.of_right([symbol_syntax.constant(token.string)])
+    fragments = symbol_syntax.split(token.string)
+    mb_just_symbol_name = _is_single_sym_ref(fragments)
+    return (
+        Either.of_left(mb_just_symbol_name)
+        if token.is_plain and mb_just_symbol_name is not None
+        else
+        Either.of_right(fragments)
+    )
+
+
 def string_sdv_from_string(source: str,
                            reference_restrictions: ReferenceRestrictions = None
                            ) -> StringSdv:
@@ -163,3 +177,12 @@ def string_sdv_from_fragments(fragments: Sequence[symbol_syntax.Fragment],
         reference_restrictions = _reference_restrictions.is_any_type_w_str_rendering()
     return StringSdv(tuple([fragment_sdv_from_fragment(f, reference_restrictions)
                             for f in fragments]))
+
+
+def _is_single_sym_ref(fragments: Sequence[symbol_syntax.Fragment]) -> Optional[str]:
+    return (
+        fragments[0].value
+        if len(fragments) == 1 and fragments[0].is_symbol
+        else
+        None
+    )
