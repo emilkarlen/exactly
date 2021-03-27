@@ -206,7 +206,7 @@ class _Parser:
         string_sdv = _parse_string_sdv(path_argument)
         if string_sdv.is_string_constant:
             path_argument_str = string_sdv.string_constant
-            path_argument_path = pathlib.PurePath(path_argument_str)
+            path_argument_path = pathlib.PurePosixPath(path_argument_str)
             if path_argument_path.is_absolute():
                 return path_sdvs.constant(path_ddvs.absolute_file_name(path_argument_str))
             path_suffix = path_part_sdvs.from_constant_str(path_argument_str)
@@ -217,7 +217,7 @@ class _Parser:
 
     def _just_string_argument(self, argument: str,
                               ) -> PathSdv:
-        argument_path = pathlib.PurePath(argument)
+        argument_path = pathlib.PurePosixPath(argument)
         if argument_path.is_absolute():
             #  TODO Should we check if absolute paths are allowed according to RelOptionArgumentConfiguration??
             return path_sdvs.constant(path_ddvs.absolute_file_name(argument))
@@ -294,10 +294,11 @@ class _PathSdvOfRelativityOptionAndSuffixSdv(PathSdv):
 class _PathSdvOfAbsPathAndSuffixSdv(PathSdv):
     def __init__(self,
                  abs_path_root: pathlib.Path,
-                 path_suffix_sdv: PathPartSdv):
+                 path_suffix_sdv: PathPartSdv,
+                 ):
         self.abs_path_root = abs_path_root
         self.path_suffix_sdv = path_suffix_sdv
-        if not self.abs_path_root.is_absolute():
+        if not abs_path_root.is_absolute():
             raise ValueError('abs_path_root is not absolute: ' + str(abs_path_root))
 
     def resolve(self, symbols: SymbolTable) -> PathDdv:

@@ -1,5 +1,5 @@
 import unittest
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 
 from exactly_lib.definitions.path import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTION, REL_CWD_OPTION, \
     REL_HDS_CASE_OPTION_NAME
@@ -598,7 +598,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
 
 class TestRelativityOfSourceFileLocation(TestParsesBase):
     def test_successful_parse_with_source_file_location(self):
-        source_file_location_path = Path(PurePosixPath('/source/file/location'))
+        source_file_location_path = ABS_PATH_ROOT / 'source' / 'file' / 'location'
         constant_path_part = 'constant-path-part'
         symbol = StringConstantSymbolContext('PATH_SUFFIX_SYMBOL', 'symbol-string-value')
         fm = dict(format_rel_option.FORMAT_MAP,
@@ -870,8 +870,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              ' GIVEN '
              'referenced symbol is a string that is an absolute path',
              ArrangementWoSuffixRequirement(
-                 source='{symbol_reference}'.format(
-                     symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
+                 source=symbol.name__sym_ref_syntax,
                  rel_option_argument_configuration=arg_config_for_rel_symbol_config(accepted_relativities,
                                                                                     RelOptionType.REL_ACT),
              ),
@@ -1039,7 +1038,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              expect(
                  resolved_path=
                  path_ddvs.of_rel_option(RelOptionType.REL_HDS_CASE,
-                                         path_ddvs.constant_path_part('suffix-from-path-symbol/string-symbol-value')),
+                                         _path_part_ddv__const('suffix-from-path-symbol', 'string-symbol-value')),
                  expected_symbol_references=
                  asrt.matches_sequence([
                      asrt_sym_ref.matches_reference_2(
@@ -1401,6 +1400,16 @@ class TestTypeMustBeEitherPathOrStringErrMsgGenerator(unittest.TestCase):
 def _remaining_source(ts: TokenStream) -> str:
     return ts.source[ts.position:]
 
+
+def _path_part_ddv__const(*parts) -> path_ddvs.PathPartDdv:
+    return path_ddvs.constant_path_part(_concrete_path_parts(*parts))
+
+
+def _concrete_path_parts(*parts) -> str:
+    return str(Path(*parts))
+
+
+ABS_PATH_ROOT = Path('/').resolve()
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

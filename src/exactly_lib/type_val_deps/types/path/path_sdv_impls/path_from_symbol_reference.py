@@ -65,7 +65,7 @@ class _WStrRenderingValueSymbol2PathResolverVisitor(WStrRenderingTypeSdvPseudoVi
         first_suffix_str = string_ddv.value_when_no_dir_dependencies()
         following_suffix_str = self.suffix_sdv.resolve(self.symbols).value()
         path_str = first_suffix_str + following_suffix_str
-        path = pathlib.Path(path_str)
+        path = pathlib.PurePosixPath(path_str)
         if path.is_absolute():
             return path_ddvs.absolute_file_name(path_str)
         else:
