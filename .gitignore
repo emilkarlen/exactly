@@ -1,9 +1,11 @@
 *~
 __pycache__
+exactly-*.tar.gz
 venv/
 .idea/
 tmp/
 # Used by setuptools
 build/
 dist/
+deb_dist/
 src/exactly.egg-info/

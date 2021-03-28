@@ -1,4 +1,4 @@
-ALL = clean build install uninstall36 uninstall-venv upload upload-test
+ALL = clean build build_deb_sdist build_deb_bdist install uninstall36 uninstall-venv upload upload-test
 
 .PHONY: $(ALL)
 help:
@@ -6,12 +6,23 @@ help:
 
 clean:
 	rm -rf build
-	rm -rf dist
+	rm -rf dist deb_dist
 	rm -rf src/exactly.egg-info
+
 
 build:
 	python3 setup.py sdist
 	python3 setup.py bdist_wheel
+
+# Build for Debian using python3-stdeb
+build_deb_sdist:
+	python3 setup.py --command-packages=stdeb.command sdist_dsc
+
+# Build for Debian using python3-stdeb
+build_deb_bdist:
+	python3 setup.py --command-packages=stdeb.command bdist_deb
+
+
 
 install:
 	python3 setup.py install
@@ -23,6 +34,7 @@ uninstall36:
 uninstall-venv:
 	-test -d venv/lib/python*/site-packages/exactly*.egg && rm -rf  venv/lib/python*/site-packages/exactly*.egg
 	-test -f venv/bin/exactly && rm -f venv/bin/exactly
+
 
 upload:
 	python3 -m twine upload dist/*
