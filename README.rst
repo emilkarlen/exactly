@@ -1,6 +1,9 @@
+.. image:: logotype.jpg
+   :align: right
+
 Tests a command line program by executing it in a temporary sandbox directory and inspecting its result.
 
-Or tests properties of existing files, directories etc.
+Or tests properties of existing files, directories and/or program execution outcome.
 
 Assertions are expressed in a declarative style, using a specialized type system.
 
