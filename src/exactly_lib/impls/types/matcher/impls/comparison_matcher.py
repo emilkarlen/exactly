@@ -95,7 +95,7 @@ class PrimitiveConstructionConfig(Generic[MODEL], ABC):
 
     @abstractmethod
     def mk_primitive(self, rhs: MODEL) -> ComparisonMatcher[MODEL]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class AnyModelConstructionConfig(Generic[MODEL], PrimitiveConstructionConfig[MODEL]):

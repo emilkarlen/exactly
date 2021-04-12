@@ -37,7 +37,7 @@ class SourceConstructorWAppEnvForTest(SourceConstructor, ABC):
                  message_builder: MessageBuilder,
                  app_env: ApplicationEnvironment,
                  ) -> ContextManager[StringSource]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @contextmanager
     def new(self, put: unittest.TestCase, message_builder: MessageBuilder) -> ContextManager[StringSource]:
@@ -53,21 +53,21 @@ class SourceConstructorsBuilder(ABC):
                               put: unittest.TestCase,
                               message_builder: MessageBuilder
                               ) -> ContextManager[ApplicationEnvironment]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def app_env_for_freeze(self,
                            put: unittest.TestCase,
                            message_builder: MessageBuilder,
                            ) -> ContextManager[ApplicationEnvironment]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def new_with(self,
                  put: unittest.TestCase,
                  message_builder: MessageBuilder,
                  app_env: ApplicationEnvironment) -> StringSource:
-        pass
+        raise NotImplementedError('abstract method')
 
     def build(self) -> SourceConstructors:
         return SourceConstructors(

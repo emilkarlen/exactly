@@ -13,13 +13,13 @@ class CliProgramSyntaxDocumentation:
         self.program_name = program_name
 
     def description(self) -> DescriptionWithSubSections:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def initial_paragraphs(self) -> List[ParagraphItem]:
         return []
 
     def synopses(self) -> List[Synopsis]:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def argument_descriptions(self) -> List[DescribedArgument]:
         return []

@@ -150,7 +150,7 @@ class _ParagraphItemAnchorsCollector(ParagraphItemVisitor):
             self.visit(pi)
 
 
-class _SectionItemAnchorsCollector(SectionItemVisitor):
+class _SectionItemAnchorsCollector(SectionItemVisitor[None]):
     def __init__(self,
                  anchors: List[CrossReferenceTarget],
                  references: List[CrossReferenceTarget],
@@ -162,7 +162,6 @@ class _SectionItemAnchorsCollector(SectionItemVisitor):
 
     def visit_section(self, section: Section):
         self._handle_common(section, section.contents)
-        return super().visit_section(section)
 
     def visit_article(self, article: Article):
         self._handle_common(article, article.contents.section_contents)

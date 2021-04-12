@@ -83,4 +83,4 @@ class PathDdvWithPathSuffixAndIsNotAbsoluteBase(PathDdvWithPathSuffixBase, ABC):
         return specific_relative_relativity(rel_option_type)
 
     def _relativity(self) -> RelOptionType:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

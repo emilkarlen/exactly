@@ -28,7 +28,7 @@ class MainStepExecutor:
         """
         Invokes the execution as part of an instruction that is not in the assert phase.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def apply_as_assertion(self,
                            environment: InstructionEnvironmentForPostSdsStep,
@@ -38,7 +38,7 @@ class MainStepExecutor:
         """
         Invokes the execution as part of an instruction that is in the assert phase.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class InstructionParts(tuple):
@@ -77,4 +77,4 @@ class InstructionPartsParser:
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> InstructionParts:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

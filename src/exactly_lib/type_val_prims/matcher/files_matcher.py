@@ -11,36 +11,36 @@ class FileModel(ABC):
     @property
     @abstractmethod
     def path(self) -> DescribedPath:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     @abstractmethod
     def relative_to_root_dir(self) -> pathlib.Path:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def as_file_matcher_model(self) -> FileMatcherModel:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class FilesMatcherModel(ABC):
     @abstractmethod
     def files(self) -> Iterator[FileModel]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def sub_set(self, selector: FileMatcher) -> 'FilesMatcherModel':
         """
         :return a new object that represents a sub set of this object.
         """
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def prune(self, dir_selector: FileMatcher) -> 'FilesMatcherModel':
         """
         :return a new object that represents a variant of this object with pruned directories.
         """
-        pass
+        raise NotImplementedError('abstract method')
 
 
 FilesMatcher = MatcherWTrace[FilesMatcherModel]

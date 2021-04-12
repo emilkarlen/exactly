@@ -111,7 +111,7 @@ class Failure(ABC):
                failing_symbol: str,
                symbols: SymbolTable,
                ) -> Sequence[MajorBlock]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ReferenceRestrictions(ABC):

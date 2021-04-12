@@ -38,7 +38,7 @@ class AssertApplicationOfMatcherInSymbolTable(AssertionBase[InstructionApplicati
 
     @abstractmethod
     def _apply_matcher(self, environment: InstructionApplicationEnvironment) -> MatchingResult:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 def check_matcher_should_be_parsed_as_full_expression(put: unittest.TestCase,

@@ -78,10 +78,10 @@ class ParsedSectionElementVisitor(Generic[T]):
             raise TypeError('Unknown {}: {}'.format(ParsedInstruction, str(element)))
 
     def visit_instruction_element(self, instruction: ParsedInstruction) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def visit_non_instruction_element(self, non_instruction: ParsedNonInstructionElement) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def visit_file_inclusion_directive(self, file_inclusion: ParsedFileInclusionDirective) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

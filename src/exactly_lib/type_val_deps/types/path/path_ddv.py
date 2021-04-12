@@ -21,16 +21,16 @@ class PathDdv(Max1DependencyDdv[pathlib.Path], ABC):
 
     @abstractmethod
     def describer(self) -> PathDescriberForDdv:
-        pass
+        raise NotImplementedError('abstract method')
 
     def path_suffix(self) -> PathPartDdv:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def path_suffix_str(self) -> str:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def path_suffix_path(self) -> pathlib.Path:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def exists_pre_sds(self) -> bool:
         return self.resolving_dependency() is not DirectoryStructurePartition.NON_HDS
@@ -50,29 +50,29 @@ class PathDdv(Max1DependencyDdv[pathlib.Path], ABC):
             return {RESOLVING_DEPENDENCY_OF[relativity.relativity_type]}
 
     def relativity(self) -> SpecificPathRelativity:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def value_pre_sds(self, hds: HomeDs) -> pathlib.Path:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def value_post_sds(self, sds: SandboxDs) -> pathlib.Path:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def value_when_no_dir_dependencies__d(self) -> DescribedPath:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def value_pre_sds__d(self, hds: HomeDs) -> DescribedPath:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def value_post_sds__d(self, sds: SandboxDs) -> DescribedPath:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def value_of_any_dependency__d(self, tcds: TestCaseDs) -> DescribedPath:
-        pass
+        raise NotImplementedError('abstract method')

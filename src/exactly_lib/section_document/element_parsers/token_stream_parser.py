@@ -39,7 +39,7 @@ class ErrorMessageConfiguration:
 class ErrorMessageGenerator(ABC):
     @abstractmethod
     def message(self) -> str:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class TokenParser:
@@ -692,7 +692,7 @@ ParserFromTokenParser = Callable[[TokenParser], T]
 class ParserFromTokens(Generic[T], ABC):
     @abstractmethod
     def parse(self, token_parser: TokenParser) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 def new_token_parser(source: str,

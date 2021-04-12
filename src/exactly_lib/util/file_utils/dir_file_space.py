@@ -14,7 +14,7 @@ class DirFileSpace(ABC):
         :param name_suffix: Dir separator characters are replaces with a non-dir-sep character.
         :returns: A path, with name_suffix as suffix of the file name.
         """
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def new_path_as_existing_dir(self, name_suffix: Optional[str] = None) -> pathlib.Path:
@@ -22,7 +22,7 @@ class DirFileSpace(ABC):
         :param name_suffix: Dir separator characters are replaces with a non-dir-sep character.
         :returns: A path that is an existing empty dir, with name_suffix as suffix of the file name.
         """
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def sub_dir_space(self, name_suffix: Optional[str] = None) -> 'DirFileSpace':
@@ -30,4 +30,4 @@ class DirFileSpace(ABC):
         :param name_suffix: Dir separator characters are replaces with a non-dir-sep character.
         :return: A file space in a new empty directory, with name_suffix as suffix of the file name.
         """
-        pass
+        raise NotImplementedError('abstract method')

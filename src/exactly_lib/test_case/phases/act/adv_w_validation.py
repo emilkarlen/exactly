@@ -10,11 +10,11 @@ T = TypeVar('T')
 class AdvWValidation(Generic[T], ABC):
     @abstractmethod
     def validate(self) -> Optional[TextRenderer]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def resolve(self, environment: ApplicationEnvironment) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 def resolve_optional(x: Optional[AdvWValidation[T]],

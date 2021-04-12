@@ -9,4 +9,4 @@ from exactly_lib.util.symbol_table import SymbolTable
 class FilesConditionSdv(FullDepsWithDetailsDescriptionSdv[FilesCondition], ABC):
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> FilesConditionDdv:
-        pass
+        raise NotImplementedError('abstract method')

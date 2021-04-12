@@ -41,11 +41,11 @@ class PathManipulationFunctionalityForFixedDdv(PathDescriberForDdv, ABC):
 
     @abstractmethod
     def child(self, child_path_component: str) -> 'PathManipulationFunctionalityForFixedDdv':
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def parent(self) -> 'PathManipulationFunctionalityForFixedDdv':
-        pass
+        raise NotImplementedError('abstract method')
 
     def _child_value(self, child_path_component: str) -> PathDdv:
         return path_ddvs.stacked(

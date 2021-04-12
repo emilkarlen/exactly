@@ -18,7 +18,7 @@ from exactly_lib_test.type_val_prims.string_transformer.test_resources import \
 class TestMayDepOnExtResourcesShouldBeThatOfSourceModelBase(unittest.TestCase, ABC):
     @abstractmethod
     def argument_cases(self) -> List[str]:
-        pass
+        raise NotImplementedError('abstract method')
 
     def expected_output_lines_for_model(self) -> Assertion[Sequence[str]]:
         return asrt.equals([])

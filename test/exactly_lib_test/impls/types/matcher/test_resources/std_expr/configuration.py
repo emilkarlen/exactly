@@ -24,39 +24,39 @@ class MatcherConfiguration(Generic[MODEL], ABC):
     def mk_logic_type_value_context_of_primitive(self,
                                                  primitive: MatcherWTrace[MODEL]
                                                  ) -> MatcherSymbolValueContext[MODEL]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def mk_logic_type_context_of_primitive(self,
                                            name: str,
                                            primitive: MatcherWTrace[MODEL]
                                            ) -> MatcherTypeSymbolContext[MODEL]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def mk_logic_type_context_of_sdv(self,
                                      name: str,
                                      sdv: MatcherSdv[MODEL]
                                      ) -> MatcherTypeSymbolContext[MODEL]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def value_type(self) -> ValueType:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def parsers_for_expr_on_any_line(self) -> GrammarParsers[MatcherSdv[MODEL]]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def checker_for_parser_of_full_expr(self) -> IntegrationChecker[MatcherWTrace[MODEL],
                                                                     Callable[[FullResolvingEnvironment], MODEL],
                                                                     MatchingResult]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def arbitrary_model(self, environment: FullResolvingEnvironment) -> MODEL:
-        pass
+        raise NotImplementedError('abstract method')
 
     def valid_symbol_name_and_not_valid_primitive_or_operator(self) -> str:
         return 'VALID_SYMBOL_NAME_AND_NOT_VALID_PRIMITIVE_OR_OPERATOR'

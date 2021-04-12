@@ -23,7 +23,7 @@ from exactly_lib_test.util.description_tree.test_resources import rendering_asse
 class SourceConstructor(ABC):
     @abstractmethod
     def new(self, put: unittest.TestCase, message_builder: MessageBuilder) -> ContextManager[StringSource]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class SourceConstructors:

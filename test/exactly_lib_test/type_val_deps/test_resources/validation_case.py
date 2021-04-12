@@ -8,9 +8,9 @@ class ValidationCaseWSymbolContextAndAssertion(ABC):
     @property
     @abstractmethod
     def symbol_context(self) -> SymbolContext:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     @abstractmethod
     def assertion(self) -> ValidationAssertions:
-        pass
+        raise NotImplementedError('abstract method')

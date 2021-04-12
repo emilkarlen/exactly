@@ -13,4 +13,4 @@ class FilesCondition(WithDetailsDescription, ABC):
     @property
     @abstractmethod
     def files(self) -> Mapping[PurePosixPath, Optional[FileMatcher]]:
-        pass
+        raise NotImplementedError('abstract method')

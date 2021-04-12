@@ -32,44 +32,44 @@ class Phase(enum.Enum):
 class Modifier(ABC):
     @abstractmethod
     def modify(self, environ: Dict[str, str]):
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ModifierDdv(ABC):
     @abstractmethod
     def validator(self) -> DdvValidator:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def resolve(self, tcds: TestCaseDs) -> ApplicationEnvironmentDependentValue[Modifier]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ModifierSdv(ABC):
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> ModifierDdv:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     @abstractmethod
     def references(self) -> Sequence[SymbolReference]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ModifierApplier(ABC):
     @abstractmethod
     def apply(self, modifier: ApplicationEnvironmentDependentValue[Modifier]):
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class _ApplierFactory(ABC):
     @abstractmethod
     def applier_for_act(self) -> ModifierApplier:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def applier_for_non_act(self) -> ModifierApplier:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class _AppEnvConstructor:

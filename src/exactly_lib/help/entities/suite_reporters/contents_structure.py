@@ -19,7 +19,7 @@ class SuiteReporterDocumentation(EntityDocumentation):
         return []
 
     def exit_code_description(self) -> List[ParagraphItem]:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         """

@@ -10,8 +10,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 class ProgramSdv(FullDepsWithNodeDescriptionSdv[Program], ABC):
     @abstractmethod
     def new_accumulated(self, additional: AccumulatedComponents) -> 'ProgramSdv':
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> ProgramDdv:
-        pass
+        raise NotImplementedError('abstract method')

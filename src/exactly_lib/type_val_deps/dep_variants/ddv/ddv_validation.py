@@ -20,14 +20,14 @@ class DdvValidator:
         Validates the object if it is expected to exist pre-SDS.
         :return: Error message iff validation was applicable and validation failed.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def validate_post_sds_if_applicable(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
         """
         Validates the object if it is expected to NOT exist pre-SDS.
         :return: Error message iff validation was applicable and validation failed.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class ConstantDdvValidator(DdvValidator):

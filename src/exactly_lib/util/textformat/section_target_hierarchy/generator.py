@@ -15,4 +15,4 @@ class SectionHierarchyGenerator:
         :param target_factory: Represents the root position of the generated
         section
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

@@ -10,4 +10,4 @@ class WithIntInterval(ABC):
         """
         Gives the interval that this object "applies to"
         """
-        pass
+        raise NotImplementedError('abstract method')

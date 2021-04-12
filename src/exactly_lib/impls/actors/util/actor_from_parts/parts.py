@@ -26,13 +26,13 @@ class Validator(ABC):
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep
                          ) -> svh.SuccessOrValidationErrorOrHardError:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def validate_post_setup(self,
                             environment: InstructionEnvironmentForPostSdsStep
                             ) -> svh.SuccessOrValidationErrorOrHardError:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class Executor(ABC):
@@ -56,7 +56,7 @@ class Executor(ABC):
         :raises: :class:`HardErrorException`
         :return: Exit code from process execution.
         """
-        pass
+        raise NotImplementedError('abstract method')
 
 
 EXECUTABLE_OBJECT = TypeVar('EXECUTABLE_OBJECT', bound=SymbolUser)
@@ -68,7 +68,7 @@ class ValidatorConstructor(Generic[EXECUTABLE_OBJECT], ABC):
                   environment: InstructionEnvironmentForPreSdsStep,
                   executable_object: EXECUTABLE_OBJECT,
                   ) -> Validator:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ExecutorConstructor(Generic[EXECUTABLE_OBJECT], ABC):
@@ -78,7 +78,7 @@ class ExecutorConstructor(Generic[EXECUTABLE_OBJECT], ABC):
                   os_services: OsServices,
                   executable_object: EXECUTABLE_OBJECT,
                   ) -> Executor:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class UnconditionallySuccessfulValidatorConstructor(Generic[EXECUTABLE_OBJECT],
@@ -145,7 +145,7 @@ class ExecutableObjectParser(Generic[EXECUTABLE_OBJECT], ABC):
         :return: An object that can be given as argument to constructors of validator and executor designed
         to be used together with the parser.  The object also reports symbol usages known after parse.
         """
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ActorFromParts(Generic[EXECUTABLE_OBJECT], Actor):

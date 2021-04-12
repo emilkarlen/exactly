@@ -18,7 +18,7 @@ class StringTransformer(WithNameAndNodeDescription, ABC):
 
     @abstractmethod
     def transform(self, model: StringSource) -> StringSource:
-        pass
+        raise NotImplementedError('abstract method')
 
     def __str__(self):
         return type(self).__name__

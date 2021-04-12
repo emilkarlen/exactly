@@ -1,10 +1,7 @@
-from typing import List
-
 from exactly_lib import program_info
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts, conf_params
 from exactly_lib.tcfs import sds as sds, tcds_symbols
-from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _DESCRIPTION_HOME = """\
@@ -57,9 +54,6 @@ class SymbolDescription:
 
     def as_single_line_description_str(self, symbol_name: str) -> str:
         return self.text_parser.format(self.all_variables_dict[symbol_name])
-
-    def as_description_paragraphs(self, symbol_name: str) -> List[ParagraphItem]:
-        return self.text_parser.paragraph_items(self.all_variables_dict[symbol_name])
 
 
 SYMBOL_DESCRIPTION = SymbolDescription()

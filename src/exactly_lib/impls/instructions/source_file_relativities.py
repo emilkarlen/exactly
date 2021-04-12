@@ -21,12 +21,6 @@ def src_rel_opt_arg_conf_for_phase(default_option: RelOptionType,
                                 default_option)
 
 
-def src_rel_opt_conf_for_phase(default_option: RelOptionType,
-                               phase_is_after_act: bool,
-                               ) -> RelOptionsConfiguration:
-    return src_rel_opt_conf(rel_opts_for_phase(phase_is_after_act), default_option)
-
-
 def src_rel_opt_arg_conf(rel_option_types: AbstractSet[RelOptionType],
                          src_path_argument: str,
                          default_option: RelOptionType,

@@ -52,34 +52,34 @@ class Configuration(ABC):
     @abstractmethod
     def program_that_exits_with_code(self,
                                      exit_code: int) -> ContextManager[TestCaseSourceSetup]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def program_that_copes_stdin_to_stdout(self) -> ContextManager[TestCaseSourceSetup]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def program_that_prints_to_stdout(self,
                                       string_to_print: str) -> ContextManager[TestCaseSourceSetup]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def program_that_prints_to_stderr(self,
                                       string_to_print: str) -> ContextManager[TestCaseSourceSetup]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str
                                                                     ) -> ContextManager[TestCaseSourceSetup]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def program_that_prints_cwd_to_stdout(self) -> ContextManager[TestCaseSourceSetup]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def program_that_sleeps_at_least(self, number_of_seconds: int) -> ContextManager[TestCaseSourceSetup]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 def suite_for_execution(setup: Configuration) -> unittest.TestSuite:

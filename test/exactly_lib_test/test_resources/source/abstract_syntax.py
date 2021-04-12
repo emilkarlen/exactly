@@ -12,7 +12,7 @@ class AbstractSyntax(ABC):
 
     @abstractmethod
     def tokenization(self) -> TokenSequence:
-        pass
+        raise NotImplementedError('abstract method')
 
     def as_str__default(self) -> str:
         return self.tokenization().layout(token_sequence.LayoutSpec.of_default())

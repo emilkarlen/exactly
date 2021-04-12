@@ -18,3 +18,4 @@ class CommandProcessor(Generic[RET], ABC):
         """
         :raises :class:`HardErrorException`: Unable to execute :class:`Command`
         """
+        raise NotImplementedError('abstract method')

@@ -14,4 +14,4 @@ class MatcherSdv(Generic[MODEL],
                  ABC):
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> MatcherDdv[MODEL]:
-        pass
+        raise NotImplementedError('abstract method')

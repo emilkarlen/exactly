@@ -158,7 +158,7 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
                  tb: TraceBuilder,
                  predicate: MatcherWTrace[ELEMENT],
                  elements: Iterator[ELEMENT]) -> MatchingResult:
-        pass
+        raise NotImplementedError('abstract method')
 
     def _explanation_when_no_element_matcher_trace(self, explanation: ToStringObject) -> DetailsRenderer:
         return custom_details.ExpectedAndActual(

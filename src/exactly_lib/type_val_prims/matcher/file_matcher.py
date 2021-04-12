@@ -9,11 +9,11 @@ from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 class FileTypeAccess(ABC):
     @abstractmethod
     def is_type(self, expected: FileType) -> bool:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def stat(self, follow_sym_links=True) -> os.stat_result:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class FileMatcherModel(ABC):
@@ -21,12 +21,12 @@ class FileMatcherModel(ABC):
     @abstractmethod
     def path(self) -> DescribedPath:
         """Path of the file to match. May or may not exist."""
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     @abstractmethod
     def file_type_access(self) -> FileTypeAccess:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 FileMatcher = MatcherWTrace[FileMatcherModel]

@@ -250,16 +250,16 @@ class ArgumentVisitor:
         return self.visit(x)
 
     def visit_constant(self, x: Constant):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def visit_named(self, x: Named):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def visit_option(self, x: Option):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def visit_short_and_long_option(self, x: ShortAndLongOption):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class ArgumentUsageVisitor:
@@ -274,10 +274,10 @@ class ArgumentUsageVisitor:
         return self.visit(x)
 
     def visit_single(self, x: Single):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def visit_choice(self, x: Choice):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class CommandLine:

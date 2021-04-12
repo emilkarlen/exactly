@@ -7,4 +7,4 @@ class TargetRenderer:
     """
 
     def apply(self, target: core.CrossReferenceTarget) -> str:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

@@ -25,7 +25,7 @@ class CaseConverterTestBase(unittest.TestCase, ABC):
     @property
     @abstractmethod
     def config(self) -> CaseConverterConfig:
-        pass
+        raise NotImplementedError('abstract method')
 
     def test_no_lines(self):
         integration_check.CHECKER__PARSE_FULL.check__w_source_variants(

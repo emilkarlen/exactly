@@ -38,7 +38,7 @@ class ConceptDocumentation(EntityDocumentation):
         return self._info.acronym
 
     def purpose(self) -> DescriptionWithSubSections:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def summary_paragraphs(self) -> List[ParagraphItem]:
         return [para(self.purpose().single_line_description)]
@@ -72,7 +72,7 @@ class ConceptWDefaultDocumentation(ConceptDocumentation, ABC):
 
     @abstractmethod
     def purpose__before_default(self) -> SectionContents:
-        pass
+        raise NotImplementedError('abstract method')
 
     def _default_value(self) -> Section:
         return docs.section(

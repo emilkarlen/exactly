@@ -59,4 +59,4 @@ class ConfigurationPhaseInstruction(TestCaseInstruction):
 
         :raises: :class:`HardErrorException`
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

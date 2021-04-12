@@ -10,7 +10,7 @@ RET = TypeVar('RET')
 class Detail(ABC):
     @abstractmethod
     def accept(self, visitor: 'DetailVisitor[RET]') -> RET:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 NODE_DATA = TypeVar('NODE_DATA')
@@ -151,20 +151,20 @@ class TreeDetail(Detail):
 class DetailVisitor(Generic[RET], ABC):
     @abstractmethod
     def visit_string(self, x: StringDetail) -> RET:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_pre_formatted_string(self, x: PreFormattedStringDetail) -> RET:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_header_and_value(self, x: HeaderAndValueDetail) -> RET:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_indented(self, x: IndentedDetail) -> RET:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_tree(self, x: TreeDetail) -> RET:
-        pass
+        raise NotImplementedError('abstract method')

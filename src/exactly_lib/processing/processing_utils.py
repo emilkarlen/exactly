@@ -14,7 +14,7 @@ class SourceReader:
         """
         :raises ProcessError:
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class Parser:
@@ -25,7 +25,7 @@ class Parser:
         :raises ProcessError: Indicates syntax error
         :raises AccessorError: An error with explicit error type
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class Executor:
@@ -35,7 +35,7 @@ class Executor:
         """
         :raises ProcessError:
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class AccessorFromParts(Accessor):

@@ -23,4 +23,4 @@ class InstructionParserThatConsumesCurrentLine(InstructionParser):
         return self._parse(rest_of_line)
 
     def _parse(self, rest_of_line: str) -> model.Instruction:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

@@ -21,7 +21,7 @@ class FileSystemElement(ABC):
     @property
     @abstractmethod
     def file_type(self) -> FileType:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     def name_as_path(self) -> pathlib.Path:

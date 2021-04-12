@@ -23,7 +23,7 @@ class CommonSdvPropertiesChecker(Generic[PRIMITIVE], ABC):
               actual: FullDepsSdv[PRIMITIVE],
               message_builder: MessageBuilder,
               ):
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class CommonExecutionPropertiesChecker(Generic[PRIMITIVE, OUTPUT], ABC):
@@ -39,7 +39,7 @@ class CommonExecutionPropertiesChecker(Generic[PRIMITIVE, OUTPUT], ABC):
                   actual: FullDepsDdv[PRIMITIVE],
                   message_builder: MessageBuilder,
                   ):
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def check_primitive(self,
@@ -48,7 +48,7 @@ class CommonExecutionPropertiesChecker(Generic[PRIMITIVE, OUTPUT], ABC):
                         message_builder: MessageBuilder,
                         ):
         """Checks the primitive before application."""
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def check_application_output(self,
@@ -57,7 +57,7 @@ class CommonExecutionPropertiesChecker(Generic[PRIMITIVE, OUTPUT], ABC):
                                  message_builder: MessageBuilder,
                                  ):
         """Checks the output from application."""
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class Applier(Generic[PRIMITIVE, INPUT, OUTPUT], ABC):
@@ -68,7 +68,7 @@ class Applier(Generic[PRIMITIVE, INPUT, OUTPUT], ABC):
               primitive: PRIMITIVE,
               resolving_environment: FullResolvingEnvironment,
               input_: INPUT) -> OUTPUT:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ApplierThatDoesNothing(Generic[PRIMITIVE], Applier[PRIMITIVE, None, None]):
@@ -91,12 +91,12 @@ class CommonPropertiesConfiguration(Generic[PRIMITIVE, INPUT, OUTPUT], ABC):
 
     @abstractmethod
     def applier(self) -> Applier[PRIMITIVE, INPUT, OUTPUT]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def new_sdv_checker(self) -> CommonSdvPropertiesChecker[PRIMITIVE]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def new_execution_checker(self) -> CommonExecutionPropertiesChecker[PRIMITIVE, OUTPUT]:
-        pass
+        raise NotImplementedError('abstract method')

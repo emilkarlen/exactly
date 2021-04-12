@@ -18,7 +18,7 @@ class ObjectDdv(Generic[T], MultiDependenciesDdv[T], ABC):
 
     @abstractmethod
     def describer(self) -> DetailsRenderer:
-        pass
+        raise NotImplementedError('abstract method')
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return set()
@@ -29,7 +29,7 @@ class ObjectDdv(Generic[T], MultiDependenciesDdv[T], ABC):
 
     @abstractmethod
     def value_of_any_dependency(self, tcds: TestCaseDs) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ObjectSdv(Generic[T], SymbolDependentValue, ABC):
@@ -37,4 +37,4 @@ class ObjectSdv(Generic[T], SymbolDependentValue, ABC):
 
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> ObjectDdv[T]:
-        pass
+        raise NotImplementedError('abstract method')

@@ -11,7 +11,7 @@ from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 class FileCreator(ABC):
     @abstractmethod
     def create(self, tmp_file_space: DirFileSpace) -> Path:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ContentsViaFile(StringSourceContentsWithCachedPath):

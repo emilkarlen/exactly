@@ -50,7 +50,7 @@ def get_mk_operand_trace(operand_name: str) -> Callable[[T], tree.Node[T]]:
 class MatcherBehaviour(ABC):
     @abstractmethod
     def accept(self, visitor: '_MatcherBehaviourVisitor[T]') -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ConstantIncludedInTrace(MatcherBehaviour):
@@ -69,11 +69,11 @@ class IgnoredDueToLaziness(MatcherBehaviour):
 class _MatcherBehaviourVisitor(Generic[T], ABC):
     @abstractmethod
     def visit_constant(self, x: ConstantIncludedInTrace) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_ignored(self, x: IgnoredDueToLaziness) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class Case:

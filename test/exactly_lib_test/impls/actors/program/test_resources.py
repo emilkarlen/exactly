@@ -57,7 +57,7 @@ class ConfigurationWithPythonProgramBase(Configuration, ABC):
     @abstractmethod
     @contextmanager
     def _instructions_for_executing_py_source(self, py_src: List[str]) -> ContextManager[TestCaseSourceSetup]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 def valid_source_variants(program_line: str) -> List[NameAndValue[List[ActPhaseInstruction]]]:

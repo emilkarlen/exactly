@@ -33,7 +33,7 @@ class _TestCaseBase(Generic[MODEL], unittest.TestCase, ABC):
     @property
     @abstractmethod
     def configuration(self) -> MatcherConfiguration[MODEL]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     def _asrt_helper(self) -> AssertionsHelper[MODEL]:
@@ -282,7 +282,7 @@ class _TestBinaryOperatorBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
     @property
     @abstractmethod
     def operator_name(self) -> str:
-        pass
+        raise NotImplementedError('abstract method')
 
     def _check_bin_op(self,
                       cases_with_same_number_of_operands: List[Case],

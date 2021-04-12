@@ -46,7 +46,7 @@ class NumFilesTestCaseHelperBase(ABC):
 
     @abstractmethod
     def _files_matcher_arg(self) -> FilesMatcherArg:
-        pass
+        raise NotImplementedError('abstract method')
 
     def execution_cases(self) -> Sequence[NExArr[ExecutionExpectation, ArrangementPostAct2]]:
         return [

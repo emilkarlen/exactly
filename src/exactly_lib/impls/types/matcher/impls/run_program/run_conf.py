@@ -10,7 +10,7 @@ MODEL = TypeVar('MODEL')
 class RunConfiguration(Generic[MODEL], ABC):
     @abstractmethod
     def additional_stdin(self, model: MODEL) -> List[StringSource]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def program_for_model(self,
@@ -21,4 +21,4 @@ class RunConfiguration(Generic[MODEL], ABC):
 
         :param matcher_argument_program: The program given as argument to the "run" matcher.
         """
-        pass
+        raise NotImplementedError('abstract method')

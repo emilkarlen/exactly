@@ -25,7 +25,7 @@ class PathArgument(SequenceOfElementsBase, ABC):
     @property
     @abstractmethod
     def name(self) -> str:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class _PathArgumentWithRelativityOptionFromRenderer(PathArgument):

@@ -18,7 +18,7 @@ class _FilesGenerator(ABC):
                  root_dir_path: DescribedPath,
                  directory_prune: Optional[FileMatcher],
                  ) -> Iterator[FileModel]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class _FilesMatcherModelForDir(FilesMatcherModel):

@@ -22,7 +22,7 @@ from ..util.actor_from_parts import parts
 class _ProgramExecutor(ABC):
     @abstractmethod
     def execute(self) -> int:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class Executor(parts.Executor, ABC):

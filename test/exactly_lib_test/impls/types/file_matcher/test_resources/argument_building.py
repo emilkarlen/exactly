@@ -285,7 +285,7 @@ class DirContentsRecursiveArgs(FileMatcherArg):
 class PathArgumentPositionArgument(ABC):
     @abstractmethod
     def arguments(self) -> List[str]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class PathArgumentPositionDefault(PathArgumentPositionArgument):

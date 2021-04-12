@@ -182,18 +182,3 @@ class FileSystemLocationInfo(tuple):
     def current_source_file(self) -> FileLocationInfo:
         """Information about the source file that contains the instruction being parsed"""
         return self[0]
-
-
-def _abs_path_of_dir_containing_file(abs_path_of_dir_containing_root_file: Path,
-                                     final_file: Optional[Path],
-                                     file_inclusion_chain: Sequence[SourceLocation],
-                                     ) -> Path:
-    ret_val = abs_path_of_dir_containing_root_file
-    file_path_rel_referrer_list = ([source_location.file_path_rel_referrer
-                                    for source_location in file_inclusion_chain
-                                    ] +
-                                   [final_file])
-    for file_path_rel_referrer in file_path_rel_referrer_list:
-        if file_path_rel_referrer is not None:
-            ret_val = ret_val / file_path_rel_referrer.parent
-    return ret_val

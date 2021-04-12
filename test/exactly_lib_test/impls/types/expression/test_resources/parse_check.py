@@ -22,7 +22,7 @@ class ParserMaker(ABC):
              grammar: Grammar[EXPR],
              must_be_on_current_line: bool,
              ) -> Parser[EXPR]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class _ParserMakerOfFullExprParser(ParserMaker):

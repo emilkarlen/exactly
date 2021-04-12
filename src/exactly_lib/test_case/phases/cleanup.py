@@ -39,7 +39,7 @@ class CleanupPhaseInstruction(TestCaseInstructionWithSymbols):
         :param previous_phase: The phase that was executed directly before the cleanup phase.
         :raises: :class:`HardErrorException`
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 def get_symbol_usages(instruction: CleanupPhaseInstruction) -> Sequence[SymbolUsage]:

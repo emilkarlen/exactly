@@ -57,7 +57,7 @@ class _StringFragmentDdvFromDirDependentValue(StringFragmentDdv):
         return self._to_string(self.value.value_of_any_dependency(tcds))
 
     def _to_string(self, x) -> str:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class StringDdvFragmentDdv(_StringFragmentDdvFromDirDependentValue):

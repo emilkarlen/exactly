@@ -30,7 +30,7 @@ class StringSourceContents(ABC):
 
         :raises HardErrorException: Detected error
         """
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     def as_str(self) -> str:
@@ -61,7 +61,7 @@ class StringSourceContents(ABC):
 
         :raises HardErrorException: Detected error
         """
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     @abstractmethod
@@ -77,7 +77,7 @@ class StringSourceContents(ABC):
 
         :raises HardErrorException: Detected error
         """
-        pass
+        raise NotImplementedError('abstract method')
 
     def write_to(self, output: TextIO):
         """
@@ -91,4 +91,4 @@ class StringSourceContents(ABC):
     @property
     @abstractmethod
     def tmp_file_space(self) -> DirFileSpace:
-        pass
+        raise NotImplementedError('abstract method')

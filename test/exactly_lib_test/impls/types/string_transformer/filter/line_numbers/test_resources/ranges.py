@@ -10,12 +10,12 @@ class ValidRange(ABC):
     @property
     @abstractmethod
     def is_const_empty(self) -> bool:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     @abstractmethod
     def as_arg(self) -> Range:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 def range_is_const_empty(lower_limit: int,

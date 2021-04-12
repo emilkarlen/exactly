@@ -32,29 +32,29 @@ class ApplicationAssertionSetup(Generic[MODEL, ACTUAL], ABC):
                       tcds: TestCaseDs,
                       env: ApplicationEnvironment,
                       ) -> Assertion[ACTUAL]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def get_actual(self, model: MODEL) -> ACTUAL:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ValidationAssertionSetup(Generic[ACTUAL_PRE_SDS, ACTUAL_POST_SDS], ABC):
     @abstractmethod
     def get_pre_sds_assertion(self, hds: HomeDs) -> Assertion[ACTUAL_PRE_SDS]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def get_pre_sds_actual(self, hds: HomeDs) -> ACTUAL_PRE_SDS:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def get_post_sds_assertion(self, tcds: TestCaseDs) -> Assertion[ACTUAL_POST_SDS]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def get_post_sds_actual(self, tcds: TestCaseDs) -> ACTUAL_POST_SDS:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class UnconditionallyPassValidationAssertionSetup(ValidationAssertionSetup):

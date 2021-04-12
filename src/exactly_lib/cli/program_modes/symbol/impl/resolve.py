@@ -24,7 +24,7 @@ class Resolver(ABC):
 
     @abstractmethod
     def resolve(self) -> Tuple[test_case_doc.TestCaseOfInstructions, ActionToCheck]:
-        pass
+        raise NotImplementedError('abstract method')
 
     def _from_test_case(self,
                         test_case: test_case_doc.TestCase,

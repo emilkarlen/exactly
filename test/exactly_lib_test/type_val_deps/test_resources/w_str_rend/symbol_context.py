@@ -47,7 +47,7 @@ class DataSymbolValueContext(Generic[SDV_TYPE], SymbolValueContext[SDV_TYPE], AB
     @property
     @abstractmethod
     def assert_equals_sdv(self) -> Assertion[SymbolDependentValue]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class DataTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):
@@ -57,7 +57,7 @@ class DataTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):
     @property
     @abstractmethod
     def value(self) -> DataSymbolValueContext[SDV_TYPE]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     def reference__w_str_rendering(self) -> SymbolReference:

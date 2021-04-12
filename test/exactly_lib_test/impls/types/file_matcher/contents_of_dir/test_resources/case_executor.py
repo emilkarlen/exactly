@@ -23,16 +23,16 @@ class ExecutorOfCaseGenerator(ABC):
                        put: unittest.TestCase,
                        case: SingleCaseGenerator,
                        ):
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def execute_list(self,
                      put: unittest.TestCase,
                      cases: Sequence[NameAndValue[SingleCaseGenerator]]):
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def execute_multi(self,
                       put: unittest.TestCase,
                       generator: MultipleExecutionCasesGenerator):
-        pass
+        raise NotImplementedError('abstract method')

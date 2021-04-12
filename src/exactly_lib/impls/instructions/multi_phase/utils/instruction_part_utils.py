@@ -27,10 +27,10 @@ class MainStepResultTranslator(Generic[T]):
     """
 
     def translate_for_non_assertion(self, main_result: T) -> sh.SuccessOrHardError:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def translate_for_assertion(self, main_result: T) -> pfh.PassOrFailOrHardError:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class MainStepResultTranslatorForErrorMessageStringResultAsHardError(MainStepResultTranslator[str]):

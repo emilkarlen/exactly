@@ -13,14 +13,14 @@ class WithNodeDescription(ABC):
 
         The returned tree is constant.
         """
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class WithNameAndNodeDescription(WithNodeDescription, ABC):
     @property
     @abstractmethod
     def name(self) -> str:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def structure(self) -> StructureRenderer:
@@ -29,4 +29,4 @@ class WithNameAndNodeDescription(WithNodeDescription, ABC):
 
         The returned tree is constant.
         """
-        pass
+        raise NotImplementedError('abstract method')

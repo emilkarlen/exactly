@@ -9,4 +9,4 @@ from .ddv import FilesSourceDdv
 class FilesSourceSdv(FullDepsWithNodeDescriptionSdv[FilesSource], ABC):
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> FilesSourceDdv:
-        pass
+        raise NotImplementedError('abstract method')

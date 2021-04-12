@@ -9,7 +9,7 @@ class PathDescriberForDdv:
     @property
     @abstractmethod
     def value(self) -> Renderer[str]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     @abstractmethod
@@ -17,11 +17,11 @@ class PathDescriberForDdv:
         """
         :return: None iff path is absolute
         """
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class PathDescriberForPrimitive(PathDescriberForDdv):
     @property
     @abstractmethod
     def primitive(self) -> Renderer[str]:
-        pass
+        raise NotImplementedError('abstract method')

@@ -186,7 +186,7 @@ class TestUnexpectedDataBase(unittest.TestCase, ABC):
                             expected: StringSourceData,
                             unexpected: StringSourceData,
                             ) -> SourceConstructor:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class TestInvalidLineSequenceIsDetectedBase(unittest.TestCase, ABC):
@@ -221,4 +221,4 @@ class TestInvalidLineSequenceIsDetectedBase(unittest.TestCase, ABC):
                             valid: StringSourceData,
                             invalid: StringSourceData,
                             ) -> SourceConstructor:
-        pass
+        raise NotImplementedError('abstract method')

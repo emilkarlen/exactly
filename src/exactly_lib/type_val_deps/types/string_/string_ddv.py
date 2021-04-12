@@ -21,7 +21,7 @@ class StringFragmentDdv(StringWithDirDependency, ABC):
     @abstractmethod
     def describer(self) -> Renderer[str]:
         """Rendition for presentation in error messages etc"""
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class StringDdv(StringWithDirDependency):

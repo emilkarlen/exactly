@@ -31,7 +31,7 @@ class SymbolValueContext(Generic[SDV_TYPE], ABC):
     @property
     @abstractmethod
     def value_type(self) -> ValueType:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     def sdv(self) -> SDV_TYPE:
@@ -39,7 +39,7 @@ class SymbolValueContext(Generic[SDV_TYPE], ABC):
 
     @abstractmethod
     def reference_assertion(self, symbol_name: str) -> Assertion[SymbolReference]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     def definition_source(self) -> Optional[SourceLocationInfo]:
@@ -57,7 +57,7 @@ class SymbolContext(Generic[SDV_TYPE], ABC):
     @property
     @abstractmethod
     def value(self) -> SymbolValueContext[SDV_TYPE]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     def name(self) -> str:

@@ -53,7 +53,7 @@ class LayoutAble(ABC):
                spec: LayoutSpec,
                position: AbstractSet[TokenPosition],
                ) -> Sequence[str]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 STANDARD_LAYOUT_SPECS = (

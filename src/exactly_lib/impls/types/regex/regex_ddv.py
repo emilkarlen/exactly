@@ -13,7 +13,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 class RegexDdv(MultiDependenciesDdv[Pattern], ABC):
     @abstractmethod
     def describer(self) -> DetailsRenderer:
-        pass
+        raise NotImplementedError('abstract method')
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         raise NotImplementedError('abstract method')

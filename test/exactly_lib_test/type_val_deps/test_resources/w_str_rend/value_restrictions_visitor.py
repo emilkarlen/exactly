@@ -20,8 +20,8 @@ class ProdValueRestrictionVariantsVisitor(Generic[T], ABC):
 
     @abstractmethod
     def visit_any(self, x: ArbitraryValueWStrRenderingRestriction) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_path_relativity(self, x: PathAndRelativityRestriction) -> T:
-        pass
+        raise NotImplementedError('abstract method')

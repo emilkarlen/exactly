@@ -8,8 +8,8 @@ from exactly_lib.util import collection
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
-from exactly_lib_test.test_resources.arguments.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.section_document.test_resources import parse_source
+from exactly_lib_test.test_resources.arguments.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.test_resources.strings import WithToString
 
 
@@ -36,7 +36,7 @@ class ArgumentElementsRenderer(ABC):
     @property
     @abstractmethod
     def elements(self) -> List[WithToString]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     def as_str(self) -> str:
@@ -72,7 +72,7 @@ class FromArgumentElementsBase(ArgumentElementsRenderer, ABC):
     @property
     @abstractmethod
     def as_argument_elements(self) -> ArgumentElements:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     def as_remaining_source(self) -> ParseSource:

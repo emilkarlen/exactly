@@ -13,7 +13,7 @@ class StringSourceDdv(FullDepsWithNodeDescriptionDdv[StringSource], ABC):
     @abstractmethod
     def new_structure_builder(self) -> StringSourceStructureBuilder:
         """"Gives a new object, for each invokation"""
-        pass
+        raise NotImplementedError('abstract method')
 
     def structure(self) -> StructureRenderer:
         return self.new_structure_builder().build()

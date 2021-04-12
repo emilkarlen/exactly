@@ -12,16 +12,16 @@ PRIMITIVE = TypeVar('PRIMITIVE')
 class FullDepsSdv(Generic[PRIMITIVE], TypedSymbolDependentValue[FullDepsDdv[PRIMITIVE]], ABC):
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> FullDepsDdv[PRIMITIVE]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class FullDepsWithDetailsDescriptionSdv(Generic[PRIMITIVE], FullDepsSdv[PRIMITIVE], ABC):
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> FullDepsWithDetailsDescriptionDdv[PRIMITIVE]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class FullDepsWithNodeDescriptionSdv(Generic[PRIMITIVE], FullDepsSdv[PRIMITIVE], ABC):
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> FullDepsWithNodeDescriptionDdv[PRIMITIVE]:
-        pass
+        raise NotImplementedError('abstract method')

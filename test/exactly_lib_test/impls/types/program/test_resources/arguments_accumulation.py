@@ -49,11 +49,11 @@ class TestExecutorBase(ABC):
 
     @abstractmethod
     def source_to_parse(self, symbol_name: str, arguments: Sequence[ArgumentAbsStx]) -> AbstractSyntax:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def integration_checker(self) -> integration_check.IntegrationChecker[Program, None, None]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ArgumentAccumulationTestExecutor(TestExecutorBase, ABC):

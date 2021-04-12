@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Any, Sequence, List
+from typing import Optional, Sequence, List
 
 from exactly_lib.impls.text_render import header_rendering
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
@@ -15,7 +15,7 @@ class PathRepresentationsRenderers(ABC):
 
     @abstractmethod
     def renders(self) -> List[Renderer[str]]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class PathRepresentationsRenderersForDdv(PathRepresentationsRenderers):
@@ -40,53 +40,6 @@ class PathRepresentationsRenderersForPrimitive(PathRepresentationsRenderers):
             else
             [p.value]
         )
-
-
-class PathDdvLines(SequenceRenderer[LineElement]):
-    def __init__(self,
-                 path: PathDescriberForPrimitive,
-                 header_line: Optional[Any] = None
-                 ):
-        self._path = path
-        self._header_line = header_line
-
-    def render_sequence(self) -> Sequence[LineElement]:
-        ret_val = [LineElement(text_struct.StringLineObject(self._path.value.render()))]
-        if self._header_line is not None:
-            header = LineElement(text_struct.StringLineObject(self._header_line))
-            ret_val.insert(0, header)
-
-        return ret_val
-
-
-class PathDdvMinorBlock(Renderer[MinorBlock]):
-    def __init__(self,
-                 path: PathDescriberForPrimitive,
-                 header_line: Optional[Any] = None
-                 ):
-        self._path = path
-        self._header_line = header_line
-
-    def render(self) -> MinorBlock:
-        return MinorBlock(
-            PathDdvLines(self._path,
-                         self._header_line).render_sequence()
-        )
-
-
-def path_renderers(path: PathDescriberForPrimitive) -> List[Renderer[str]]:
-    return (
-        [path.value, path.primitive]
-        if path.resolving_dependency is DirectoryStructurePartition.HDS
-        else [path.value]
-    )
-
-
-def path_strings(path: PathDescriberForPrimitive) -> List[str]:
-    return [
-        r.render()
-        for r in path_renderers(path)
-    ]
 
 
 class PathMinorBlock(Renderer[MinorBlock]):

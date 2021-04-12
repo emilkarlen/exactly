@@ -16,4 +16,4 @@ class ModelConstructor(Generic[MODEL], WithDetailsDescription, ABC):
 
     @abstractmethod
     def make_model(self, model: FileMatcherModel) -> MODEL:
-        pass
+        raise NotImplementedError('abstract method')

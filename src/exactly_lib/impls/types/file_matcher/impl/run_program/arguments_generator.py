@@ -8,7 +8,7 @@ class ArgumentsGenerator(ABC):
                  program_arguments: List[str],
                  model_path: str,
                  ) -> List[str]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class Last(ArgumentsGenerator):

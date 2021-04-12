@@ -20,7 +20,6 @@ from exactly_lib_test.common.help.test_resources.check_documentation import suit
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources.predefined_properties import get_empty_environ
 from exactly_lib_test.impls.instructions.test_resources.instruction_checker import InstructionChecker
-from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationActual
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.section_document.test_resources import parse_checker
@@ -31,6 +30,7 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.test_resources.validation.validation import ValidationActual
 
 
 class ConfigurationBase(ABC):
@@ -48,7 +48,7 @@ class ConfigurationBase(ABC):
     @property
     @abstractmethod
     def instruction_checker(self) -> InstructionChecker:
-        pass
+        raise NotImplementedError('abstract method')
 
     def run_test(self,
                  put: unittest.TestCase,

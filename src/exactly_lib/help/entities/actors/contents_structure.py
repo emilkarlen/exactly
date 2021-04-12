@@ -19,10 +19,10 @@ class ActorDocumentation(EntityDocumentation):
         return []
 
     def act_phase_contents(self) -> SectionContents:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def act_phase_contents_syntax(self) -> SectionContents:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def notes(self) -> SectionContents:
         return SectionContents.empty()

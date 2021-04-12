@@ -33,7 +33,7 @@ class ActionToCheck(SymbolUser):
 
         :raises: :class:`HardErrorException`
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def validate_post_setup(self,
                             environment: InstructionEnvironmentForPostSdsStep
@@ -45,7 +45,7 @@ class ActionToCheck(SymbolUser):
 
         :raises: :class:`HardErrorException`
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
@@ -60,7 +60,7 @@ class ActionToCheck(SymbolUser):
 
         :raises: :class:`HardErrorException`
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
@@ -75,7 +75,7 @@ class ActionToCheck(SymbolUser):
 
         :raises: :class:`HardErrorException`
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class Actor(ABC):
@@ -92,4 +92,4 @@ class Actor(ABC):
         """
         :raises ParseException
         """
-        pass
+        raise NotImplementedError('abstract method')

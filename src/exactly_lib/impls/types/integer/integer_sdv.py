@@ -2,14 +2,12 @@ from typing import Sequence, Optional
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.impls.exception import svh_exception
-from exactly_lib.impls.exception.validation_error_exception import ValidationErrorException
 from exactly_lib.impls.svh_validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.impls.types.condition.comparison_structures import OperandSdv
 from exactly_lib.impls.types.integer.evaluate_integer import NotAnIntegerException, python_evaluate
 from exactly_lib.impls.types.integer.integer_ddv import CustomIntegerValidator, IntegerDdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreSds
-from exactly_lib.type_val_deps.types.string_.string_ddv import StringDdv
 from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable
@@ -85,28 +83,3 @@ class _ValidatorThatReportsViaExceptions(SvhPreSdsValidatorViaExceptions):
             err_msg = self._custom_integer_validator(resolved_value)
             if err_msg:
                 raise svh_exception.SvhValidationException(err_msg)
-
-
-def validate(py_expr: StringDdv) -> int:
-    """
-    :param py_expr: Must not have any dir dependencies
-    :raises ValidationErrorException
-    :return: Evaluated value
-    """
-    expr_str = py_expr.value_when_no_dir_dependencies()
-    try:
-        return python_evaluate(expr_str)
-    except NotAnIntegerException as ex:
-        py_ex_str = (
-            ''
-            if ex.python_exception_message is None
-            else
-            '\n\nPython evaluation error:\n' + ex.python_exception_message
-        )
-        msg = text_docs.single_pre_formatted_line_object(
-            str_constructor.FormatPositional(
-                'Argument must be an integer: `{}\'{}',
-                ex.value_string,
-                py_ex_str)
-        )
-        raise ValidationErrorException(msg)

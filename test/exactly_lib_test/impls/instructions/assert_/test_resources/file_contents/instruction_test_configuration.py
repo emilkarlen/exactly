@@ -32,7 +32,7 @@ class InstructionTestConfiguration(ABC):
 
     @abstractmethod
     def syntax_for_matcher(self, matcher: AbstractSyntax) -> AbstractSyntax:
-        pass
+        raise NotImplementedError('abstract method')
 
     def arrangement_for_contents(self,
                                  actual_contents: str,

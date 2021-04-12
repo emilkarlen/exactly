@@ -115,10 +115,10 @@ class ErrorDescriptionVisitor(Generic[RET]):
             raise TypeError('Unknown {}: {}'.format(ErrorDescription, str(error_description)))
 
     def _visit_message(self, error_description: ErrorDescriptionOfMessage) -> RET:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def _visit_exception(self, error_description: ErrorDescriptionOfException) -> RET:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def _visit_external_process_error(self, error_description: ErrorDescriptionOfExternalProcessError) -> RET:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

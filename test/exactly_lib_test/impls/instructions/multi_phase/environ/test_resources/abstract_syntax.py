@@ -33,7 +33,7 @@ class InstructionArgumentsAbsStx(InstructionArgsAbsStx, ABC):
 
     @abstractmethod
     def _variant_tokenization(self) -> TokenSequence:
-        pass
+        raise NotImplementedError('abstract method')
 
     def _phase_spec_tokenization(self) -> TokenSequence:
         return (

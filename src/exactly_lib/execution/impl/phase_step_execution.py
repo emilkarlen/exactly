@@ -14,7 +14,7 @@ from exactly_lib.util import line_source
 
 class ElementHeaderExecutor:
     def apply(self, line: line_source.LineSequence):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class ElementHeaderExecutorThatDoesNothing(ElementHeaderExecutor):

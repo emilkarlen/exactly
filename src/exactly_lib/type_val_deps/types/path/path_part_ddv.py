@@ -4,4 +4,4 @@ class PathPartDdv:
     """
 
     def value(self) -> str:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

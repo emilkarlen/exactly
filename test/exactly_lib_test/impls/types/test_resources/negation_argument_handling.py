@@ -99,7 +99,7 @@ class ExpectationTypeConfig(Generic[RET_TYPE], ABC):
     @abstractmethod
     def main_result(self, expected_result_of_positive_test: PassOrFail
                     ) -> Assertion[RET_TYPE]:
-        pass
+        raise NotImplementedError('abstract method')
 
     def instruction_arguments(self, instruction_arguments_without_not_option: str) -> str:
         return prepend_not_operator_if_expectation_is_negative(instruction_arguments_without_not_option,

@@ -23,14 +23,14 @@ class SdvValidator:
         Validates the object if it is expected to exist pre-SDS.
         :return: Error message iff validation was applicable and validation failed.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
         """
         Validates the object if it is expected to NOT exist pre-SDS.
         :return: Error message iff validation was applicable and validation failed.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class PreOrPostSdsValidatorPrimitive(ABC):
@@ -47,7 +47,7 @@ class PreOrPostSdsValidatorPrimitive(ABC):
         Validates the object if it is expected to exist pre-SDS.
         :return: Error message iff validation was applicable and validation failed.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def validate_post_sds_if_applicable(self) -> Optional[TextRenderer]:
@@ -55,7 +55,7 @@ class PreOrPostSdsValidatorPrimitive(ABC):
         Validates the object if it is expected to NOT exist pre-SDS.
         :return: Error message iff validation was applicable and validation failed.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class FixedPreOrPostSdsValidator(PreOrPostSdsValidatorPrimitive):

@@ -8,4 +8,4 @@ class RichStringAbsStx(AbstractSyntax, ABC):
     @abstractmethod
     def spans_whole_line(self) -> bool:
         """If this syntax spans the whole (last) line."""
-        pass
+        raise NotImplementedError('abstract method')

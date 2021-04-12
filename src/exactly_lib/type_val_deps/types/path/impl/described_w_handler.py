@@ -13,45 +13,45 @@ class PathDescriberHandlerForPrimitive(ABC):
     @property
     @abstractmethod
     def describer(self) -> PathDescriberForPrimitive:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def child(self,
               child_path: Path,
               child_path_component: str) -> 'PathDescriberHandlerForPrimitive':
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def parent(self, parent_path: Path) -> 'PathDescriberHandlerForPrimitive':
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class PathDescriberHandlerForDdv(ABC):
     @property
     @abstractmethod
     def describer(self) -> PathDescriberForDdv:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def value_when_no_dir_dependencies(self, primitive: Path) -> PathDescriberHandlerForPrimitive:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def value_pre_sds(self, primitive: Path, hds: HomeDs) -> PathDescriberHandlerForPrimitive:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def value_post_sds__wo_hds(self, primitive: Path,
                                sds: SandboxDs) -> PathDescriberHandlerForPrimitive:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def value_post_sds(self, primitive: Path, tcds: TestCaseDs) -> PathDescriberHandlerForPrimitive:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def value_of_any_dependency(self, primitive: Path, tcds: TestCaseDs) -> PathDescriberHandlerForPrimitive:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class DescribedPathWHandler(DescribedPath):

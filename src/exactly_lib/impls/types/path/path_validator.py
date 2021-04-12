@@ -24,7 +24,7 @@ class PathSdvValidatorBase(SdvValidator):
         """
         :return: Error message iff validation was applicable and validation failed.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
         path_ddv = self._path_sdv.resolve(environment.symbols)
@@ -52,7 +52,7 @@ class PathDdvValidatorBase(DdvValidator, ABC):
         """
         :return: Error message iff validation was applicable and validation failed.
         """
-        pass
+        raise NotImplementedError('abstract method')
 
     def validate_pre_sds_if_applicable(self, hds: HomeDs) -> Optional[TextRenderer]:
         p = self._path_ddv

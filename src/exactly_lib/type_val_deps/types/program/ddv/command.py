@@ -22,7 +22,7 @@ class CommandDriverDdv(NonAppEnvDepComponentDdv[CommandDriver], ABC):
     @abstractmethod
     def structure_for(self, arguments: ListDdv) -> StructureBuilder:
         """:returns A new object on each invokation."""
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class CommandDdv(NonAppEnvDepComponentDdv[Command]):

@@ -238,7 +238,7 @@ class _EmptyContents(StringSourceContentsFromLinesBase):
 class _LinesTransformer(ABC):
     @abstractmethod
     def transform(self, lines: Iterator[str]) -> Iterator[str]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 def _string_source_of_lines_transformer(

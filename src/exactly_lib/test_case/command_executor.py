@@ -18,3 +18,4 @@ class CommandExecutor(ABC):
         :raises :class:`HardErrorException`: Unable to execute.
         :return: Exit code from execution.
         """
+        raise NotImplementedError('abstract method')

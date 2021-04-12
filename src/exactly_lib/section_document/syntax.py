@@ -39,18 +39,6 @@ def is_section_header_line(line: str) -> bool:
     return bool(SECTION_LINE_RE.match(line))
 
 
-def classify_line(line: str) -> int:
-    """
-    Classifies a line according to the TYPE_ constants.
-
-    :return: One of the TYPE_ constants.
-    """
-    for type_const, regex in _DETECTABLE:
-        if regex.match(line):
-            return type_const
-    return TYPE_INSTRUCTION
-
-
 def section_header(section_name: str) -> str:
     """
     Constructs a Phase Header given a Phase Name

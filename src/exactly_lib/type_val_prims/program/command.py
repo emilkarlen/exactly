@@ -21,7 +21,7 @@ class CommandDriver(ABC):
     @abstractmethod
     def structure_for(self, arguments: List[str]) -> StructureBuilder:
         """:returns A new object on each invokation."""
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class Command:

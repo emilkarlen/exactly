@@ -67,10 +67,10 @@ class SeeAlsoItemVisitor:
             raise TypeError('Unknown {}: {}'.format(SeeAlsoItem, str(x)))
 
     def visit_cross_reference_id(self, x: CrossReferenceIdSeeAlsoItem):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def visit_text(self, x: TextSeeAlsoItem):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class SeeAlsoSet(tuple):

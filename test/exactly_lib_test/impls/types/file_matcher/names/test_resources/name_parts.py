@@ -36,14 +36,14 @@ class Case:
 class NamePartsConfiguration(Configuration, ABC):
     @abstractmethod
     def get_name_part(self, case: Case) -> str:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class TestNamePart(TestCaseBase, ABC):
     @property
     @abstractmethod
     def conf(self) -> NamePartsConfiguration:
-        pass
+        raise NotImplementedError('abstract method')
 
     def test_glob_pattern(self):
         self._test_glob_pattern_cases(CASES)

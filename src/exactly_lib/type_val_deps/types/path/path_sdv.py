@@ -29,8 +29,8 @@ class PathPartSdv(ObjectWithSymbolReferences):
     """
 
     def resolve(self, symbols: SymbolTable) -> PathPartDdv:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

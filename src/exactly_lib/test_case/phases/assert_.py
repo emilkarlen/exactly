@@ -38,7 +38,7 @@ class AssertPhaseInstruction(TestCaseInstructionWithSymbols):
         """
         :raises: :class:`HardErrorException`
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class AssertPhasePurpose(Enum):

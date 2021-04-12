@@ -3,7 +3,7 @@ from exactly_lib.util.textformat.structure import core
 
 class CrossReferenceFormatter:
     def apply(self, cross_reference: core.CrossReferenceText) -> str:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class TextFormatter(core.TextVisitor[str]):

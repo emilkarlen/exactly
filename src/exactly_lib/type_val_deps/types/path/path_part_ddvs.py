@@ -23,7 +23,7 @@ class PathPartDdvVisitor:
         raise TypeError('Not a {}: {}'.format(str(PathPartDdv), path_suffix))
 
     def visit_fixed_path(self, path_suffix: PathPartDdvAsFixedPath):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def visit_nothing(self, path_suffix: PathPartDdvAsNothing):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

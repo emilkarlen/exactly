@@ -5,4 +5,4 @@ from typing import TextIO
 class TextFromFileReader(ABC):
     @abstractmethod
     def read(self, f: TextIO) -> str:
-        pass
+        raise NotImplementedError('abstract method')

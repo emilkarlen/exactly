@@ -8,4 +8,4 @@ class ActPhaseInstruction(TestCaseInstruction):
     """
 
     def source_code(self) -> LineSequence:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

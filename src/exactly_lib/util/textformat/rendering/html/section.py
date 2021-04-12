@@ -31,7 +31,7 @@ class SectionHeaderRenderer:
               parent: Element,
               header_text: core.Text,
               header_element_attributes: dict) -> Element:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class HnSectionHeaderRenderer(SectionHeaderRenderer):

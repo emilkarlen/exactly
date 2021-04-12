@@ -97,7 +97,7 @@ class MatcherArgComponent(ABC):
     @property
     @abstractmethod
     def elements(self) -> List:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class NameRegexComponent(MatcherArgComponent):

@@ -20,17 +20,17 @@ RET = TypeVar('RET')
 class MainMethodVisitor(Generic[T, RET], ABC):
     @abstractmethod
     def visit_phase_agnostic(self, main_method: 'PhaseAgnosticMainMethod[T]') -> RET:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_setup_phase_aware(self, main_method: 'SetupPhaseAwareMainMethod[T]') -> RET:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class MainMethod(Generic[T], ABC):
     @abstractmethod
     def accept(self, visitor: MainMethodVisitor[T, RET]) -> RET:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class PhaseAgnosticMainMethod(Generic[T], MainMethod[T], ABC):
@@ -40,7 +40,7 @@ class PhaseAgnosticMainMethod(Generic[T], MainMethod[T], ABC):
              settings: InstructionSettings,
              os_services: OsServices,
              ) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     def accept(self, visitor: MainMethodVisitor[T, RET]) -> RET:
         return visitor.visit_phase_agnostic(self)
@@ -54,7 +54,7 @@ class SetupPhaseAwareMainMethod(Generic[T], MainMethod[T], ABC):
              setup_phase_settings: Optional[SetupSettingsBuilder],
              os_services: OsServices,
              ) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     def accept(self, visitor: MainMethodVisitor[T, RET]) -> RET:
         return visitor.visit_setup_phase_aware(self)
@@ -70,7 +70,7 @@ class MainStepMethodEmbryo(Generic[T], ABC):
 
     @abstractmethod
     def main_method(self) -> MainMethod[T]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class InstructionEmbryo(Generic[T], MainStepMethodEmbryo[T], ABC):
@@ -101,7 +101,7 @@ class PhaseAgnosticInstructionEmbryo(Generic[T], InstructionEmbryo[T], ABC):
              settings: InstructionSettings,
              os_services: OsServices,
              ) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     def main_method(self) -> MainMethod[T]:
         return _MainMethodOfPhaseAgnosticInstructionEmbryo(self)
@@ -115,7 +115,7 @@ class SetupPhaseAwareInstructionEmbryo(Generic[T], InstructionEmbryo[T], ABC):
              setup_phase_settings: Optional[SetupSettingsBuilder],
              os_services: OsServices,
              ) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     def main_method(self) -> MainMethod[T]:
         return _MainMethodOfSetupPhaseAwareInstructionEmbryo(self)
@@ -149,7 +149,7 @@ class InstructionEmbryoParser(Generic[T], LocationAwareParser[InstructionEmbryo[
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> InstructionEmbryo[T]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class InstructionEmbryoParserWoFileSystemLocationInfo(Generic[T], InstructionEmbryoParser[T]):
@@ -175,4 +175,4 @@ class InstructionEmbryoParserFromTokensWoFileSystemLocationInfo(Generic[T], Inst
 
     @abstractmethod
     def _parse_from_tokens(self, token_parser: TokenParser) -> InstructionEmbryo[T]:
-        pass
+        raise NotImplementedError('abstract method')

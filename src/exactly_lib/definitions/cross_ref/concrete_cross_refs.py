@@ -175,32 +175,32 @@ class CrossReferenceTargetVisitor(Generic[T], ABC):
 
     @abstractmethod
     def visit_entity(self, x: EntityCrossReferenceId) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_test_case_phase(self, x: TestCasePhaseCrossReference) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_test_case_phase_instruction(self, x: TestCasePhaseInstructionCrossReference) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_test_suite_section(self, x: TestSuiteSectionCrossReference) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_test_suite_section_instruction(self, x: TestSuiteSectionInstructionCrossReference) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_custom(self, x: CustomCrossReferenceId) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_url(self, x: UrlCrossReferenceTarget) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_predefined_part(self, x: PredefinedHelpContentsPartReference) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

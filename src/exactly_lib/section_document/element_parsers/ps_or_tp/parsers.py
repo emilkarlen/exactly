@@ -25,7 +25,7 @@ class ParserFromTokenParserBase(Generic[PARSE_RESULT], Parser[PARSE_RESULT], ABC
 
     @abstractmethod
     def parse_from_token_parser(self, parser: TokenParser) -> PARSE_RESULT:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ParserFromTokenParserFunction(Generic[PARSE_RESULT], ParserFromTokenParserBase[PARSE_RESULT]):

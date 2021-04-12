@@ -21,11 +21,11 @@ class TransformedContentsViaAsLinesBase(StringSourceContentsWithCachedPath, ABC)
     @property
     @abstractmethod
     def may_depend_on_external_resources(self) -> bool:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def _transform_lines(self, lines: Iterator[str]) -> Iterator[str]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     def as_str(self) -> str:

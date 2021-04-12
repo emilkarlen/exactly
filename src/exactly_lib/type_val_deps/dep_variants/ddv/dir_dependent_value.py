@@ -51,7 +51,7 @@ class DirDependentValue(Generic[RESOLVED_TYPE]):
 
     def value_of_any_dependency(self, tcds: TestCaseDs) -> RESOLVED_TYPE:
         """Gives the value, regardless of actual dependency."""
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @staticmethod
     def value_of_any_dependency__optional(ddv: Optional['DirDependentValue[RESOLVED_TYPE]'],
@@ -65,7 +65,7 @@ class DirDependentValue(Generic[RESOLVED_TYPE]):
 
 class WithDirDependenciesReporting:
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def has_dir_dependency(self) -> bool:
         """
@@ -117,19 +117,19 @@ class Max1DependencyDdv(Generic[RESOLVED_TYPE],
         """
         :rtype: None iff the value has no dependency
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def value_pre_sds(self, hds: HomeDs) -> RESOLVED_TYPE:
         """
         :raises DirDependencyError: This file exists only post-SDS.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def value_post_sds(self, sds: SandboxDs):
         """
         :raises DirDependencyError: This file exists pre-SDS.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def value_of_any_dependency(self, tcds: TestCaseDs) -> RESOLVED_TYPE:
         if self.exists_pre_sds():

@@ -94,4 +94,4 @@ class ProcessResultReporter(ABC):
         """
         :return: Exit code of process
         """
-        pass
+        raise NotImplementedError('abstract method')

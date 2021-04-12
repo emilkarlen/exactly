@@ -9,22 +9,22 @@ class Configuration(ABC):
     @property
     @abstractmethod
     def node_name(self) -> str:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def arguments(self, condition: NameVariant) -> ArgumentElementsRenderer:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def file_name_ending_with(self, s: str) -> str:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class TestCaseBase(unittest.TestCase, ABC):
     @property
     @abstractmethod
     def conf(self) -> Configuration:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class Case:

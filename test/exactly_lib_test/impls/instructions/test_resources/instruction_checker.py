@@ -56,4 +56,4 @@ class InstructionChecker(Generic[ARRANGEMENT, EXPECTATION], ABC):
               arrangement: ARRANGEMENT,
               expectation: EXPECTATION):
         """Checks all properties of the instruction"""
-        pass
+        raise NotImplementedError('abstract method')

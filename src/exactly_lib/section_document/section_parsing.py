@@ -44,9 +44,3 @@ class SectionsConfiguration:
 
     def sections(self) -> Dict[str, SectionElementParser]:
         return self._section2parser
-
-    def parser_for_section(self, section_name: str) -> SectionElementParser:
-        return self._section2parser[section_name]
-
-    def has_section(self, section_name: str) -> bool:
-        return section_name in self._section2parser

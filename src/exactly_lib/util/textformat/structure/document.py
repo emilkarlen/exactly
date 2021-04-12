@@ -9,11 +9,11 @@ T = TypeVar('T')
 class SectionItemVisitor(Generic[T], ABC):
     @abstractmethod
     def visit_section(self, section: 'Section') -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_article(self, article: 'Article') -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class SectionItem(core.TaggedItem):
@@ -42,7 +42,7 @@ class SectionItem(core.TaggedItem):
 
     @abstractmethod
     def accept(self, visitor: SectionItemVisitor[T]) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class SectionContents(tuple):

@@ -11,7 +11,7 @@ class ApplicationEnvironmentDependentValue(Generic[VALUE_TYPE], ABC):
 
     @abstractmethod
     def primitive(self, environment: ApplicationEnvironment) -> VALUE_TYPE:
-        pass
+        raise NotImplementedError('abstract method')
 
     @staticmethod
     def primitive__optional(adv: Optional['ApplicationEnvironmentDependentValue[VALUE_TYPE]'],

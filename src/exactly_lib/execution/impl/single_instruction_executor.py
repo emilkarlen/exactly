@@ -63,7 +63,7 @@ class ControlledInstructionExecutor:
         """
         :return: None if the execution was successful.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class SingleInstructionExecutionFailure(tuple):

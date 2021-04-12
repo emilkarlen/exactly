@@ -6,7 +6,6 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.type_val_deps.test_resources.validation import validation
 from exactly_lib_test.impls.types.file_matcher.test_resources.argument_building import FileMatcherArg
 from exactly_lib_test.impls.types.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.impls.types.files_matcher.test_resources.arguments_building import FilesMatcherArg, \
@@ -19,6 +18,7 @@ from exactly_lib_test.test_resources.files.file_structure import FileSystemEleme
 from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions.value_assertion import Assertion
+from exactly_lib_test.type_val_deps.test_resources.validation import validation
 from exactly_lib_test.type_val_deps.types.files_matcher.test_resources.references import is_reference_to_files_matcher
 
 
@@ -112,28 +112,27 @@ class TestCaseGenerator(ABC):
 
     @abstractmethod
     def arguments(self) -> FileMatcherArg:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def expected_symbols(self) -> Sequence[Assertion[SymbolReference]]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class SingleCaseGenerator(TestCaseGenerator, ABC):
-
     @abstractmethod
     def tcds_arrangement(self) -> Optional[TcdsArrangement]:
-        pass
+        raise NotImplementedError('abstract method')
 
     def symbols(self, put: unittest.TestCase) -> SymbolTable:
         return SymbolTable()
 
     @abstractmethod
     def execution_result(self) -> ExecutionResult:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class MultipleExecutionCasesGenerator(TestCaseGenerator, ABC):
     @abstractmethod
     def execution_cases(self) -> Sequence[NExArr[ExecutionResult, Arrangement]]:
-        pass
+        raise NotImplementedError('abstract method')

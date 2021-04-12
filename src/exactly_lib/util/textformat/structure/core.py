@@ -41,21 +41,21 @@ T = TypeVar('T')
 class TextVisitor(Generic[T], ABC):
     @abstractmethod
     def visit_string(self, text: 'StringText') -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_cross_reference(self, text: 'CrossReferenceText') -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_anchor(self, text: 'AnchorText') -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class Text(TaggedItem, ABC):
     @abstractmethod
     def accept(self, visitor: TextVisitor[T]) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ConcreteText(Text, ABC):

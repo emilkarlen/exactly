@@ -11,11 +11,11 @@ RET = TypeVar('RET')
 class FailureInfoVisitor(Generic[RET], ABC):
     @abstractmethod
     def visit_instruction_failure(self, failure_info: 'InstructionFailureInfo') -> RET:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_act_phase_failure(self, failure_info: 'ActPhaseFailureInfo') -> RET:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class FailureInfo(ABC):
@@ -37,11 +37,11 @@ class FailureInfo(ABC):
     @property
     @abstractmethod
     def source_location(self) -> Optional[SourceLocationPath]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def accept(self, visitor: FailureInfoVisitor[RET]) -> RET:
-        pass
+        raise NotImplementedError('abstract method')
 
     def __str__(self):
         return str(self.phase_step) + ': ' + str(self.failure_details)

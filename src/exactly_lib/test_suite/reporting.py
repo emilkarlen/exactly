@@ -33,22 +33,22 @@ class SubSuiteProgressReporter:
         """
         Called once.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def suite_end(self):
         """
         Called once.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def case_begin(self,
                    case: test_case_processing.TestCaseFileReference):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def case_end(self,
                  case: test_case_processing.TestCaseFileReference,
                  processing_info: TestCaseProcessingInfo):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class SubSuiteReporter:
@@ -94,7 +94,7 @@ class RootSuiteReporter:
 
     def new_sub_suite_reporter(self,
                                sub_suite: structure.TestSuiteHierarchy) -> SubSuiteReporter:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def report_final_results(self) -> int:
         """
@@ -102,7 +102,7 @@ class RootSuiteReporter:
         Called after all sub suites have been executed and reported.
         :return: The exit code from the main program.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class RootSuiteProcessingReporter:
@@ -116,4 +116,4 @@ class RootSuiteProcessingReporter:
                            root_suite: structure.TestSuiteHierarchy,
                            reporting_environment: Environment,
                            root_suite_file: pathlib.Path) -> RootSuiteReporter:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

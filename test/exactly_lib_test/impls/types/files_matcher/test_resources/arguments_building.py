@@ -259,7 +259,7 @@ class FilesMatcherArgumentsConstructor(ABC):
 
     @abstractmethod
     def apply(self, etc: ExpectationTypeConfig) -> str:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class SelectionAndMatcherArgumentsConstructor(FilesMatcherArgumentsConstructor):

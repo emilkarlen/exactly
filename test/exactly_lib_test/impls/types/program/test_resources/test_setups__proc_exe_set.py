@@ -48,7 +48,7 @@ class TestSetupBase(ABC):
 
     @abstractmethod
     def _proc_exe_settings_w_expected_value(self) -> ProcessExecutionSettings:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class TimeoutTestSetup(TestSetupBase):

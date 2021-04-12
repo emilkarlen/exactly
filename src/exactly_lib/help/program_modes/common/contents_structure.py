@@ -82,11 +82,11 @@ class SectionDocumentation:
                                     allow_rendering_of_visible_extra_target_text=False)
 
     def purpose(self) -> Description:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @property
     def has_instructions(self) -> bool:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @property
     def instruction_set(self) -> Optional[SectionInstructionSet]:

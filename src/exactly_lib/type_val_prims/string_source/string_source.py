@@ -25,7 +25,7 @@ class StringSource(WithNodeDescription, ABC):
     @abstractmethod
     def new_structure_builder(self) -> StringSourceStructureBuilder:
         """"Gives a new object, for each invokation"""
-        pass
+        raise NotImplementedError('abstract method')
 
     def structure(self) -> StructureRenderer:
         """Should (probably) not be overloaded."""
@@ -51,7 +51,7 @@ class StringSource(WithNodeDescription, ABC):
         The method can be invoked arbitrary number of times.  But usually only the first invocation
         should have any effect.
         """
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def contents(self) -> StringSourceContents:
@@ -69,7 +69,7 @@ class StringSource(WithNodeDescription, ABC):
         of the contents, before it is known whether the actual contents
         will ever be used or not.
         """
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class _StructureRendererOfStringSource(NodeRenderer[None]):

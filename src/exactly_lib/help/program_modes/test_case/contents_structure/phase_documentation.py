@@ -79,13 +79,13 @@ class TestCasePhaseDocumentation(SectionDocumentation):
         return self._section_info
 
     def sequence_info(self) -> PhaseSequenceInfo:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def contents_description(self) -> doc.SectionContents:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentation):
@@ -115,7 +115,7 @@ class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentat
                                      self.instruction_purpose_description())
 
     def instruction_purpose_description(self) -> List[ParagraphItem]:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @property
     def see_also_targets(self) -> List[SeeAlsoTarget]:

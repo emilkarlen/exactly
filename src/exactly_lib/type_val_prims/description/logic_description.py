@@ -10,11 +10,11 @@ T = TypeVar('T')
 class DescriptionVisitor(Generic[T]):
     @abstractmethod
     def visit_node(self, description: 'NodeDescription') -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_details(self, description: 'DetailsDescription') -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class LogicValueDescription(ABC):
@@ -29,7 +29,7 @@ class NodeDescription(LogicValueDescription, ABC):
 
     @abstractmethod
     def structure(self) -> StructureRenderer:
-        pass
+        raise NotImplementedError('abstract method')
 
     def accept(self, visitor: DescriptionVisitor[T]) -> T:
         return visitor.visit_node(self)
@@ -40,7 +40,7 @@ class DetailsDescription(LogicValueDescription, ABC):
 
     @abstractmethod
     def details(self) -> DetailsRenderer:
-        pass
+        raise NotImplementedError('abstract method')
 
     def accept(self, visitor: DescriptionVisitor[T]) -> T:
         return visitor.visit_details(self)

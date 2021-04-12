@@ -35,7 +35,7 @@ class BeforeAssertPhaseInstruction(TestCaseInstructionWithSymbols):
         """
         :raises: :class:`HardErrorException`
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 def get_symbol_usages(instruction: BeforeAssertPhaseInstruction) -> Sequence[SymbolUsage]:

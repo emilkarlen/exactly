@@ -10,9 +10,9 @@ class SetupSettingsHandler(ABC):
     @abstractmethod
     def builder(self) -> SetupSettingsBuilder:
         """Gives the same instance on every invokation"""
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def as_atc_execution_input(self) -> AdvWValidation[AtcExecutionInput]:
         """Gives the contents of the handled builder, as Act Execution Input"""
-        pass
+        raise NotImplementedError('abstract method')

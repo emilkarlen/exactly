@@ -93,4 +93,4 @@ class SymbolDefinitionInfo:
 class DefinitionsResolver(ABC):
     @abstractmethod
     def definitions(self) -> Iterator[SymbolDefinitionInfo]:
-        pass
+        raise NotImplementedError('abstract method')

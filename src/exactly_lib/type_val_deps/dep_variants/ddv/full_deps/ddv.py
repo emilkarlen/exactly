@@ -19,11 +19,11 @@ class FullDepsDdv(Generic[PRIMITIVE],
                   ABC):
     @abstractmethod
     def description(self) -> LogicValueDescription:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def value_of_any_dependency(self, tcds: TestCaseDs) -> ApplicationEnvironmentDependentValue[PRIMITIVE]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class FullDepsWithNodeDescriptionDdv(Generic[PRIMITIVE],

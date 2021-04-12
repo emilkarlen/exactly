@@ -24,7 +24,7 @@ class InstructionDocumentation:
         return syntax_text(self._instruction_name)
 
     def single_line_description(self) -> str:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def main_description_rest(self) -> List[ParagraphItem]:
         return []

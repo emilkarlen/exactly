@@ -33,17 +33,17 @@ class ModelGetter(Generic[MODEL], ABC):
         """
         :raises HardErrorException
         """
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def description(self) -> SequenceRenderer[MinorBlock]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ModelGetterAdv(Generic[MODEL], ABC):
     @abstractmethod
     def primitive(self, environment: ApplicationEnvironment) -> ModelGetter[MODEL]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ModelGetterDdv(Generic[MODEL], ABC):
@@ -53,28 +53,28 @@ class ModelGetterDdv(Generic[MODEL], ABC):
 
     @abstractmethod
     def value_of_any_dependency(self, tcds: TestCaseDs) -> ModelGetterAdv[MODEL]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ModelGetterSdv(Generic[MODEL], ABC):
     @property
     @abstractmethod
     def references(self) -> Sequence[SymbolReference]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> ModelGetterDdv[MODEL]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class FailureMessageConfig(Generic[MODEL]):
     @abstractmethod
     def head(self, model_getter: ModelGetter[MODEL], model: MODEL) -> TextRenderer:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def tail(self, model_getter: ModelGetter[MODEL], model: MODEL) -> TextRenderer:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class Instruction(Generic[MODEL], AssertPhaseInstruction):

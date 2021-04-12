@@ -14,19 +14,19 @@ class OsServices(ABC):
     @property
     @abstractmethod
     def command_executor(self) -> CommandExecutor:
-        pass
+        raise NotImplementedError('abstract method')
 
     def make_dir_if_not_exists(self, path: pathlib.Path):
         """
         :raises HardErrorException
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def copy_file__preserve_as_much_as_possible(self, src: str, dst: str):
         """
         :raises HardErrorException
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def copy_file(self, src: pathlib.Path, dst: pathlib.Path):
         """
@@ -34,10 +34,10 @@ class OsServices(ABC):
         :param dst: Will be overwritten if it exists.
         :raises HardErrorException
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def copy_tree__preserve_as_much_as_possible(self, src: str, dst: str):
         """
         :raises HardErrorException
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

@@ -1,6 +1,6 @@
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.section_document.syntax import section_header
-from exactly_lib.util.cli_syntax import short_and_long_option_syntax, option_syntax
+from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.str_.name import NameWithGender, NameWithGenderWithFormatting
 
@@ -102,10 +102,6 @@ class AnyInstructionNameDictionary(dict):
 
 def cli_option(s: str) -> str:
     return '"' + s + '"'
-
-
-def cli_option_argument(option_name: short_and_long_option_syntax.ShortAndLongOptionName) -> str:
-    return cli_argument_option_string(short_and_long_option_syntax.long_syntax(option_name.long))
 
 
 def cli_argument_option_string(option: str) -> str:

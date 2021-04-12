@@ -16,7 +16,7 @@ class HeaderAndIndentFormat:
         :param total_number_of_elements: Number of elements in the list
         :param header:
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def following_header_lines_indent(self,
                                       element_number: int,
@@ -24,11 +24,11 @@ class HeaderAndIndentFormat:
         """
         Indentation of lines that are part of the header, but that does not fit on the first line.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def contents_indent(self,
                         total_number_of_elements: int) -> str:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class ListFormat(tuple):

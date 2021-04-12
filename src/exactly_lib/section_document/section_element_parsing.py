@@ -85,7 +85,7 @@ class LocationAwareParser(Generic[T], ABC):
         :param fs_location_info: Information about the location of the source file being parsed
         :param source: Remaining source to parse
         """
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class SectionElementParser(LocationAwareParser[Optional[ParsedSectionElement]], ABC):
@@ -109,4 +109,4 @@ class SectionElementParser(LocationAwareParser[Optional[ParsedSectionElement]], 
         have been consumed.
         :raises SectionElementError: The element cannot be parsed.
         """
-        pass
+        raise NotImplementedError('abstract method')

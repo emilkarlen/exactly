@@ -14,7 +14,7 @@ class SuiteEnumerator:
         :param suite: Root of suites to be enumerated.
         :return: All suites in the given suite hierarchy.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class DepthFirstEnumerator(SuiteEnumerator):

@@ -16,7 +16,7 @@ T = TypeVar('T')
 class OperandDdv(Generic[T], MultiDependenciesDdv[T], ABC):
     @abstractmethod
     def describer(self) -> DetailsRenderer:
-        pass
+        raise NotImplementedError('abstract method')
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return set()
@@ -30,7 +30,7 @@ class OperandDdv(Generic[T], MultiDependenciesDdv[T], ABC):
     @abstractmethod
     def value_of_any_dependency(self, tcds: TestCaseDs) -> T:
         """Gives the value, regardless of actual dependency."""
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class OperandSdv(Generic[T], TypedSymbolDependentValue[OperandDdv[T]], ABC):
@@ -44,4 +44,4 @@ class OperandSdv(Generic[T], TypedSymbolDependentValue[OperandDdv[T]], ABC):
 
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> OperandDdv[T]:
-        pass
+        raise NotImplementedError('abstract method')

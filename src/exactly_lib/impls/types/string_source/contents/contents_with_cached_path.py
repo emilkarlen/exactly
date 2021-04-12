@@ -20,7 +20,7 @@ class StringSourceContentsWithCachedPath(StringSourceContents, ABC):
 
     @abstractmethod
     def _to_file(self) -> Path:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ContentsWithCachedPathFromWriteToBase(StringSourceContentsWithCachedPath, ABC):

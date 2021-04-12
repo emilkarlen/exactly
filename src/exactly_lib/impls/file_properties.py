@@ -156,7 +156,7 @@ def negate_result(result: CheckResult) -> CheckResult:
 
 class FilePropertiesCheck:
     def apply(self, path: pathlib.Path) -> CheckResult:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 def must_exist(follow_symlinks: bool = True) -> FilePropertiesCheck:
@@ -279,7 +279,7 @@ class _MustExistBase(FilePropertiesCheck):
             )
 
     def _for_existing_file(self, stat_results) -> CheckResult:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class _MustExist(_MustExistBase):

@@ -27,7 +27,7 @@ class SuiteReadError(ABC, Exception):
     @property
     @abstractmethod
     def source_location(self) -> Optional[SourceLocationPath]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     def source(self) -> Optional[line_source.LineSequence]:
@@ -141,12 +141,12 @@ class SuiteReadErrorVisitor(ABC, Generic[T]):
 
     @abstractmethod
     def visit_parse_error(self, ex: SuiteParseError) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_double_inclusion_error(self, ex: SuiteDoubleInclusion) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_file_reference_error(self, ex: SuiteFileReferenceError) -> T:
-        pass
+        raise NotImplementedError('abstract method')

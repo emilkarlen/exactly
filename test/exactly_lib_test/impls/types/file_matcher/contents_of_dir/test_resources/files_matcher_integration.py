@@ -158,11 +158,11 @@ class NumFilesTestCaseHelperBase(ABC):
 
     @abstractmethod
     def arg__recursive(self) -> FileMatcherArg:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def arg__non_recursive(self) -> FileMatcherArg:
-        pass
+        raise NotImplementedError('abstract method')
 
     def execution_cases(self) -> Sequence[NExArr[PrimAndExeExpectation[FilesMatcher, MatchingResult], Arrangement]]:
         return [

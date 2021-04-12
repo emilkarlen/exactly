@@ -3,7 +3,6 @@ from typing import Tuple, List, Optional
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.util.parse.token import Token
 
 SYMBOL_REFERENCE_BEGIN = '@['
 SYMBOL_REFERENCE_END = ']@'
@@ -23,24 +22,6 @@ class SymbolWithReferenceSyntax:
 
     def __str__(self, *args, **kwargs):
         return symbol_reference_syntax_for_name(self.name)
-
-
-def parse_symbol_reference(token: Token) -> Optional[str]:
-    """
-    Gives the name of the referenced symbol,
-    if the token has the syntax of a symbol reference.
-    :returns: None if the token (as a whole) is not a symbol reference,
-    otherwise the name of the referenced symbol.
-    
-    :raise SingleInstructionInvalidArgumentException The token is a symbol reference, but the
-    symbol name has invalid syntax.
-    """
-    return (
-        None
-        if token.is_quoted
-        else
-        parse_symbol_reference__from_str(token.string)
-    )
 
 
 def parse_symbol_reference__from_str(token: str) -> Optional[str]:

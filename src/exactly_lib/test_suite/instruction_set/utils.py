@@ -17,7 +17,7 @@ _WILDCARD_CHARACTERS = ('*', '?', '[')
 
 class FileNamesResolver:
     def resolve(self, environment: instruction.Environment) -> List[Path]:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 SinglePathResolver = Callable[[Path], Path]

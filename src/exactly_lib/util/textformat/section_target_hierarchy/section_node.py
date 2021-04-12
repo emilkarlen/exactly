@@ -29,10 +29,10 @@ class SectionItemNode:
         """
         :return: Not None iff the section should appear in the TOC
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> SectionItemConstructor:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def section_item(self,
                      node_environment: SectionItemNodeEnvironment,

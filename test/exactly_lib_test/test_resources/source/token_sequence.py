@@ -49,7 +49,7 @@ class TokenSequence(ABC):
     @property
     @abstractmethod
     def tokens(self) -> Sequence[Token]:
-        pass
+        raise NotImplementedError('abstract method')
 
     def layout(self, spec: LayoutSpec) -> str:
         str_fragments = _non_empty_str_fragments_of_tokens(self.tokens, spec)

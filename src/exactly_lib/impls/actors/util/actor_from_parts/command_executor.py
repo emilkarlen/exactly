@@ -43,4 +43,4 @@ class OsProcessExecutor(parts.Executor, ABC):
         """
         Called after prepare, to get the command to execute
         """
-        pass
+        raise NotImplementedError('abstract method')

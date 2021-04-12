@@ -23,7 +23,7 @@ class ConfigurationParameterDocumentation(EntityDocumentation):
         return self._info.configuration_parameter_name
 
     def purpose(self) -> DescriptionWithSubSections:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def default_value_str(self) -> str:
         return self._info.default_value_single_line_description

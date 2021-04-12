@@ -24,7 +24,7 @@ class StringFragmentSdv(DataTypeSdv):
         raise ValueError('The object is not a string constant')
 
     def resolve(self, symbols: SymbolTable) -> sv.StringFragmentDdv:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class StringSdv(DataTypeSdv):

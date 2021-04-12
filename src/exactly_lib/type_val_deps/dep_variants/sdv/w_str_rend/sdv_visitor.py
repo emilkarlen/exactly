@@ -24,10 +24,10 @@ class WStrRenderingTypeSdvPseudoVisitor(Generic[T]):
         raise TypeError('Unknown {}: {}'.format(DataTypeSdv, str(value)))
 
     def visit_string(self, value: StringSdv) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def visit_path(self, value: PathSdv) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def visit_list(self, value: ListSdv) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

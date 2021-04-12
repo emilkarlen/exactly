@@ -9,16 +9,13 @@ T = TypeVar('T')
 
 
 class ParseErrorVisitor(Generic[T], ABC):
-    def visit(self):
-        pass
-
     @abstractmethod
     def visit_file_source_error(self, ex: 'FileSourceError') -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_file_access_error(self, ex: 'FileAccessError') -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ParseError(Exception, ABC):
@@ -35,7 +32,7 @@ class ParseError(Exception, ABC):
     @property
     @abstractmethod
     def maybe_section_name(self) -> Optional[str]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     def location_path(self) -> Sequence[SourceLocation]:
@@ -47,7 +44,7 @@ class ParseError(Exception, ABC):
 
     @abstractmethod
     def accept(self, visitor: ParseErrorVisitor[T]) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class FileSourceError(ParseError):

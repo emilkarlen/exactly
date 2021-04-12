@@ -25,4 +25,4 @@ class ValueRestriction:
         :rtype ErrorMessageWithFixTip
         :return: None if satisfied
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

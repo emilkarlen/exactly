@@ -8,21 +8,21 @@ from exactly_lib.util.simple_textstruct.structure import MajorBlock
 class ReportBlock(ABC):
     @abstractmethod
     def render(self) -> MajorBlock:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class Report(ABC):
     @property
     @abstractmethod
     def is_success(self) -> bool:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def blocks(self) -> Sequence[ReportBlock]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ReportGenerator(ABC):
     @abstractmethod
     def generate(self, definitions_resolver: DefinitionsResolver) -> Report:
-        pass
+        raise NotImplementedError('abstract method')

@@ -6,7 +6,7 @@ class IntInterval(ABC):
     @property
     @abstractmethod
     def is_empty(self) -> bool:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     @abstractmethod
@@ -16,7 +16,7 @@ class IntInterval(ABC):
 
         :return: Lower limit (including), or None if unlimited. <= upper
         """
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     @abstractmethod
@@ -26,7 +26,7 @@ class IntInterval(ABC):
 
         :return: Upper limit (including), or None if unlimited. >= lower
         """
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class Empty(IntInterval):

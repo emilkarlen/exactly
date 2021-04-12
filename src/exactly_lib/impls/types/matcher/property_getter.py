@@ -19,13 +19,13 @@ class PropertyGetter(Generic[MODEL, T], WithNodeDescription, ABC):
         """
         :raises HardErrorException
         """
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class PropertyGetterAdv(Generic[MODEL, T], ABC):
     @abstractmethod
     def applier(self, environment: ApplicationEnvironment) -> PropertyGetter[MODEL, T]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class PropertyGetterDdv(Generic[MODEL, T], WithNodeDescription, ABC):
@@ -35,15 +35,15 @@ class PropertyGetterDdv(Generic[MODEL, T], WithNodeDescription, ABC):
 
     @abstractmethod
     def value_of_any_dependency(self, tcds: TestCaseDs) -> PropertyGetterAdv[MODEL, T]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class PropertyGetterSdv(Generic[MODEL, T], ABC):
     @property
     @abstractmethod
     def references(self) -> Sequence[SymbolReference]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> PropertyGetterDdv[MODEL, T]:
-        pass
+        raise NotImplementedError('abstract method')

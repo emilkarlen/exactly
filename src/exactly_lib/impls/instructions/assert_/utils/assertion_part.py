@@ -61,7 +61,7 @@ class AssertionPart(Generic[A, B], ObjectWithSymbolReferencesAndSdvValidation, A
 
         :raises PfhException: Indicates that the assertion part does not PASS.
         """
-        pass
+        raise NotImplementedError('abstract method')
 
     def check_and_return_pfh(self,
                              environment: InstructionEnvironmentForPostSdsStep,
@@ -89,7 +89,7 @@ class IdentityAssertionPart(Generic[A], AssertionPart[A, A]):
                os_services: OsServices,
                value_to_check: A
                ):
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class IdentityAssertionPartWithValidationAndReferences(Generic[A], IdentityAssertionPart[A]):

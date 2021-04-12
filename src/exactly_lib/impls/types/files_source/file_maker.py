@@ -14,7 +14,7 @@ from exactly_lib.util.description_tree.renderer import DetailsRenderer
 class FileMaker(ABC):
     @abstractmethod
     def make(self, path: DescribedPath):
-        pass
+        raise NotImplementedError('abstract method')
 
     def describer(self, file_name: str) -> DetailsRenderer:
         return details.String(file_name)
@@ -34,7 +34,7 @@ class FileMakerAdv(ApplicationEnvironmentDependentValue[FileMaker], ABC):
 class FileMakerDdv(ValidatableDdv[FileMakerAdv], ABC):
     @abstractmethod
     def describer(self, file_name: str) -> DetailsRenderer:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class FileMakerSdv(TypedSymbolDependentValue[FileMakerDdv], ABC):

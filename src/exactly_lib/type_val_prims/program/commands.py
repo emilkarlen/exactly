@@ -143,13 +143,13 @@ class CommandDriverVisitor:
         raise TypeError('Unknown {}: {}'.format(CommandDriver, str(value)))
 
     def visit_shell(self, command: CommandDriverForShell):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def visit_executable_file(self, command: CommandDriverForExecutableFile):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def visit_system_program(self, command: CommandDriverForSystemProgram):
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 T = TypeVar('T')
@@ -167,10 +167,10 @@ class CommandDriverArgumentTypePseudoVisitor(Generic[T], ABC):
         raise TypeError('Unknown {}: {}'.format(CommandDriver, str(driver)))
 
     def visit_shell(self, driver: CommandDriverForShell) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def visit_with_argument_list(self, driver: CommandDriverWithArgumentList) -> T:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 def _structure_builder_w_argument_list(name: str,

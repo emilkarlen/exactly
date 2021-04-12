@@ -77,8 +77,8 @@ class RequestVariantVisitor(Generic[RET], ABC):
 
     @abstractmethod
     def visit_list(self, list_variant: RequestVariantList) -> RET:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_individual(self, individual_variant: RequestVariantIndividual) -> RET:
-        pass
+        raise NotImplementedError('abstract method')

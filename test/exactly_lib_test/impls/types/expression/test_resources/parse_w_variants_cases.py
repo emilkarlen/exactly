@@ -25,7 +25,7 @@ class WithParserMaker(ABC):
     @property
     @abstractmethod
     def parser_maker(self) -> ParserMaker:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class _TextCaseWithParserVariantsBase(WithParserMaker, unittest.TestCase, ABC):

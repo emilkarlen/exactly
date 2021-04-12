@@ -9,4 +9,4 @@ from exactly_lib.util.symbol_table import SymbolTable
 class StringTransformerSdv(FullDepsWithNodeDescriptionSdv[StringTransformer], ABC):
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
-        pass
+        raise NotImplementedError('abstract method')

@@ -18,7 +18,7 @@ class RelRootResolver:
         return self._relativity
 
     def from_tcds(self, tcds: TestCaseDs) -> pathlib.Path:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def from_hds(self, hds: HomeDs) -> pathlib.Path:
         raise ValueError('Root is not relative HDS: ' + str(self._relativity))
@@ -31,19 +31,19 @@ class RelRootResolver:
 
     @property
     def is_rel_hds(self) -> bool:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @property
     def is_rel_sds(self) -> bool:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @property
     def is_rel_cwd(self) -> bool:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @property
     def exists_pre_sds(self) -> bool:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class RelHdsRootResolver(RelRootResolver):
@@ -91,7 +91,7 @@ class RelNonHdsRootResolver(RelRootResolver):
         return self._relativity_type_non_hds
 
     def from_non_hds(self, sds: SandboxDs) -> pathlib.Path:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def from_tcds(self, tcds: TestCaseDs) -> pathlib.Path:
         return self.from_non_hds(tcds.sds)

@@ -42,7 +42,7 @@ class ProcessResultReporterOfMajorBlocksBase(ProcessResultReporter, ABC):
 
     @abstractmethod
     def _blocks(self) -> SequenceRenderer[MajorBlock]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ProcessResultReporterOfExitCodeAndMajorBlocksBase(ProcessResultReporter, ABC):
@@ -55,7 +55,7 @@ class ProcessResultReporterOfExitCodeAndMajorBlocksBase(ProcessResultReporter, A
 
     @abstractmethod
     def _exit_value(self) -> ExitValue:
-        pass
+        raise NotImplementedError('abstract method')
 
     def report(self, environment: Environment) -> int:
         exit_value = self._exit_value()
@@ -68,7 +68,7 @@ class ProcessResultReporterOfExitCodeAndMajorBlocksBase(ProcessResultReporter, A
 
     @abstractmethod
     def _blocks(self) -> SequenceRenderer[MajorBlock]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 def _output_exit_value(printer: FilePrinter, exit_value: ExitValue):

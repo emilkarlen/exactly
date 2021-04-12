@@ -13,4 +13,4 @@ class MatcherAdv(Generic[MODEL],
 
     @abstractmethod
     def primitive(self, environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
-        pass
+        raise NotImplementedError('abstract method')

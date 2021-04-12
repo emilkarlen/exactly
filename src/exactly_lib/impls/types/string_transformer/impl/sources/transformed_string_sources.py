@@ -15,11 +15,11 @@ from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 class StringTransformerFromLinesTransformer(StringTransformer, ABC):
     @abstractmethod
     def _transform(self, lines: Iterator[str]) -> Iterator[str]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def _transformation_may_depend_on_external_resources(self) -> bool:
-        pass
+        raise NotImplementedError('abstract method')
 
     def transform(self, model: StringSource) -> StringSource:
         return transformed_string_sources.TransformedStringSourceFromLines(

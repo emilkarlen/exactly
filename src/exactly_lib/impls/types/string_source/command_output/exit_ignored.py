@@ -32,7 +32,7 @@ class _WriterBase(Writer, ABC):
 
     @abstractmethod
     def _output_files(self, output: TextIO) -> StdOutputFiles:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class StdoutWriter(_WriterBase):

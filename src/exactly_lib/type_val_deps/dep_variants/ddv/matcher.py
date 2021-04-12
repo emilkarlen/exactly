@@ -18,7 +18,7 @@ class MatcherDdv(Generic[MODEL],
 
     @abstractmethod
     def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @staticmethod
     def value_of_any_dependency__optional(ddv: Optional['MatcherDdv[MODEL]'],

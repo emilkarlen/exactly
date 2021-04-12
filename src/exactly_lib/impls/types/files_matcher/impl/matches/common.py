@@ -49,7 +49,7 @@ class Applier(ABC):
 
     @abstractmethod
     def apply(self) -> MatchingResult:
-        pass
+        raise NotImplementedError('abstract method')
 
     def _result_true(self) -> MatchingResult:
         return (

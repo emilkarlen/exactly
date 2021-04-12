@@ -9,4 +9,4 @@ from exactly_lib.util.symbol_table import SymbolTable
 class StringSourceSdv(FullDepsWithNodeDescriptionSdv[StringSource], ABC):
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> StringSourceDdv:
-        pass
+        raise NotImplementedError('abstract method')

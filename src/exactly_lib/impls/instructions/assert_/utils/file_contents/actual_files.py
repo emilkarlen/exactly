@@ -40,11 +40,11 @@ class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndSdvValidation
                   environment: i.InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
                   ) -> ComparisonActualFile:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def failure_message_header(self, environment: FullResolvingEnvironment) -> Renderer[MajorBlock]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ConstructorForPath(ComparisonActualFileConstructor):

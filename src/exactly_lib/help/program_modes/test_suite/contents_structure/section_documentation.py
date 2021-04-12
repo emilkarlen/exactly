@@ -19,7 +19,7 @@ class TestSuiteSectionDocumentation(SectionDocumentation):
         return self._section_info
 
     def contents_description(self) -> docs.SectionContents:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def instructions_section_header(self) -> Text:
         return common_contents.INSTRUCTIONS_SECTION_HEADER
@@ -48,7 +48,7 @@ class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDo
                                      self.instruction_purpose_description())
 
     def instruction_purpose_description(self) -> List[ParagraphItem]:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class TestSuiteSectionDocumentationBaseForSectionWithoutInstructions(TestSuiteSectionDocumentation):

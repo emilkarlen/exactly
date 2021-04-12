@@ -16,7 +16,7 @@ class ElementDescriptionBase(ABC):
     @property
     @abstractmethod
     def description_rest(self) -> Sequence[ParagraphItem]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
@@ -30,12 +30,12 @@ class ElementDescriptionBase(ABC):
 class PrimitiveDescription(ElementDescriptionBase, ABC):
     @abstractmethod
     def initial_argument(self, name: str) -> a.ArgumentUsage:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     @abstractmethod
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class PrimitiveDescriptionWithNameAsInitialSyntaxToken(PrimitiveDescription, ABC):
@@ -56,7 +56,7 @@ class PrimitiveDescriptionWithSyntaxElementAsInitialSyntaxToken(PrimitiveDescrip
 class ElementWithDescription(ABC):
     @abstractmethod
     def description(self) -> ElementDescriptionBase:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 EXPR = TypeVar('EXPR')
@@ -82,7 +82,7 @@ class InfixOperatorDescription(OperatorDescription, ABC):
     @property
     @abstractmethod
     def operand_evaluation__lazy__left_to_right(self) -> bool:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class InfixOperator(Generic[EXPR], ElementWithDescription):

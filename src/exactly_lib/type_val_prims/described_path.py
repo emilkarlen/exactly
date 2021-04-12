@@ -8,18 +8,18 @@ class DescribedPath(ABC):
     @property
     @abstractmethod
     def primitive(self) -> Path:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     @abstractmethod
     def describer(self) -> PathDescriberForPrimitive:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def child(self, child_path_component: str) -> 'DescribedPath':
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def parent(self) -> 'DescribedPath':
         """Gives a path with the last component removed"""
-        pass
+        raise NotImplementedError('abstract method')

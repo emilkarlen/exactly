@@ -21,14 +21,14 @@ class LogicTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):
     @property
     @abstractmethod
     def value(self) -> LogicSymbolValueContext[SDV_TYPE]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     @abstractmethod
     def reference_sdv(self) -> SDV_TYPE:
-        pass
+        raise NotImplementedError('abstract method')
 
     @property
     @abstractmethod
     def abstract_syntax(self) -> AbstractSyntax:
-        pass
+        raise NotImplementedError('abstract method')

@@ -16,11 +16,11 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Ass
 class SetupBase(ABC):
     @abstractmethod
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def expected_exit_code(self) -> int:
-        pass
+        raise NotImplementedError('abstract method')
 
     def _check_base(self,
                     put: unittest.TestCase,
@@ -46,7 +46,7 @@ class SetupBase(ABC):
 
     @abstractmethod
     def stdout_expectation(self, root_path: pathlib.Path) -> Assertion[str]:
-        pass
+        raise NotImplementedError('abstract method')
 
     def _translate_actual_stdout_before_assertion(self, output_on_stdout: str) -> str:
         return output_on_stdout
@@ -58,11 +58,11 @@ class SetupWStdoutLinesCheckBase(SetupBase, ABC):
 
     @abstractmethod
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
-        pass
+        raise NotImplementedError('abstract method')
 
     def stdout_expectation(self, root_path: pathlib.Path) -> Assertion[str]:
         expected_lines = self.expected_stdout_lines(root_path)

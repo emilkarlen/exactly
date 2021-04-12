@@ -10,7 +10,7 @@ from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 class Writer(ABC):
     @abstractmethod
     def write(self, tmp_file_space: DirFileSpace, output: TextIO):
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class ContentsViaWriteTo(ContentsWithCachedPathFromWriteToBase):

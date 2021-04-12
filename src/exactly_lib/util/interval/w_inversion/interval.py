@@ -20,4 +20,4 @@ class IntIntervalWInversion(IntInterval, ABC):
         covers all integers that may match the negation of the matcher.
         :return:
         """
-        pass
+        raise NotImplementedError('abstract method')

@@ -8,7 +8,7 @@ class Range(ABC):
 
     @abstractmethod
     def __str__(self) -> str:
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class CustomRange(Range):

@@ -21,18 +21,18 @@ class ElementSdv:
         :returns: None if this element is not a single-symbol-reference element ,
         else the reference.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @property
     def references(self) -> Sequence[SymbolReference]:
         """
         Values in the symbol table used by this object.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def resolve(self, symbols: SymbolTable) -> List[StringDdv]:
         """Gives the list of string values that this element represents"""
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class StringElementSdv(ElementSdv):

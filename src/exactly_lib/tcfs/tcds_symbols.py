@@ -45,31 +45,9 @@ def set_at_setup_main(sds: SandboxDs) -> Dict[str, str]:
     }
 
 
-def set_at_assert(sds: SandboxDs) -> Dict[str, str]:
-    return {
-        SYMBOL_RESULT: str(sds.result.root_dir),
-    }
-
-
-def exists_at_config() -> Dict[str, str]:
-    return {}
-
-
-def exists_at_setup_pre_validate(hds: HomeDs) -> Dict[str, str]:
-    ret_val = exists_at_config()
-    ret_val.update(set_at_setup_pre_validate(hds))
-    return ret_val
-
-
 def exists_at_setup_main(tcds: TestCaseDs) -> Dict[str, str]:
     ret_val = set_at_setup_pre_validate(tcds.hds)
     ret_val.update(set_at_setup_main(tcds.sds))
-    return ret_val
-
-
-def exists_at_assert(tcds: TestCaseDs) -> Dict[str, str]:
-    ret_val = exists_at_setup_main(tcds)
-    ret_val.update(set_at_assert(tcds.sds))
     return ret_val
 
 

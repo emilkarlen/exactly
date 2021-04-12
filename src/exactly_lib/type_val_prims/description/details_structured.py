@@ -12,4 +12,4 @@ class WithDetailsDescription(ABC):
 
         The returned details are constant.
         """
-        pass
+        raise NotImplementedError('abstract method')

@@ -21,7 +21,7 @@ class SuiteHierarchyReader:
         """
         :raises SuiteReadError
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class Environment(tuple):

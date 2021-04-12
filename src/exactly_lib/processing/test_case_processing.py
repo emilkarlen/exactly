@@ -148,7 +148,7 @@ class Preprocessor:
         """
         :raises ProcessError:
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class Accessor:
@@ -156,9 +156,9 @@ class Accessor:
         """
         :raises AccessorError
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class Processor:
     def apply(self, test_case: TestCaseFileReference) -> Result:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

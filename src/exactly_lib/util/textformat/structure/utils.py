@@ -24,16 +24,16 @@ class ParagraphItemVisitor(Generic[T], ABC):
 
     @abstractmethod
     def visit_paragraph(self, paragraph: Paragraph) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_header_value_list(self, header_value_list: HeaderContentList) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_literal_layout(self, x: LiteralLayout) -> T:
-        pass
+        raise NotImplementedError('abstract method')
 
     @abstractmethod
     def visit_table(self, table: Table) -> T:
-        pass
+        raise NotImplementedError('abstract method')

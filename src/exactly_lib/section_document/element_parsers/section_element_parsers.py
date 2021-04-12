@@ -26,7 +26,7 @@ class InstructionAndDescriptionParser(SectionElementParser):
         """
         :raises FileSourceError The description or instruction cannot be parsed.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class InstructionParser(LocationAwareParser[model.Instruction], ABC):
@@ -43,7 +43,7 @@ class InstructionParser(LocationAwareParser[model.Instruction], ABC):
         """
         :raises FileSourceError The instruction cannot be parsed.
         """
-        pass
+        raise NotImplementedError('abstract method')
 
 
 class InstructionParserWithoutSourceFileLocationInfo(InstructionParser):
@@ -56,7 +56,7 @@ class InstructionParserWithoutSourceFileLocationInfo(InstructionParser):
         """
         :raises FileSourceError The instruction cannot be parsed.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class InstructionWithoutDescriptionParser(InstructionAndDescriptionParser):
