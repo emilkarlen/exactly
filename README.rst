@@ -364,7 +364,7 @@ and must contain a 'Makefile' with a target 'all'::
     def file-matcher ALL_PROJECT_DIRS_ARE_VALID =
 
         dir-contents -recursive
-          -selection name MY_PROJECT_DIR_NAME
+          -selection name @[MY_PROJECT_DIR_NAME]@
             every file : IS_VALID_PROJECT_DIR
 
 
