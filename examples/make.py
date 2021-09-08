@@ -1,31 +1,21 @@
-import sys
-
 import os
 import stat
+import sys
 from pathlib import Path
-from typing import List, Tuple, Iterable
+from typing import List, Tuple, Iterable, NamedTuple
 
 
-class SourceAndTarget(tuple):
-    def __new__(cls,
-                source: Path,
-                target: Path):
-        return tuple.__new__(cls, (source, target))
-
-    @property
-    def source(self) -> Path:
-        return self[0]
-
-    @property
-    def target(self) -> Path:
-        return self[1]
+class SourceAndTarget(NamedTuple):
+    source: Path
+    target: Path
 
 
 class SourceAndTargetSetup(tuple):
     def __new__(cls,
                 base_dir: Path,
                 installation_sub_dir: str,
-                source_and_target: SourceAndTarget):
+                source_and_target: SourceAndTarget,
+                ):
         return tuple.__new__(cls, (base_dir,
                                    Path(installation_sub_dir),
                                    source_and_target))
@@ -70,7 +60,8 @@ def _msg(msg: str):
 class Make:
     def __init__(self,
                  suffix: str,
-                 interpreter: str):
+                 interpreter: str,
+                 ):
         self.suffix = suffix
         self.interpreter = interpreter
 

@@ -52,11 +52,6 @@ PROGRAM_THAT_WRITES_LOG_FILE = 'program-that-writes-log-file'
 # Directories
 ########################################
 
-intro_sub_dir = 'intro'
-wiki_sub_dir = 'wiki'
-
-wiki_hello_world_dir = Path(HELLO_WORLD__WRITE_TO_FILE_ARG)
-
 src_base_dir = Path('executables-src')
 first_step_dir = Path('first-step')
 sandbox_dir = Path('sandbox-directories')
@@ -68,8 +63,6 @@ external_programs_dir = Path('external-programs')
 setup_dir = Path('setup')
 file_transformations_dir = Path('file-transformations')
 suites_dir = Path('suites')
-
-readme_examples_root_dir = 'readme-file-examples'
 
 readme_contacts_dir = Path('contacts')
 readme_classify_dir = Path('classify')
@@ -99,7 +92,7 @@ def do_nothing_list(target_base: Path, target_file_names: List[str]) -> List[Sou
     return [do_nothing(target_base / file_name) for file_name in target_file_names]
 
 
-README_FILES = itertools.chain.from_iterable([
+README_FILES: Iterable[SourceAndTarget] = itertools.chain.from_iterable([
     sts(readme_contacts_dir,
         [MY_CONTACTS_PROGRAM,
          ]),
@@ -130,11 +123,11 @@ README_FILES = itertools.chain.from_iterable([
         ),
 ])
 
-BUILTIN_HELP_FILES = [
+BUILTIN_HELP_FILES: Iterable[SourceAndTarget] = [
     st(Path('.'), HELLO_WORLD),
 ]
 
-INTRO_FILES = itertools.chain.from_iterable(
+INTRO_FILES: Iterable[SourceAndTarget] = itertools.chain.from_iterable(
     [
         sts(first_step_dir,
             [HELLO_WORLD__WRITE_TO_FILE_ARG,
@@ -186,26 +179,26 @@ INTRO_FILES = itertools.chain.from_iterable(
              ]),
     ])
 
-WIKI_FILES = itertools.chain.from_iterable(
+WIKI_FILES: Iterable[SourceAndTarget] = itertools.chain.from_iterable(
     [
-        sts(wiki_hello_world_dir,
+        sts(Path(HELLO_WORLD__WRITE_TO_FILE_ARG),
             [HELLO_WORLD__WRITE_TO_FILE_ARG,
              ]),
 
     ])
 
-REAL_WORLD_FILES = itertools.chain.from_iterable(
+REAL_WORLD_FILES: Iterable[SourceAndTarget] = itertools.chain.from_iterable(
     [
         sts(Path('git-hook'),
             ['prepare-commit-msg']
             ),
     ])
 
-SUB_DIR_CONFIGS = [
-    (intro_sub_dir, INTRO_FILES),
-    (readme_examples_root_dir, README_FILES),
+SUB_DIR_CONFIGS: List[Tuple[str, Iterable[SourceAndTarget]]] = [
+    ('intro', INTRO_FILES),
+    ('readme-file-examples', README_FILES),
     ('builtin-help', BUILTIN_HELP_FILES),
-    (wiki_sub_dir, WIKI_FILES),
+    ('wiki', WIKI_FILES),
     ('real-world', REAL_WORLD_FILES),
 ]
 
