@@ -12,5 +12,5 @@ for root, dirs, file_names in os.walk('.'):
         output.append(prefix + d + '/')
 
 output.sort()
-for l in output:
-    print(l)
+for line in output:
+    print(line)

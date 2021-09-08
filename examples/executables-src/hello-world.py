@@ -1,10 +1,11 @@
 import os
 import sys
+from typing import TextIO
 
 
-def output_to(f):
-    f.write('Hello, World!')
-    f.write(os.linesep)
+def output_to(of: TextIO):
+    of.write('Hello, World!')
+    of.write(os.linesep)
 
 
 if len(sys.argv) == 3:

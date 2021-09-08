@@ -3,13 +3,13 @@
 
 git-hook-is-runnable.case
 
-issue-number-should-not-be-added-when-commit-has-issue-number.case
+issue-id-should-not-be-added-when-commit-has-issue-id.case
 
-issue-number-should-be-added-to-commit-message.case
+issue-id-should-be-added-to-commit-message.case
 
-issue-number-must-appear-at-start-of-commit-message.case
+issue-id-must-appear-at-start-of-commit-message.case
 
-commit-should-fail-when-conflicting-issue-numbers.case
+commit-should-fail-when-conflicting-issue-ids.case
 
 
 [setup]

@@ -1,88 +1,79 @@
-import sys
-
 import re
 import subprocess
+import sys
+from typing import Optional
 
-issue_pattern = re.compile('([A-Z]{2,3}-[0-9]{1,5})', re.I)
-merge_pattern = re.compile('^.*(merge)+.*$', re.I)
-
-
-def is_merge(commit_message):
-    for line in commit_message.splitlines():
-        m = re.search(merge_pattern, line)
-        if m:
-            return True
-    return False
+ISSUE_PATTERN = re.compile('([A-Z]{2,3}-[0-9]{1,5})', re.I)
+MERGE_PATTERN = re.compile('^.*(merge)+.*$', re.I)
 
 
-def has_issue_issue(file_name):
-    return any_line_contains_pattern(file_name, issue_pattern)
+def exit_error(error_message: str):
+    print(error_message)
+    sys.exit(1)
 
 
-def any_line_contains_pattern(file_name, reg_exp_pattern):
-    with open(file_name, 'r') as message_file:
-        lines = message_file.readlines()
-        for line in lines:
-            m = re.search(reg_exp_pattern, line)
-            if m:
-                return True
-        return False
+def is_merge(commit_message: str):
+    return any((
+        bool(re.search(MERGE_PATTERN, line))
+        for line in commit_message.splitlines()
+    ))
 
 
-def get_issue_from_branch_name():
+def get_issue_id_from_branch_name() -> str:
     current_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'],
                                              universal_newlines=True)
     current_branch = current_branch.strip()
-    m = re.match(issue_pattern, current_branch)
+    m = re.match(ISSUE_PATTERN, current_branch)
     if m:
         return m.group(0)
     else:
-        print('Current branch name does not include an issue number in its name : %s' % current_branch)
+        exit_error('Current branch name does not include an issue ID : {}'.format(current_branch))
 
 
-def get_issue_from_commit_message(message):
-    m = re.match(issue_pattern, message)
+def get_issue_from_commit_message(message: str) -> Optional[str]:
+    m = re.match(ISSUE_PATTERN, message)
     if m:
         return m.group(0)
     else:
         return None
 
 
-def add_issue_number_to_commit(file_name, issue):
-    with open(file_name, 'r') as message_file:
+def add_issue_id_to_commit(message_file_name: str, issue_id: str):
+    with open(message_file_name, 'r') as message_file:
         lines = message_file.readlines()
-        lines[0] = issue + ' : ' + lines[0]
-    with open(file_name, 'w') as message_file:
+        lines[0] = issue_id + ' : ' + lines[0]
+    with open(message_file_name, 'w') as message_file:
         message_file.write(''.join(lines))
 
 
-commit_message_file = sys.argv[1]
+def get_commit_message(commit_message_file: str) -> str:
+    try:
+        with open(commit_message_file) as message_file:
+            return message_file.read()
+    except IOError:
+        exit_error('Unable to read commit message file ' + commit_message_file)
 
-try:
-    with open(commit_message_file) as message_file:
-        commit_message = message_file.read()
-except IOError:
-    print('Unable to read commit message file ' + commit_message_file)
-    sys.exit(1)
 
-if is_merge(commit_message):
-    sys.exit(0)
+def main():
+    commit_message_file = sys.argv[1]
 
-issue_of_commit_message = get_issue_from_commit_message(commit_message)
+    commit_message = get_commit_message(commit_message_file)
 
-if issue_of_commit_message is None:
-    issue_number = get_issue_from_branch_name()
-    if issue_number:
-        add_issue_number_to_commit(commit_message_file, issue_number)
+    if is_merge(commit_message):
+        sys.exit(0)
+
+    issue_id_of_branch_name = get_issue_id_from_branch_name()
+    mb_issue_id_of_commit_message = get_issue_from_commit_message(commit_message)
+
+    if mb_issue_id_of_commit_message is None:
+        add_issue_id_to_commit(commit_message_file, issue_id_of_branch_name)
     else:
-        print('Commit does not contain issue number.')
-        sys.exit(1)
-else:
-    issue_of_branch_name = get_issue_from_branch_name()
-    if issue_of_branch_name is not None:
-        if issue_of_branch_name != issue_of_commit_message:
-            print('Mismatch of issue of branch and commit message: %s != %s' % (issue_of_branch_name,
-                                                                                issue_of_commit_message))
-            sys.exit(1)
+        if issue_id_of_branch_name != mb_issue_id_of_commit_message:
+            exit_error('Mismatch of issue ID of branch name and commit message:\n{} != {}'.format(
+                issue_id_of_branch_name,
+                mb_issue_id_of_commit_message))
 
-sys.exit(0)
+
+if __name__ == '__main__':
+    main()
+    sys.exit(0)

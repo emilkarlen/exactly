@@ -1,5 +1,6 @@
 import os
 import sys
+from typing import TextIO
 
 if len(sys.argv) == 2:
     file_to_process = None
@@ -12,15 +13,15 @@ else:
     sys.exit(1)
 
 
-def filter_file(open_file):
+def filter_file(open_file: TextIO):
     return [line
             for line in open_file.readlines()
             if text_to_find in line]
 
 
 def process_stdin():
-    for l in filter_file(sys.stdin):
-        sys.stdout.write(l)
+    for line in filter_file(sys.stdin):
+        sys.stdout.write(line)
 
 
 def process_file():

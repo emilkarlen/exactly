@@ -37,4 +37,5 @@ for entry_line in sys.stdin:
         print(email)
         sys.exit()
 
-sys.stderr('Name not in address book: ' + name_to_lookup)
+print('Name not in address book: ' + name_to_lookup,
+      file=sys.stderr)
