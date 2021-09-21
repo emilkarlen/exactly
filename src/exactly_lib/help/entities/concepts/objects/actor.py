@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.definitions import formatting, misc_texts
@@ -12,7 +12,9 @@ from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
+from .utils import atc
 
 
 class _ActorConcept(ConceptDocumentation):
@@ -20,22 +22,8 @@ class _ActorConcept(ConceptDocumentation):
         super().__init__(concepts.ACTOR_CONCEPT_INFO)
 
     def purpose(self) -> DescriptionWithSubSections:
-        parse = TextParser({
-            'action_to_check': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
-            'actor': self.name(),
-            'actor_option': formatting.cli_option(common_cli_options.OPTION_FOR_ACTOR),
-            'actor_instruction': formatting.InstructionName(instruction_names.ACTOR_INSTRUCTION_NAME),
-            'act': phase_infos.ACT.name,
-            'default_actor': actors.DEFAULT_ACTOR_SINGLE_LINE_VALUE,
-            'null_actor': formatting.entity(actors.NULL_ACTOR.singular_name),
-            'actor_conf_param': formatting.conf_param_(conf_params.ACTOR_CONF_PARAM_INFO),
-            'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.name,
-            'shell_command': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND),
-            'space': misc_texts.WHITESPACE,
-        })
-        contents = parse.fnap(_AFTER_SINGLE_LINE_DESCRIPTION)
         return DescriptionWithSubSections(self.single_line_description(),
-                                          docs.section_contents(contents))
+                                          docs.section_contents(self._contents()))
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return (
@@ -51,22 +39,36 @@ class _ActorConcept(ConceptDocumentation):
                 actors.all_actor_cross_refs()
         )
 
+    def _contents(self) -> Sequence[ParagraphItem]:
+        tp = TextParser({
+            'action_to_check': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
+            'actor': self.name(),
+            'actor_option': formatting.cli_option(common_cli_options.OPTION_FOR_ACTOR),
+            'actor_instruction': formatting.InstructionName(instruction_names.ACTOR_INSTRUCTION_NAME),
+            'act': phase_infos.ACT.name,
+            'default_actor': actors.DEFAULT_ACTOR_SINGLE_LINE_VALUE,
+            'null_actor': formatting.entity(actors.NULL_ACTOR.singular_name),
+            'actor_conf_param': formatting.conf_param_(conf_params.ACTOR_CONF_PARAM_INFO),
+            'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.name,
+            'space': misc_texts.WHITESPACE,
+        })
+        ret_val = list(tp.fnap(_AFTER_SLD__BEFORE_EXAMPLES))
+        ret_val += atc.atc_examples()
+        ret_val += tp.fnap(_AFTER_SLD__AFTER_EXAMPLES)
+
+        return ret_val
+
 
 ACTOR_CONCEPT = _ActorConcept()
 
-_AFTER_SINGLE_LINE_DESCRIPTION = """\
+_AFTER_SLD__BEFORE_EXAMPLES = """\
 The {actor:/q} concept makes it possible to
 have different kind of actions executed in the {act} phase.
 
 For example:
+"""
 
-
- * executable program file
- * source code file
- * source code
- * {shell_command}
-
-
+_AFTER_SLD__AFTER_EXAMPLES = """\
 {actor:a/u} determines the syntax and semantics of the {act} phase contents.
 
 

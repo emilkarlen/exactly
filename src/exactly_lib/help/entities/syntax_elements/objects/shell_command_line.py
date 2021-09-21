@@ -12,9 +12,9 @@ Us of the shell is of course not portable since it
 depends on the current operating system environment's shell.
 
 
-On POSIX, the shell defaults to /bin/sh.
+On POSIX, the shell is /bin/sh.
 
-On Windows, the COMSPEC {env_var} specifies the default shell.
+On Windows, the COMSPEC {env_var} specifies the shell.
 """
 
 _TEXT_PARSER = TextParser({

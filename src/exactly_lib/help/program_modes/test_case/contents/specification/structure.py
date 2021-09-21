@@ -24,6 +24,7 @@ def root(header: str, test_case_help: TestCaseHelp) -> generator.SectionHierarch
         'default_suite_file_name': file_names.DEFAULT_SUITE_FILE,
         'act': phase_infos.ACT.name,
         'assert': phase_infos.ASSERT.name,
+        'setup': phase_infos.SETUP.name,
         'action_to_check': concepts.ACTION_TO_CHECK_CONCEPT_INFO.name,
         'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
         'ATC': concepts.ACTION_TO_CHECK_CONCEPT_INFO.acronym,
@@ -217,9 +218,10 @@ in the order they appear in the test case.
 
 {instruction:s/u} in different phases serve different purposes.
 
-
-For example, the {instruction} set of the {assert:syntax} phase
-contains {instruction:s} that serve as assertions.
+For example, {instruction:s} in the {setup:syntax} phase
+have side effects that sets up the environment for the {ATC};
+{instruction:s} in the {assert:syntax} phase are boolean expressions
+checking the outcome of the {ATC}.
 """
 
 _SUITE_CONTENTS_INCLUSION = """\
