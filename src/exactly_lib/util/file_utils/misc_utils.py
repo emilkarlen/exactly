@@ -2,7 +2,7 @@ import os
 import pathlib
 from contextlib import contextmanager
 from stat import S_IREAD, S_IRGRP, S_IROTH
-from typing import ContextManager, TextIO
+from typing import ContextManager, TextIO, List
 
 from exactly_lib.util import exception
 
@@ -42,6 +42,15 @@ def write_new_text_file(file_path: pathlib.Path,
 def contents_of(file_path: pathlib.Path) -> str:
     with file_path.open() as f:
         return f.read()
+
+
+class LinesReader:
+    def __init__(self, path: pathlib.Path):
+        self._path = path
+
+    def read(self) -> List[str]:
+        with self._path.open() as f:
+            return list(f.readlines())
 
 
 @contextmanager

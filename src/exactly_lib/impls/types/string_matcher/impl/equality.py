@@ -28,8 +28,10 @@ from exactly_lib.type_val_prims.string_source.contents import StringSourceConten
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
+from exactly_lib.util.file_utils.misc_utils import LinesReader
 from exactly_lib.util.str_.str_constructor import StringConstructor
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.util import str_ as str_utils
 
 _EXPECTED_STRING_HEADER = custom_details.EXPECTED + ' ' + syntax_elements.STRING_SYNTAX_ELEMENT.singular_name
 
@@ -180,7 +182,7 @@ class _ApplierWExtDepsCases:
             return self._result_for_match
         else:
             return self._build_result_for_no_match(
-                self._details_for_ext_deps__non(expected, actual_str)
+                self._details_for_ext_deps__none(expected, actual, actual_str)
             )
 
     def _ext_deps__only_actual(self, actual: StringSourceContents) -> MatchingResult:
@@ -196,13 +198,15 @@ class _ApplierWExtDepsCases:
         else:
             return self._build_result_for_no_match([
                 custom_details.actual(
-                    custom_details.string__maybe_longer(actual_header, actual_may_be_longer))
+                    custom_details.string__maybe_longer(actual_header, actual_may_be_longer)),
+                self._diff_detail(actual),
             ])
 
     def _ext_deps__only_expected(self, actual: StringSourceContents) -> MatchingResult:
         actual_str = actual.as_str
 
-        expected_header, expected_may_be_longer = self._read_expected_header(_min_num_chars_to_read(actual_str))
+        expected_header, expected_may_be_longer = self._freeze_and_read_expected_header(
+            _min_num_chars_to_read(actual_str))
 
         values_are_equal = expected_header == actual_str
 
@@ -216,10 +220,12 @@ class _ApplierWExtDepsCases:
                 ),
                 custom_details.actual(
                     custom_details.StringAsSingleLineWithMaxLenDetailsRenderer(actual_str)
-                )
+                ),
+                self._diff_detail(actual),
             ])
 
-    def _details_for_ext_deps__non(self, expected: str, actual: str) -> Sequence[DetailsRenderer]:
+    def _details_for_ext_deps__none(self, expected: str, actual: StringSourceContents, actual_str: str) -> Sequence[
+        DetailsRenderer]:
         ret_val = []
         if self._expected_unfrozen_has_ext_deps:
             ret_val.append(
@@ -228,15 +234,22 @@ class _ApplierWExtDepsCases:
                     custom_details.StringAsSingleLineWithMaxLenDetailsRenderer(expected)
                 )
             )
-        ret_val.append(
+        ret_val += [
             custom_details.actual(
-                custom_details.StringAsSingleLineWithMaxLenDetailsRenderer(actual))
-        )
+                custom_details.StringAsSingleLineWithMaxLenDetailsRenderer(actual_str)),
+            self._diff_detail(actual),
+        ]
+
         return ret_val
 
-    def _read_expected_header(self, min_num_chars: int) -> Tuple[str, bool]:
+    def _diff_detail(self, actual: StringSourceContents) -> DetailsRenderer:
+        return _diff_detail(_LinesAsListGetter(actual).lines_list,
+                            _LinesAsListGetter(self._expected.contents()).lines_list,
+                            )
+
+    def _freeze_and_read_expected_header(self, min_num_chars: int) -> Tuple[str, bool]:
         with self._expected.contents().as_file.open() as lines:
-            return exactly_lib.util.str_.read_lines.read_lines_as_str__w_minimum_num_chars(
+            return str_utils.read_lines.read_lines_as_str__w_minimum_num_chars(
                 min_num_chars,
                 lines,
             )
@@ -267,7 +280,7 @@ class _ExtDepsOfBothHandler:
 
     def _read_expected_header(self, min_num_chars: int) -> Tuple[str, bool]:
         with self._expected.open() as lines:
-            return exactly_lib.util.str_.read_lines.read_lines_as_str__w_minimum_num_chars(
+            return str_utils.read_lines.read_lines_as_str__w_minimum_num_chars(
                 min_num_chars,
                 lines,
             )
@@ -288,27 +301,34 @@ class _ExtDepsOfBothHandler:
         )
 
     def _diff_detail(self, actual: pathlib.Path) -> DetailsRenderer:
-        diff_description = _file_diff_description(actual,
-                                                  self._expected)
-        return custom_details.diff(
-            details.PreFormattedString(
-                _DiffString(diff_description), True)
-        )
+        return _diff_detail(LinesReader(actual).read,
+                            LinesReader(self._expected).read)
 
 
 def _min_num_chars_to_read(operand: str) -> int:
     return len(operand) + 1 + custom_details.STRING__EXTRA_TO_READ_FOR_ERROR_MESSAGES
 
 
-def _file_diff_description(actual_file_path: pathlib.Path,
-                           expected_file_path: pathlib.Path) -> Iterable[str]:
-    expected_lines = _lines_of(expected_file_path)
-    actual_lines = _lines_of(actual_file_path)
-    diff = difflib.unified_diff(expected_lines,
-                                actual_lines,
-                                fromfile=custom_details.EXPECTED,
-                                tofile=custom_details.ACTUAL)
-    return diff
+class _LinesAsListGetter:
+    def __init__(self, source: StringSourceContents):
+        self._source = source
+
+    def lines_list(self) -> List[str]:
+        with self._source.as_lines as lines:
+            return list(lines)
+
+
+def _diff_detail(get_actual_lines: Callable[[], List[str]],
+                 get_expected_lines: Callable[[], List[str]]) -> DetailsRenderer:
+    diff_description = difflib.unified_diff(get_nl_fixed_lines(get_expected_lines),
+                                            get_nl_fixed_lines(get_actual_lines),
+                                            fromfile=custom_details.EXPECTED,
+                                            tofile=custom_details.ACTUAL)
+
+    return custom_details.diff(
+        details.PreFormattedString(
+            _DiffString(diff_description), True)
+    )
 
 
 class _DiffString(StringConstructor):
@@ -319,10 +339,8 @@ class _DiffString(StringConstructor):
         return ''.join(self._lines)
 
 
-def _lines_of(file_path: pathlib.Path) -> List[str]:
-    with file_path.open() as f:
-        ret_val = list(f.readlines())
-
+def get_nl_fixed_lines(get_lines: Callable[[], List[str]]) -> List[str]:
+    ret_val = get_lines()
     if ret_val:
         ret_val[-1] = _with_nl_ending(ret_val[-1])
 
