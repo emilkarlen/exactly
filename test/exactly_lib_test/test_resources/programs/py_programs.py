@@ -98,6 +98,15 @@ sys.stdout.write(os.linesep)
 """
 
 
+def py_pgm_that_writes_os_pathsep_to_stdout() -> str:
+    return """\
+import sys
+import os
+
+sys.stdout.write(os.pathsep)
+"""
+
+
 def py_pgm_that_writes_new_line_to_stdout() -> str:
     return """\
 import sys

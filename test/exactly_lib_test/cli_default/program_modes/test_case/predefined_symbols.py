@@ -106,10 +106,10 @@ class TestStringValueEqualsBuiltinBase(SetupWithoutPreprocessorAndDefaultActor, 
         ])
 
 
-class TestLineSepStringValue(TestStringValueEqualsBuiltinBase):
+class TestTabCharacterStringValue(TestStringValueEqualsBuiltinBase):
     def __init__(self):
-        super().__init__(py_programs.py_pgm_that_writes_os_linesep_to_stdout(),
-                         strings.OS_LINE_SEP)
+        super().__init__(py_programs.py_pgm_that_writes_tab_character_to_stdout(),
+                         strings.TAB)
 
 
 class TestNewLineStringValue(TestStringValueEqualsBuiltinBase):
@@ -118,18 +118,25 @@ class TestNewLineStringValue(TestStringValueEqualsBuiltinBase):
                          strings.NEW_LINE)
 
 
-class TestTabCharacterStringValue(TestStringValueEqualsBuiltinBase):
+class TestLineSepStringValue(TestStringValueEqualsBuiltinBase):
     def __init__(self):
-        super().__init__(py_programs.py_pgm_that_writes_tab_character_to_stdout(),
-                         strings.TAB)
+        super().__init__(py_programs.py_pgm_that_writes_os_linesep_to_stdout(),
+                         strings.OS_LINE_SEP)
+
+
+class TestPathSepStringValue(TestStringValueEqualsBuiltinBase):
+    def __init__(self):
+        super().__init__(py_programs.py_pgm_that_writes_os_pathsep_to_stdout(),
+                         strings.OS_PATH_SEP)
 
 
 _TESTS = [
     AllBuiltinStringSymbolsShouldBeAvailableInTheSetupPhase(),
     AllPredefinedTestCaseDirSymbolsShouldBeAvailableInTheSetupPhase(),
-    TestLineSepStringValue(),
-    TestNewLineStringValue(),
     TestTabCharacterStringValue(),
+    TestNewLineStringValue(),
+    TestLineSepStringValue(),
+    TestPathSepStringValue(),
 ]
 
 
