@@ -3,7 +3,7 @@
 HERE=$(dirname $0)
 MY_NAME=$(basename $0)
 
-readonly PY_VERSIONS='36 37 38 39'
+readonly PY_VERSIONS='36 37 38 39 310'
 readonly DEFAULT_PY_V='36'
 
 function abs_path_of_repo_root() (
@@ -114,7 +114,8 @@ fi
 ########################################
 # Check prerequisites
 
-if ! [[ ${PY_V} =~ ^[[:digit:]][[:digit:]]$ && ${PY_VERSIONS} =~ ${PY_V} ]]; then
+if ! [[ "${PY_VERSIONS}" =~ ([[:space:]]|^)${PY_V}([[:space:]]|$) ]]
+then
   exit_error "Unknown Python version (${PY_VERSIONS}): [${PY_V}]"
 fi
 

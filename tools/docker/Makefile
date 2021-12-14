@@ -1,4 +1,4 @@
-VERSIONS = 36 37 38 39
+VERSIONS = 36 37 38 39 310
 
 .PHONY: help test-all $(VERSIONS)
 
@@ -15,3 +15,5 @@ all: $(VERSIONS)
 	$(CURDIR)/run -v 38 test-w-install
 39:
 	$(CURDIR)/run -v 39 test-w-install
+310:
+	$(CURDIR)/run -v 310 test-w-install

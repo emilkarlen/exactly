@@ -10,6 +10,7 @@ with exception of a "0." prefix until version 1 is released.
 ### Added
 
  - Builtin symbol - string `OS_PATH_SEP`
+ - Test on Python 3.10
 
 ## [0.15.0] - 2021-03-23
 
