@@ -1,4 +1,0 @@
-[suites]
-
-copy-repo
-images-make/no-docker-dep.suite

@@ -1,0 +1,7 @@
+[act]
+
+@ SUT non-existing-file dst
+
+[assert]
+
+including assert/is-failure-output.xly

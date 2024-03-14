@@ -1,7 +1,0 @@
-[cases]
-
-make-docker-files.case
-
-[conf]
-
-act-home = ../../images

@@ -1,0 +1,11 @@
+[cases]
+
+*.case
+
+[conf]
+
+including ../common.xly
+
+[setup]
+
+def program RUN_VERSION = @ RUN -v 38

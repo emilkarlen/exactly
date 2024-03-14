@@ -1,0 +1,9 @@
+# Tests that do not use `docker`.
+
+[cases]
+
+make-docker-files.case
+
+[conf]
+
+including common.xly

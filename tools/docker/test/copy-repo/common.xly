@@ -1,7 +1,0 @@
-[conf]
-
-act-home = ../../images/bin
-
-[setup]
-
-def string EXIT_INVALID_ARGS = 10

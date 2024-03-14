@@ -1,0 +1,9 @@
+@ RUN_VERSION @[GET_PYTHON_VERSION_ARGS]@
+
+[assert]
+
+stdout matches -full
+<<EOF
+Python 3\.7\..*
+EOF
+

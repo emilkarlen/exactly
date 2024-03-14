@@ -1,0 +1,7 @@
+@ RUN_VERSION @[GET_EXACTLY_VERSION_ARGS]@
+
+[assert]
+
+stdout IS_EXPECTED_EXACTLY_VERSION
+
+stderr is-empty

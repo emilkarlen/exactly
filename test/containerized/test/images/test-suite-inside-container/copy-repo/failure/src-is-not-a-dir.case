@@ -1,0 +1,13 @@
+[setup]
+
+file a-file
+
+[act]
+
+@ SUT a-file dst
+
+[assert]
+
+including assert/is-failure-output.xly
+
+exists ! dst

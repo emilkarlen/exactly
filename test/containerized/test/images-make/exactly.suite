@@ -1,0 +1,7 @@
+[cases]
+
+*.case
+
+[conf]
+
+including common.xly

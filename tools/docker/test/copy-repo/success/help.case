@@ -1,8 +1,0 @@
-copy-repo -h
-
-[assert]
-
-exit-code == 0
-
-stdout ! is-empty
-stderr is-empty

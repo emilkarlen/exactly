@@ -1,0 +1,20 @@
+dir repo =
+{
+  file CHANGELOG.md
+  file COPYRIGHT
+  file LICENSE
+  file MANIFEST.in
+  file Makefile
+  file README.rst
+  file setup.py
+  file src/a.py = 'some text'
+  file src/b.py
+  file src/b.py~
+  file src/__pycache__/in-cache.py
+  file src/__pycache__/in-cache.pyc
+  file test/sub/x.py
+  file test/sub/x.py~
+  file examples/example.case
+  file tools/a-tool.sh
+  file .git/git-adm-file
+}

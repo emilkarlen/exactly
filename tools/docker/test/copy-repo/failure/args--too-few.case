@@ -1,7 +1,0 @@
-[act]
-
-copy-repo src
-
-[assert]
-
-including is-failure-output.assert

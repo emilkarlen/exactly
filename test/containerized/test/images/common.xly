@@ -1,0 +1,26 @@
+[conf]
+
+act-home = ../..
+
+[setup]
+
+def path XLY_REPO_MOUNT_DIR = /exactly/mounted-repo
+
+def string SUITE_DIR = test/containerized/test/images/test-suite-inside-container
+
+def program RUN = -rel-act-home run --notty
+
+def list XLY_INSIDE_CONTAINER_SUITE_ARGS = --cmd exactly suite @[XLY_REPO_MOUNT_DIR]@/@[SUITE_DIR]@
+
+def list GET_EXACTLY_VERSION_ARGS = --cmd exactly --version
+
+def text-matcher IS_EXPECTED_EXACTLY_VERSION = equals
+<<EOF
+exactly 0.15.0
+EOF
+
+def list GET_PYTHON_VERSION_ARGS = --cmd python --version
+
+[assert]
+
+exit-code == 0

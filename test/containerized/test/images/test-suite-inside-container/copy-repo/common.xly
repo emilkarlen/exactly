@@ -1,0 +1,5 @@
+[setup]
+
+def program SUT = % copy-repo
+
+def string EXIT_INVALID_ARGS = 10

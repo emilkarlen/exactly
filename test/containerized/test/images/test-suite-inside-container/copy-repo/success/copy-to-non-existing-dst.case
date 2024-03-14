@@ -1,0 +1,11 @@
+@ SUT repo dst
+
+[setup]
+
+including setup/repo.xly
+
+[assert]
+
+including assert/is-successful-copy-output.xly
+
+including assert/dst-dir-is-copy.xly

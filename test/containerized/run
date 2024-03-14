@@ -1,0 +1,167 @@
+#!/bin/bash
+
+HERE=$(dirname $0)
+MY_NAME=$(basename $0)
+
+readonly PY_VERSIONS='36 37 38 39 310 311'
+readonly DEFAULT_PY_V='36'
+
+function abs_path_of_repo_root() (
+  cd ${HERE}/../..
+  pwd
+)
+
+function exit_error() { # MSG...
+  echo ${MY_NAME}': '$* >&2
+  exit 1
+}
+source ${HERE}/config.sh
+
+readonly REPO_ROOT_DIR=$(abs_path_of_repo_root)
+
+readonly SHARE_DIR=/tmp/exactly-docker-share
+
+readonly ACTION__TEST='test'
+readonly ACTION__TEST_W_INSTALL='test-w-install'
+readonly ACTION__XLY='exactly'
+
+readonly ACTION_OR_COMMAND_SYNTAX='(ACTION|--cmd COMMAND)'
+readonly INVOKATION_SYNTAX="Usage: ${MY_NAME} [-h] [--notty] [-u USER] [-v PY-VERSION] ${ACTION_OR_COMMAND_SYNTAX}"
+
+readonly HELP="${INVOKATION_SYNTAX}
+
+Runs the docker container
+  ${DOCKER_IMAGE_PREFIX}<PY-VERSION>
+
+Enters a container with a login shell,
+or runs an action and exists, if ACTION is given.
+
+The container is deleted at exit.
+
+OPTIONS
+  -h         Display this help and exit
+  -u USER    Enter container as user USER
+             Default user is '${NON_ROOT_USER}'
+  -v VERSION Use docker image for Python v VERSION
+             VERSION is one of: ${PY_VERSIONS}
+             Default version is ${DEFAULT_PY_V}
+  --notty    The input device is not a tty
+  --cmd COMMAND Run COMMAND inside the container via its shell
+            COMMAND may consist of more than one argument
+
+ACTION
+  ${ACTION__TEST}
+    Run tests towards copy of mounted repo.
+
+  ${ACTION__TEST_W_INSTALL}
+    Run tests towards copy of mounted repo,
+    including test against installation.
+    A distribution must have been built as a .whl file.
+
+  ${ACTION__XLY} ARGUMENT...
+    Runs exactly with the given arguments.
+
+ENVIRONMENT
+
+  ${CONTAINER__WORK_DIR}
+    Current directory.
+
+  ${CONTAINER__REPO_ROOT}/
+    Read-only mount of the current Exactly repo.
+
+  ${CONTAINER__VENV_DIR}/
+    A Python virtual environment.
+
+  ${CONTAINER__SHARE_DIR}/
+    Read-write mount of dir ${SHARE_DIR} (for file sharing)
+    ${SHARE_DIR} is created if it does not exist.
+"
+
+########################################
+# Parse arguments
+
+PY_V=${DEFAULT_PY_V}
+USER=${NON_ROOT_USER}
+TTY='--tty'
+
+while [ $# -gt 0 -a "_${1:0:1}" = '_-' ]; do
+  case $1 in
+  -h)
+    echo "${HELP}"
+    exit 0
+    ;;
+  -u)
+    [ $# -ge 2 ] || exit_error "-u: Missing USER argument"
+    USER=$2
+    shift
+    ;;
+  -v)
+    [ $# -ge 2 ] || exit_error "-v: Missing VERSION argument"
+    PY_V=$2
+    shift
+    ;;
+  --notty)
+    TTY=''
+    ;;
+  --cmd)
+    break
+    ;;
+  *)
+    exit_error "Unknown option: [${1}]"
+    ;;
+  esac
+  shift
+done
+
+if [ $# -gt 0 ]
+then
+  case "${1}" in
+    ${ACTION__TEST})
+      COMMAND=${ACTION__TEST__COMMAND}
+      [ ${#} -eq 1 ] || exit_error 'Superfluous arguments'
+      ;;
+    ${ACTION__TEST_W_INSTALL})
+      COMMAND=${ACTION__TEST_W_INSTALL__COMMAND}
+      [ ${#} -eq 1 ] || exit_error 'Superfluous arguments'
+      ;;
+    --cmd)
+      [ ${#} -ge 2 ] || exit_error '--cmd: Missing COMMAND'
+      shift
+      COMMAND=$1
+      ;;
+  *)
+    exit_error "Unknown ACTION: \"${1}\""
+    ;;
+  esac
+  shift
+fi
+
+########################################
+# Check prerequisites
+
+if ! [[ "${PY_VERSIONS}" =~ ([[:space:]]|^)${PY_V}([[:space:]]|$) ]]
+then
+  exit_error "Unknown Python version (${PY_VERSIONS}): [${PY_V}]"
+fi
+
+DOCKER_IMAGE="${DOCKER_IMAGE_PREFIX}${PY_V}:latest"
+
+docker image inspect ${DOCKER_IMAGE} >/dev/null ||
+  exit_error "No docker image corresponding to Python version [${PY_V}]: [${DOCKER_IMAGE}]"
+
+if [ -e ${SHARE_DIR} ]; then
+  [ -d ${SHARE_DIR} ] || exit_error "Not a directory: ${SHARE_DIR}"
+else
+  mkdir -p ${SHARE_DIR}
+fi
+
+########################################
+# Do it
+
+docker run --interactive ${TTY} \
+  --mount readonly,type=bind,source=${REPO_ROOT_DIR},target=${CONTAINER__REPO_ROOT} \
+  --mount type=bind,source=${SHARE_DIR},target=${CONTAINER__SHARE_DIR} \
+  --user ${USER} \
+  --workdir ${CONTAINER__WORK_DIR} \
+  --rm \
+  ${DOCKER_IMAGE} ${COMMAND} "${@}"

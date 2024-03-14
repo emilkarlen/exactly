@@ -1,0 +1,15 @@
+[setup]
+
+dir  repo
+file a-file
+
+[act]
+
+@ SUT repo a-file
+
+[assert]
+
+including assert/is-failure-output.xly
+
+exists a-file : type file
+

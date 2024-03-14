@@ -1,0 +1,47 @@
+FROM python:__IMAGE_TAG__
+
+RUN apk add --no-cache make
+RUN pip install exactly==0.15.0
+
+RUN mkdir /share
+
+RUN mkdir     /workdir
+RUN chmod 777 /workdir
+
+# Setup of global shell
+
+COPY sh/alias.sh   /etc/profile.d/
+COPY sh/exactly.sh /etc/profile.d/
+COPY sh/misc.sh    /etc/profile.d/
+
+# Setup of non-rot user
+
+RUN adduser -D tester -s /bin/ash
+
+# COPY user-profile.sh /home/tester/.profile
+
+# Exactly env
+
+RUN mkdir     /exactly
+RUN chmod 777 /exactly
+
+COPY bin/copy-repo          /usr/local/bin
+COPY bin/copy-and-init-repo /usr/local/bin
+COPY bin/test-copy-of-repo  /usr/local/bin
+COPY bin/copy-and-test-repo /usr/local/bin
+
+ENV XLY_REPO_MOUNT_DIR=/exactly/mounted-repo
+ENV XLY_WORKDIR=/workdir
+ENV XLY_REPO_COPY_DIR=/workdir/repo-copy
+ENV XLY_VENV_DIR=/workdir/venv
+ENV XLY_PY_MAIN=src/default-main-program-runner.py
+
+USER tester
+
+RUN python -m venv /workdir/venv
+
+# Container default command
+
+USER root
+
+CMD ["/bin/sh", "-l"]

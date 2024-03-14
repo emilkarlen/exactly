@@ -1,0 +1,7 @@
+[act]
+
+@ SUT src dst extra
+
+[assert]
+
+including assert/is-failure-output.xly

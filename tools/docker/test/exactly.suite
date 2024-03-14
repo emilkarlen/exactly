@@ -1,5 +1,0 @@
-[suites]
-
-no-docker-dep.suite
-
-images-make
