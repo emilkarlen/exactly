@@ -48,6 +48,7 @@ ACTION
   ${ACTION__TEST_W_INSTALL}
     Run tests towards copy of mounted repo,
     including test against installation.
+    A distribution must have been built as a .whl file.
 
 ENVIRONMENT
 

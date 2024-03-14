@@ -18,7 +18,6 @@ exists dst :
           MANIFEST.in
           Makefile
           README.rst
-          setup.py
           }
       )
       &&

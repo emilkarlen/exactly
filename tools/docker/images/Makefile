@@ -1,7 +1,7 @@
 IMAGES = 36 37 38 39 310
-DOCKER_FILES = $(foreach img,$(IMAGES),"Dockerfile.$(img)")
+DOCKER_FILES = $(foreach img,$(IMAGES),Dockerfile.$(img))
 IMAGE_PFX = exactly-alpine-py
-IMAGES__FULL_NAME = $(foreach img,$(IMAGES),"$(IMAGE_PFX)$(img)")
+IMAGES__FULL_NAME = $(foreach img,$(IMAGES),$(IMAGE_PFX)$(img))
 
 .PHONY: $(IMAGES) dockerfiles all clean help
 

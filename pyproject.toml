@@ -1,0 +1,68 @@
+[project]
+
+name = "exactly"
+
+dynamic = ["version"]
+
+requires-python = ">=3.6"
+
+classifiers=[
+    'Development Status :: 5 - Production/Stable',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+    'Topic :: Software Development :: Testing',
+    'Topic :: System :: Systems Administration',
+    'Environment :: Console',
+    'Operating System :: POSIX',
+]
+
+authors = [
+  { name = "Emil Karlen", email = "emil@member.fsf.org" }
+]
+
+maintainers = [
+  { name = "Emil Karlen", email = "emil@member.fsf.org" }
+]
+
+description = "Tests a command line program by executing it in a temporary sandbox directory and inspecting its result."
+
+readme = {file = "README.rst", content-type = "text/x-rst"}
+
+keywords = [
+    "test",
+    "case",
+    "suite",
+    "check",
+    "assert",
+    "sandbox",
+    "script",
+    "shell",
+    "console",
+    "command line",
+]
+
+license = { file = "LICENSE" }
+
+[project.urls]
+
+Homepage = "https://github.com/emilkarlen/exactly"
+Repository = "https://github.com/emilkarlen/exactly.git"
+Issues = "https://github.com/emilkarlen/exactly/issues"
+
+[project.scripts]
+
+exactly = "exactly_lib.cli_default.default_main_program_setup:main"
+
+[build-system]
+
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+
+version = {attr = "exactly_lib.program_info.VERSION"}

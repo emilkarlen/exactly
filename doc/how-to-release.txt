@@ -28,7 +28,9 @@ Make sure to be in line with the release
 Make sure the contact info at the end of the COPYRIGHT is correct.
 * Minimum Python version
 ** program_info.py
-** setup.py
+** pyproject.toml
+*** requires-python
+*** classifiers
 ** README
 * github pages - Add Ref Man for release version
 Note: The version number in the doc has not been updated
@@ -45,16 +47,24 @@ src/exactly_lib/program_info.py
 * Test
 ** run-test-suite.py
 ** Run tests towards installed program
-In virtual environment
-Make release artifacts
- > make clean
- > make build
+*** 1. Build distribution
+ > make clean; make build
+*** 2. Activate virtual environment "venv"
+ - If venv does not exist, create it with
+    > make venv
+ - Enter the venv
+    > . venv/bin/activate
+*** 3. Install in venv
  > make install
- > python test/run-test-suite-towards-installed-program.py
+*** 4. Run tests
+ > python3 test/run-test-suite-towards-installed-program.py
+*** 5. Exit the venv
+ > deactivate
+*** 6. Remove install from venv
  > make uninstall-venv
 ** run exactly tests
  > exactly suite test/exactly-cases
-** run on as many platforms as possible - on linux using docker
+** Run on as many platforms as possible - on linux using docker
 * Make sure syntax of examples is correct
 * README - link to Ref Man on github pages
 ** Check that link from README shows Ref Man for correct version
@@ -75,23 +85,31 @@ Distribute source and wheel
 > make build
 * Upload to PyPi test
 ** Upload
-Run:
+*** Account on PyPi test
+First you must have access to an account on TestPyPI
 
-> python setup.py register -r pypitest
+See https://packaging.python.org/en/latest/guides/using-testpypi/
 
-This will attempt to register your package against PyPI's test server, just to
-make sure you've set up everything correctly.
+Add TestPyPI to your `~/.pypirc`:
 
-Then, run:
+    [distutils]
 
-> python setup.py sdist upload -r pypitest
+    index-servers = testpypi
 
-You should get no errors, and should also now be able to see your library in
-the test PyPI repository.
+    [testpypi]
+
+    repository = https://test.pypi.org/legacy/
+    username   = __token__
+    password   = <TOKEN>
+
+Be sure to use the same name for the repoository in `./pypirc` as in
+`Makefile`.
+*** Upload
+    > make upload-test
 ** Check
 *** README: links to RefMan
 * Upload to PyPi prod
-> make upload
+    > make upload
 * github pages: Make "latest" sym link point to latest release
 exactly/version/latest
 * wiki

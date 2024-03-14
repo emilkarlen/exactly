@@ -5,6 +5,8 @@ set -e
 readonly MY_NAME=$(basename $0)
 readonly INVOKATION_SYNTAX="${MY_NAME} [-h] [--venv]"
 
+readonly DIST_DIR=${XLY_REPO_MOUNT_DIR}/dist
+
 function exit_error() { # MSG...
   echo ${MY_NAME}': '$* >&2
   exit 10
@@ -17,16 +19,36 @@ Copies an Exactly git repo in dir ${XLY_REPO_MOUNT_DIR} to dir ${XLY_REPO_COPY_D
 
 OPTIONS
    --venv
-     Build and install into virtual environment at ${XLY_VENV_DIR}.
+     Install into virtual environment at ${XLY_VENV_DIR}.
+     A distribution as a .whl file must exist in ${DIST_DIR}.
 
 
 ${XLY_REPO_COPY_DIR}/
   If it exists, it is removed.
 "
 
+header() { # CHECK...
+  echo "--------------------------------------------------------------------------------
+- $(python --version) ${*}
+--------------------------------------------------------------------------------"
+}
+
 install_in_venv() (
-  cd ${XLY_REPO_COPY_DIR}
-  make build
+  if ! [ -d ${DIST_DIR} ]
+  then
+    exit_error "No distribution to install - dir does not exist: ${DIST_DIR}"
+  fi
+  cd ${DIST_DIR}
+  num_whl_files=$(ls | grep '\.whl$' | wc -l)
+  if [ ${num_whl_files} -eq 0 ]
+  then
+    exit_error "No distribution to install - no .whl files in ${DIST_DIR}"
+  fi
+  if [ ${num_whl_files} -gt 1 ]
+  then
+    exit_error "Cannot install - more than one .whl file in ${DIST_DIR}: $(ls *.whl)"
+  fi
+  cd ${XLY_REPO_MOUNT_DIR}
   . ${XLY_VENV_DIR}/bin/activate
   make install
 )
@@ -66,17 +88,17 @@ fi
 
 # Copy repo
 
-echo "Copying repo at ${XLY_REPO_MOUNT_DIR} to ${XLY_REPO_COPY_DIR}" >&2
+header "Copying repo at ${XLY_REPO_MOUNT_DIR} to ${XLY_REPO_COPY_DIR}"
 
 copy-repo ${XLY_REPO_MOUNT_DIR} ${XLY_REPO_COPY_DIR}
 
 # Make executables used by examples
 
-echo "Making executables used by examples in ${XLY_REPO_COPY_DIR}/examples" >&2
+header "Making executables used by examples in ${XLY_REPO_COPY_DIR}/examples"
 
 make -C ${XLY_REPO_COPY_DIR}/examples rebuild
 
 if [ ${INSTALL_IN_VENV} ]; then
-  echo "Building and installing in virtual environment at ${XLY_VENV_DIR}" >&2
+  header "Building and installing in virtual environment at ${XLY_VENV_DIR}" >&2
   install_in_venv
 fi

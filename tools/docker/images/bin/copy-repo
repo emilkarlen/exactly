@@ -1,6 +1,6 @@
 #!/bin/sh
 
-readonly ROOT_FILES_TO_COPY='src test examples CHANGELOG.md COPYRIGHT LICENSE MANIFEST.in Makefile README.rst setup.py'
+readonly ROOT_FILES_TO_COPY='src test examples CHANGELOG.md COPYRIGHT LICENSE MANIFEST.in Makefile README.rst'
 
 readonly EXCLUSIONS='
 *~
