@@ -9,6 +9,8 @@ run @ IMAGE_EXISTS exactly-alpine-py36
 run @ IMAGE_EXISTS exactly-alpine-py37
 run @ IMAGE_EXISTS exactly-alpine-py38
 run @ IMAGE_EXISTS exactly-alpine-py39
+run @ IMAGE_EXISTS exactly-alpine-py310
+run @ IMAGE_EXISTS exactly-alpine-py311
 
 [conf]
 

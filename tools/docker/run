@@ -3,7 +3,7 @@
 HERE=$(dirname $0)
 MY_NAME=$(basename $0)
 
-readonly PY_VERSIONS='36 37 38 39 310'
+readonly PY_VERSIONS='36 37 38 39 310 311'
 readonly DEFAULT_PY_V='36'
 
 function abs_path_of_repo_root() (
