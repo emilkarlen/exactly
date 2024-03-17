@@ -1,9 +1,10 @@
-Source code for test - ``test/``
+Test
 ===================================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
 
 Documentation of the source code that tests the program,
 and is _not_ included in an installation of the program.

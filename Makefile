@@ -1,4 +1,4 @@
-PHONY=help clean dist install uninstall upload upload-test venv
+PHONY=help clean dist doc install uninstall upload upload-test venv
 NON_PHONY=venv-run venv-build
 ALL=$(PHONY) $(NON_PHONY)
 
@@ -10,9 +10,13 @@ help:
 clean:
 	rm -rf dist
 	rm -rf src/exactly.egg-info
+	rm -rf build-sphinx
 
 dist:
 	python3 -m build --no-isolation
+
+doc:
+	make -f sphinx.mak html
 
 install:
 	python3 -m pip install dist/*.whl

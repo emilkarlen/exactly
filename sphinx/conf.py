@@ -15,14 +15,16 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../../src/'))
+sys.path.insert(0, os.path.abspath('../src/'))
 
 from exactly_lib import program_info
-
 
 # -- Project information -----------------------------------------------------
 
 project = program_info.PROGRAM_NAME.capitalize()
+doc_title = '{} Development Documentation'.format(project)
+output_base_name = '{}-devdoc'.format(program_info.PROGRAM_NAME)
+
 copyright = u'2020, Emil Karlén'
 author = u'Emil Karlén'
 
@@ -30,7 +32,6 @@ author = u'Emil Karlén'
 version = program_info.VERSION
 # The full version, including alpha/beta/rc tags
 release = program_info.VERSION
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -51,13 +52,13 @@ extensions = [
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = []
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ['.rst', '.md']
 
 # The master toctree document.
 master_doc = 'index'
@@ -67,7 +68,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -76,7 +77,6 @@ exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
-
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -94,7 +94,7 @@ html_theme = 'classic'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = []
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -110,8 +110,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'exactlydoc'
-
+htmlhelp_basename = output_base_name
 
 # -- Options for LaTeX output ------------------------------------------------
 
@@ -137,20 +136,18 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'Exactly.tex', 'Exactly Documentation',
-     u'Emil Karlén', 'manual'),
+    (master_doc, '{}.tex'.format(output_base_name), doc_title,
+     author, 'manual'),
 ]
-
 
 # -- Options for manual page output ------------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'exactly', 'Exactly Documentation',
+    (master_doc, program_info.PROGRAM_NAME, doc_title,
      [author], 1)
 ]
-
 
 # -- Options for Texinfo output ----------------------------------------------
 
@@ -158,13 +155,12 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Exactly', 'Exactly Documentation',
+    (master_doc, output_base_name, doc_title,
      author,
-     'Exactly',
+     program_info.PROGRAM_NAME,
      'Tests a command line program by executing it in a temporary sandbox directory and inspecting its result.',
      'Miscellaneous'),
 ]
-
 
 # -- Extension configuration -------------------------------------------------
 

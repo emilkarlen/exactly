@@ -4,8 +4,7 @@ exactly-*.tar.gz
 venv-*/
 .idea/
 tmp/
-# Used by setuptools
-build/
+# building
+build-sphinx/
 dist/
-deb_dist/
 src/exactly.egg-info/

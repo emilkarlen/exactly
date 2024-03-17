@@ -5,7 +5,7 @@ Source code for production - ``src/``
    :maxdepth: 2
    :caption: Contents:
 
-   symbol/index
+   doc/symbol/index
 
 The ``src/`` directory contains the source code
 that is included in an installation of the program.
