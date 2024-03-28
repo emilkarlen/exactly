@@ -18,9 +18,10 @@ Supports easy referencing of predefined files and files created in the temporary
 Supports execution of arbitrary programs, as well as checking their result.
 
 Exactly has a  built in help system,
-which can, among other things,
-generate this `Reference Manual
-<https://emilkarlen.github.io/exactly/version/0-15-0/reference-manual.html>`_.
+which can, among other things, generate the
+`Reference Manual
+<https://emilkarlen.github.io/exactly/version/latest/reference-manual.html>`_
+(latest release).
 
 
 .. contents::
