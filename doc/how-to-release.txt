@@ -48,12 +48,15 @@ src/exactly_lib/program_info.py
 ** run-test-suite.py
 ** Run tests towards installed program
 *** 1. Build distribution
+ Use the virtual environment "venv-build" for this.
+ > make venv-build
+ > . venv-build/bin/activate
  > make clean; make build
-*** 2. Activate virtual environment "venv"
+*** 2. Activate virtual environment "venv-run"
  - If venv does not exist, create it with
-    > make venv
+    > make venv-run
  - Enter the venv
-    > . venv/bin/activate
+    > . venv-run/bin/activate
 *** 3. Install in venv
  > make install
 *** 4. Run tests
@@ -61,7 +64,7 @@ src/exactly_lib/program_info.py
 *** 5. Exit the venv
  > deactivate
 *** 6. Remove install from venv
- > make uninstall-venv
+ > make uninstall
 ** run exactly tests
  > exactly suite test/exactly-cases
 ** Run on as many platforms as possible - on linux using docker

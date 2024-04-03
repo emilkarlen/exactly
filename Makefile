@@ -1,6 +1,8 @@
-ALL=help clean dist install uninstall upload upload-test venv
+PHONY=help clean dist install uninstall upload upload-test venv
+NON_PHONY=venv-run venv-build
+ALL=$(PHONY) $(NON_PHONY)
 
-.PHONY: $(ALL)
+.PHONY: $(PHONY)
 
 help:
 	@echo $(ALL)
@@ -24,5 +26,13 @@ upload:
 upload-test:
 	python3 -m twine upload --repository PyPiTest dist/*
 
-venv:
-	python3 -m venv venv
+venv-run:
+	python3 -m venv venv-run
+
+venv-build:
+	python3 -m venv venv-build
+	. venv-build/bin/activate; \
+    pip install --upgrade wheel; \
+    pip install --upgrade build;
+
+venv: venv-run venv-build
