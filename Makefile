@@ -9,8 +9,8 @@ help:
 
 clean:
 	rm -rf dist
+	rm -rf build
 	rm -rf src/exactly.egg-info
-	rm -rf build-sphinx
 
 dist:
 	python3 -m build --no-isolation
@@ -36,7 +36,6 @@ venv-run:
 venv-build:
 	python3 -m venv venv-build
 	. venv-build/bin/activate; \
-    pip install --upgrade wheel; \
-    pip install --upgrade build;
+    pip --require-virtualenv install --upgrade -r build-requirements.txt
 
 venv: venv-run venv-build

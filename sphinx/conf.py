@@ -25,8 +25,8 @@ project = program_info.PROGRAM_NAME.capitalize()
 doc_title = '{} Development Documentation'.format(project)
 output_base_name = '{}-devdoc'.format(program_info.PROGRAM_NAME)
 
-copyright = u'2020, Emil Karlén'
 author = u'Emil Karlén'
+copyright = u'2024, ' + author
 
 # The short X.Y version
 version = program_info.VERSION
@@ -49,6 +49,7 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'myst_parser',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -83,7 +84,7 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'classic'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

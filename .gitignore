@@ -1,10 +1,13 @@
 *~
-__pycache__
-exactly-*.tar.gz
-venv-*/
 .idea/
 tmp/
+exactly-*.tar.gz
+
+venv-*/
+
+__pycache__
+
 # building
-build-sphinx/
+build/
 dist/
 src/exactly.egg-info/

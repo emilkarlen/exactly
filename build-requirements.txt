@@ -1,0 +1,9 @@
+# Build and upload
+wheel
+build
+twine
+
+# Sphinx
+sphinx
+myst-parser
+sphinx-rtd-theme

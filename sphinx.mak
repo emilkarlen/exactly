@@ -6,7 +6,7 @@ SPHINXOPTS    = -c sphinx
 SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = Exactly
 SOURCEDIR     = .
-BUILDDIR      = build-sphinx
+BUILDDIR      = build/sphinx
 
 # Put it first so that "make" without argument is like "make help".
 help:
