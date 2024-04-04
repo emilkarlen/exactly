@@ -1,13 +1,12 @@
 Test
-===================================================
+############################################################
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
 
 Documentation of the source code that tests the program,
-and is _not_ included in an installation of the program.
+and is *not* included in an installation of the program.
 
 The tests resides in the ``exactly_lib_test`` directory.
 It's contents mirrors the package structure of the source in ``exactly_lib``.

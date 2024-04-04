@@ -1,3 +1,5 @@
+"""Some global constant info about the program used in documentation and building etc."""
+
 PROGRAM_NAME = 'exactly'
 
 VERSION = '0.15.0'

@@ -1,11 +1,11 @@
-Source code for production - ``src/``
-===================================================
+Source code structure
+############################################################
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    doc/symbol/index
+   doc/program_info
 
 The ``src/`` directory contains the source code
 that is included in an installation of the program.
