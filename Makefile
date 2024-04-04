@@ -1,4 +1,4 @@
-PHONY=help clean dist doc install uninstall upload upload-test venv
+PHONY=help clean dist doc ref-man install uninstall upload upload-test venv
 NON_PHONY=venv-run venv-build
 ALL=$(PHONY) $(NON_PHONY)
 
@@ -6,6 +6,8 @@ ALL=$(PHONY) $(NON_PHONY)
 
 help:
 	@echo $(ALL)
+	@echo
+	@echo 'Run make from the project root directory.'
 
 clean:
 	rm -rf dist
@@ -17,6 +19,12 @@ dist:
 
 doc:
 	make -f sphinx.mak html
+
+build:
+	mkdir build
+
+ref-man: build
+	python3 src/default-main-program-runner.py help htmldoc > build/exactly.html
 
 install:
 	python3 -m pip install dist/*.whl
