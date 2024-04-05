@@ -4,6 +4,9 @@ Test
 .. toctree::
    :maxdepth: 2
 
+   Makefile.rst
+   containerized/README.rst
+
 
 Documentation of the source code that tests the program,
 and is *not* included in an installation of the program.

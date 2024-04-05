@@ -1,0 +1,7 @@
+[act]
+
+@ SUT --invalid
+
+[assert]
+
+including assert/is-failure-output.xly

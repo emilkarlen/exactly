@@ -1,0 +1,11 @@
+[cases]
+
+*.case
+
+[conf]
+
+including ../common.xly
+
+[setup]
+
+def program RM_EXISTING_DST = $ rm -rf ${XLY_REPO_COPY_DIR}

@@ -15,12 +15,20 @@ function exit_error() { # MSG...
 HELP="Usage:
   ${INVOKATION_SYNTAX}
 
-Copies an Exactly git repo in dir ${XLY_REPO_MOUNT_DIR} to dir ${XLY_REPO_COPY_DIR}.
+Copies an Exactly git repo in
+  ${XLY_REPO_MOUNT_DIR}
+to
+  ${XLY_REPO_COPY_DIR}
+and prepares it for running tests by making executables
+used by examples.
+
 
 OPTIONS
    --venv
-     Install into virtual environment at ${XLY_VENV_DIR}.
-     A distribution as a .whl file must exist in ${DIST_DIR}.
+     Also install into the virtual environment at
+       ${XLY_VENV_DIR}.
+     A distribution must have been built
+     for the mounted repo (outside of the container) for this to work.
 
 
 ${XLY_REPO_COPY_DIR}/
@@ -30,27 +38,12 @@ ${XLY_REPO_COPY_DIR}/
 header() { # CHECK...
   echo "--------------------------------------------------------------------------------
 - $(python --version) ${*}
---------------------------------------------------------------------------------"
+--------------------------------------------------------------------------------" >&2
 }
 
 install_in_venv() (
-  if ! [ -d ${DIST_DIR} ]
-  then
-    exit_error "No distribution to install - dir does not exist: ${DIST_DIR}"
-  fi
-  cd ${DIST_DIR}
-  num_whl_files=$(ls | grep '\.whl$' | wc -l)
-  if [ ${num_whl_files} -eq 0 ]
-  then
-    exit_error "No distribution to install - no .whl files in ${DIST_DIR}"
-  fi
-  if [ ${num_whl_files} -gt 1 ]
-  then
-    exit_error "Cannot install - more than one .whl file in ${DIST_DIR}: $(ls *.whl)"
-  fi
-  cd ${XLY_REPO_MOUNT_DIR}
   . ${XLY_VENV_DIR}/bin/activate
-  make install
+  make -C ${XLY_REPO_MOUNT_DIR} install >&2
 )
 
 if [ "_$1" == '_-h' ]; then
@@ -86,19 +79,15 @@ fi
 ########################################
 # Do it
 
-# Copy repo
-
 header "Copying repo at ${XLY_REPO_MOUNT_DIR} to ${XLY_REPO_COPY_DIR}"
 
 copy-repo ${XLY_REPO_MOUNT_DIR} ${XLY_REPO_COPY_DIR}
 
-# Make executables used by examples
-
 header "Making executables used by examples in ${XLY_REPO_COPY_DIR}/examples"
 
-make -C ${XLY_REPO_COPY_DIR}/examples rebuild
+make -C ${XLY_REPO_COPY_DIR}/examples rebuild >&2
 
 if [ ${INSTALL_IN_VENV} ]; then
-  header "Building and installing in virtual environment at ${XLY_VENV_DIR}" >&2
+  header "Building and installing in virtual environment at ${XLY_VENV_DIR}"
   install_in_venv
 fi

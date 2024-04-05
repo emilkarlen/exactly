@@ -1,0 +1,22 @@
+[setup]
+
+run @ RM_EXISTING_DST
+
+[act]
+
+@ SUT --venv
+
+[assert]
+
+including assert/is-successful-copy-output.xly
+
+including assert/dst-dir-is-copy.xly
+
+`An exactly executable exists in the venv/bin/`
+
+$ test -x ${XLY_VENV_DIR}/bin/exactly
+
+[cleanup]
+
+run /bin/sh -existing-file -rel-home cleanup/uninstall-from-venv.sh
+

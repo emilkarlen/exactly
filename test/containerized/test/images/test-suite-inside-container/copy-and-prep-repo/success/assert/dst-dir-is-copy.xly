@@ -1,0 +1,10 @@
+`Repo copy dir exists`
+
+$ test -d ${XLY_REPO_COPY_DIR}
+
+`Executables for examples/ have been built`
+
+stdout
+  -from $ find ${XLY_REPO_COPY_DIR}/examples \( -name executables-src -prune \) -o \( -type f -executable -print \)
+  num-lines > 1
+

@@ -1,0 +1,17 @@
+[setup]
+
+run @ RM_EXISTING_DST
+
+[act]
+
+@ SUT
+
+[assert]
+
+including assert/is-successful-copy-output.xly
+
+including assert/dst-dir-is-copy.xly
+
+`An exactly executable SHOULD NOT exist in the venv/bin/`
+
+$ ! test -e ${XLY_VENV_DIR}/bin/exactly

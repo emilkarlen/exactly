@@ -1,9 +1,11 @@
 VERSIONS = 36 37 38 39 310 311
+PHONY=help images all $(VERSIONS)
+ALL=$(PHONY)
 
-.PHONY: help images all $(VERSIONS)
+.PHONY: $(PHONY)
 
 help:
-	@echo help  $(VERSIONS) all
+	@echo $(ALL)
 
 images:
 	make -C images all

@@ -11,7 +11,7 @@ HELP="Usage: ${INVOKATION_SYNTAX}
 
 Copies a mounted repo, then initializes it and tests it:
 
-  copy-and-init-repo
+  copy-and-prep-repo
   test-copy-of-repo
 
 OPTIONS
@@ -48,5 +48,5 @@ fi
 ########################################
 # Do it
 
-copy-and-init-repo ${INIT_VENV_ARG}
+copy-and-prep-repo ${INIT_VENV_ARG}
 test-copy-of-repo ${CHECKS}

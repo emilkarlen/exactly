@@ -19,7 +19,7 @@ source ${HERE}/config.sh
 
 readonly REPO_ROOT_DIR=$(abs_path_of_repo_root)
 
-readonly SHARE_DIR=/tmp/exactly-docker-share
+readonly SHARE_DIR=/tmp/exactly-container-share
 
 readonly ACTION__TEST='test'
 readonly ACTION__TEST_W_INSTALL='test-w-install'
@@ -61,7 +61,7 @@ ACTION
   ${ACTION__XLY} ARGUMENT...
     Runs exactly with the given arguments.
 
-ENVIRONMENT
+CONTAINER ENVIRONMENT
 
   ${CONTAINER__WORK_DIR}
     Current directory.

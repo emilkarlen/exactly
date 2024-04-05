@@ -4,6 +4,8 @@ ALL=$(PHONY) $(NON_PHONY)
 
 .PHONY: $(PHONY)
 
+INSTALL_TOOL=python3 tools/install.py
+
 help:
 	@echo $(ALL)
 	@echo
@@ -27,10 +29,10 @@ ref-man: build
 	python3 src/default-main-program-runner.py help htmldoc > build/exactly.html
 
 install:
-	python3 -m pip install dist/*.whl
+	$(INSTALL_TOOL) install
 
 uninstall:
-	python3 -m pip uninstall --yes exactly
+	$(INSTALL_TOOL) uninstall
 
 upload:
 	python3 -m twine upload dist/*
